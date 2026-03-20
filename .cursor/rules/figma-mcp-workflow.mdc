@@ -1,0 +1,15 @@
+---
+description: Use Figma MCP for design-to-code; always paste frame URLs with node-id.
+alwaysApply: false
+---
+
+# Figma → code workflow
+
+When the user asks to implement a **Figma design** or mentions a Figma URL:
+
+1. **Assume Figma MCP is configured** (`https://mcp.figma.com/mcp` or desktop MCP). Use MCP tools to fetch design context for the linked **node-id**.
+2. Ask the user to paste the **full frame link** if missing: must include `node-id=` (select frame in Figma → Copy link).
+3. Implement in the requested files using tokens from MCP (spacing, colors, typography), not guesses from memory.
+4. If MCP is unavailable, say so and offer: embed + screenshot, or user pastes Dev Mode CSS/specs.
+
+Reference: project doc `docs/figma-mcp-cursor.md`.
