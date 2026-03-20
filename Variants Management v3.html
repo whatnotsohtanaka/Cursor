@@ -66,6 +66,18 @@
       font-size: 14px;
     }
 
+    .version-chip {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      letter-spacing: 0.5px;
+    }
+
+    .version-chip.v1 { background: #34c759; color: white; }
+    .version-chip.v2 { background: #007aff; color: white; }
+    .version-chip.v3 { background: #af52de; color: white; }
+
     .app-bar-actions {
       display: flex;
       align-items: center;
@@ -93,6 +105,210 @@
       border-radius: 50%;
       object-fit: cover;
       cursor: pointer;
+    }
+
+    .app-bar-logo {
+      position: relative;
+    }
+
+    .avatar-popover {
+      display: none;
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 0;
+      width: 220px;
+      background: var(--bg-base);
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 12px;
+      box-shadow: 0px 32px 48px -12px rgba(0,0,0,0.08);
+      padding: 8px;
+      z-index: 200;
+      flex-direction: column;
+    }
+
+    .avatar-popover.open { display: flex; }
+
+    .avatar-popover-label {
+      padding: 8px 12px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .avatar-popover-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .avatar-popover-item:hover { background: var(--bg-hover); }
+
+    .avatar-popover-item.active {
+      background: var(--bg-unselected);
+      font-weight: 600;
+    }
+
+    .avatar-popover-item .version-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── Featured Popover ── */
+    .featured-popover {
+      position: fixed;
+      width: 300px;
+      background: var(--bg-base);
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 12px;
+      box-shadow: 0px 32px 48px -12px rgba(0,0,0,0.08);
+      padding: 16px;
+      z-index: 300;
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .featured-popover.open { display: flex; }
+
+    .featured-popover-title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.41px;
+      text-align: center;
+    }
+
+    .featured-show-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 8px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background 0.1s;
+    }
+
+    .featured-show-row:last-child { border-bottom: none; }
+
+    .featured-show-row:hover { background: var(--bg-hover); }
+    .featured-show-row.selected { background: #f0f7ff; }
+
+    .featured-popover-footer {
+      padding-top: 12px;
+      margin-top: 4px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .featured-remove-cta {
+      width: 100%;
+      height: 40px;
+      border-radius: 999px;
+      border: none;
+      background: #e53935;
+      color: white;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, background 0.15s;
+    }
+
+    .featured-remove-cta:hover { opacity: 0.9; }
+
+    .featured-remove-cta:disabled {
+      background: #ccc;
+      color: #999;
+      cursor: default;
+      opacity: 1;
+    }
+
+    .featured-show-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .featured-show-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .featured-show-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .featured-show-date {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .featured-empty {
+      font-size: 14px;
+      color: var(--text-tertiary);
+      text-align: center;
+      padding: 12px 0;
+    }
+
+    /* ── Loader Overlay ── */
+    .loader-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(4px);
+      z-index: 500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loader-overlay.visible { display: flex; }
+
+    .loader-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .loader-spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--stroke-subtle);
+      border-top-color: var(--text-primary);
+      border-radius: 50%;
+      animation: loaderSpin 0.7s linear infinite;
+    }
+
+    @keyframes loaderSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loader-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.2px;
     }
 
     /* ── Layout ── */
@@ -818,7 +1034,7 @@
 
     /* ── Bulk edit row ── */
     .table tr.bulk-edit-row td {
-      padding: 16px 12px;
+      padding: 16px 12px 8px;
       vertical-align: top;
     }
 
@@ -844,7 +1060,14 @@
       align-items: center;
     }
 
-    .be-cell.disabled {
+    .be-plain-value {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 20px;
+    }
+
+    .be-cell.disabled,
+    .be-cell-select.disabled {
       border-color: var(--stroke-subtle);
       background: var(--bg-unselected);
       opacity: 0.6;
@@ -1723,9 +1946,25 @@
 
   <!-- App Bar -->
   <header class="app-bar">
-    <div class="app-bar-logo">
+    <div class="app-bar-logo" onclick="toggleVersionPopover(event)" style="cursor:pointer">
       <div class="logo-icon">W</div>
       <span>Seller Hub</span>
+      <span class="version-chip v3">V3</span>
+      <div class="avatar-popover" id="versionPopover" onclick="event.stopPropagation()">
+        <div class="avatar-popover-label">Switch Version</div>
+        <a class="avatar-popover-item" href="Variants Management v1.html">
+          <span class="version-dot" style="background:#34c759"></span>
+          Variants Management v1
+        </a>
+        <a class="avatar-popover-item" href="Variants Management v2.html">
+          <span class="version-dot" style="background:#007aff"></span>
+          Variants Management v2
+        </a>
+        <a class="avatar-popover-item active" href="Variants Management v3.html">
+          <span class="version-dot" style="background:#af52de"></span>
+          Variants Management v3
+        </a>
+      </div>
     </div>
     <div class="app-bar-actions">
       <button title="Create">
@@ -1888,9 +2127,25 @@
   <!-- ═══════ DETAIL PAGE ═══════ -->
   <div id="detailPage" class="page" style="flex-direction:column;min-height:100vh">
     <header class="app-bar">
-      <div class="app-bar-logo">
+      <div class="app-bar-logo" onclick="toggleVersionPopover(event)" style="cursor:pointer">
         <div class="logo-icon">W</div>
         <span>Seller Hub</span>
+        <span class="version-chip v3">V3</span>
+        <div class="avatar-popover" id="versionPopoverDetail" onclick="event.stopPropagation()">
+          <div class="avatar-popover-label">Switch Version</div>
+          <a class="avatar-popover-item" href="Variants Management v1.html">
+            <span class="version-dot" style="background:#34c759"></span>
+            Variants Management v1
+          </a>
+          <a class="avatar-popover-item" href="Variants Management v2.html">
+            <span class="version-dot" style="background:#007aff"></span>
+            Variants Management v2
+          </a>
+          <a class="avatar-popover-item active" href="Variants Management v3.html">
+            <span class="version-dot" style="background:#af52de"></span>
+            Variants Management v3
+          </a>
+        </div>
       </div>
       <div class="app-bar-actions">
         <button title="Create"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 7v6M7 10h6"/></svg></button>
@@ -1914,6 +2169,15 @@
     </div>
   </div><!-- /detailPage -->
 
+  <!-- ═══════ FEATURED POPOVER ═══════ -->
+  <div class="featured-popover" id="featuredPopover" onclick="event.stopPropagation()">
+    <div class="featured-popover-title">Featured In</div>
+    <div id="featuredPopoverBody"></div>
+    <div class="featured-popover-footer" id="featuredPopoverFooter">
+      <button class="featured-remove-cta" onclick="removeSelectedShows()">Remove</button>
+    </div>
+  </div>
+
   <!-- ═══════ ADD TO SHOW MODAL ═══════ -->
   <div class="modal-overlay" id="showModal">
     <div class="modal-dialog">
@@ -1932,23 +2196,14 @@
   </div>
 
   <!-- Toolbar -->
-  <div class="toolbar" id="toolbar">
-    <button class="toolbar-btn" onclick="openShowModal()">
-      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/><path d="M5 7l2 2 3-3"/></svg>
-      Add to Show (<span class="sel-count">0</span>)
-    </button>
-    <button class="toolbar-btn">
-      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 14 14"><rect x="2" y="2" width="6" height="6" rx="1"/><path d="M8 6h4v6a1 1 0 01-1 1H7"/></svg>
-      Duplicate (<span class="sel-count">0</span>)
-    </button>
-    <button class="toolbar-btn">
-      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/><path d="M5 7l2 2 3-3"/></svg>
-      Activate (<span class="sel-count">0</span>)
-    </button>
-    <button class="toolbar-btn danger">
-      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 14 14"><path d="M2 4h10M5 4V3a1 1 0 011-1h2a1 1 0 011 1v1M4 4v8a1 1 0 001 1h4a1 1 0 001-1V4"/></svg>
-      Delete (<span class="sel-count">0</span>)
-    </button>
+  <div class="toolbar" id="toolbar"></div>
+
+  <!-- ═══════ LOADER OVERLAY ═══════ -->
+  <div class="loader-overlay" id="loaderOverlay">
+    <div class="loader-content">
+      <div class="loader-spinner"></div>
+      <div class="loader-text">Activating listings…</div>
+    </div>
   </div>
 
   <script>
@@ -2072,11 +2327,11 @@
     ];
 
     const activeProducts = [
-      { id: 'a1', title: 'Yeezy Boost 350 V2', image: IMG.yeezy, category: 'Sneakers', qty: 50, price: '$220', format: 'Buy Now', condition: 'New', shows: '3 Shows', variants: [] },
-      { id: 'a2', title: 'Nike Air Max 90', image: IMG.dunk, category: 'Sneakers', qty: 30, price: '$150', format: 'Buy Now', condition: 'New', shows: '2 Shows', variants: [] },
-      { id: 'a3', title: 'Supreme Hoodie', image: IMG.hoodie, category: 'Streetwear', qty: 5, price: '$380', format: 'Auction', condition: 'New with Tag', shows: '1 Show', variants: [] },
-      { id: 'a4', title: 'KAWS Small Lie', image: IMG.toy1, category: 'Designer Toys', qty: 3, price: '$500', format: 'Auction', condition: 'New with Box', shows: '2 Shows', variants: [] },
-      { id: 'a5', title: 'Polo Ralph Lauren Jacket', image: IMG.jacket, category: 'Mens Fashion', qty: 8, price: '$195', format: 'Buy Now', condition: 'New with Tag', shows: '1 Show', variants: [] },
+      { id: 'a1', title: 'Yeezy Boost 350 V2', image: IMG.yeezy, category: 'Sneakers', qty: 50, price: '$220', format: 'Buy Now', condition: 'New', shows: '3 Shows', assignedShows: ['s1','s2','s3'], variants: [] },
+      { id: 'a2', title: 'Nike Air Max 90', image: IMG.dunk, category: 'Sneakers', qty: 30, price: '$150', format: 'Buy Now', condition: 'New', shows: '2 Shows', assignedShows: ['s1','s4'], variants: [] },
+      { id: 'a3', title: 'Supreme Hoodie', image: IMG.hoodie, category: 'Streetwear', qty: 5, price: '$380', format: 'Auction', condition: 'New with Tag', shows: '1 Show', assignedShows: ['s2'], variants: [] },
+      { id: 'a4', title: 'KAWS Small Lie', image: IMG.toy1, category: 'Designer Toys', qty: 3, price: '$500', format: 'Auction', condition: 'New with Box', shows: '2 Shows', assignedShows: ['s4','s5'], variants: [] },
+      { id: 'a5', title: 'Polo Ralph Lauren Jacket', image: IMG.jacket, category: 'Mens Fashion', qty: 8, price: '$195', format: 'Buy Now', condition: 'New with Tag', shows: '1 Show', assignedShows: ['s5'], variants: [] },
     ];
 
     const draftsProducts = [
@@ -2304,6 +2559,187 @@
     }
 
     /* ══════════════════════════════════════════════════════
+       ACTIVATE LISTINGS
+       ══════════════════════════════════════════════════════ */
+    function activateSelected() {
+      const sourceProducts = tabData[currentTab];
+      if (!sourceProducts) return;
+
+      if (selected.size === 0) return;
+
+      document.getElementById('loaderOverlay').classList.add('visible');
+
+      setTimeout(() => {
+        const remainingSource = [];
+
+        sourceProducts.forEach(p => {
+          const hasVariants = p.variants && p.variants.length > 0;
+          const parentSelected = selected.has(p.id);
+
+          if (!hasVariants) {
+            if (parentSelected) {
+              const existing = tabData.active.find(a => a.id === p.id);
+              if (!existing) {
+                tabData.active.unshift(Object.assign({}, p));
+              }
+            } else {
+              remainingSource.push(p);
+            }
+            return;
+          }
+
+          const selectedVariantIds = p.variants.filter(v => selected.has(v.id)).map(v => v.id);
+          const allChildrenSelected = selectedVariantIds.length === p.variants.length;
+          const someChildrenSelected = selectedVariantIds.length > 0;
+
+          if (parentSelected || allChildrenSelected) {
+            const existingActive = tabData.active.find(a => a.id === p.id);
+            if (existingActive) {
+              const existingIds = new Set(existingActive.variants.map(v => v.id));
+              p.variants.forEach(v => {
+                if (!existingIds.has(v.id)) {
+                  existingActive.variants.push(Object.assign({}, v));
+                }
+              });
+            } else {
+              tabData.active.unshift(Object.assign({}, p, { variants: p.variants.map(v => Object.assign({}, v)) }));
+            }
+          } else if (someChildrenSelected) {
+            const movedVariants = p.variants.filter(v => selectedVariantIds.includes(v.id));
+            const remainingVariants = p.variants.filter(v => !selectedVariantIds.includes(v.id));
+
+            const existingActive = tabData.active.find(a => a.id === p.id);
+            if (existingActive) {
+              const existingIds = new Set(existingActive.variants.map(v => v.id));
+              movedVariants.forEach(v => {
+                if (!existingIds.has(v.id)) {
+                  existingActive.variants.push(Object.assign({}, v));
+                }
+              });
+            } else {
+              const clonedParent = Object.assign({}, p, { variants: movedVariants.map(v => Object.assign({}, v)) });
+              tabData.active.unshift(clonedParent);
+            }
+
+            if (remainingVariants.length > 0) {
+              p.variants = remainingVariants;
+              remainingSource.push(p);
+            }
+            return;
+          } else {
+            remainingSource.push(p);
+            return;
+          }
+        });
+
+        tabData[currentTab] = remainingSource;
+
+        selected.clear();
+        expanded.clear();
+
+        currentTab = 'active';
+        document.querySelectorAll('.tab').forEach(t => {
+          t.classList.toggle('active', t.dataset.tab === 'active');
+        });
+
+        document.getElementById('loaderOverlay').classList.remove('visible');
+        renderTable();
+      }, 1500);
+    }
+
+    function deactivateSelected() {
+      const sourceProducts = tabData.active;
+      if (!sourceProducts) return;
+
+      if (selected.size === 0) return;
+
+      document.getElementById('loaderOverlay').classList.add('visible');
+      document.querySelector('.loader-text').textContent = 'Deactivating listings…';
+
+      setTimeout(() => {
+        const remainingActive = [];
+
+        sourceProducts.forEach(p => {
+          const hasVariants = p.variants && p.variants.length > 0;
+          const parentSelected = selected.has(p.id);
+
+          if (!hasVariants) {
+            if (parentSelected) {
+              const deactivated = Object.assign({}, p, { shows: null, assignedShows: [] });
+              const existing = tabData.inactive.find(a => a.id === p.id);
+              if (!existing) tabData.inactive.unshift(deactivated);
+            } else {
+              remainingActive.push(p);
+            }
+            return;
+          }
+
+          const selectedVariantIds = p.variants.filter(v => selected.has(v.id)).map(v => v.id);
+          const allChildrenSelected = selectedVariantIds.length === p.variants.length;
+          const someChildrenSelected = selectedVariantIds.length > 0;
+
+          if (parentSelected || allChildrenSelected) {
+            const deactivated = Object.assign({}, p, {
+              shows: null, assignedShows: [],
+              variants: p.variants.map(v => Object.assign({}, v, { shows: null, assignedShows: [] }))
+            });
+            const existingInactive = tabData.inactive.find(a => a.id === p.id);
+            if (existingInactive) {
+              const existingIds = new Set(existingInactive.variants.map(v => v.id));
+              deactivated.variants.forEach(v => {
+                if (!existingIds.has(v.id)) existingInactive.variants.push(v);
+              });
+            } else {
+              tabData.inactive.unshift(deactivated);
+            }
+          } else if (someChildrenSelected) {
+            const movedVariants = p.variants.filter(v => selectedVariantIds.includes(v.id));
+            const remainingVariants = p.variants.filter(v => !selectedVariantIds.includes(v.id));
+
+            const existingInactive = tabData.inactive.find(a => a.id === p.id);
+            if (existingInactive) {
+              const existingIds = new Set(existingInactive.variants.map(v => v.id));
+              movedVariants.forEach(v => {
+                if (!existingIds.has(v.id)) {
+                  existingInactive.variants.push(Object.assign({}, v, { shows: null, assignedShows: [] }));
+                }
+              });
+            } else {
+              const clonedParent = Object.assign({}, p, {
+                shows: null, assignedShows: [],
+                variants: movedVariants.map(v => Object.assign({}, v, { shows: null, assignedShows: [] }))
+              });
+              tabData.inactive.unshift(clonedParent);
+            }
+
+            if (remainingVariants.length > 0) {
+              p.variants = remainingVariants;
+              remainingActive.push(p);
+            }
+            return;
+          } else {
+            remainingActive.push(p);
+            return;
+          }
+        });
+
+        tabData.active = remainingActive;
+
+        selected.clear();
+        expanded.clear();
+
+        currentTab = 'inactive';
+        document.querySelectorAll('.tab').forEach(t => {
+          t.classList.toggle('active', t.dataset.tab === 'inactive');
+        });
+
+        document.getElementById('loaderOverlay').classList.remove('visible');
+        document.querySelector('.loader-text').textContent = 'Activating listings…';
+        renderTable();
+      }, 1500);
+    }
+
+    /* ══════════════════════════════════════════════════════
        BULK EDIT
        ══════════════════════════════════════════════════════ */
     function toggleBulkEdit() {
@@ -2311,6 +2747,177 @@
       document.getElementById('bulkEditTrack').classList.toggle('on', bulkEditOn);
       renderTable();
     }
+
+    /* ══════════════════════════════════════════════════════
+       FEATURED POPOVER
+       ══════════════════════════════════════════════════════ */
+    const featuredSelection = new Set();
+    let featuredItemId = null;
+
+    function openFeaturedPopover(e, itemId) {
+      e.stopPropagation();
+      featuredItemId = itemId;
+      featuredSelection.clear();
+
+      const pop = document.getElementById('featuredPopover');
+      const footer = document.getElementById('featuredPopoverFooter');
+
+      const allProducts = [...(tabData.active || []), ...(tabData.inactive || []), ...(tabData.drafts || [])];
+      let item = allProducts.find(p => p.id === itemId);
+      if (!item) {
+        for (const p of allProducts) {
+          if (p.variants) {
+            const v = p.variants.find(v => v.id === itemId);
+            if (v) { item = v; break; }
+          }
+        }
+      }
+
+      const assignedIds = (item && item.assignedShows) || [];
+      const assigned = assignedIds.length > 0
+        ? shows.filter(s => assignedIds.includes(s.id))
+        : [];
+
+      footer.classList.remove('visible');
+      renderFeaturedList(assigned);
+
+      const rect = e.currentTarget.getBoundingClientRect();
+      pop.style.top = (rect.bottom + 8) + 'px';
+      pop.style.left = Math.min(rect.left, window.innerWidth - 320) + 'px';
+      pop.classList.add('open');
+    }
+
+    function renderFeaturedList(assigned) {
+      const body = document.getElementById('featuredPopoverBody');
+      const footer = document.getElementById('featuredPopoverFooter');
+      const checkSvg = '<svg width="12" height="12" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>';
+
+      if (!assigned) {
+        const allProducts = [...(tabData.active || []), ...(tabData.inactive || []), ...(tabData.drafts || [])];
+        let item = allProducts.find(p => p.id === featuredItemId);
+        if (!item) {
+          for (const p of allProducts) {
+            if (p.variants) {
+              const v = p.variants.find(v => v.id === featuredItemId);
+              if (v) { item = v; break; }
+            }
+          }
+        }
+        const assignedIds = (item && item.assignedShows) || [];
+        assigned = assignedIds.length > 0 ? shows.filter(s => assignedIds.includes(s.id)) : [];
+      }
+
+      const btn = footer.querySelector('.featured-remove-cta');
+
+      if (assigned.length === 0) {
+        body.innerHTML = `<div class="featured-empty">Not featured in any shows</div>`;
+        footer.style.display = 'none';
+      } else if (assigned.length === 1) {
+        const s = assigned[0];
+        body.innerHTML = `<div class="featured-show-row" style="cursor:default">
+            <img class="featured-show-thumb" src="${s.image}" alt="" loading="lazy">
+            <div class="featured-show-info">
+              <div class="featured-show-title">${s.title}</div>
+              <div class="featured-show-date">${s.date}</div>
+            </div>
+          </div>`;
+        footer.style.display = '';
+        btn.disabled = false;
+        btn.textContent = 'Remove';
+      } else {
+        body.innerHTML = assigned.map(s => {
+          const isSel = featuredSelection.has(s.id);
+          return `<div class="featured-show-row ${isSel ? 'selected' : ''}" onclick="toggleFeaturedSelect('${s.id}')">
+            <img class="featured-show-thumb" src="${s.image}" alt="" loading="lazy">
+            <div class="featured-show-info">
+              <div class="featured-show-title">${s.title}</div>
+              <div class="featured-show-date">${s.date}</div>
+            </div>
+            <div class="checkbox ${isSel ? 'checked' : ''}" style="margin-left:auto">${checkSvg}</div>
+          </div>`;
+        }).join('');
+        footer.style.display = '';
+        btn.disabled = featuredSelection.size === 0;
+        btn.textContent = featuredSelection.size > 1
+          ? `Remove (${featuredSelection.size})`
+          : 'Remove';
+      }
+    }
+
+    function toggleFeaturedSelect(showId) {
+      if (featuredSelection.has(showId)) featuredSelection.delete(showId);
+      else featuredSelection.add(showId);
+      renderFeaturedList();
+    }
+
+    function removeSelectedShows() {
+      if (!featuredItemId) return;
+
+      if (featuredSelection.size > 0) {
+        featuredSelection.forEach(showId => {
+          removeFromShowData(featuredItemId, showId);
+        });
+      } else {
+        const allProducts = [...(tabData.active || []), ...(tabData.inactive || []), ...(tabData.drafts || [])];
+        let item = allProducts.find(p => p.id === featuredItemId);
+        if (!item) {
+          for (const p of allProducts) {
+            if (p.variants) {
+              const v = p.variants.find(v => v.id === featuredItemId);
+              if (v) { item = v; break; }
+            }
+          }
+        }
+        if (item && item.assignedShows && item.assignedShows.length === 1) {
+          removeFromShowData(featuredItemId, item.assignedShows[0]);
+        }
+      }
+
+      featuredSelection.clear();
+      document.getElementById('featuredPopover').classList.remove('open');
+      renderTable();
+    }
+
+    function removeFromShowData(itemId, showId) {
+      const allProducts = [...(tabData.active || []), ...(tabData.inactive || []), ...(tabData.drafts || [])];
+      let item = null;
+      let parentProduct = null;
+
+      for (const p of allProducts) {
+        if (p.id === itemId) { item = p; parentProduct = p; break; }
+        if (p.variants) {
+          const v = p.variants.find(v => v.id === itemId);
+          if (v) { item = v; parentProduct = p; break; }
+        }
+      }
+
+      if (!item || !item.assignedShows) return;
+
+      item.assignedShows = item.assignedShows.filter(id => id !== showId);
+      item.shows = item.assignedShows.length === 0 ? null
+        : item.assignedShows.length === 1 ? '1 Show'
+        : `${item.assignedShows.length} Shows`;
+
+      if (parentProduct && parentProduct.variants && parentProduct.variants.length > 0) {
+        const allChildShows = new Set();
+        parentProduct.variants.forEach(v => {
+          if (v.assignedShows) v.assignedShows.forEach(id => allChildShows.add(id));
+        });
+        if (parentProduct.assignedShows) {
+          parentProduct.assignedShows = parentProduct.assignedShows.filter(id => allChildShows.has(id));
+        }
+        parentProduct.shows = (!parentProduct.assignedShows || parentProduct.assignedShows.length === 0) ? null
+          : parentProduct.assignedShows.length === 1 ? '1 Show'
+          : `${parentProduct.assignedShows.length} Shows`;
+      }
+    }
+
+    document.addEventListener('click', (e) => {
+      const pop = document.getElementById('featuredPopover');
+      if (pop && pop.classList.contains('open') && !e.target.closest('.featured-popover')) {
+        pop.classList.remove('open');
+      }
+    });
 
     /* ══════════════════════════════════════════════════════
        MODAL
@@ -2350,6 +2957,150 @@
 
     function confirmAddToShow() {
       closeModal();
+      if (selectedShows.size === 0) return;
+
+      const sourceProducts = tabData[currentTab];
+      if (!sourceProducts) return;
+
+      const parentIds = new Set();
+      sourceProducts.forEach(p => {
+        if (selected.has(p.id)) parentIds.add(p.id);
+        if (p.variants) p.variants.forEach(v => {
+          if (selected.has(v.id)) parentIds.add(p.id);
+        });
+      });
+
+      if (parentIds.size === 0) return;
+
+      document.getElementById('loaderOverlay').classList.add('visible');
+      document.querySelector('.loader-text').textContent = 'Adding to show…';
+
+      setTimeout(() => {
+        const showCount = selectedShows.size;
+        const label = showCount === 1 ? '1 Show' : `${showCount} Shows`;
+
+        const assignedIds = [...selectedShows];
+
+        if (currentTab === 'active') {
+          sourceProducts.forEach(p => {
+            if (selected.has(p.id)) {
+              p.assignedShows = [...new Set([...(p.assignedShows || []), ...assignedIds])];
+              p.shows = p.assignedShows.length === 1 ? '1 Show' : `${p.assignedShows.length} Shows`;
+            }
+            if (p.variants) {
+              let childUpdated = false;
+              p.variants.forEach(v => {
+                if (selected.has(v.id)) {
+                  v.assignedShows = [...new Set([...(v.assignedShows || []), ...assignedIds])];
+                  v.shows = v.assignedShows.length === 1 ? '1 Show' : `${v.assignedShows.length} Shows`;
+                  childUpdated = true;
+                }
+              });
+              if (childUpdated) {
+                const allChildShows = new Set(p.assignedShows || []);
+                p.variants.forEach(v => {
+                  if (v.assignedShows) v.assignedShows.forEach(id => allChildShows.add(id));
+                });
+                p.assignedShows = [...allChildShows];
+                p.shows = p.assignedShows.length === 1 ? '1 Show' : `${p.assignedShows.length} Shows`;
+              }
+            }
+          });
+        } else {
+          const remainingSource = [];
+
+          sourceProducts.forEach(p => {
+            const hasVariants = p.variants && p.variants.length > 0;
+            const parentSelected = selected.has(p.id);
+
+            if (!hasVariants) {
+              if (parentSelected) {
+                const activated = Object.assign({}, p, { shows: label, assignedShows: assignedIds.slice() });
+                const existing = tabData.active.find(a => a.id === p.id);
+                if (!existing) tabData.active.unshift(activated);
+              } else {
+                remainingSource.push(p);
+              }
+              return;
+            }
+
+            const selectedVariantIds = p.variants.filter(v => selected.has(v.id)).map(v => v.id);
+            const allChildrenSelected = selectedVariantIds.length === p.variants.length;
+            const someChildrenSelected = selectedVariantIds.length > 0;
+
+            if (parentSelected || allChildrenSelected) {
+              const existingActive = tabData.active.find(a => a.id === p.id);
+              if (existingActive) {
+                const existingIds = new Set(existingActive.variants.map(v => v.id));
+                p.variants.forEach(v => {
+                  if (!existingIds.has(v.id)) {
+                    const cv = Object.assign({}, v, { shows: label, assignedShows: assignedIds.slice() });
+                    existingActive.variants.push(cv);
+                  }
+                });
+                const allShows = new Set(existingActive.assignedShows || []);
+                assignedIds.forEach(id => allShows.add(id));
+                existingActive.assignedShows = [...allShows];
+                existingActive.shows = existingActive.assignedShows.length === 1 ? '1 Show' : `${existingActive.assignedShows.length} Shows`;
+              } else {
+                const cloned = Object.assign({}, p, {
+                  shows: label,
+                  assignedShows: assignedIds.slice(),
+                  variants: p.variants.map(v => Object.assign({}, v, { shows: label, assignedShows: assignedIds.slice() }))
+                });
+                tabData.active.unshift(cloned);
+              }
+            } else if (someChildrenSelected) {
+              const movedVariants = p.variants.filter(v => selectedVariantIds.includes(v.id));
+              const remainingVariants = p.variants.filter(v => !selectedVariantIds.includes(v.id));
+
+              const existingActive = tabData.active.find(a => a.id === p.id);
+              if (existingActive) {
+                const existingIds = new Set(existingActive.variants.map(v => v.id));
+                movedVariants.forEach(v => {
+                  if (!existingIds.has(v.id)) {
+                    const cv = Object.assign({}, v, { shows: label, assignedShows: assignedIds.slice() });
+                    existingActive.variants.push(cv);
+                  }
+                });
+                const allShows = new Set(existingActive.assignedShows || []);
+                assignedIds.forEach(id => allShows.add(id));
+                existingActive.assignedShows = [...allShows];
+                existingActive.shows = existingActive.assignedShows.length === 1 ? '1 Show' : `${existingActive.assignedShows.length} Shows`;
+              } else {
+                const clonedParent = Object.assign({}, p, {
+                  shows: label,
+                  assignedShows: assignedIds.slice(),
+                  variants: movedVariants.map(v => Object.assign({}, v, { shows: label, assignedShows: assignedIds.slice() }))
+                });
+                tabData.active.unshift(clonedParent);
+              }
+
+              if (remainingVariants.length > 0) {
+                p.variants = remainingVariants;
+                remainingSource.push(p);
+              }
+              return;
+            } else {
+              remainingSource.push(p);
+              return;
+            }
+          });
+
+          tabData[currentTab] = remainingSource;
+
+          currentTab = 'active';
+          document.querySelectorAll('.tab').forEach(t => {
+            t.classList.toggle('active', t.dataset.tab === 'active');
+          });
+        }
+
+        selected.clear();
+
+        document.getElementById('loaderOverlay').classList.remove('visible');
+        document.querySelector('.loader-text').textContent = 'Activating listings…';
+        renderTable();
+      }, 1500);
     }
 
     /* ══════════════════════════════════════════════════════
@@ -2414,10 +3165,12 @@
         });
       }
 
+      const canExpand = currentTab === 'active' || currentTab === 'inactive';
+
       filtered.forEach(p => {
         tbody.appendChild(createRow(p, false));
 
-        if (p.variants && p.variants.length > 0 && expanded.has(p.id)) {
+        if (canExpand && p.variants && p.variants.length > 0 && expanded.has(p.id)) {
           p.variants.forEach((v, i) => {
             const row = createRow(v, true, p.id, i === p.variants.length - 1);
             tbody.appendChild(row);
@@ -2477,12 +3230,18 @@
 
         let variantBtnHtml = '';
         if (hasVariants) {
-          variantBtnHtml = `<div style="padding-top:4px;padding-bottom:8px">
-            <button class="be-variant-btn" onclick="toggleExpand('${item.id}')">
-              ${parent.variants.length} Variants
-              <span class="chevron ${isExpanded ? 'open' : ''}">${chevronSvg}</span>
-            </button>
-          </div>`;
+          if (currentTab === 'active' || currentTab === 'inactive') {
+            variantBtnHtml = `<div style="padding-top:4px;padding-bottom:8px">
+              <button class="be-variant-btn" onclick="toggleExpand('${item.id}')">
+                ${parent.variants.length} Variants
+                <span class="chevron ${isExpanded ? 'open' : ''}">${chevronSvg}</span>
+              </button>
+            </div>`;
+          } else {
+            variantBtnHtml = `<div style="padding-top:4px;padding-bottom:8px">
+              <span class="be-variant-btn" style="cursor:default;opacity:0.6">${parent.variants.length} Variants</span>
+            </div>`;
+          }
         }
 
         const conditions = hasVariants
@@ -2498,14 +3257,25 @@
           ? `<td><div class="product-cell">${shopifyBadge}<img class="product-thumb" src="${item.image}" alt="" loading="lazy"><div class="product-info"><div class="product-title">${item.title}</div></div></div></td>`
           : `<td><div class="product-cell">${shopifyBadge}<img class="product-thumb" src="${item.image}" alt="" loading="lazy"><div class="product-info" style="flex:1;min-width:0">${titleInputHtml}${variantBtnHtml}</div></div></td>`;
 
-        tr.innerHTML = `
-          ${checkboxTd}
-          ${productTd}
-          <td><div class="be-cell${hasVariants && !isChild ? ' disabled' : ''}"><div class="be-cell-content"><div class="be-label">Quantity</div><div class="be-value">${item.qty}</div></div></div></td>
-          <td><div class="be-cell-select"><div class="be-cell-content"><div class="be-value">${item.price}</div><div class="be-label">${item.format}</div></div>${beChevronSvg}</div></td>
-          <td><div class="be-cell-select"><div class="be-cell-content"><div class="be-label">Condition</div><div class="be-value">${conditionDisplay}</div></div>${beChevronSvg}</div></td>
-          <td><div class="be-cell-select"><div class="be-cell-content"><div class="be-label">Weight</div><div class="be-value">8-9oz</div></div>${beChevronSvg}</div></td>
-          <td><div class="be-cell-select"><div class="be-cell-content"><div class="be-label">Shows</div><div class="be-value">${showCount}</div></div>${beChevronSvg}</div></td>`;
+        if (isChild) {
+          tr.innerHTML = `
+            ${checkboxTd}
+            ${productTd}
+            <td><div class="be-cell"><div class="be-cell-content"><div class="be-label">Quantity</div><div class="be-value">${item.qty}</div></div></div></td>
+            <td><div class="be-cell-select"><div class="be-cell-content"><div class="be-value">${item.price}</div><div class="be-label">${item.format}</div></div>${beChevronSvg}</div></td>
+            <td><div class="be-cell-select"><div class="be-cell-content"><div class="be-label">Condition</div><div class="be-value">${conditionDisplay}</div></div>${beChevronSvg}</div></td>
+            <td><div class="be-cell-select"><div class="be-cell-content"><div class="be-label">Weight</div><div class="be-value">8-9oz</div></div>${beChevronSvg}</div></td>
+            <td><div class="be-cell-select" onclick="openFeaturedPopover(event, '${item.id}')"><div class="be-cell-content"><div class="be-label">Featured In</div><div class="be-value">${showCount > 0 ? (showCount === 1 ? '1 Show' : showCount + ' Shows') : 'None'}</div></div>${beChevronSvg}</div></td>`;
+        } else {
+          tr.innerHTML = `
+            ${checkboxTd}
+            ${productTd}
+            <td><div class="be-cell${hasVariants ? ' disabled' : ''}"><div class="be-cell-content"><div class="be-label">Quantity</div><div class="be-value">${item.qty}</div></div></div></td>
+            <td><div class="be-cell-select"><div class="be-cell-content"><div class="be-value">${item.price}</div><div class="be-label">${item.format}</div></div>${beChevronSvg}</div></td>
+            <td><div class="be-cell-select"><div class="be-cell-content"><div class="be-label">Condition</div><div class="be-value">${conditionDisplay}</div></div>${beChevronSvg}</div></td>
+            <td><div class="be-cell-select"><div class="be-cell-content"><div class="be-label">Weight</div><div class="be-value">8-9oz</div></div>${beChevronSvg}</div></td>
+            <td><div class="be-cell-select" onclick="openFeaturedPopover(event, '${item.id}')"><div class="be-cell-content"><div class="be-label">Featured In</div><div class="be-value">${showCount > 0 ? (showCount === 1 ? '1 Show' : showCount + ' Shows') : 'None'}</div></div>${beChevronSvg}</div></td>`;
+        }
 
         return tr;
       }
@@ -2528,10 +3298,12 @@
           </td>`;
       } else {
         const variantBtn = hasVariants
-          ? `<button class="variant-toggle" onclick="toggleExpand('${item.id}')">
-               ${parent.variants.length} Variants
-               <span class="chevron ${isExpanded ? 'open' : ''}">${chevronSvg}</span>
-             </button>`
+          ? (currentTab === 'active' || currentTab === 'inactive'
+            ? `<button class="variant-toggle" onclick="toggleExpand('${item.id}')">
+                 ${parent.variants.length} Variants
+                 <span class="chevron ${isExpanded ? 'open' : ''}">${chevronSvg}</span>
+               </button>`
+            : `<span class="variant-toggle" style="cursor:default">${parent.variants.length} Variants</span>`)
           : '';
         const attrText = item.attrs || '';
         const attrs = attrText || variantBtn
@@ -2558,7 +3330,7 @@
         <td>${item.qty}</td>
         <td><div class="price-cell"><div class="price">${item.price}</div><div class="format">${item.format}</div></div></td>
         <td>${item.condition}</td>
-        <td>${item.shows ? `<span class="show-badge"><span class="dot"></span>${item.shows}</span>` : ''}</td>
+        <td>${item.shows ? `<span class="show-badge" style="cursor:pointer" onclick="openFeaturedPopover(event, '${item.id}')">${item.assignedShows && item.assignedShows.length === 1 ? '1 Show' : item.assignedShows ? item.assignedShows.length + ' Shows' : item.shows}</span>` : ''}</td>
         <td>
           <div class="actions-cell">
             <button class="action-btn" title="Share">
@@ -2639,19 +3411,67 @@
       const products = getProducts();
       const toolbar = document.getElementById('toolbar');
 
-      const parentIds = new Set();
+      let count = 0;
+      let hasVariantChildSelected = false;
+
       products.forEach(p => {
         if (p.variants && p.variants.length > 0) {
-          const hasSelectedChild = p.variants.some(v => selected.has(v.id));
-          if (hasSelectedChild) parentIds.add(p.id);
+          const childIds = p.variants.map(v => v.id);
+          const selectedCount = childIds.filter(id => selected.has(id)).length;
+          if (selectedCount === childIds.length) {
+            count += 1;
+          } else if (selectedCount > 0) {
+            count += selectedCount;
+            hasVariantChildSelected = true;
+          }
         } else {
-          if (selected.has(p.id)) parentIds.add(p.id);
+          if (selected.has(p.id)) count += 1;
         }
       });
 
-      const count = parentIds.size;
       toolbar.classList.toggle('visible', count > 0);
-      document.querySelectorAll('.sel-count').forEach(el => el.textContent = count);
+
+      const isActive = currentTab === 'active';
+
+      let buttons = `
+        <button class="toolbar-btn" onclick="openShowModal()">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/><path d="M5 7l2 2 3-3"/></svg>
+          Add to Show (${count})
+        </button>`;
+
+      if (!hasVariantChildSelected) {
+        buttons += `
+          <button class="toolbar-btn">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 14 14"><rect x="2" y="2" width="6" height="6" rx="1"/><path d="M8 6h4v6a1 1 0 01-1 1H7"/></svg>
+            Duplicate (${count})
+          </button>`;
+      }
+
+      if (!isActive) {
+        buttons += `
+          <button class="toolbar-btn" onclick="activateSelected()">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/><path d="M5 7l2 2 3-3"/></svg>
+            Activate (${count})
+          </button>`;
+      }
+
+      if (isActive) {
+        buttons += `
+          <button class="toolbar-btn" onclick="deactivateSelected()">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/><path d="M5 5l4 4M9 5l-4 4"/></svg>
+            Deactivate (${count})
+          </button>`;
+      }
+
+      if (!hasVariantChildSelected) {
+        buttons += `
+          <button class="toolbar-btn danger">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 14 14"><path d="M2 4h10M5 4V3a1 1 0 011-1h2a1 1 0 011 1v1M4 4v8a1 1 0 001 1h4a1 1 0 001-1V4"/></svg>
+            Delete (${count})
+          </button>`;
+      }
+
+      toolbar.innerHTML = buttons;
     }
 
     /* ══════════════════════════════════════════════════════
@@ -2923,6 +3743,15 @@
       document.getElementById('inventoryPage').style.display = 'flex';
       window.scrollTo(0, 0);
     }
+
+    function toggleVersionPopover(e) {
+      e.stopPropagation();
+      document.querySelectorAll('.avatar-popover').forEach(p => p.classList.toggle('open'));
+    }
+
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.avatar-popover').forEach(p => p.classList.remove('open'));
+    });
 
     renderTable();
   </script>
