@@ -2592,6 +2592,8 @@
           const allChildrenSelected = selectedVariantIds.length === p.variants.length;
           const someChildrenSelected = selectedVariantIds.length > 0;
 
+          const totalCount = p.totalVariants || p.variants.length;
+
           if (parentSelected || allChildrenSelected) {
             const existingActive = tabData.active.find(a => a.id === p.id);
             if (existingActive) {
@@ -2601,8 +2603,10 @@
                   existingActive.variants.push(Object.assign({}, v));
                 }
               });
+              existingActive.totalVariants = totalCount;
             } else {
-              tabData.active.unshift(Object.assign({}, p, { variants: p.variants.map(v => Object.assign({}, v)) }));
+              const cloned = Object.assign({}, p, { totalVariants: totalCount, variants: p.variants.map(v => Object.assign({}, v)) });
+              tabData.active.unshift(cloned);
             }
           } else if (someChildrenSelected) {
             const movedVariants = p.variants.filter(v => selectedVariantIds.includes(v.id));
@@ -2616,13 +2620,15 @@
                   existingActive.variants.push(Object.assign({}, v));
                 }
               });
+              existingActive.totalVariants = totalCount;
             } else {
-              const clonedParent = Object.assign({}, p, { variants: movedVariants.map(v => Object.assign({}, v)) });
+              const clonedParent = Object.assign({}, p, { totalVariants: totalCount, variants: movedVariants.map(v => Object.assign({}, v)) });
               tabData.active.unshift(clonedParent);
             }
 
             if (remainingVariants.length > 0) {
               p.variants = remainingVariants;
+              p.totalVariants = totalCount;
               remainingSource.push(p);
             }
             return;
@@ -2678,9 +2684,11 @@
           const allChildrenSelected = selectedVariantIds.length === p.variants.length;
           const someChildrenSelected = selectedVariantIds.length > 0;
 
+          const totalCount = p.totalVariants || p.variants.length;
+
           if (parentSelected || allChildrenSelected) {
             const deactivated = Object.assign({}, p, {
-              shows: null, assignedShows: [],
+              shows: null, assignedShows: [], totalVariants: totalCount,
               variants: p.variants.map(v => Object.assign({}, v, { shows: null, assignedShows: [] }))
             });
             const existingInactive = tabData.inactive.find(a => a.id === p.id);
@@ -2689,6 +2697,7 @@
               deactivated.variants.forEach(v => {
                 if (!existingIds.has(v.id)) existingInactive.variants.push(v);
               });
+              existingInactive.totalVariants = totalCount;
             } else {
               tabData.inactive.unshift(deactivated);
             }
@@ -2704,9 +2713,10 @@
                   existingInactive.variants.push(Object.assign({}, v, { shows: null, assignedShows: [] }));
                 }
               });
+              existingInactive.totalVariants = totalCount;
             } else {
               const clonedParent = Object.assign({}, p, {
-                shows: null, assignedShows: [],
+                shows: null, assignedShows: [], totalVariants: totalCount,
                 variants: movedVariants.map(v => Object.assign({}, v, { shows: null, assignedShows: [] }))
               });
               tabData.inactive.unshift(clonedParent);
@@ -2714,6 +2724,7 @@
 
             if (remainingVariants.length > 0) {
               p.variants = remainingVariants;
+              p.totalVariants = totalCount;
               remainingActive.push(p);
             }
             return;
@@ -3028,6 +3039,8 @@
             const allChildrenSelected = selectedVariantIds.length === p.variants.length;
             const someChildrenSelected = selectedVariantIds.length > 0;
 
+            const totalCount = p.totalVariants || p.variants.length;
+
             if (parentSelected || allChildrenSelected) {
               const existingActive = tabData.active.find(a => a.id === p.id);
               if (existingActive) {
@@ -3038,6 +3051,7 @@
                     existingActive.variants.push(cv);
                   }
                 });
+                existingActive.totalVariants = totalCount;
                 const allShows = new Set(existingActive.assignedShows || []);
                 assignedIds.forEach(id => allShows.add(id));
                 existingActive.assignedShows = [...allShows];
@@ -3046,6 +3060,7 @@
                 const cloned = Object.assign({}, p, {
                   shows: label,
                   assignedShows: assignedIds.slice(),
+                  totalVariants: totalCount,
                   variants: p.variants.map(v => Object.assign({}, v, { shows: label, assignedShows: assignedIds.slice() }))
                 });
                 tabData.active.unshift(cloned);
@@ -3063,6 +3078,7 @@
                     existingActive.variants.push(cv);
                   }
                 });
+                existingActive.totalVariants = totalCount;
                 const allShows = new Set(existingActive.assignedShows || []);
                 assignedIds.forEach(id => allShows.add(id));
                 existingActive.assignedShows = [...allShows];
@@ -3071,6 +3087,7 @@
                 const clonedParent = Object.assign({}, p, {
                   shows: label,
                   assignedShows: assignedIds.slice(),
+                  totalVariants: totalCount,
                   variants: movedVariants.map(v => Object.assign({}, v, { shows: label, assignedShows: assignedIds.slice() }))
                 });
                 tabData.active.unshift(clonedParent);
@@ -3078,6 +3095,7 @@
 
               if (remainingVariants.length > 0) {
                 p.variants = remainingVariants;
+                p.totalVariants = totalCount;
                 remainingSource.push(p);
               }
               return;
@@ -3225,6 +3243,12 @@
         checkboxTd = `<td><div class="checkbox ${checkState}" onclick="toggleCheck('${item.id}')">${checkboxSvg}</div></td>`;
       }
 
+      const variantCountLabel = hasVariants
+        ? (parent.totalVariants && parent.totalVariants !== parent.variants.length
+          ? `${parent.variants.length}/${parent.totalVariants} Variants`
+          : `${parent.variants.length} Variants`)
+        : '';
+
       if (bulkEditOn) {
         const shopifyBadge = (hasVariants || parentId) ? shopifySvg : '';
 
@@ -3233,13 +3257,13 @@
           if (currentTab === 'active' || currentTab === 'inactive') {
             variantBtnHtml = `<div style="padding-top:4px;padding-bottom:8px">
               <button class="be-variant-btn" onclick="toggleExpand('${item.id}')">
-                ${parent.variants.length} Variants
+                ${variantCountLabel}
                 <span class="chevron ${isExpanded ? 'open' : ''}">${chevronSvg}</span>
               </button>
             </div>`;
           } else {
             variantBtnHtml = `<div style="padding-top:4px;padding-bottom:8px">
-              <span class="be-variant-btn" style="cursor:default;opacity:0.6">${parent.variants.length} Variants</span>
+              <span class="be-variant-btn" style="cursor:default;opacity:0.6">${variantCountLabel}</span>
             </div>`;
           }
         }
@@ -3250,6 +3274,15 @@
         const conditionDisplay = conditions.length > 1 ? 'Multiple' : conditions[0];
 
         const showCount = item.shows ? item.shows.replace(/[^0-9]/g, '') || '0' : '0';
+
+        let variantsHaveMixedShows = false;
+        if (hasVariants) {
+          const showSets = parent.variants.map(v => JSON.stringify((v.assignedShows || []).slice().sort()));
+          variantsHaveMixedShows = new Set(showSets).size > 1;
+        }
+
+        const parentFeaturedDisabled = hasVariants && variantsHaveMixedShows;
+        const parentFeaturedLabel = parentFeaturedDisabled ? 'See Variants' : (showCount > 0 ? (showCount === 1 ? '1 Show' : showCount + ' Shows') : 'None');
 
         const titleInputHtml = `<div class="be-cell"><div class="be-cell-content"><div class="be-label">Title</div><div class="be-value">${item.title}</div></div></div>`;
 
@@ -3274,10 +3307,16 @@
             <td><div class="be-cell-select"><div class="be-cell-content"><div class="be-value">${item.price}</div><div class="be-label">${item.format}</div></div>${beChevronSvg}</div></td>
             <td><div class="be-cell-select"><div class="be-cell-content"><div class="be-label">Condition</div><div class="be-value">${conditionDisplay}</div></div>${beChevronSvg}</div></td>
             <td><div class="be-cell-select"><div class="be-cell-content"><div class="be-label">Weight</div><div class="be-value">8-9oz</div></div>${beChevronSvg}</div></td>
-            <td><div class="be-cell-select" onclick="openFeaturedPopover(event, '${item.id}')"><div class="be-cell-content"><div class="be-label">Featured In</div><div class="be-value">${showCount > 0 ? (showCount === 1 ? '1 Show' : showCount + ' Shows') : 'None'}</div></div>${beChevronSvg}</div></td>`;
+            <td><div class="be-cell-select${parentFeaturedDisabled ? ' disabled' : ''}" ${parentFeaturedDisabled ? '' : `onclick="openFeaturedPopover(event, '${item.id}')"`}><div class="be-cell-content"><div class="be-label">Featured In</div><div class="be-value">${parentFeaturedLabel}</div></div>${beChevronSvg}</div></td>`;
         }
 
         return tr;
+      }
+
+      let normalMixedShows = false;
+      if (hasVariants) {
+        const showSets = parent.variants.map(v => JSON.stringify((v.assignedShows || []).slice().sort()));
+        normalMixedShows = new Set(showSets).size > 1;
       }
 
       const titleLink = isChild
@@ -3300,10 +3339,10 @@
         const variantBtn = hasVariants
           ? (currentTab === 'active' || currentTab === 'inactive'
             ? `<button class="variant-toggle" onclick="toggleExpand('${item.id}')">
-                 ${parent.variants.length} Variants
+                 ${variantCountLabel}
                  <span class="chevron ${isExpanded ? 'open' : ''}">${chevronSvg}</span>
                </button>`
-            : `<span class="variant-toggle" style="cursor:default">${parent.variants.length} Variants</span>`)
+            : `<span class="variant-toggle" style="cursor:default">${variantCountLabel}</span>`)
           : '';
         const attrText = item.attrs || '';
         const attrs = attrText || variantBtn
@@ -3330,7 +3369,9 @@
         <td>${item.qty}</td>
         <td><div class="price-cell"><div class="price">${item.price}</div><div class="format">${item.format}</div></div></td>
         <td>${item.condition}</td>
-        <td>${item.shows ? `<span class="show-badge" style="cursor:pointer" onclick="openFeaturedPopover(event, '${item.id}')">${item.assignedShows && item.assignedShows.length === 1 ? '1 Show' : item.assignedShows ? item.assignedShows.length + ' Shows' : item.shows}</span>` : ''}</td>
+        <td>${hasVariants && normalMixedShows
+          ? `<span class="show-badge" style="cursor:default;opacity:0.5">See Variants</span>`
+          : (item.shows ? `<span class="show-badge" style="cursor:pointer" onclick="openFeaturedPopover(event, '${item.id}')">${item.assignedShows && item.assignedShows.length === 1 ? '1 Show' : item.assignedShows ? item.assignedShows.length + ' Shows' : item.shows}</span>` : '')}</td>
         <td>
           <div class="actions-cell">
             <button class="action-btn" title="Share">
@@ -3404,7 +3445,6 @@
       const allSelected = selectedCount === allIds.length && allIds.length > 0;
       el.classList.remove('checked', 'indeterminate');
       if (allSelected) el.classList.add('checked');
-      else if (selectedCount > 0) el.classList.add('indeterminate');
     }
 
     function updateToolbar() {
