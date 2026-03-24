@@ -1,0 +1,14 @@
+<svg preserveAspectRatio="xMidYMid meet" overflow="visible" style="display: block;" viewBox="0 0 46.9258 43.8943" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="package">
+<rect id="protection" y="2.15662e-05" width="46.9258" height="43.8942" rx="4" fill="var(--fill-0, white)"/>
+<path id="offset" d="M13.908 1.57823H28.8889V12.0139C28.8889 12.7486 28.1231 13.2325 27.4596 12.9171L21.3984 10.0356L15.3373 12.9171C14.6738 13.2325 13.908 12.7486 13.908 12.0139V1.57823Z" fill="var(--fill-0, #C2AEA9)"/>
+<rect id="outline" x="1" y="1.00002" width="44.9258" height="41.8942" rx="3" stroke="var(--stroke-0, #161616)" stroke-width="2"/>
+<g id="Rectangle 4261">
+<mask id="path-4-inside-1_0_354" fill="white">
+<rect x="29.3081" y="33.8201" width="12.3373" height="4.89636" rx="1"/>
+</mask>
+<rect x="29.3081" y="33.8201" width="12.3373" height="4.89636" rx="1" stroke="var(--stroke-0, #110F0F)" stroke-width="4" mask="url(#path-4-inside-1_0_354)"/>
+</g>
+<path id="Rectangle 4260" d="M29.8435 1V10.4355L23.782 7.55469L23.3523 7.35059L22.9236 7.55469L16.8621 10.4355V1H29.8435Z" stroke="var(--stroke-0, #110F0F)" stroke-width="2"/>
+</g>
+</svg>

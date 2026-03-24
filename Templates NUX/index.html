@@ -1431,6 +1431,7 @@
 .edit-page {
   position: absolute;
   inset: 0;
+  z-index: 22;
   display: flex;
   flex-direction: column;
   background: white;
@@ -1840,6 +1841,19 @@
       transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
     }
     .toggle-track.on .toggle-thumb { transform: translateX(20px); }
+
+    [id^="onboardStep"] { position: relative; }
+    [id^="onboardStep"]::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.08);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+      z-index: 9999;
+    }
+    [id^="onboardStep"].pushed-back::after { opacity: 1; }
   </style>
 </head>
 <body>
@@ -1911,80 +1925,531 @@
     </div>
 
     <!-- Onboarding Card -->
-    <div style="position:relative;z-index:10;margin:8px 16px;background:rgba(255,255,255,0.95);border-radius:16px;padding:20px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)">
-      <div style="text-align:center;margin-bottom:16px">
-        <div style="font-size:12px;font-weight:600;color:#545454;letter-spacing:0.12px;margin-bottom:4px">Show Starts at 1:00PM</div>
-        <div style="font-size:28px;font-weight:600;line-height:34px;letter-spacing:-0.38px;color:#1c1c1c">59m 39s</div>
+    <div style="position:absolute;top:112px;left:16px;right:16px;z-index:10;background:#2e2e2e;border:1px solid rgba(255,255,255,0.2);border-radius:12px;padding:20px 12px 12px 20px">
+      <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:center;width:100%">
+          <span style="font-size:12px;font-weight:600;line-height:16px;color:rgba(255,255,255,0.7);text-align:center">Show Starts at 1:00PM</span>
+        </div>
+        <div style="font-size:28px;font-weight:600;line-height:34px;letter-spacing:0.38px;color:white;text-align:center;width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">59m 39s</div>
       </div>
-      <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c;text-align:center;margin-bottom:16px">Go live within 7 days (by June 13th) and we'll match your first $150 in sales. <span style="color:#005ae1;cursor:pointer">Learn more</span></div>
-      
-      <!-- Checklist -->
-      <div style="display:flex;flex-direction:column;gap:0">
+      <div style="display:flex;flex-direction:column;border-radius:12px">
+        <div style="display:flex;align-items:center;justify-content:center;padding-right:4px;margin-bottom:0">
+          <span style="flex:1;font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.11px"><span style="color:#d2d2d2">Go live within 7 days (by June 13th) and we'll match your first $150 in sales. </span><span style="color:#669ced;cursor:pointer">Learn more</span></span>
+        </div>
         <!-- Step 1: Complete -->
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.05)">
-          <div style="width:32px;height:32px;border-radius:50%;background:#34c759;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8l3 3 6-6.5"/></svg>
+        <div style="display:flex;gap:12px;height:48px;align-items:center;padding:12px 0">
+          <div style="width:24px;height:24px;flex-shrink:0;position:relative">
+            <img src="icons/check-green.svg" style="width:24px;height:24px" alt="">
           </div>
-          <span style="flex:1;font-size:14px;font-weight:600;line-height:18px;letter-spacing:-0.11px;color:#1c1c1c">Create your show</span>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
+          <span style="flex:1;font-size:14px;font-weight:600;line-height:18px;letter-spacing:-0.11px;color:white">Create your show</span>
+          <div style="padding:2px"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         </div>
-        <!-- Step 2: Incomplete -->
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.05)">
-          <div style="width:32px;height:32px;border-radius:50%;border:2px solid #d2d2d2;flex-shrink:0"></div>
-          <span style="flex:1;font-size:14px;font-weight:600;line-height:18px;letter-spacing:-0.11px;color:#1c1c1c">Add products to your shop</span>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
+        <!-- Step 2: Not started -->
+        <div id="checklistStep2" onclick="openOnboardingStep1()" style="display:flex;gap:12px;height:48px;align-items:center;padding:12px 0;cursor:pointer">
+          <div id="checklistStep2Icon" style="width:24px;height:24px;flex-shrink:0;border-radius:12px;border:2px solid #6f6f6f"></div>
+          <span style="flex:1;font-size:14px;font-weight:600;line-height:18px;letter-spacing:-0.11px;color:white">Add products to your shop</span>
+          <div style="padding:2px"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         </div>
-        <!-- Step 3: Inactive -->
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.05)">
-          <div style="width:32px;height:32px;border-radius:50%;border:2px solid #e5e5e5;flex-shrink:0"></div>
-          <span style="flex:1;font-size:14px;font-weight:400;line-height:18px;letter-spacing:-0.11px;color:#a0a0a0">Bring in buyers</span>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#d2d2d2" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
+        <!-- Step 3: Locked -->
+        <div id="checklistStep3" style="display:flex;gap:12px;height:48px;align-items:center;padding:12px 0;opacity:0.3">
+          <div id="checklistStep3Icon" style="width:24px;height:24px;flex-shrink:0;border-radius:12px;border:2px solid #6f6f6f;display:flex;align-items:center;justify-content:center">
+            <svg width="10" height="12" viewBox="0 0 10 12" fill="none" stroke="#6f6f6f" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="5" width="8" height="6" rx="1"/><path d="M3 5V3.5a2 2 0 014 0V5"/></svg>
+          </div>
+          <span style="flex:1;font-size:14px;font-weight:600;line-height:18px;letter-spacing:-0.11px;color:white">Bring in buyers</span>
+          <div style="padding:2px"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         </div>
-        <!-- Step 4: Inactive -->
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 0">
-          <div style="width:32px;height:32px;border-radius:50%;border:2px solid #e5e5e5;flex-shrink:0"></div>
-          <span style="flex:1;font-size:14px;font-weight:400;line-height:18px;letter-spacing:-0.11px;color:#a0a0a0">Go live!</span>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#d2d2d2" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bottom area spacer for product image to show -->
-    <div style="flex:1"></div>
-
-    <!-- Bottom tooltip -->
-    <div style="position:absolute;bottom:140px;left:16px;right:16px;z-index:10">
-      <div style="background:white;border-radius:12px;padding:12px 16px;display:flex;gap:12px;align-items:flex-start;box-shadow:0px 2px 16px rgba(0,0,0,0.15)">
-        <div style="flex:1">
-          <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Add products to your shop</div>
-          <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454;margin-top:2px">Tap here to enter your shop to add products</div>
-        </div>
-        <div style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M3 3l8 8M11 3l-8 8"/></svg>
+        <!-- Step 4: Locked -->
+        <div style="display:flex;gap:12px;height:48px;align-items:center;padding:12px 0;opacity:0.3">
+          <div style="width:24px;height:24px;flex-shrink:0;border-radius:12px;border:2px solid #6f6f6f;display:flex;align-items:center;justify-content:center">
+            <svg width="10" height="12" viewBox="0 0 10 12" fill="none" stroke="#6f6f6f" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="5" width="8" height="6" rx="1"/><path d="M3 5V3.5a2 2 0 014 0V5"/></svg>
+          </div>
+          <span style="flex:1;font-size:14px;font-weight:600;line-height:18px;letter-spacing:-0.11px;color:white">Go live!</span>
+          <div style="padding:2px"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         </div>
       </div>
     </div>
 
-    <!-- Shop FAB -->
-    <div style="position:absolute;bottom:100px;right:16px;z-index:10">
-      <div style="position:relative">
-        <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#ffe414,#ff9500);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.3)">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    <!-- Side Menu (right edge) -->
+    <div id="lobbySideMenu" style="position:absolute;bottom:104px;right:8px;z-index:10;width:48px;display:flex;flex-direction:column;align-items:center;gap:12px">
+      <!-- More -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0;width:48px">
+        <div style="height:32px;display:flex;align-items:center;justify-content:center;padding:4px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
         </div>
-        <div style="position:absolute;top:-4px;right:-4px;width:18px;height:18px;border-radius:50%;background:#ef233c;display:flex;align-items:center;justify-content:center">
-          <span style="font-size:10px;font-weight:700;color:white">0</span>
+        <span style="font-size:10px;font-weight:400;color:white;text-align:center;letter-spacing:0.12px">More</span>
+      </div>
+      <!-- Share -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0;width:48px">
+        <div style="height:32px;display:flex;align-items:center;justify-content:center;padding:4px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+        </div>
+        <span style="font-size:10px;font-weight:400;color:white;text-align:center;letter-spacing:0.12px">Share</span>
+      </div>
+      <!-- Shop -->
+      <div onclick="openShopSheet()" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer">
+        <div style="width:48px;height:48px;border-radius:100px;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);position:relative;overflow:hidden;box-shadow:0px 5px 10px rgba(0,0,0,0.1)">
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,#ffe414,#ff9500);opacity:0.9"></div>
+          <div style="position:absolute;inset:25%;display:flex;align-items:center;justify-content:center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1c1c1c" stroke-width="1.8" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          </div>
+        </div>
+        <span style="font-size:10px;font-weight:400;color:white;text-align:center;letter-spacing:0.12px;text-shadow:0 0 1px rgba(0,0,0,0.25)">Shop</span>
+        <div style="position:absolute;top:-4px;right:0;min-width:12px;height:12px;border-radius:38px;background:#ce291a;display:flex;align-items:center;justify-content:center;padding:2px">
+          <span style="font-size:9px;font-weight:600;color:white;text-align:center;letter-spacing:0.12px;line-height:1">0</span>
         </div>
       </div>
-      <div style="font-size:10px;font-weight:600;color:white;text-align:center;margin-top:4px;letter-spacing:0.12px">Shop</div>
+    </div>
+
+    <!-- Tooltip -->
+    <div id="lobbyTooltip" style="position:absolute;bottom:172px;right:10px;z-index:10;width:250px;display:flex;flex-direction:column;align-items:flex-end;box-shadow:0px 2px 16px rgba(0,0,0,0.1)">
+      <div style="background:#f3efee;border-radius:8px;padding:12px;width:100%;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;gap:8px;align-items:flex-start;width:100%">
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+            <div style="font-size:13px;font-weight:600;line-height:18px;letter-spacing:-0.08px;color:#161616">Add products to your shop</div>
+            <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#393939">Tap here to enter your shop to add products</div>
+          </div>
+          <div style="width:16px;height:16px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#393939" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;justify-content:flex-end;width:100%">
+          <div onclick="openOnboardingStep1()" style="flex:1;height:32px;background:#222;border-radius:999px;display:flex;align-items:center;justify-content:center;cursor:pointer">
+            <span style="font-size:14px;font-weight:600;letter-spacing:-0.2px;color:white">Next</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;padding-right:16px;margin-top:-1px">
+        <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #f3efee"></div>
+      </div>
     </div>
 
     <!-- Start Show Button -->
-    <div style="position:absolute;bottom:0;left:0;right:0;z-index:10;padding:12px 16px 34px;background:linear-gradient(to top,rgba(0,0,0,0.6),transparent)">
-      <button style="width:100%;height:44px;border-radius:999px;background:#ffe414;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#1c1c1c;cursor:pointer">Start Show</button>
+    <div style="position:absolute;left:0;right:0;top:761px;z-index:10;padding:0 16px">
+      <button style="width:100%;height:44px;border-radius:999px;background:#fff7b9;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:rgba(0,0,0,0.4);cursor:default">Start Show</button>
     </div>
 
     <!-- Home Indicator -->
-    <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:rgba(255,255,255,0.6);border-radius:100px;z-index:11"></div>
+    <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:135px;height:5px;background:white;border-radius:100px;z-index:11"></div>
+  </div>
+
+  <!-- ═══ ONBOARDING STEP 1 (New Sellers) ═══ -->
+  <div id="onboardStep1" style="display:none;position:absolute;inset:0;z-index:15;background:white;flex-direction:column">
+    <div style="height:54px;flex-shrink:0"></div>
+    <!-- Nav -->
+    <div style="height:44px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
+      <div style="position:absolute;right:16px;display:flex;gap:0;align-items:center">
+        <button onclick="closeOnboarding()" style="width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Content -->
+    <div style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:0;overflow-y:auto">
+      <div style="flex:1;display:flex;flex-direction:column;gap:24px;align-items:center">
+        <!-- Illustration -->
+        <div style="height:200px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center">
+          <div style="position:relative;width:343px;height:144px">
+            <img src="icons/onboard-llines.svg" style="position:absolute;left:49px;top:58px;width:64.5px;height:8px" alt="">
+            <img src="icons/onboard-rlines.svg" style="position:absolute;left:235px;top:97px;width:59.5px;height:6px" alt="">
+            <img src="icons/onboard-star2.svg" style="position:absolute;left:200px;top:14px;width:19px;height:19px" alt="">
+            <img src="icons/onboard-star1.svg" style="position:absolute;left:219px;top:34px;width:12px;height:12px" alt="">
+            <img src="icons/onboard-emphasis.svg" style="position:absolute;left:222px;top:66px;width:16px;height:19.75px" alt="">
+            <img src="icons/onboard-star3.svg" style="position:absolute;left:98px;top:91px;width:18px;height:18px" alt="">
+            <img src="icons/onboard-tag.svg" style="position:absolute;left:115px;top:32px;width:92px;height:92px" alt="">
+            <img src="icons/onboard-package.svg" style="position:absolute;left:177px;top:79px;width:47px;height:44px;transform:rotate(-8.51deg)" alt="">
+            <img src="icons/onboard-add.svg" style="position:absolute;left:114px;top:26px;width:28px;height:28px" alt="">
+          </div>
+        </div>
+        <!-- Text -->
+        <div style="display:flex;flex-direction:column;gap:8px;width:100%">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#6a6a6a">Getting Started</div>
+            <div style="font-size:24px;font-weight:600;line-height:30px;letter-spacing:0.07px;color:#161616">List your products one at a time, or list lots of products together</div>
+          </div>
+          <div style="font-size:18px;font-weight:400;line-height:23px;letter-spacing:-0.44px;color:#393939">Different inventory, different approaches. Pick the one that fits how you sell.</div>
+        </div>
+        <!-- List Items -->
+        <div style="display:flex;flex-direction:column;gap:24px;width:100%">
+          <!-- Individual Listings -->
+          <div style="display:flex;gap:8px;align-items:flex-start;width:100%">
+            <div style="width:72px;height:56px;position:relative;flex-shrink:0">
+              <img src="icons/onboard-offset-dark.svg" style="position:absolute;left:calc(50% + 1px);top:14px;width:36px;height:36px;transform:translateX(-50%)" alt="">
+              <img src="icons/onboard-offset-light.svg" style="position:absolute;left:calc(50% + 1px);top:14px;width:36px;height:36px;transform:translateX(-50%)" alt="">
+              <img src="icons/onboard-icon-tag.svg" style="position:absolute;left:calc(50% + 1px);top:9px;width:36px;height:36px;transform:translateX(-50%)" alt="">
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#161616">Individual Listings</div>
+              <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#393939">List one product or multiples of the same product to maximize discoverability.</div>
+            </div>
+          </div>
+          <!-- Templates -->
+          <div style="display:flex;gap:8px;align-items:flex-start;width:100%">
+            <div style="width:72px;height:56px;position:relative;flex-shrink:0">
+              <img src="icons/onboard-icon-bg.svg" style="position:absolute;left:calc(50% + 1px);top:14px;width:36px;height:36px;transform:translateX(-50%)" alt="">
+              <img src="icons/onboard-icon-fg.svg" style="position:absolute;left:calc(50% + 1px);top:14px;width:36px;height:36px;transform:translateX(-50%)" alt="">
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#161616">Templates Ipsum</div>
+              <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#393939">List lots of related products together if you're short on time or have lower-value products.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Bottom: Progress + CTA -->
+    <div style="flex-shrink:0;display:flex;flex-direction:column;gap:2px;align-items:center;width:100%">
+      <div style="display:flex;flex-direction:column;gap:12px;width:100%">
+        <div style="height:4px;background:rgba(0,0,0,0.1);border-radius:999px;overflow:hidden;width:100%">
+          <div style="height:8px;width:25%;background:linear-gradient(to right,#ffe414,#ef6a1f);border-radius:999px;transform:translateY(-2px)"></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:flex-end;gap:19px;padding:0 16px">
+          <div style="flex:1;font-size:12px;font-weight:600;line-height:16px;color:#6f6f6f;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">1 of 4</div>
+          <button onclick="openOnboardingStep2()" style="height:40px;padding:0 24px;border-radius:999px;background:#f9dc00;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616;cursor:pointer">Next</button>
+        </div>
+      </div>
+      <div style="height:32px;overflow:hidden;width:375px;position:relative">
+        <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:135px;height:5px;background:#222;border-radius:100px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ONBOARDING STEP 2 (New Sellers) ═══ -->
+  <div id="onboardStep2" style="display:none;position:absolute;inset:0;z-index:16;background:white;flex-direction:column">
+    <div style="height:54px;flex-shrink:0"></div>
+    <!-- Nav: Back + Title + Close -->
+    <div style="height:44px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
+      <button onclick="closeStep2()" style="position:absolute;left:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg>
+      </button>
+      <span style="font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616">Listing Products</span>
+      <button onclick="closeOnboarding()" style="position:absolute;right:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+      </button>
+    </div>
+    <!-- Content -->
+    <div style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:24px;overflow-y:auto">
+      <!-- Illustration -->
+      <div style="height:200px;position:relative;width:100%">
+        <!-- Phone outline -->
+        <div style="position:absolute;left:135px;top:26px;width:92px;height:148px;border:2px solid #110f0f;border-radius:11px;background:white"></div>
+        <!-- Description lines -->
+        <div style="position:absolute;left:156px;top:146px;width:60px;height:2px;background:#d2d2d2;border-radius:1px"></div>
+        <div style="position:absolute;left:156px;top:153px;width:17px;height:2px;background:#d2d2d2;border-radius:1px"></div>
+        <!-- Tag illustration -->
+        <img src="icons/step2-label.svg" style="position:absolute;left:143px;top:62px;width:70px;height:70px" alt="">
+        <!-- Heart -->
+        <img src="icons/step2-heart-fill.svg" style="position:absolute;left:213px;top:37px;width:36px;height:29px" alt="">
+        <img src="icons/step2-heart-stroke.svg" style="position:absolute;left:215px;top:35px;width:36px;height:29px" alt="">
+        <!-- Message bubble -->
+        <img src="icons/step2-message.svg" style="position:absolute;left:101px;top:128px;width:44px;height:39px;transform:rotate(-5.21deg)" alt="">
+        <!-- Stars -->
+        <img src="icons/step2-star1.svg" style="position:absolute;left:101px;top:59px;width:16px;height:16px" alt="">
+        <img src="icons/step2-star2.svg" style="position:absolute;left:249px;top:123px;width:26px;height:26px" alt="">
+        <!-- Lines left -->
+        <div style="position:absolute;left:48px;top:91px">
+          <div style="position:absolute;left:32px;top:0;width:17px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+          <div style="position:absolute;left:10px;top:9px;width:51px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+          <div style="position:absolute;left:0;top:9px;width:4px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+          <div style="position:absolute;left:11px;top:22px;width:18px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+        </div>
+        <!-- Lines right -->
+        <div style="position:absolute;left:254px;top:96px">
+          <div style="position:absolute;left:10px;top:0;width:31px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+          <div style="position:absolute;left:0;top:8px;width:21px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+          <div style="position:absolute;left:32px;top:8px;width:10px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+        </div>
+      </div>
+      <!-- Text -->
+      <div style="display:flex;flex-direction:column;gap:8px;width:100%">
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#6a6a6a">Individual Listings</div>
+          <div style="font-size:24px;font-weight:600;line-height:30px;letter-spacing:0.07px;color:#161616">Get discovered by listing your products one at a time</div>
+        </div>
+        <div style="font-size:18px;font-weight:400;line-height:23px;letter-spacing:-0.44px;color:#393939">Show up in more searches by creating listings for each of your products. It takes more time, but gains more buyers.</div>
+      </div>
+      <!-- Best when card -->
+      <div style="background:#f3f3f3;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:4px;width:100%">
+        <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Best when:</div>
+        <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454;padding-left:21px">• You want higher search rankings</div>
+        <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454;padding-left:21px">• You have high-value items</div>
+        <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454;padding-left:21px">• You have extra info you think the buyer will need</div>
+      </div>
+    </div>
+    <!-- Bottom: Progress + CTA -->
+    <div style="flex-shrink:0;display:flex;flex-direction:column;gap:2px;align-items:center;width:100%">
+      <div style="display:flex;flex-direction:column;gap:12px;width:100%">
+        <div style="height:4px;background:rgba(0,0,0,0.1);border-radius:999px;overflow:hidden;width:100%">
+          <div style="height:8px;width:50%;background:linear-gradient(to right,#ffe414,#ef6a1f);border-radius:999px;transform:translateY(-2px)"></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:flex-end;gap:19px;padding:0 16px">
+          <div style="flex:1;font-size:12px;font-weight:600;line-height:16px;color:#6f6f6f">2 of 4</div>
+          <button onclick="openOnboardingStep3()" style="height:40px;padding:0 24px;border-radius:999px;background:#f9dc00;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616;cursor:pointer">Next</button>
+        </div>
+      </div>
+      <div style="height:32px;overflow:hidden;width:375px;position:relative">
+        <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:135px;height:5px;background:#222;border-radius:100px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ONBOARDING STEP 3 (New Sellers) ═══ -->
+  <div id="onboardStep3" style="display:none;position:absolute;inset:0;z-index:17;background:white;flex-direction:column">
+    <div style="height:54px;flex-shrink:0"></div>
+    <div style="height:44px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
+      <button onclick="closeStep3()" style="position:absolute;left:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg>
+      </button>
+      <span style="font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616">Listing Products</span>
+      <button onclick="closeOnboarding()" style="position:absolute;right:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+      </button>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:24px;overflow-y:auto">
+      <div style="height:200px;position:relative;width:100%">
+        <div style="position:absolute;left:135px;top:24px;width:92px;height:148px;border:2px solid #110f0f;border-radius:11px;background:white"></div>
+        <img src="icons/step2-label.svg" style="position:absolute;left:112px;top:38px;width:92px;height:92px;transform:rotate(4.68deg)" alt="">
+        <div style="position:absolute;left:152px;top:145px;width:64px;height:15px;border:2px solid #110f0f;border-radius:110px"></div>
+        <div style="position:absolute;left:154px;top:147px;width:24px;height:11px;background:#ffe414;border:2px solid #110f0f;border-radius:110px"></div>
+        <img src="icons/step3-repeat.svg" style="position:absolute;left:198px;top:89px;width:50px;height:50px" alt="">
+        <img src="icons/step2-star1.svg" style="position:absolute;left:234px;top:25px;width:16px;height:16px" alt="">
+        <img src="icons/step2-star2.svg" style="position:absolute;left:254px;top:43px;width:26px;height:26px" alt="">
+        <img src="icons/step2-star1.svg" style="position:absolute;left:98px;top:132px;width:16px;height:16px" alt="">
+        <div style="position:absolute;left:49px;top:89px">
+          <div style="position:absolute;left:32px;top:0;width:17px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+          <div style="position:absolute;left:10px;top:9px;width:51px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+          <div style="position:absolute;left:0;top:9px;width:4px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+          <div style="position:absolute;left:11px;top:22px;width:18px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+        </div>
+        <div style="position:absolute;left:257px;top:94px">
+          <div style="position:absolute;left:10px;top:0;width:31px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+          <div style="position:absolute;left:0;top:8px;width:21px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+          <div style="position:absolute;left:32px;top:8px;width:10px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;width:100%">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#6a6a6a">Templates</div>
+            <div style="font-size:24px;font-weight:600;line-height:30px;letter-spacing:0.07px;color:#161616">Move quickly by using reusable templates</div>
+          </div>
+          <div style="font-size:18px;font-weight:400;line-height:23px;letter-spacing:-0.44px;color:#393939">Create templates for lots of related products. Just add the broad strokes, like type, brands, and sizes.</div>
+        </div>
+      </div>
+      <div style="background:#f3f3f3;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:4px;width:100%">
+        <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Best when:</div>
+        <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454;padding-left:21px">• You have too much inventory to list individually</div>
+        <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454;padding-left:21px">• You want to run fast-paced shows</div>
+        <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454;padding-left:21px">• Your products are similar in type, style, size, etc.</div>
+      </div>
+    </div>
+    <div style="flex-shrink:0;display:flex;flex-direction:column;gap:2px;align-items:center;width:100%">
+      <div style="display:flex;flex-direction:column;gap:12px;width:100%">
+        <div style="height:4px;background:rgba(0,0,0,0.1);border-radius:999px;overflow:hidden;width:100%">
+          <div style="height:8px;width:75%;background:linear-gradient(to right,#ffe414,#ef6a1f);border-radius:999px;transform:translateY(-2px)"></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:flex-end;gap:19px;padding:0 16px">
+          <div style="flex:1;font-size:12px;font-weight:600;line-height:16px;color:#6f6f6f">3 of 4</div>
+          <button onclick="openOnboardingStep4()" style="height:40px;padding:0 24px;border-radius:999px;background:#f9dc00;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616;cursor:pointer">Next</button>
+        </div>
+      </div>
+      <div style="height:32px;overflow:hidden;width:375px;position:relative">
+        <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:135px;height:5px;background:#222;border-radius:100px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ONBOARDING STEP 4 (New Sellers) ═══ -->
+  <div id="onboardStep4" style="display:none;position:absolute;inset:0;z-index:18;background:white;flex-direction:column">
+    <div style="height:54px;flex-shrink:0"></div>
+    <div style="height:44px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
+      <button onclick="closeStep4()" style="position:absolute;left:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg>
+      </button>
+      <span style="font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616">Listing Products</span>
+      <button onclick="closeOnboarding()" style="position:absolute;right:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+      </button>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:24px;overflow-y:auto">
+      <div style="height:200px;position:relative;width:100%">
+        <img src="icons/step4-truck-box.svg" style="position:absolute;left:98px;top:48px;width:112px;height:98px" alt="">
+        <img src="icons/step4-truck-offset.svg" style="position:absolute;left:93px;top:54px;width:112px;height:97px" alt="">
+        <img src="icons/step4-truck-outline.svg" style="position:absolute;left:98px;top:48px;width:112px;height:98px" alt="">
+        <img src="icons/step2-star1.svg" style="position:absolute;left:267px;top:70px;width:23px;height:23px" alt="">
+        <img src="icons/step2-star1.svg" style="position:absolute;left:56px;top:121px;width:23px;height:23px" alt="">
+        <div style="position:absolute;left:30px;top:80px">
+          <div style="position:absolute;left:10px;top:0;width:29px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+          <div style="position:absolute;left:0;top:9px;width:43px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+          <div style="position:absolute;left:48px;top:9px;width:3px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+          <div style="position:absolute;left:17px;top:22px;width:15px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+        </div>
+        <div style="position:absolute;left:290px;top:111px">
+          <div style="position:absolute;left:10px;top:0;width:31px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+          <div style="position:absolute;left:0;top:8px;width:21px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+          <div style="position:absolute;left:32px;top:8px;width:10px;height:2px;background:#1c1c1c;border-radius:1px"></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;width:100%">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#6a6a6a">Shipping Weight</div>
+            <div style="font-size:24px;font-weight:600;line-height:30px;letter-spacing:0.07px;color:#161616">Buyers pay for shipping based on weight and distance</div>
+          </div>
+          <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#393939">To ensure buyers are charged accurately, select the correct weight for each listing.</div>
+          <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#393939">Buyers see shipping fees based on their location. This dynamic pricing—rather than a flat fee—keeps costs as low as possible.</div>
+        </div>
+      </div>
+      <div style="background:#f3f3f3;border-radius:8px;padding:12px;display:flex;gap:8px;align-items:center;width:100%">
+        <div style="width:72px;height:56px;position:relative;flex-shrink:0">
+          <div style="position:absolute;left:calc(50% + 1px);top:9px;width:36px;height:36px;transform:translateX(-50%)">
+            <div style="position:absolute;inset:19.44% 19.44% -2.78% -2.78%;background:#ffe414;border-radius:6px"></div>
+            <img src="icons/step4-bundle-icon.svg" style="position:absolute;inset:8.33%;width:auto;height:auto" alt="">
+          </div>
+        </div>
+        <div style="flex:1;font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#393939">When a buyer makes multiple purchases, we'll bundle them into a single shipping label</div>
+      </div>
+    </div>
+    <div style="flex-shrink:0;display:flex;flex-direction:column;gap:2px;align-items:center;width:100%">
+      <div style="display:flex;flex-direction:column;gap:12px;width:100%">
+        <div style="height:4px;background:rgba(0,0,0,0.1);border-radius:999px;overflow:hidden;width:100%">
+          <div style="height:8px;width:100%;background:linear-gradient(to right,#ffe414,#ef6a1f);border-radius:999px;transform:translateY(-2px)"></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:flex-end;gap:19px;padding:0 16px">
+          <div style="flex:1;font-size:12px;font-weight:600;line-height:16px;color:#6f6f6f">4 of 4</div>
+          <button onclick="goToShop()" style="height:40px;padding:0 24px;border-radius:999px;background:#f9dc00;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616;cursor:pointer">Go to Shop</button>
+        </div>
+      </div>
+      <div style="height:32px;overflow:hidden;width:375px;position:relative">
+        <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:135px;height:5px;background:#222;border-radius:100px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SHOP SHEET (New Sellers) ═══ -->
+  <div id="shopSheet" style="display:none;position:absolute;inset:0;z-index:20">
+    <!-- Dim overlay at top showing lobby behind -->
+    <div style="position:absolute;top:0;left:0;right:0;height:100px;background:transparent"></div>
+    <!-- Sheet -->
+    <div style="position:absolute;bottom:0;left:0;right:0;top:88px;background:white;border-radius:16px 16px 0 0;display:flex;flex-direction:column;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)" id="shopSheetInner">
+      <!-- Handle -->
+      <div style="display:flex;justify-content:center;padding:8px 0">
+        <div style="width:40px;height:4px;background:#e0e0e0;border-radius:30px"></div>
+      </div>
+      <!-- Header -->
+      <div style="height:48px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
+        <span style="font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#000">Shop</span>
+        <button onclick="closeShopSheet()" style="position:absolute;right:16px;width:32px;height:32px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+        </button>
+      </div>
+      <!-- Tabs -->
+      <div style="display:flex;padding-left:16px;gap:16px;border-bottom:1px solid rgba(0,0,0,0.05);flex-shrink:0">
+        <div style="display:flex;flex-direction:column;gap:12px;height:35px;cursor:pointer">
+          <span style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Auction</span>
+          <div style="height:3px;border-radius:2px 2px 0 0;background:#1c1c1c"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;height:35px;cursor:pointer">
+          <span style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#7f7f7f">Buy It Now</span>
+          <div style="height:3px;border-radius:2px 2px 0 0;background:transparent"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;height:35px;cursor:pointer">
+          <span style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#7f7f7f">Giveaway</span>
+          <div style="height:3px;border-radius:2px 2px 0 0;background:transparent"></div>
+        </div>
+      </div>
+    <!-- Generate Template Banner -->
+    <div id="shopGenBanner" style="padding:0 16px;flex-shrink:0;margin-top:24px">
+      <div style="padding:12px;background:#f3f3f3;border-radius:8px;display:flex;gap:12px;align-items:flex-start">
+        <div style="width:40px;height:40px;border-radius:20px;background:rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:8px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1c1c1c" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M10 4v16"/></svg>
+        </div>
+        <div style="flex:1;font-size:13px;letter-spacing:-0.11px">
+          <div style="font-weight:600;line-height:18px;color:#1c1c1c;overflow:hidden;text-overflow:ellipsis">Generate Template</div>
+          <div style="font-weight:400;line-height:18px;color:#545454">Generate a starter template based on your category to help you get started.</div>
+          <div style="line-height:16px;margin-top:2px"><span onclick="event.stopPropagation();openShopGenerate()" style="font-weight:600;color:#005ae1;cursor:pointer">Generate Now</span><span style="font-weight:600;color:#7f7f7f">  |  </span><span onclick="event.stopPropagation();openShopLearnMore()" style="font-weight:600;color:#005ae1;cursor:pointer">Learn More</span></div>
+        </div>
+        <div onclick="document.getElementById('shopGenBanner').style.display='none'" style="width:20px;height:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg>
+        </div>
+      </div>
+    </div>
+      <!-- Empty State -->
+      <div id="shopEmptyState" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 16px;gap:8px">
+        <div style="width:223px;height:112px;position:relative;overflow:hidden">
+          <img src="icons/shop-sparkle1.svg" alt="" style="position:absolute;left:158.4px;top:50.22px;width:10.22px;height:10.22px">
+          <img src="icons/shop-sparkle2.svg" alt="" style="position:absolute;left:37px;top:43px;width:10.22px;height:10.22px">
+          <img src="icons/shop-sparkle3.svg" alt="" style="position:absolute;left:127px;top:6px;width:10.22px;height:10.22px">
+          <img src="icons/shop-store.svg" alt="" style="position:absolute;left:72.54px;top:25.35px;width:83.24px;height:67.64px">
+          <img src="icons/shop-question.svg" alt="" style="position:absolute;left:48.66px;top:6px;width:43.86px;height:55.98px;transform:rotate(12.56deg)">
+          <img src="icons/shop-ground.svg" alt="" style="position:absolute;left:41.87px;top:92.98px;width:143.13px;height:2px">
+          <img src="icons/shop-plus-circle.svg" alt="" style="position:absolute;left:134.65px;top:76.46px;width:28.33px;height:28.33px">
+        </div>
+        <div style="text-align:center;display:flex;flex-direction:column;gap:4px;width:223px">
+          <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#161616">No Auctions Yet</div>
+          <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#005ae1;cursor:pointer">Listing Guide</div>
+        </div>
+      </div>
+      <!-- Activated Products (shown after generate) -->
+      <div id="shopProductList" style="display:none;flex:1;overflow-y:auto;padding:16px">
+        <div onclick="openEditFromShop()" style="display:flex;gap:12px;padding:12px 0;align-items:flex-start;border-bottom:1px solid rgba(0,0,0,0.05);cursor:pointer">
+          <div style="width:64px;height:64px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:64px">
+            <div id="shopProductTitle" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Tops: Lululemon, Alo, Vuori, and more</div>
+            <div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template · Multiple Options</div>
+            <div style="font-size:14px;font-weight:600;line-height:19px;color:#161616">$1</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center;padding:4px 0">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
+          </div>
+        </div>
+      </div>
+      <!-- FAB -->
+      <div style="position:absolute;bottom:40px;right:16px;z-index:4">
+        <div style="width:56px;height:56px;border-radius:50%;background:#ffe414;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.15);cursor:pointer">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1c1c1c" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </div>
+      </div>
+      <!-- Home Indicator -->
+      <div style="height:34px;flex-shrink:0;position:relative">
+        <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:135px;height:5px;background:#222;border-radius:100px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generate Templates Page (full height, slides up over shop sheet) -->
+  <div id="shopGenerateOverlay" style="display:none;position:absolute;inset:0;background:white;z-index:21;flex-direction:column">
+    <div style="height:54px;flex-shrink:0"></div>
+    <!-- Loader state -->
+    <div id="shopGenLoader" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
+      <div class="nux-loader-spinner"></div>
+      <p style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454">Generating a starter template for you…</p>
+    </div>
+    <!-- Result state -->
+    <div id="shopGenResult" style="display:none;flex:1;flex-direction:column;padding:0;overflow-y:auto">
+      <div class="nux-templates-copy" style="padding-top:24px">
+        <h2>Your starter template</h2>
+        <p>We created a template to help you get started. Customize it to fit your style.</p>
+      </div>
+      <div class="nux-templates-list">
+        <div class="tpl-card" onclick="openEditFromShopGen()" style="cursor:pointer">
+          <div class="tpl-thumb">
+            <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
+          </div>
+          <div class="tpl-info">
+            <div class="tpl-details">
+              <div class="tpl-title">Tops: Lululemon, Alo, Vuori, and more</div>
+              <div class="tpl-attr">Template · Multiple Options</div>
+              <div class="tpl-price">$1</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="flex:1"></div>
+      <div style="padding:0 16px 16px">
+        <button onclick="backToShopFromGen()" style="width:100%;height:48px;border-radius:999px;background:#f9dc00;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616;cursor:pointer">Import to Shop</button>
+      </div>
+      <div style="height:34px;flex-shrink:0"></div>
+    </div>
   </div>
 
   <div class="page">
@@ -2290,12 +2755,12 @@
         <div style="height:3px;border-radius:2px 2px 0 0;background:transparent" class="inv-tab-bar"></div>
       </div>
       <div id="invTabDraft" onclick="switchInvTab('draft')" style="display:flex;flex-direction:column;gap:16px;height:35px;cursor:pointer">
-        <span style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#7f7f7f">Draft</span>
-        <div style="height:3px;border-radius:2px 2px 0 0;background:transparent" class="inv-tab-bar"></div>
+        <span style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Draft</span>
+        <div style="height:3px;border-radius:2px 2px 0 0;background:#1c1c1c" class="inv-tab-bar"></div>
       </div>
       <div id="invTabInactive" onclick="switchInvTab('inactive')" style="display:flex;flex-direction:column;gap:16px;height:35px;cursor:pointer">
-        <span style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Inactive</span>
-        <div style="height:3px;border-radius:2px 2px 0 0;background:#1c1c1c" class="inv-tab-bar"></div>
+        <span style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#7f7f7f">Inactive</span>
+        <div style="height:3px;border-radius:2px 2px 0 0;background:transparent" class="inv-tab-bar"></div>
       </div>
       <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:rgba(0,0,0,0.05)"></div>
     </div>
@@ -2343,7 +2808,19 @@
       </div>
     </div>
     <!-- Draft List -->
-    <div id="invDraftList" style="flex:1;overflow-y:auto;padding:0 16px 100px;display:none">
+    <div id="invDraftList" style="flex:1;overflow-y:auto;padding:0 16px 100px;display:block">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="template">
+        <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Tops: Lululemon, Alo, Vuori, and more</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>
+      </div>
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(1,'inventory')" data-type="template">
+        <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Bottoms: Lululemon, Alo, Vuori, and more</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>
+      </div>
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(2,'inventory')" data-type="template">
+        <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Dresses: Lululemon, Alo, Vuori, and more</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>
+      </div>
       <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openProductFromRow(this)" data-type="product">
         <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Zara Satin Slip Skirt</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size XS</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$22</div></div>
@@ -2358,19 +2835,7 @@
       </div>
     </div>
     <!-- Inactive List -->
-    <div id="invInactiveList" style="flex:1;overflow-y:auto;padding:0 16px 100px;display:block">
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="template">
-        <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
-        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="display:inline-flex;align-self:flex-start;padding:2px 4px;border-radius:2px;background:rgba(0,158,82,0.1);font-size:10px;font-weight:600;line-height:10px;letter-spacing:0.12px;color:#009e52;min-height:16px;align-items:center" class="new-label">NEW</div><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Tops: Lulu Lemon, Commense, Alo, and more</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>
-      </div>
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(1,'inventory')" data-type="template">
-        <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
-        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="display:inline-flex;align-self:flex-start;padding:2px 4px;border-radius:2px;background:rgba(0,158,82,0.1);font-size:10px;font-weight:600;line-height:10px;letter-spacing:0.12px;color:#009e52;min-height:16px;align-items:center" class="new-label">NEW</div><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Bottoms: Lululemon, Alo, Vuori, and more</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>
-      </div>
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(2,'inventory')" data-type="template">
-        <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
-        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="display:inline-flex;align-self:flex-start;padding:2px 4px;border-radius:2px;background:rgba(0,158,82,0.1);font-size:10px;font-weight:600;line-height:10px;letter-spacing:0.12px;color:#009e52;min-height:16px;align-items:center" class="new-label">NEW</div><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Dresses: Lululemon, Alo, Vuori, and more</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>
-      </div>
+    <div id="invInactiveList" style="flex:1;overflow-y:auto;padding:0 16px 100px;display:none">
       <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openProductFromRow(this)" data-type="product">
         <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Floral Ruffle Blouse NWT</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size S</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$18</div></div>
@@ -3006,8 +3471,8 @@
         </div>
         <div class="nux-body" style="gap:32px">
           <div class="nux-templates-copy">
-            <h2>Your custom templates</h2>
-            <p>We created 3 templates based on your recent shows. Edit or use them as-is.</p>
+            <h2>Your starter template</h2>
+            <p>We created a template to help you get started. Customize it to fit your style.</p>
           </div>
           <div class="nux-templates-list">
             <!-- Template 1 -->
@@ -3023,36 +3488,10 @@
                 </div>
               </div>
             </div>
-            <!-- Template 2 -->
-            <div class="tpl-card">
-              <div class="tpl-thumb">
-                <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
-              </div>
-              <div class="tpl-info">
-                <div class="tpl-details">
-                  <div class="tpl-title">Bottoms: Lululemon, Alo, Vuori, and more</div>
-                  <div class="tpl-attr">Template · Multiple Options</div>
-                  <div class="tpl-price">$1</div>
-                </div>
-              </div>
-            </div>
-            <!-- Template 3 -->
-            <div class="tpl-card">
-              <div class="tpl-thumb">
-                <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
-              </div>
-              <div class="tpl-info">
-                <div class="tpl-details">
-                  <div class="tpl-title">Dresses: Lululemon, Alo, Vuori, and more</div>
-                  <div class="tpl-attr">Template · Multiple Options</div>
-                  <div class="tpl-price">$1</div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
         <div class="nux-buttons">
-          <button class="btn-primary" onclick="goToInventory()">Go to Inventory</button>
+          <button class="btn-primary" id="nuxSlide4Cta" onclick="nuxSlide4Action()">Go to Inventory</button>
           <div class="nux-home-indicator"></div>
         </div>
       </div>
@@ -3062,7 +3501,7 @@
     <!-- Loader -->
     <div class="nux-loader" id="nuxLoader">
       <div class="nux-loader-spinner"></div>
-      <p>Creating your templates…</p>
+      <p id="nuxLoaderText">Creating your templates…</p>
     </div>
   </div>
 
@@ -3334,8 +3773,11 @@ function openInventoryFromMenu() {
 }
 
 let currentNuxSlide = 0;
+let nuxOrigin = 'existing'; // 'existing' or 'new-seller'
 
 function openNux() {
+  nuxOrigin = 'existing';
+  configureNuxSlide4();
   const nux = document.getElementById('nuxOverlay');
   nux.style.display = 'block';
   requestAnimationFrame(() => {
@@ -3343,6 +3785,59 @@ function openNux() {
       nux.classList.add('open');
     });
   });
+}
+
+function configureNuxSlide4() {
+  const copyEl = document.querySelector('.nux-templates-copy');
+  const listEl = document.querySelector('.nux-templates-list');
+  const ctaBtn = document.getElementById('nuxSlide4Cta');
+  const loaderText = document.getElementById('nuxLoaderText');
+
+  if (nuxOrigin === 'new-seller') {
+    if (loaderText) loaderText.textContent = 'Creating your template…';
+    copyEl.querySelector('h2').textContent = 'Your starter template';
+    copyEl.querySelector('p').textContent = 'We created a template to help you get started. Customize it to fit your style.';
+    listEl.innerHTML = `
+      <div class="tpl-card">
+        <div class="tpl-thumb"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+        <div class="tpl-info"><div class="tpl-details">
+          <div class="tpl-title">Tops: Lululemon, Alo, Vuori, and more</div>
+          <div class="tpl-attr">Template · Multiple Options</div>
+          <div class="tpl-price">$1</div>
+        </div></div>
+      </div>`;
+    ctaBtn.textContent = 'Import to Shop';
+  } else {
+    if (loaderText) loaderText.textContent = 'Creating your templates…';
+    copyEl.querySelector('h2').textContent = 'Your custom templates';
+    copyEl.querySelector('p').textContent = 'We created 3 templates based on your recent shows. Edit or use them as-is.';
+    listEl.innerHTML = `
+      <div class="tpl-card">
+        <div class="tpl-thumb"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+        <div class="tpl-info"><div class="tpl-details">
+          <div class="tpl-title">Tops: Lululemon, Alo, Vuori, and more</div>
+          <div class="tpl-attr">Template · Multiple Options</div>
+          <div class="tpl-price">$1</div>
+        </div></div>
+      </div>
+      <div class="tpl-card">
+        <div class="tpl-thumb"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+        <div class="tpl-info"><div class="tpl-details">
+          <div class="tpl-title">Bottoms: Lululemon, Alo, Vuori, and more</div>
+          <div class="tpl-attr">Template · Multiple Options</div>
+          <div class="tpl-price">$1</div>
+        </div></div>
+      </div>
+      <div class="tpl-card">
+        <div class="tpl-thumb"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+        <div class="tpl-info"><div class="tpl-details">
+          <div class="tpl-title">Dresses: Lululemon, Alo, Vuori, and more</div>
+          <div class="tpl-attr">Template · Multiple Options</div>
+          <div class="tpl-price">$1</div>
+        </div></div>
+      </div>`;
+    ctaBtn.textContent = 'Go to Inventory';
+  }
 }
 
 function closeNux() {
@@ -3455,17 +3950,6 @@ function goHome() {
 }
 
 function goToInventory() {
-  // Move template items from Inactive to Drafts
-  const inactiveList = document.getElementById('invInactiveList');
-  const draftList = document.getElementById('invDraftList');
-  const templateItems = inactiveList.querySelectorAll('[data-type="template"]');
-  templateItems.forEach(item => {
-    inactiveList.removeChild(item);
-    const newLabel = item.querySelector('.new-label');
-    if (newLabel) newLabel.remove();
-    draftList.insertBefore(item, draftList.firstChild);
-  });
-
   document.getElementById('inventoryPage').style.display = 'flex';
   switchInvTab('draft');
 
@@ -3479,6 +3963,45 @@ function goToInventory() {
   }, 500);
 }
 
+function nuxSlide4Action() {
+  if (nuxOrigin === 'new-seller') {
+    importToShopFromNux();
+  } else {
+    goToInventory();
+  }
+}
+
+function importToShopFromNux() {
+  // Prepare shop behind the NUX before dismissing
+  document.getElementById('shopEmptyState').style.display = 'none';
+  document.getElementById('shopProductList').style.display = 'block';
+
+  const showLobby = document.getElementById('showLobbyScene');
+  showLobby.style.display = 'flex';
+  showLobby.style.flexDirection = 'column';
+
+  // Open shop sheet instantly (no animation) so it's ready behind the NUX
+  const sheet = document.getElementById('shopSheet');
+  const inner = document.getElementById('shopSheetInner');
+  sheet.style.display = 'block';
+  inner.style.transition = 'none';
+  inner.style.transform = 'translateY(0)';
+
+  // Hide existing users page
+  document.querySelector('.page').style.visibility = 'hidden';
+
+  // Now dismiss the NUX to reveal the shop
+  const nux = document.getElementById('nuxOverlay');
+  nux.classList.remove('open');
+  nux.classList.add('dismissing');
+  setTimeout(() => {
+    nux.classList.remove('dismissing');
+    nux.style.display = 'none';
+    resetNux();
+    inner.style.transition = '';
+  }, 500);
+}
+
 let editReturnTo = 'nux';
 let currentTemplateIndex = 0;
 let editSnapshot = '';
@@ -3486,7 +4009,7 @@ let editSourceElement = null;
 let editVertical = false;
 
 const templateData = [
-  { type: 'Tops', brands: 'Lulu Lemon, Alo, Vuori, Commense' },
+  { type: 'Tops', brands: 'Lululemon, Alo, Vuori, Commense' },
   { type: 'Bottoms', brands: 'Lululemon, Alo, Vuori, Commense' },
   { type: 'Dresses', brands: 'Lululemon, Alo, Vuori, Commense' }
 ];
@@ -3494,12 +4017,16 @@ const templateData = [
 function openEditPage(templateIndex, returnTo) {
   editReturnTo = returnTo || 'nux';
   currentTemplateIndex = templateIndex;
-  if (templateIndex !== -1) editVertical = false;
+  if (templateIndex !== -1 && returnTo !== 'shop') editVertical = false;
 
   const isNull = templateIndex === -1;
   const tpl = isNull ? { type: '', brands: '' } : (templateData[templateIndex] || templateData[0]);
 
-  // Set Type chip selection
+  // Set Category and rebuild chips first
+  document.getElementById('editCategory').textContent = "Women's Contemporary";
+  applyCategoryConfig("Women's Contemporary");
+
+  // THEN set Type chip selection (after applyCategoryConfig rebuilt them)
   const typeChips = document.getElementById('typeChips');
   typeChips.querySelectorAll('.edit-chip').forEach(c => {
     if (!isNull && c.textContent === tpl.type) {
@@ -3511,7 +4038,7 @@ function openEditPage(templateIndex, returnTo) {
     }
   });
 
-  // Set Brands
+  // Set Brands (after applyCategoryConfig cleared them)
   const brandsSpan = document.getElementById('editBrands');
   const brandsLabel = document.getElementById('brandsLabel');
   if (isNull) {
@@ -3525,9 +4052,6 @@ function openEditPage(templateIndex, returnTo) {
     brandsSpan.style.fontWeight = '';
     brandsLabel.style.display = '';
   }
-
-  // Set Category — always pre-filled per Figma
-  document.getElementById('editCategory').textContent = "Women's Contemporary";
 
   // Title field: null = just placeholder, filled = value
   const titleLabel = document.getElementById('titleLabel');
@@ -3641,7 +4165,14 @@ function openEditPage(templateIndex, returnTo) {
     // Parallax the page behind
     const nuxSlider = document.querySelector('.nux-slider');
     const invPage = document.getElementById('inventoryPage');
-    if (editReturnTo === 'nux' && nuxSlider) {
+    if (editReturnTo === 'shop') {
+      const shopInner = document.getElementById('shopSheetInner');
+      if (shopInner) {
+        shopInner.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
+        shopInner.style.transform = 'translateX(-30%)';
+        shopInner.style.opacity = '0.3';
+      }
+    } else if (editReturnTo === 'nux' && nuxSlider) {
       nuxSlider.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
       nuxSlider.style.transform = 'translateX(-30%)';
       nuxSlider.style.opacity = '0.3';
@@ -3743,7 +4274,14 @@ function closeEditPageDirect() {
     editPage.classList.remove('active', 'parallax-behind');
     const nuxSlider = document.querySelector('.nux-slider');
     const invPage = document.getElementById('inventoryPage');
-    if (editReturnTo === 'nux' && nuxSlider) {
+    if (editReturnTo === 'shop') {
+      const shopInner = document.getElementById('shopSheetInner');
+      if (shopInner) {
+        shopInner.style.transform = '';
+        shopInner.style.opacity = '';
+        setTimeout(() => { shopInner.style.transition = ''; }, 400);
+      }
+    } else if (editReturnTo === 'nux' && nuxSlider) {
       nuxSlider.style.transform = '';
       nuxSlider.style.opacity = '';
       setTimeout(() => { nuxSlider.style.transition = ''; }, 400);
@@ -3882,13 +4420,12 @@ function createNewListing() {
   }, 350);
 }
 
-const clothingSizes = ['OS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
-const shoeSizesCommon = ['6W', '6.5W', '7W', '7.5W', '8W', '8.5W', '9W', '9.5W', '10W'];
+let clothingSizes = ['OS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
+const shoeSizesCommon = ['7', '7.5', '8', '8.5', '9', '9.5', '10', '10.5', '11'];
 const shoeSizesAll = [
-  '4W', '4.5W', '5W', '5.5W', '6W', '6.5W', '7W', '7.5W', '8W', '8.5W',
-  '9W', '9.5W', '10W', '10.5W', '11W', '11.5W', '12W', '13W',
-  '6M', '6.5M', '7M', '7.5M', '8M', '8.5M', '9M', '9.5M', '10M',
-  '10.5M', '11M', '11.5M', '12M', '13M', '14M'
+  '4', '4.5', '5', '5.5', '6', '6.5', '7', '7.5', '8', '8.5',
+  '9', '9.5', '10', '10.5', '11', '11.5', '12', '12.5', '13', '14', '15',
+  '3.5Y', '4Y', '4.5Y', '5Y', '5.5Y', '6Y', '6.5Y', '7Y'
 ];
 let selectedSizes = new Set();
 let currentSizeMode = 'clothing';
@@ -4016,14 +4553,52 @@ function updateGeneratedTitle() {
 
 // Category bottom sheet
 const whatnotCategories = [
-  "Women's Contemporary", "Men's Fashion", "Sneakers", "Streetwear",
-  "Vintage", "Designer", "Sportswear", "Accessories",
-  "Jewelry", "Handbags", "Watches", "Shoes",
-  "Beauty", "Home & Garden", "Electronics", "Toys & Collectibles",
-  "Trading Cards", "Comics", "Funko", "Art"
+  "Women's Contemporary", "Men's Fashion", "Sneakers", "Streetwear", "Designer",
+  "Accessories", "Art", "Beauty", "Comics", "Electronics",
+  "Funko", "Handbags", "Home & Garden", "Jewelry", "Shoes",
+  "Sportswear", "Toys & Collectibles", "Trading Cards", "Vintage", "Watches"
 ];
 
-const womensFashionBrands = [
+const categoryConfig = {
+  "Women's Contemporary": {
+    types: ['Shoes', 'Tops', 'Bottoms', 'Dresses', 'Sweaters', 'Jumpsuits', 'Outerwear', 'Activewear'],
+    brands: ['Alo Yoga', 'Anthropologie', 'Aritzia', 'Babaton', 'Commense', 'COS', 'Eileen Fisher', 'Everlane', 'Farm Rio', 'Free People', 'Good American', 'H&M', 'J.Crew', 'Lulu Lemon', 'Madewell', 'Nordstrom', 'Princess Polly', 'Reformation', 'Skims', 'Theory', 'Urban Outfitters', 'Vince', 'Vuori', 'Zara'],
+    defaultSizeMode: 'clothing',
+    clothingSizes: ['OS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'],
+  },
+  "Men's Fashion": {
+    types: ['Shoes', 'Shirts', 'Pants', 'Jackets', 'Suits', 'Shorts', 'Activewear', 'Accessories'],
+    brands: ['Nike', 'Polo Ralph Lauren', 'J.Crew', 'Uniqlo', 'Zara', 'H&M', 'Banana Republic', 'Brooks Brothers', 'Bonobos', 'Levi\'s', 'Tommy Hilfiger', 'Calvin Klein', 'Hugo Boss', 'Lacoste', 'Patagonia', 'The North Face', 'Carhartt', 'Vineyard Vines', 'Todd Snyder', 'Reigning Champ'],
+    defaultSizeMode: 'clothing',
+    clothingSizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'],
+  },
+  "Sneakers": {
+    types: ['Running', 'Basketball', 'Lifestyle', 'Skateboarding', 'High Tops', 'Low Tops', 'Slides', 'Boots'],
+    brands: ['Nike', 'Jordan', 'Adidas', 'New Balance', 'Yeezy', 'Puma', 'Reebok', 'Converse', 'Vans', 'ASICS', 'Salomon', 'On Running', 'Hoka', 'Saucony', 'Balenciaga', 'Off-White', 'Travis Scott', 'Dunks', 'Fear of God', 'A Bathing Ape'],
+    defaultSizeMode: 'shoes',
+    clothingSizes: ['OS'],
+  },
+  "Streetwear": {
+    types: ['Hoodies', 'Tees', 'Pants', 'Jackets', 'Hats', 'Shorts', 'Accessories', 'Bags'],
+    brands: ['Supreme', 'Stussy', 'BAPE', 'Off-White', 'Kith', 'Palace', 'Comme des Garcons', 'Fear of God', 'Essentials', 'Travis Scott', 'Corteiz', 'Sp5der', 'Hellstar', 'Chrome Hearts', 'Rhude', 'Gallery Dept', 'Cactus Jack', 'Drew House', 'Broken Planet', 'Human Made'],
+    defaultSizeMode: 'clothing',
+    clothingSizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'],
+  },
+  "Designer": {
+    types: ['Bags', 'Shoes', 'Clothing', 'Accessories', 'Jewelry', 'Watches', 'Sunglasses', 'Scarves'],
+    brands: ['Louis Vuitton', 'Gucci', 'Chanel', 'Prada', 'Hermes', 'Dior', 'Balenciaga', 'Bottega Veneta', 'Saint Laurent', 'Burberry', 'Fendi', 'Versace', 'Givenchy', 'Valentino', 'Celine', 'Loewe', 'Miu Miu', 'Tom Ford', 'Alexander McQueen', 'Cartier'],
+    defaultSizeMode: 'clothing',
+    clothingSizes: ['OS', 'XS', 'S', 'M', 'L', 'XL'],
+  },
+  "_default": {
+    types: ['Clothing', 'Shoes', 'Accessories', 'Bags', 'Jewelry', 'Other'],
+    brands: ['Nike', 'Adidas', 'Zara', 'H&M', 'Uniqlo', 'Gap', 'Levi\'s', 'Calvin Klein', 'Tommy Hilfiger', 'Ralph Lauren'],
+    defaultSizeMode: 'clothing',
+    clothingSizes: ['OS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'],
+  }
+};
+
+let womensFashionBrands = [
   'Alo Yoga', 'Anthropologie', 'Aritzia', 'Babaton', 'Commense',
   'COS', 'Eileen Fisher', 'Everlane', 'Farm Rio', 'Free People',
   'Good American', 'H&M', 'J.Crew', 'Lulu Lemon', 'Madewell',
@@ -4182,8 +4757,37 @@ function closeCategorySheet() {
   setTimeout(() => { sheet.style.display = 'none'; }, 350);
 }
 
+function applyCategoryConfig(categoryName) {
+  const config = categoryConfig[categoryName] || categoryConfig['_default'];
+
+  const typeChips = document.getElementById('typeChips');
+  typeChips.innerHTML = config.types.map(t =>
+    `<span class="edit-chip edit-chip-off" onclick="selectChip(this,'type')">${t}</span>`
+  ).join('');
+
+  currentSizeMode = config.defaultSizeMode;
+  clothingSizes.length = 0;
+  config.clothingSizes.forEach(s => clothingSizes.push(s));
+  selectedSizes.clear();
+  renderSizeChips();
+
+  womensFashionBrands.length = 0;
+  config.brands.forEach(b => womensFashionBrands.push(b));
+
+  selectedBrands.clear();
+  const brandsSpan = document.getElementById('editBrands');
+  const brandsLabel = document.getElementById('brandsLabel');
+  brandsSpan.textContent = 'Brand(s)';
+  brandsSpan.style.color = '#545454';
+  brandsSpan.style.fontWeight = '400';
+  brandsLabel.style.display = 'none';
+
+  updateGeneratedTitle();
+}
+
 function selectCategory(cat) {
   document.getElementById('editCategory').textContent = cat;
+  applyCategoryConfig(cat);
   closeCategorySheet();
 }
 
@@ -4389,6 +4993,284 @@ function switchInvTab(tab) {
   applyTemplatesFilter();
 }
 
+function openOnboardingStep1() {
+  const step1 = document.getElementById('onboardStep1');
+  step1.style.display = 'flex';
+  step1.style.transition = 'none';
+  step1.style.transform = 'translateY(100%)';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      step1.style.transition = 'transform 0.45s cubic-bezier(0.32, 0.72, 0, 1)';
+      step1.style.transform = 'translateY(0)';
+    });
+  });
+}
+
+function closeOnboarding() {
+  const step1 = document.getElementById('onboardStep1');
+
+  ['onboardStep1', 'onboardStep2', 'onboardStep3', 'onboardStep4'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('pushed-back');
+  });
+  ['onboardStep2', 'onboardStep3', 'onboardStep4'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.style.display = 'none'; el.style.transform = ''; el.style.transition = ''; el.style.opacity = ''; }
+  });
+
+  step1.style.opacity = '1';
+  step1.style.transition = 'none';
+  step1.style.transform = 'translateY(0)';
+  requestAnimationFrame(() => {
+    step1.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+    step1.style.transform = 'translateY(100%)';
+  });
+
+  setTimeout(() => {
+    step1.style.display = 'none';
+    step1.style.transform = '';
+    step1.style.transition = '';
+  }, 420);
+}
+
+function openShopSheet() {
+  const sheet = document.getElementById('shopSheet');
+  const inner = document.getElementById('shopSheetInner');
+  sheet.style.display = 'block';
+  inner.style.transform = 'translateY(100%)';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      inner.style.transform = 'translateY(0)';
+    });
+  });
+}
+
+function closeShopSheet() {
+  const inner = document.getElementById('shopSheetInner');
+  inner.style.transform = 'translateY(100%)';
+
+  const hasProducts = document.getElementById('shopProductList').style.display === 'block';
+  if (hasProducts) markChecklistStep2Complete();
+
+  setTimeout(() => {
+    document.getElementById('shopSheet').style.display = 'none';
+    const genOverlay = document.getElementById('shopGenerateOverlay');
+    if (genOverlay) { genOverlay.style.display = 'none'; genOverlay.style.transform = ''; }
+  }, 420);
+}
+
+function markChecklistStep2Complete() {
+  const step2Icon = document.getElementById('checklistStep2Icon');
+  const step2 = document.getElementById('checklistStep2');
+  const step3 = document.getElementById('checklistStep3');
+  const step3Icon = document.getElementById('checklistStep3Icon');
+  if (!step2Icon || step2Icon.dataset.done) return;
+
+  step2Icon.dataset.done = '1';
+  step2Icon.style.border = 'none';
+  step2Icon.innerHTML = '<img src="icons/check-green.svg" style="width:24px;height:24px" alt="">';
+  step2.style.cursor = 'default';
+  step2.removeAttribute('onclick');
+
+  step3.style.opacity = '1';
+  step3.style.cursor = 'pointer';
+  step3Icon.innerHTML = '';
+  step3Icon.style.border = '2px solid #6f6f6f';
+}
+
+function openShopGenerate() {
+  const overlay = document.getElementById('shopGenerateOverlay');
+  const loader = document.getElementById('shopGenLoader');
+  const result = document.getElementById('shopGenResult');
+  loader.style.display = 'flex';
+  result.style.display = 'none';
+  overlay.style.display = 'flex';
+  overlay.style.transition = 'none';
+  overlay.style.transform = 'translateY(100%)';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      overlay.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+      overlay.style.transform = 'translateY(0)';
+    });
+  });
+  setTimeout(() => {
+    loader.style.display = 'none';
+    result.style.display = 'flex';
+  }, 2000);
+}
+
+function closeShopGenerate() {
+  const overlay = document.getElementById('shopGenerateOverlay');
+  overlay.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+  overlay.style.transform = 'translateY(100%)';
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    overlay.style.transform = '';
+  }, 420);
+}
+
+function openEditFromShopGen() {
+  closeShopGenerate();
+  setTimeout(() => {
+    closeShopSheet();
+    setTimeout(() => {
+      openEditPage(0, 'inventory');
+    }, 450);
+  }, 200);
+}
+
+function openEditFromShop() {
+  const editPage = document.getElementById('editPage');
+  editPage.style.visibility = '';
+  editVertical = false;
+  openEditPage(0, 'shop');
+}
+
+function backToShopFromGen() {
+  document.getElementById('shopEmptyState').style.display = 'none';
+  document.getElementById('shopProductList').style.display = 'block';
+  closeShopGenerate();
+}
+
+function openShopLearnMore() {
+  closeShopSheet();
+  setTimeout(() => {
+    const nux = document.getElementById('nuxOverlay');
+    const homePage = document.querySelector('.page');
+    nux.style.visibility = '';
+    homePage.style.visibility = '';
+    nuxOrigin = 'new-seller';
+    configureNuxSlide4();
+    nux.style.display = 'block';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        nux.classList.add('open');
+      });
+    });
+  }, 450);
+}
+
+function goToShop() {
+  const step1 = document.getElementById('onboardStep1');
+  ['onboardStep1', 'onboardStep2', 'onboardStep3', 'onboardStep4'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('pushed-back');
+  });
+  ['onboardStep2', 'onboardStep3', 'onboardStep4'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.style.display = 'none'; el.style.transform = ''; el.style.transition = ''; el.style.opacity = ''; }
+  });
+
+  step1.style.opacity = '1';
+  step1.style.transition = 'none';
+  step1.style.transform = 'translateY(0)';
+  requestAnimationFrame(() => {
+    step1.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+    step1.style.transform = 'translateY(100%)';
+  });
+
+  // Hide tooltip after onboarding (keep side menu visible)
+  const tooltip = document.getElementById('lobbyTooltip');
+  if (tooltip) tooltip.style.display = 'none';
+
+  setTimeout(() => {
+    step1.style.display = 'none';
+    step1.style.transform = '';
+    step1.style.transition = '';
+    openShopSheet();
+  }, 450);
+}
+
+function openOnboardingStep2() {
+  const step1 = document.getElementById('onboardStep1');
+  step1.classList.add('pushed-back');
+  step1.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+  step1.style.transform = 'translateX(-30%)';
+
+  const step2 = document.getElementById('onboardStep2');
+  step2.style.display = 'flex';
+  step2.style.transition = 'none';
+  step2.style.transform = 'translateX(100%)';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      step2.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+      step2.style.transform = 'translateX(0)';
+    });
+  });
+}
+
+function closeStep2() {
+  const step1 = document.getElementById('onboardStep1');
+  const step2 = document.getElementById('onboardStep2');
+
+  step1.classList.remove('pushed-back');
+  step1.style.transform = '';
+  step1.style.opacity = '';
+  setTimeout(() => { step1.style.transition = ''; }, 400);
+
+  step2.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+  step2.style.transform = 'translateX(100%)';
+  setTimeout(() => {
+    step2.style.display = 'none';
+    step2.style.transform = '';
+    step2.style.transition = '';
+  }, 420);
+}
+
+function openOnboardingStep3() {
+  const step2 = document.getElementById('onboardStep2');
+  step2.classList.add('pushed-back');
+  step2.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+  step2.style.transform = 'translateX(-30%)';
+  const step3 = document.getElementById('onboardStep3');
+  step3.style.display = 'flex';
+  step3.style.transition = 'none';
+  step3.style.transform = 'translateX(100%)';
+  requestAnimationFrame(() => { requestAnimationFrame(() => {
+    step3.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+    step3.style.transform = 'translateX(0)';
+  }); });
+}
+
+function closeStep3() {
+  const step2 = document.getElementById('onboardStep2');
+  const step3 = document.getElementById('onboardStep3');
+  step2.classList.remove('pushed-back');
+  step2.style.transform = '';
+  step2.style.opacity = '';
+  setTimeout(() => { step2.style.transition = ''; }, 400);
+  step3.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+  step3.style.transform = 'translateX(100%)';
+  setTimeout(() => { step3.style.display = 'none'; step3.style.transform = ''; step3.style.transition = ''; }, 420);
+}
+
+function openOnboardingStep4() {
+  const step3 = document.getElementById('onboardStep3');
+  step3.classList.add('pushed-back');
+  step3.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+  step3.style.transform = 'translateX(-30%)';
+  const step4 = document.getElementById('onboardStep4');
+  step4.style.display = 'flex';
+  step4.style.transition = 'none';
+  step4.style.transform = 'translateX(100%)';
+  requestAnimationFrame(() => { requestAnimationFrame(() => {
+    step4.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+    step4.style.transform = 'translateX(0)';
+  }); });
+}
+
+function closeStep4() {
+  const step3 = document.getElementById('onboardStep3');
+  const step4 = document.getElementById('onboardStep4');
+  step3.classList.remove('pushed-back');
+  step3.style.transform = '';
+  step3.style.opacity = '';
+  setTimeout(() => { step3.style.transition = ''; }, 400);
+  step4.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+  step4.style.transform = 'translateX(100%)';
+  setTimeout(() => { step4.style.display = 'none'; step4.style.transform = ''; step4.style.transition = ''; }, 420);
+}
+
 function switchScene(scene) {
   document.querySelectorAll('.scene-tab').forEach(t => t.classList.remove('active'));
   event.target.classList.add('active');
@@ -4412,9 +5294,15 @@ function switchScene(scene) {
     showLobby.style.display = 'flex';
     showLobby.style.flexDirection = 'column';
   } else {
+    const shopSheet = document.getElementById('shopSheet');
+    if (shopSheet) shopSheet.style.display = 'none';
     showLobby.style.display = 'none';
     globalStatusBar.style.display = '';
     existingElements.forEach(el => { if (el) el.style.visibility = ''; });
+    document.getElementById('onboardStep1').style.display = 'none';
+    document.getElementById('onboardStep2').style.display = 'none';
+    document.getElementById('onboardStep3').style.display = 'none';
+    document.getElementById('onboardStep4').style.display = 'none';
   }
 }
 
