@@ -77,6 +77,35 @@
       font-weight: 400;
       color: rgba(255,255,255,0.3);
     }
+    .scene-switcher {
+      position: fixed;
+      top: 112px;
+      left: 32px;
+      display: flex;
+      background: rgba(255,255,255,0.1);
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
+      z-index: 10000;
+    }
+    .scene-tab {
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      border: none;
+      background: none;
+      font-family: var(--font);
+    }
+    .scene-tab.active {
+      background: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.9);
+    }
+    .scene-tab:hover:not(.active) { color: rgba(255,255,255,0.6); }
 
     .proto-body {
       flex: 1;
@@ -981,59 +1010,92 @@
       overflow: hidden;
     }
 
-    /* Step 1 hero - yellow blob with product images */
+    /* Step 1 hero - yellow blob with product images (exact Figma specs) */
     .hero1-blob {
       position: absolute;
-      width: 357px;
-      height: 250px;
-      border-radius: 50%;
-      background: #ffe414;
-      top: 50%;
-      left: 50%;
-      transform: translate(-43%, -48%) skewX(-8deg);
+      width: 356.479px;
+      height: 249.609px;
+      left: 20.26px;
+      top: 111.54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero1-blob img {
+      width: 265.629px;
+      height: 265.629px;
+      transform: skewX(-20deg) scaleY(0.94);
     }
     .hero1-img1 {
       position: absolute;
-      width: 249px;
-      height: 249px;
-      top: 50%;
-      left: 50%;
-      transform: translate(-60%, -42%) rotate(3.5deg);
+      width: 262.974px;
+      height: 262.974px;
+      left: 43px;
+      top: 162px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       z-index: 3;
+    }
+    .hero1-img1 img {
+      width: 248.333px;
+      height: 248.333px;
+      transform: rotate(3.49deg);
       object-fit: cover;
       filter: drop-shadow(0 8px 24px rgba(0,0,0,0.15));
-      border-radius: 8px;
     }
     .hero1-img2 {
       position: absolute;
-      width: 212px;
-      height: 169px;
-      top: 50%;
-      left: 50%;
-      transform: translate(-10%, -72%) rotate(130deg) scaleY(-1);
+      width: 264.951px;
+      height: 270.524px;
+      left: 112px;
+      top: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       z-index: 2;
+    }
+    .hero1-img2 img {
+      width: 211.585px;
+      height: 168.658px;
+      transform: rotate(129.73deg) scaleY(-1);
       object-fit: cover;
       filter: drop-shadow(0 8px 24px rgba(0,0,0,0.15));
-      border-radius: 8px;
     }
     .hero1-box {
       position: absolute;
-      width: 120px;
-      height: 117px;
-      bottom: 8%;
-      right: 12%;
-      transform: rotate(-60deg);
+      width: 161.394px;
+      height: 162.402px;
+      left: calc(50% + 95.04px);
+      top: calc(50% + 65.17px);
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       z-index: 1;
+    }
+    .hero1-box img {
+      width: 119.893px;
+      height: 117.142px;
+      transform: rotate(-60deg);
       object-fit: cover;
     }
     .hero1-bolt {
       position: absolute;
-      width: 75px;
-      height: 75px;
-      top: 38%;
-      left: 6%;
-      transform: rotate(15deg);
+      width: 91.385px;
+      height: 91.385px;
+      left: calc(50% - 116.81px);
+      top: calc(50% - 32.31px);
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       z-index: 4;
+    }
+    .hero1-bolt img {
+      width: 74.903px;
+      height: 74.903px;
+      transform: rotate(14.62deg);
       object-fit: cover;
     }
 
@@ -1791,6 +1853,10 @@
   </div>
   <div class="proto-timestamp" id="protoTimestamp"></div>
 </div>
+<div class="scene-switcher">
+  <button class="scene-tab active" onclick="switchScene('existing')">Existing Users</button>
+  <button class="scene-tab" onclick="switchScene('new-sellers')">New Sellers</button>
+</div>
 <div class="phone-frame">
   <div class="phone-bezel"></div>
   <div class="device">
@@ -1807,6 +1873,118 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- ═══ SHOW LOBBY PAGE (New Sellers) ═══ -->
+  <div id="showLobbyScene" style="display:none;position:absolute;inset:0;z-index:1">
+    <div style="position:absolute;inset:0;background:#000;overflow:hidden">
+      <img src="icons/media-product.jpg" style="width:100%;height:100%;object-fit:cover;opacity:0.6" alt="">
+    </div>
+    
+    <!-- Status Bar (light on dark) -->
+    <div style="position:relative;z-index:10;height:54px;display:flex;align-items:center;padding:0 20px">
+      <div style="position:absolute;left:0;right:64.25%;top:50%;transform:translateY(-50%);height:54px;display:flex;align-items:center;justify-content:center">
+        <span style="font-size:17px;font-weight:600;color:white">9:41</span>
+      </div>
+      <div style="position:absolute;left:64.25%;right:0;top:50%;transform:translateY(-50%);height:54px;display:flex;align-items:center;justify-content:center;gap:7px">
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="white"><rect x="0" y="8" width="3" height="4" rx="0.7"/><rect x="4.5" y="5.5" width="3" height="6.5" rx="0.7"/><rect x="9" y="3" width="3" height="9" rx="0.7"/><rect x="13.5" y="0" width="3" height="12" rx="0.7"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><path d="M8.36 9.3a1.8 1.8 0 1 1-0.72 0l0.36-0.05 0.36 0.05z"/><path d="M5.1 7.6a4.5 4.5 0 0 1 5.8 0l1.1-1.2a6.2 6.2 0 0 0-8 0L5.1 7.6z" opacity="0.9"/><path d="M2.8 5.2a7.8 7.8 0 0 1 10.4 0l1.1-1.2a9.5 9.5 0 0 0-12.6 0L2.8 5.2z" opacity="0.8"/><path d="M0.5 2.9A11.1 11.1 0 0 1 15.5 2.9l1.1-1.2A12.8 12.8 0 0 0-0.6 1.7L0.5 2.9z" opacity="0.55"/></svg>
+        <div style="display:flex;align-items:center;gap:1px"><div style="width:25px;height:12px;border:1px solid white;border-radius:4.3px;opacity:0.35;position:relative"><div style="position:absolute;inset:1.5px;background:white;border-radius:2.5px;opacity:1"></div></div><div style="width:1.5px;height:4px;background:white;opacity:0.4;border-radius:0 1px 1px 0"></div></div>
+      </div>
+    </div>
+
+    <!-- Header Bar -->
+    <div style="position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:8px 16px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <img src="icons/profile-female.png" style="width:32px;height:32px;border-radius:50%" alt="">
+        <span style="font-size:14px;font-weight:600;color:white">sadiesells</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="display:flex;align-items:center;gap:6px;background:rgba(0,0,0,0.3);border-radius:999px;padding:6px 10px">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><rect x="1" y="4" width="4" height="8" rx="1"/><rect x="6" y="2" width="4" height="12" rx="1"/><rect x="11" y="5" width="4" height="6" rx="1"/></svg>
+          <span style="font-size:12px;font-weight:600;color:white">1</span>
+        </div>
+        <div style="width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M3 3l8 8M11 3l-8 8"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Onboarding Card -->
+    <div style="position:relative;z-index:10;margin:8px 16px;background:rgba(255,255,255,0.95);border-radius:16px;padding:20px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)">
+      <div style="text-align:center;margin-bottom:16px">
+        <div style="font-size:12px;font-weight:600;color:#545454;letter-spacing:0.12px;margin-bottom:4px">Show Starts at 1:00PM</div>
+        <div style="font-size:28px;font-weight:600;line-height:34px;letter-spacing:-0.38px;color:#1c1c1c">59m 39s</div>
+      </div>
+      <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c;text-align:center;margin-bottom:16px">Go live within 7 days (by June 13th) and we'll match your first $150 in sales. <span style="color:#005ae1;cursor:pointer">Learn more</span></div>
+      
+      <!-- Checklist -->
+      <div style="display:flex;flex-direction:column;gap:0">
+        <!-- Step 1: Complete -->
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.05)">
+          <div style="width:32px;height:32px;border-radius:50%;background:#34c759;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8l3 3 6-6.5"/></svg>
+          </div>
+          <span style="flex:1;font-size:14px;font-weight:600;line-height:18px;letter-spacing:-0.11px;color:#1c1c1c">Create your show</span>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
+        </div>
+        <!-- Step 2: Incomplete -->
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.05)">
+          <div style="width:32px;height:32px;border-radius:50%;border:2px solid #d2d2d2;flex-shrink:0"></div>
+          <span style="flex:1;font-size:14px;font-weight:600;line-height:18px;letter-spacing:-0.11px;color:#1c1c1c">Add products to your shop</span>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
+        </div>
+        <!-- Step 3: Inactive -->
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.05)">
+          <div style="width:32px;height:32px;border-radius:50%;border:2px solid #e5e5e5;flex-shrink:0"></div>
+          <span style="flex:1;font-size:14px;font-weight:400;line-height:18px;letter-spacing:-0.11px;color:#a0a0a0">Bring in buyers</span>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#d2d2d2" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
+        </div>
+        <!-- Step 4: Inactive -->
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 0">
+          <div style="width:32px;height:32px;border-radius:50%;border:2px solid #e5e5e5;flex-shrink:0"></div>
+          <span style="flex:1;font-size:14px;font-weight:400;line-height:18px;letter-spacing:-0.11px;color:#a0a0a0">Go live!</span>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#d2d2d2" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom area spacer for product image to show -->
+    <div style="flex:1"></div>
+
+    <!-- Bottom tooltip -->
+    <div style="position:absolute;bottom:140px;left:16px;right:16px;z-index:10">
+      <div style="background:white;border-radius:12px;padding:12px 16px;display:flex;gap:12px;align-items:flex-start;box-shadow:0px 2px 16px rgba(0,0,0,0.15)">
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Add products to your shop</div>
+          <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454;margin-top:2px">Tap here to enter your shop to add products</div>
+        </div>
+        <div style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M3 3l8 8M11 3l-8 8"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shop FAB -->
+    <div style="position:absolute;bottom:100px;right:16px;z-index:10">
+      <div style="position:relative">
+        <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#ffe414,#ff9500);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.3)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </div>
+        <div style="position:absolute;top:-4px;right:-4px;width:18px;height:18px;border-radius:50%;background:#ef233c;display:flex;align-items:center;justify-content:center">
+          <span style="font-size:10px;font-weight:700;color:white">0</span>
+        </div>
+      </div>
+      <div style="font-size:10px;font-weight:600;color:white;text-align:center;margin-top:4px;letter-spacing:0.12px">Shop</div>
+    </div>
+
+    <!-- Start Show Button -->
+    <div style="position:absolute;bottom:0;left:0;right:0;z-index:10;padding:12px 16px 34px;background:linear-gradient(to top,rgba(0,0,0,0.6),transparent)">
+      <button style="width:100%;height:44px;border-radius:999px;background:#ffe414;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#1c1c1c;cursor:pointer">Start Show</button>
+    </div>
+
+    <!-- Home Indicator -->
+    <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:rgba(255,255,255,0.6);border-radius:100px;z-index:11"></div>
   </div>
 
   <div class="page">
@@ -2728,11 +2906,11 @@
         </div>
         <div class="nux-body">
           <div class="nux-hero">
-            <div class="hero1-blob"></div>
-            <img class="hero1-img1" src="icons/nux-shoe1.png" alt="">
-            <img class="hero1-img2" src="icons/nux-shoe2.png" alt="">
-            <img class="hero1-box" src="icons/nux-box.png" alt="">
-            <img class="hero1-bolt" src="icons/nux-bolt.png" alt="">
+            <div class="hero1-blob"><img src="icons/nux-yellow-blob.svg" alt=""></div>
+            <div class="hero1-img1"><img src="icons/nux-shoe1.png" alt=""></div>
+            <div class="hero1-img2"><img src="icons/nux-shoe2.png" alt=""></div>
+            <div class="hero1-box"><img src="icons/nux-box.png" alt=""></div>
+            <div class="hero1-bolt"><img src="icons/nux-bolt.png" alt=""></div>
           </div>
           <div class="nux-copy">
             <h2>Create once. Sell forever.</h2>
@@ -2740,8 +2918,7 @@
           </div>
         </div>
         <div class="nux-buttons">
-          <button class="btn-primary" onclick="goNux(1)">Discover Templates</button>
-          <button class="btn-tertiary" onclick="closeNux()">I'll Try it Later</button>
+          <button class="btn-primary" onclick="goNux(1)">Start Tour</button>
           <div class="nux-home-indicator"></div>
         </div>
       </div>
@@ -3064,6 +3241,7 @@ function cloneTemplate() {
       `;
       draftList.insertBefore(newItem, draftList.firstChild);
       switchInvTab('draft');
+      showToastMessage('Template duplicated');
     }, 450);
   }, 380);
 }
@@ -3277,7 +3455,19 @@ function goHome() {
 }
 
 function goToInventory() {
+  // Move template items from Inactive to Drafts
+  const inactiveList = document.getElementById('invInactiveList');
+  const draftList = document.getElementById('invDraftList');
+  const templateItems = inactiveList.querySelectorAll('[data-type="template"]');
+  templateItems.forEach(item => {
+    inactiveList.removeChild(item);
+    const newLabel = item.querySelector('.new-label');
+    if (newLabel) newLabel.remove();
+    draftList.insertBefore(item, draftList.firstChild);
+  });
+
   document.getElementById('inventoryPage').style.display = 'flex';
+  switchInvTab('draft');
 
   const nux = document.getElementById('nuxOverlay');
   nux.classList.remove('open');
@@ -4071,7 +4261,12 @@ function publishListing() {
 }
 
 function showPublishToast() {
+  showToastMessage('Template published');
+}
+
+function showToastMessage(msg) {
   const toast = document.getElementById('publishToast');
+  toast.querySelector('span').textContent = msg;
   requestAnimationFrame(() => {
     toast.classList.add('visible');
     setTimeout(() => {
@@ -4192,6 +4387,35 @@ function switchInvTab(tab) {
   document.getElementById(showId).style.display = 'block';
 
   applyTemplatesFilter();
+}
+
+function switchScene(scene) {
+  document.querySelectorAll('.scene-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+
+  const existingElements = [
+    document.querySelector('.page'),
+    document.getElementById('inventoryPage'),
+    document.getElementById('menuPage'),
+    document.getElementById('editPage'),
+    document.getElementById('pricePage'),
+    document.getElementById('productPage'),
+    document.getElementById('nuxOverlay')
+  ];
+
+  const showLobby = document.getElementById('showLobbyScene');
+  const globalStatusBar = document.querySelector('.global-status-bar');
+
+  if (scene === 'new-sellers') {
+    existingElements.forEach(el => { if (el) el.style.visibility = 'hidden'; });
+    globalStatusBar.style.display = 'none';
+    showLobby.style.display = 'flex';
+    showLobby.style.flexDirection = 'column';
+  } else {
+    showLobby.style.display = 'none';
+    globalStatusBar.style.display = '';
+    existingElements.forEach(el => { if (el) el.style.visibility = ''; });
+  }
 }
 
 // Set timestamp
