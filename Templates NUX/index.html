@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=393, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Whatnot Seller Hub</title>
+  <title>Templates NUX - Mobile</title>
   <style>
     :root {
       --font: -apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
@@ -764,6 +764,38 @@
       overflow: hidden;
     }
     .tab-profile img { width: 100%; height: 100%; object-fit: cover; }
+
+    .toast {
+      position: absolute;
+      bottom: 56px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #404040;
+      border-radius: 999px;
+      padding: 8px 16px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0px 3px 6px rgba(0,0,0,0.08), 0px 6px 12px rgba(0,0,0,0.08);
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      white-space: nowrap;
+    }
+    .toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .toast span {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: white;
+    }
 
     .home-indicator {
       position: absolute;
@@ -2009,38 +2041,38 @@
     </div>
     <!-- Active List -->
     <div id="invActiveList" style="flex:1;overflow-y:auto;padding:0 16px 100px;display:none">
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openProductFromRow(this)" data-type="product">
         <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Lululemon Align High-Rise Pant 25"</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size 6</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$48</div></div>
       </div>
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openProductFromRow(this)" data-type="product">
         <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Reformation Midi Floral Dress</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Buy Now <span style="color:#ccc">•</span> Size S</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$85</div></div>
       </div>
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openProductFromRow(this)" data-type="product">
         <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1551537482-f2075a1d41f2?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Agolde '90s Pinch Waist Jeans</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size 27</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$62</div></div>
       </div>
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openProductFromRow(this)" data-type="product">
         <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Aritzia Babaton Contour Top</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size M</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$28</div></div>
       </div>
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openProductFromRow(this)" data-type="product">
         <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Free People Cozy Knit Pullover</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Buy Now <span style="color:#ccc">•</span> Size L</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$35</div></div>
       </div>
     </div>
     <!-- Draft List -->
     <div id="invDraftList" style="flex:1;overflow-y:auto;padding:0 16px 100px;display:none">
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openProductFromRow(this)" data-type="product">
         <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Zara Satin Slip Skirt</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size XS</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$22</div></div>
       </div>
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openProductFromRow(this)" data-type="product">
         <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Oversized Band Tee Vintage Wash</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size M</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$15</div></div>
       </div>
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openProductFromRow(this)" data-type="product">
         <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1548624313-0396c75e4b1a?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Alo Yoga Airlift Sports Bra</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Buy Now <span style="color:#ccc">•</span> Size S</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$32</div></div>
       </div>
@@ -2059,30 +2091,35 @@
         <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="display:inline-flex;align-self:flex-start;padding:2px 4px;border-radius:2px;background:rgba(0,158,82,0.1);font-size:10px;font-weight:600;line-height:10px;letter-spacing:0.12px;color:#009e52;min-height:16px;align-items:center" class="new-label">NEW</div><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Dresses: Lululemon, Alo, Vuori, and more</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>
       </div>
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openProductFromRow(this)" data-type="product">
         <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Floral Ruffle Blouse NWT</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size S</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$18</div></div>
       </div>
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openProductFromRow(this)" data-type="product">
         <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Commense Matching Dress</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Buy Now <span style="color:#ccc">•</span> Size M</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$42</div></div>
       </div>
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openProductFromRow(this)" data-type="product">
         <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1551537482-f2075a1d41f2?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Vintage Levi's Denim Jacket</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size M</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$55</div></div>
       </div>
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openProductFromRow(this)" data-type="product">
         <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Anthropologie Knit Cardigan</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size L</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$38</div></div>
       </div>
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openProductFromRow(this)" data-type="product">
         <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Vuori Performance Joggers</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Buy Now <span style="color:#ccc">•</span> Size XS</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$44</div></div>
       </div>
-      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openProductFromRow(this)" data-type="product">
         <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Skims Soft Lounge Dress</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size S</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$52</div></div>
       </div>
+    </div>
+    <!-- Toast -->
+    <div class="toast" id="publishToast">
+      <svg viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-6.5"/></svg>
+      <span>Template published</span>
     </div>
     <!-- FAB -->
     <div onclick="openCreateSheet()" style="position:absolute;bottom:40px;right:16px;width:56px;height:56px;border-radius:50%;background:#ffe414;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:6">
@@ -2229,7 +2266,10 @@
     <div class="edit-nav">
       <button class="edit-nav-back" id="editBackBtn" onclick="closeEditPage()"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></button>
       <span class="edit-nav-title" id="editNavTitle">Templates</span>
-      <button class="edit-nav-close" id="editCloseBtn" onclick="closeEditPageDirect()" style="display:none"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+      <div style="position:absolute;right:16px;display:flex;gap:8px;align-items:center">
+        <button id="editMoreBtn" onclick="openListingOptions()" style="width:32px;height:32px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 20 20" fill="#1c1c1c"><circle cx="4" cy="10" r="1.8"/><circle cx="10" cy="10" r="1.8"/><circle cx="16" cy="10" r="1.8"/></svg></button>
+        <button class="edit-nav-close" id="editCloseBtn" onclick="closeEditPageDirect()" style="display:none"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+      </div>
     </div>
     <div class="edit-scroll">
 
@@ -2374,6 +2414,167 @@
     <div class="edit-footer">
       <button class="edit-btn-draft" onclick="saveDraft()">Save Draft</button>
       <button class="edit-btn-publish" onclick="publishListing()">Publish</button>
+    </div>
+  </div>
+
+  <!-- ═══ PRODUCT LISTING PAGE ═══ -->
+  <div class="edit-page" id="productPage">
+    <div style="height:54px;flex-shrink:0"></div>
+    <div class="edit-nav">
+      <button class="edit-nav-back" id="productBackBtn" onclick="closeProductPage()"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></button>
+      <span class="edit-nav-title" id="productNavTitle">Create Listing</span>
+      <div style="position:absolute;right:16px;display:flex;gap:8px;align-items:center">
+        <button id="productCloseBtn" onclick="closeProductPageDirect()" style="width:32px;height:32px;border:none;background:none;cursor:pointer;display:none;align-items:center;justify-content:center"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+      </div>
+    </div>
+    <div class="edit-scroll">
+      <!-- Header (null state) -->
+      <div id="productNullHeader" style="display:none;padding:8px 16px 12px">
+        <div style="font-size:18px;font-weight:600;line-height:23px;letter-spacing:-0.44px;color:#1c1c1c">What are you creating?</div>
+      </div>
+
+      <!-- Category -->
+      <div class="edit-field" onclick="openCategorySheet()" style="cursor:pointer">
+        <div class="edit-field-label">Category <span class="required">*</span></div>
+        <div class="edit-field-value"><span id="productCategory">Women's Contemporary</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+      </div>
+
+      <!-- Product / Surprise Set Toggle -->
+      <div style="display:flex;gap:8px;padding:0 16px 12px">
+        <div id="toggleProduct" onclick="selectProductType('product')" style="flex:1;padding:12px;border-radius:8px;background:#1c1c1c;cursor:pointer">
+          <div style="font-size:14px;font-weight:600;line-height:19px;color:white">Product</div>
+          <div style="font-size:12px;font-weight:400;line-height:16px;color:rgba(255,255,255,0.6);margin-top:2px">A listing for a single product.</div>
+        </div>
+        <div id="toggleSurprise" onclick="selectProductType('surprise')" style="flex:1;padding:12px;border-radius:8px;background:rgba(0,0,0,0.05);cursor:pointer">
+          <div style="font-size:14px;font-weight:600;line-height:19px;color:#1c1c1c">Surprise Set</div>
+          <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454;margin-top:2px">A listing with multiple hidden items revealed live.</div>
+        </div>
+      </div>
+
+      <!-- Product Details Section -->
+      <div style="padding:12px 16px 8px">
+        <div style="font-size:18px;font-weight:600;line-height:23px;letter-spacing:-0.44px;color:#1c1c1c">Product Details</div>
+      </div>
+
+      <!-- Media Upload -->
+      <div class="edit-media-field">
+        <img src="icons/camera.svg" alt="">
+        <span>Capture, Scan or Upload Media*</span>
+      </div>
+
+      <!-- Title -->
+      <div class="edit-field">
+        <div class="edit-field-label">Title <span class="required">*</span></div>
+        <div class="edit-field-value">
+          <input type="text" value="" id="productTitleInput" placeholder="Title" onfocus="this.style.fontWeight='600';this.style.color='#1c1c1c'" style="border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;width:100%;background:transparent">
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="edit-field">
+        <div class="edit-field-label">Description <span class="required">*</span></div>
+        <div class="edit-field-value">
+          <input type="text" value="" id="productDescInput" placeholder="Description" style="border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;width:100%;background:transparent">
+        </div>
+      </div>
+
+      <!-- Quantity -->
+      <div class="edit-field" style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div class="edit-field-label">Quantity Available <span class="required">*</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button onclick="adjustQty(-1)" style="width:32px;height:32px;border-radius:50%;border:1px solid rgba(0,0,0,0.2);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:#1c1c1c">−</button>
+          <span id="productQty" style="font-size:14px;font-weight:600;color:#1c1c1c;min-width:20px;text-align:center">1</span>
+          <button onclick="adjustQty(1)" style="width:32px;height:32px;border-radius:50%;border:1px solid rgba(0,0,0,0.2);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:#1c1c1c">+</button>
+        </div>
+      </div>
+
+      <!-- Brand -->
+      <div class="edit-field">
+        <div class="edit-field-label" id="productBrandLabel" style="display:none">Brand</div>
+        <div class="edit-field-value"><span id="productBrand" style="color:#545454;font-weight:400">Brand</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+      </div>
+
+      <!-- Size -->
+      <div class="edit-chips-field">
+        <div class="edit-chips-label">Size</div>
+        <div class="edit-chips">
+          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">OS</span>
+          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">XS</span>
+          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">S</span>
+          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">M</span>
+          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">L</span>
+          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">XL</span>
+          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">XXL</span>
+        </div>
+      </div>
+
+      <!-- Condition -->
+      <div class="edit-chips-field">
+        <div class="edit-chips-label">Condition</div>
+        <div class="edit-chips">
+          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">New w Tag</span>
+          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">New w/out Tag</span>
+          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">New w Defect</span>
+        </div>
+      </div>
+
+      <!-- Condition helper -->
+      <div class="edit-helper">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="8" r="6"/><path d="M8 5.5v3M8 10.5h.01"/></svg>
+        <span>Accurate condition reduces refunds and disputes.</span>
+      </div>
+
+      <!-- Add More Details -->
+      <div class="edit-field" style="cursor:pointer">
+        <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Add More Details</div>
+        <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454;margin-top:2px">Add more product attributes to this item.</div>
+        <svg viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);width:20px;height:20px"><path d="M8 4l6 6-6 6"/></svg>
+      </div>
+
+      <!-- Product Variants Section -->
+      <div style="padding:12px 16px 8px">
+        <div style="font-size:18px;font-weight:600;line-height:23px;letter-spacing:-0.44px;color:#1c1c1c">Product Variants</div>
+      </div>
+
+      <div class="edit-field" style="cursor:pointer;position:relative">
+        <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Manage Variants</div>
+        <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454;margin-top:2px">Include available colors, sizes, and quantities.</div>
+        <svg viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);width:20px;height:20px"><path d="M8 4l6 6-6 6"/></svg>
+      </div>
+
+      <div class="edit-divider"></div>
+
+      <!-- Shipping -->
+      <div class="edit-section-title">Shipping</div>
+
+      <div class="edit-field">
+        <div class="edit-field-label" id="productWeightLabel" style="display:none">Weight <span class="required">*</span></div>
+        <div class="edit-field-value"><span id="productWeight" style="color:#545454;font-weight:400">Weight *</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+      </div>
+
+      <div class="edit-helper">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="8" r="6"/><path d="M8 5.5v3M8 10.5h.01"/></svg>
+        <span>Sellers cover any shipping adjustments.</span>
+      </div>
+
+      <div style="margin:0 16px 12px;border-radius:8px;overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 16px;border:1px solid rgba(0,0,0,0.2);border-radius:8px 8px 0 0">
+          <span style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454">Restricted Items</span>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#545454" stroke-width="1.5" stroke-linecap="round"><path d="M6 8l4 4 4-4"/></svg>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 16px;background:#f3f3f3;border-radius:0 0 8px 8px">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1c1c1c" stroke-width="1.2" style="flex-shrink:0;margin-top:1px"><circle cx="8" cy="8" r="6"/><path d="M8 5.5v3M8 10.5h.01"/></svg>
+          <span style="font-size:12px;font-weight:400;line-height:16px;color:#1c1c1c">Carriers restrict the shipping of any items that may pose risks to <a href="#" style="color:#005ae1;text-decoration:none">health and safety</a>.</span>
+        </div>
+      </div>
+
+      <div style="height:24px"></div>
+    </div>
+    <div class="edit-footer">
+      <button class="edit-btn-draft">Save Draft</button>
+      <button class="edit-btn-next" onclick="closeProductPageDirect()">Next</button>
     </div>
   </div>
 
@@ -2572,6 +2773,43 @@
     </div>
   </div>
 
+  <!-- Listing Options Sheet -->
+  <div class="bottom-sheet-overlay" id="listingOptionsSheet" onclick="closeListingOptions()">
+    <div class="bottom-sheet" onclick="event.stopPropagation()" style="padding-bottom:40px">
+      <div style="display:flex;flex-direction:column;height:24px;align-items:center;padding:8px 50px;border-radius:24px 24px 0 0">
+        <div style="width:40px;height:4px;background:#f3efee;border-radius:30px"></div>
+      </div>
+      <div style="height:48px;display:flex;align-items:center;justify-content:center">
+        <span style="font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#121212">Listing Options</span>
+      </div>
+      <div style="padding:16px 16px 0">
+        <!-- Edit Listing -->
+        <div onclick="closeListingOptions()" style="display:flex;gap:12px;align-items:flex-start;min-height:56px;padding:12px 0;cursor:pointer">
+          <div style="width:40px;height:40px;border-radius:100px;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </div>
+          <div style="flex:1;display:flex;align-items:center;align-self:stretch"><span style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Edit Listing</span></div>
+        </div>
+        <div style="height:1px;background:rgba(0,0,0,0.1)"></div>
+        <!-- Duplicate -->
+        <div onclick="cloneTemplate()" style="display:flex;gap:12px;align-items:flex-start;min-height:56px;padding:12px 0;cursor:pointer">
+          <div style="width:40px;height:40px;border-radius:100px;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </div>
+          <div style="flex:1;display:flex;align-items:center;align-self:stretch"><span style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Duplicate</span></div>
+        </div>
+        <div style="height:1px;background:rgba(0,0,0,0.1)"></div>
+        <!-- Delete -->
+        <div onclick="closeListingOptions()" style="display:flex;gap:12px;align-items:flex-start;min-height:56px;padding:12px 0;cursor:pointer">
+          <div style="width:40px;height:40px;border-radius:100px;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+          </div>
+          <div style="flex:1;display:flex;align-items:center;align-self:stretch"><span style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Delete</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Create Sheet -->
   <div class="bottom-sheet-overlay" id="createSheet" onclick="closeCreateSheet()">
     <div class="bottom-sheet" onclick="event.stopPropagation()" style="padding-bottom:0">
@@ -2581,7 +2819,7 @@
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px 0">
         <!-- Create New Listing -->
-        <div onclick="closeCreateSheet()" style="background:#f3f3f3;border-radius:12px;padding:16px;position:relative;overflow:hidden;min-height:87px;cursor:pointer">
+        <div onclick="createNewListing()" style="background:#f3f3f3;border-radius:12px;padding:16px;position:relative;overflow:hidden;min-height:87px;cursor:pointer">
           <div style="position:relative;z-index:2">
             <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
             <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454;margin-top:4px">Create new listings or templates.</div>
@@ -2616,6 +2854,50 @@
 </div>
 
 <script>
+function openListingOptions() {
+  const sheet = document.getElementById('listingOptionsSheet');
+  sheet.style.display = 'block';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      sheet.classList.add('open');
+    });
+  });
+}
+
+function closeListingOptions() {
+  const sheet = document.getElementById('listingOptionsSheet');
+  sheet.classList.remove('open');
+  setTimeout(() => { sheet.style.display = 'none'; }, 350);
+}
+
+function cloneTemplate() {
+  closeListingOptions();
+  const titleInput = document.getElementById('editTitleInput');
+  const clonedTitle = (titleInput ? titleInput.value : 'Template') + ' (Copy)';
+
+  setTimeout(() => {
+    closeEditPageDirect();
+
+    setTimeout(() => {
+      const draftList = document.getElementById('invDraftList');
+      const newItem = document.createElement('div');
+      newItem.setAttribute('data-type', 'template');
+      newItem.setAttribute('onclick', "openEditPage(0,'inventory')");
+      newItem.style.cssText = 'display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start';
+      newItem.innerHTML = `
+        <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px">
+          <div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${clonedTitle}</div>
+          <div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div>
+          <div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div>
+        </div>
+      `;
+      draftList.insertBefore(newItem, draftList.firstChild);
+      switchInvTab('draft');
+    }, 450);
+  }, 380);
+}
+
 function openCreateSheet() {
   const sheet = document.getElementById('createSheet');
   sheet.style.display = 'block';
@@ -2898,14 +3180,17 @@ function openEditPage(templateIndex, returnTo) {
   const navTitle = document.getElementById('editNavTitle');
   const backBtn = document.getElementById('editBackBtn');
   const closeBtn = document.getElementById('editCloseBtn');
+  const moreBtn = document.getElementById('editMoreBtn');
   if (isNull) {
     navTitle.textContent = 'Create Template';
     backBtn.style.display = 'none';
     closeBtn.style.display = 'flex';
+    moreBtn.style.display = 'none';
   } else {
     navTitle.textContent = 'Templates';
     backBtn.style.display = 'flex';
     closeBtn.style.display = 'none';
+    moreBtn.style.display = 'flex';
   }
 
   // Reset all chips for null state
@@ -3048,6 +3333,133 @@ function closeEditPageDirect() {
   }
 }
 
+// ═══ PRODUCT PAGE ═══
+let productQty = 1;
+let productVertical = false;
+
+function openProductPage(title, attrs, isNew) {
+  const page = document.getElementById('productPage');
+  const titleInput = document.getElementById('productTitleInput');
+  const descInput = document.getElementById('productDescInput');
+  const navTitle = document.getElementById('productNavTitle');
+  const backBtn = document.getElementById('productBackBtn');
+  const closeBtn = document.getElementById('productCloseBtn');
+  const nullHeader = document.getElementById('productNullHeader');
+
+  productVertical = isNew;
+
+  if (isNew) {
+    navTitle.textContent = 'Create Listing';
+    backBtn.style.display = 'none';
+    closeBtn.style.display = 'flex';
+    nullHeader.style.display = 'block';
+    titleInput.value = '';
+    titleInput.placeholder = 'Title';
+    titleInput.style.fontWeight = '400';
+    titleInput.style.color = '#545454';
+    descInput.value = '';
+    descInput.placeholder = 'Description';
+    productQty = 1;
+  } else {
+    navTitle.textContent = 'Edit Listing';
+    backBtn.style.display = 'flex';
+    closeBtn.style.display = 'none';
+    nullHeader.style.display = 'none';
+    titleInput.value = title || '';
+    titleInput.style.fontWeight = '600';
+    titleInput.style.color = '#1c1c1c';
+    descInput.value = 'A stylish piece that is light and comfortable.';
+    productQty = 1;
+  }
+  document.getElementById('productQty').textContent = productQty;
+
+  if (productVertical) {
+    page.style.transition = 'none';
+    page.style.transform = 'translateY(100%)';
+    page.classList.add('active');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        page.style.transition = 'transform 0.45s cubic-bezier(0.32, 0.72, 0, 1)';
+        page.style.transform = 'translateY(0)';
+      });
+    });
+  } else {
+    const invPage = document.getElementById('inventoryPage');
+    if (invPage && invPage.style.display === 'flex') {
+      invPage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
+      invPage.style.transform = 'translateX(-30%)';
+      invPage.style.opacity = '0.3';
+    }
+    page.classList.add('active');
+  }
+}
+
+function closeProductPage() {
+  closeProductPageDirect();
+}
+
+function closeProductPageDirect() {
+  const page = document.getElementById('productPage');
+
+  if (productVertical) {
+    page.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+    page.style.transform = 'translateY(100%)';
+    setTimeout(() => {
+      page.style.transition = 'none';
+      page.classList.remove('active');
+      page.style.transform = '';
+      requestAnimationFrame(() => { page.style.transition = ''; });
+      productVertical = false;
+    }, 420);
+  } else {
+    page.classList.remove('active');
+    const invPage = document.getElementById('inventoryPage');
+    if (invPage) {
+      invPage.style.transform = '';
+      invPage.style.opacity = '';
+      setTimeout(() => { invPage.style.transition = ''; }, 400);
+    }
+  }
+}
+
+function adjustQty(delta) {
+  productQty = Math.max(1, productQty + delta);
+  document.getElementById('productQty').textContent = productQty;
+}
+
+function selectProductType(type) {
+  const product = document.getElementById('toggleProduct');
+  const surprise = document.getElementById('toggleSurprise');
+  if (type === 'product') {
+    product.style.background = '#1c1c1c';
+    product.querySelector('div:first-child').style.color = 'white';
+    product.querySelector('div:last-child').style.color = 'rgba(255,255,255,0.6)';
+    surprise.style.background = 'rgba(0,0,0,0.05)';
+    surprise.querySelector('div:first-child').style.color = '#1c1c1c';
+    surprise.querySelector('div:last-child').style.color = '#545454';
+  } else {
+    surprise.style.background = '#1c1c1c';
+    surprise.querySelector('div:first-child').style.color = 'white';
+    surprise.querySelector('div:last-child').style.color = 'rgba(255,255,255,0.6)';
+    product.style.background = 'rgba(0,0,0,0.05)';
+    product.querySelector('div:first-child').style.color = '#1c1c1c';
+    product.querySelector('div:last-child').style.color = '#545454';
+  }
+}
+
+function openProductFromRow(el) {
+  const titleEl = el.querySelector('[style*="font-size:14px"]');
+  const title = titleEl ? titleEl.textContent : '';
+  openProductPage(title, '', false);
+}
+
+function createNewListing() {
+  closeCreateSheet();
+  setTimeout(() => {
+    openProductPage('', '', true);
+  }, 350);
+}
+
 // Single-select chips
 function selectChip(el, group) {
   const parent = el.parentElement;
@@ -3159,10 +3571,23 @@ function publishListing() {
       resetNux();
     }
 
-    document.querySelector('.page').style.visibility = '';
-    document.querySelector('.page').style.display = 'none';
+    const homePage = document.querySelector('.page');
+    homePage.style.visibility = '';
+    homePage.style.display = 'flex';
+    homePage.style.transform = '';
+    homePage.style.opacity = '';
+    homePage.style.transition = '';
+
+    const nuxOverlay2 = document.getElementById('nuxOverlay');
+    if (nuxOverlay2) { nuxOverlay2.style.display = 'none'; }
     const nuxSlider = document.querySelector('.nux-slider');
     if (nuxSlider) { nuxSlider.style.transform = ''; nuxSlider.style.opacity = ''; nuxSlider.style.transition = ''; }
+
+    const menuPage = document.getElementById('menuPage');
+    menuPage.classList.remove('active');
+    menuPage.style.transform = '';
+    menuPage.style.opacity = '';
+    menuPage.style.transition = '';
 
     const invPage = document.getElementById('inventoryPage');
     invPage.style.display = 'flex';
@@ -3174,7 +3599,18 @@ function publishListing() {
     switchInvTab('active');
 
     loader.classList.remove('visible');
+    showPublishToast();
   }, 1800);
+}
+
+function showPublishToast() {
+  const toast = document.getElementById('publishToast');
+  requestAnimationFrame(() => {
+    toast.classList.add('visible');
+    setTimeout(() => {
+      toast.classList.remove('visible');
+    }, 3000);
+  });
 }
 
 function moveItemToActive(title) {
