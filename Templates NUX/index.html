@@ -1,0 +1,3295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=393, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Whatnot Seller Hub</title>
+  <style>
+    :root {
+      --font: -apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+      --text-primary: #1c1c1c;
+      --text-primary-title: #161616;
+      --text-tertiary: #6f6f6f;
+      --text-secondary-data: #6a6a6a;
+      --text-negative: #ce291a;
+      --text-positive: #009e52;
+      --text-inactive: #545454;
+      --text-inverse: white;
+      --text-secondary-inverse: #d2d2d2;
+      --text-data: #121212;
+      --bg-canvas: #f3f3f3;
+      --bg-default: white;
+      --bg-inverse: #1c1c1c;
+      --stroke-subtle: #f3f3f3;
+      --stroke-container: rgba(0,0,0,0.1);
+      --icon-bg: rgba(0,0,0,0.05);
+      --primary-yellow: #ffe414;
+      --card-shadow: 0px 1px 8px 0px rgba(0,0,0,0.04);
+      --radius-card: 16px;
+      --radius-rounded: 999px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: var(--font);
+      background: #1a1a1a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .phone-frame {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .phone-bezel {
+      position: absolute;
+      inset: -8px;
+      border-radius: 58px;
+      border: 8px solid #2a2a2a;
+      box-shadow:
+        inset 0 0 0 1.5px #444,
+        0 0 0 1px #111,
+        0 20px 60px rgba(0,0,0,0.6);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .device {
+      width: 393px;
+      height: 852px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 50px;
+      z-index: 2;
+    }
+
+    .page {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-canvas);
+      z-index: 1;
+    }
+
+    /* ═══ SELLER TOOLS PAGE ═══ */
+    .menu-page {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      background: #f3f3f3;
+      z-index: 5;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+      pointer-events: none;
+    }
+    .menu-page.active {
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+    .menu-section {
+      background: white;
+      border-radius: 16px;
+      margin: 0 16px 12px;
+      padding: 4px 0;
+    }
+    .menu-section-title {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 23px;
+      letter-spacing: -0.44px;
+      color: #1c1c1c;
+      padding: 12px 16px 8px;
+    }
+    .menu-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .menu-row:active { background: rgba(0,0,0,0.03); }
+    .menu-row-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .menu-row-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+    .menu-row-label {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #1c1c1c;
+    }
+    .menu-row-trailing {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .menu-row-badge {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef233c;
+    }
+    .menu-row-chevron {
+      width: 20px;
+      height: 20px;
+    }
+    .menu-toggle-track {
+      width: 51px;
+      height: 31px;
+      border-radius: 16px;
+      background: rgba(0,0,0,0.1);
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .menu-toggle-track.on { background: #34c759; }
+    .menu-toggle-thumb {
+      width: 27px;
+      height: 27px;
+      border-radius: 50%;
+      background: white;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+      transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .menu-toggle-track.on .menu-toggle-thumb { transform: translateX(20px); }
+
+    /* ═══ STATUS BAR ═══ */
+    .global-status-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 54px;
+      z-index: 9999;
+      background: white;
+    }
+    .status-bar {
+      height: 54px;
+      flex-shrink: 0;
+      position: relative;
+      width: 100%;
+    }
+    .status-bar-time {
+      position: absolute;
+      left: 0;
+      right: 64.25%;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .status-bar-time span {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .status-bar-levels {
+      position: absolute;
+      left: 64.25%;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .sb-icons {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .sb-cellular { width: 17px; height: 12px; }
+    .sb-wifi { width: 16px; height: 12px; }
+    .sb-battery-wrap {
+      display: flex;
+      align-items: center;
+      gap: 1px;
+    }
+    .sb-battery {
+      width: 25px;
+      height: 12px;
+      border: 1px solid var(--text-primary);
+      border-radius: 4.3px;
+      opacity: 0.35;
+      position: relative;
+    }
+    .sb-battery-fill {
+      position: absolute;
+      inset: 1.5px;
+      background: var(--text-primary);
+      border-radius: 2.5px;
+      opacity: 1;
+    }
+    .sb-battery-cap {
+      width: 1.5px;
+      height: 4px;
+      background: var(--text-primary);
+      opacity: 0.4;
+      border-radius: 0 1px 1px 0;
+    }
+
+    /* ═══ HEADER ═══ */
+    .sh-header {
+      height: 56px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 16px 8px;
+      gap: 12px;
+    }
+    .sh-header h1 {
+      flex: 1;
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 30px;
+      letter-spacing: 0.07px;
+      color: var(--text-primary-title);
+    }
+    .sh-header-nav {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 4px;
+    }
+    .sh-header-nav img { width: 24px; height: 24px; }
+
+    /* ═══ BODY SCROLL ═══ */
+    .sh-body {
+      flex: 1;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 16px 16px 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .sh-body::-webkit-scrollbar { display: none; }
+
+    /* ═══ BUTTONS ROW ═══ */
+    .sh-buttons {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+    .sh-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px;
+      border-radius: var(--radius-rounded);
+      background: var(--bg-default);
+      border: none;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 16px;
+      letter-spacing: -0.2px;
+      color: var(--text-primary);
+      transition: opacity 150ms ease;
+    }
+    .sh-btn:active { opacity: 0.7; }
+
+    /* ═══ CARD ═══ */
+    .card {
+      background: var(--bg-default);
+      border-radius: var(--radius-card);
+      box-shadow: var(--card-shadow);
+      padding: 16px;
+      width: 100%;
+    }
+    .card-no-shadow { box-shadow: none; }
+
+    /* ═══ SECTION HEADER ═══ */
+    .section-header {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      width: 100%;
+    }
+    .section-header h2 {
+      flex: 1;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 23px;
+      letter-spacing: -0.44px;
+      color: var(--text-primary);
+    }
+    .section-chevron {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .section-chevron img {
+      width: 7px;
+      height: 12px;
+      transform: rotate(180deg);
+    }
+
+    /* ═══ TASKS CARD ═══ */
+    .tasks-card {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .tasks-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .task-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      width: 100%;
+    }
+    .task-leading {
+      width: 40px;
+      height: 40px;
+      border-radius: 100px;
+      background: var(--icon-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .task-leading img, .task-leading svg { width: 20px; height: 20px; }
+    .task-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      justify-content: center;
+      align-self: stretch;
+    }
+    .task-title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: var(--text-primary);
+    }
+    .task-status {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      color: var(--text-negative);
+    }
+    .task-trailing {
+      display: flex;
+      gap: 2px;
+      align-items: center;
+      justify-content: flex-end;
+      align-self: stretch;
+      flex-shrink: 0;
+    }
+    .task-count {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 12px;
+      color: var(--text-tertiary);
+    }
+    .trailing-chevron {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .trailing-chevron img {
+      width: 7px;
+      height: 12px;
+      transform: rotate(180deg);
+    }
+
+    /* ═══ BANNER CARD ═══ */
+    .banner-card {
+      background: var(--bg-inverse);
+      border-radius: var(--radius-card);
+      position: relative;
+      width: 100%;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .banner-card:active {
+      opacity: 0.9;
+      transform: scale(0.98);
+    }
+    .banner-content {
+      padding: 16px 140px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+      z-index: 2;
+    }
+    .banner-title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: var(--text-inverse);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .banner-desc {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      color: var(--text-secondary-inverse);
+    }
+    .banner-cta {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+      color: var(--primary-yellow);
+      margin-top: 8px;
+    }
+    .banner-image {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 140px;
+      z-index: 1;
+      overflow: hidden;
+      border-radius: 0 var(--radius-card) var(--radius-card) 0;
+    }
+    .banner-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .banner-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, var(--bg-inverse) 0%, transparent 40%);
+    }
+    .banner-tags {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 3;
+      overflow: hidden;
+      border-radius: 0 var(--radius-card) var(--radius-card) 0;
+    }
+    .banner-tag {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 5.72px;
+      font-weight: 500;
+      color: white;
+      white-space: nowrap;
+    }
+
+    /* ═══ SHOWS CARD ═══ */
+    .shows-card {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .shows-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .show-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      height: 48px;
+      width: 100%;
+      position: relative;
+    }
+    .show-leading {
+      width: 48px;
+      height: 48px;
+      border-radius: 4px;
+      border: 1px solid var(--stroke-container);
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .show-leading img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .show-leading-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.2);
+    }
+    .show-bookmark {
+      position: absolute;
+      top: 9px;
+      left: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: center;
+      z-index: 2;
+    }
+    .show-bookmark img { width: 16px; height: 16px; }
+    .show-bookmark-count {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+      color: var(--text-inverse);
+    }
+    .show-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      justify-content: center;
+      min-width: 0;
+    }
+    .show-title {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: var(--text-primary-title);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .show-meta {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      color: var(--text-tertiary);
+    }
+    .show-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .show-action {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 150ms ease;
+    }
+    .show-action:active { opacity: 0.6; }
+    .show-action img { width: 20px; height: 20px; }
+    .show-action span {
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 12px;
+      letter-spacing: 0.12px;
+      color: var(--text-primary);
+    }
+
+    /* ═══ METRICS (Account Health, Customer Support) ═══ */
+    .metrics-card {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .metrics-row {
+      display: flex;
+      width: 100%;
+    }
+    .metric {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .metric:first-child { padding-right: 16px; }
+    .metric:last-child { padding-left: 16px; }
+    .metric-bordered {
+      border-left: 1px solid var(--stroke-subtle);
+      border-right: 1px solid var(--stroke-subtle);
+      padding: 0 16px;
+    }
+    .metric-label {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: var(--text-primary);
+    }
+    .metric-value {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 23px;
+      letter-spacing: -0.44px;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ═══ PAYOUTS + ORDERS ROW ═══ */
+    .dual-cards {
+      display: flex;
+      gap: 16px;
+      width: 100%;
+    }
+    .dual-card {
+      flex: 1;
+      background: var(--bg-default);
+      border-radius: var(--radius-card);
+      box-shadow: var(--card-shadow);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-width: 0;
+    }
+    .dual-card-value {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 23px;
+      letter-spacing: -0.44px;
+      color: var(--text-data);
+    }
+    .dual-card-label {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: var(--text-data);
+    }
+    .dual-card-meta {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      color: var(--text-secondary-data);
+    }
+    .dual-card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    /* ═══ BOTTOM TAB BAR ═══ */
+    .tab-bar {
+      height: 94px;
+      flex-shrink: 0;
+      background: var(--bg-default);
+      border-top: 1px solid var(--stroke-container);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 4px 8px 34px;
+      position: relative;
+    }
+    .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      align-items: center;
+      cursor: pointer;
+      transition: opacity 150ms ease;
+    }
+    .tab-item:active { opacity: 0.6; }
+    .tab-icon-wrap {
+      display: flex;
+      padding: 4px;
+      position: relative;
+    }
+    .tab-icon-wrap img { width: 24px; height: 24px; }
+    .tab-red-dot {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 6px;
+      height: 6px;
+    }
+    .tab-red-dot img { width: 6px; height: 6px; }
+    .tab-label {
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 12px;
+      letter-spacing: 0.12px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .tab-label-active { color: var(--text-primary); }
+    .tab-label-inactive { color: var(--text-inactive); }
+    .tab-profile {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+    .tab-profile img { width: 100%; height: 100%; object-fit: cover; }
+
+    .home-indicator {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 134px;
+      height: 5px;
+      background: #404040;
+      border-radius: 100px;
+    }
+
+    /* ═══ NUX OVERLAY ═══ */
+    .nux-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 100;
+      background: white;
+      transform: translateY(100%);
+      transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+      border-radius: 24px;
+      overflow: hidden;
+    }
+    .nux-overlay.open { transform: translateY(0); }
+    .nux-overlay.dismissing {
+      transform: translateY(100%);
+      transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    .nux-slider {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .nux-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      background: white;
+      transform: translateX(100%);
+      transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.5s ease;
+      will-change: transform, opacity;
+    }
+    .nux-slide.active { transform: translateX(0); opacity: 1; }
+    .nux-slide.prev { transform: translateX(-30%); opacity: 0.3; }
+
+    /* NUX Nav bar */
+    .nux-nav {
+      height: 100px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      padding: 0 16px 8px;
+      flex-shrink: 0;
+    }
+    .nux-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.15s;
+    }
+    .nux-close:active { opacity: 0.6; }
+    .nux-close svg { width: 20px; height: 20px; }
+
+    /* NUX Content area */
+    .nux-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 16px;
+      overflow: hidden;
+    }
+
+    /* Hero areas */
+    .nux-hero {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Step 1 hero - yellow blob with product images */
+    .hero1-blob {
+      position: absolute;
+      width: 357px;
+      height: 250px;
+      border-radius: 50%;
+      background: #ffe414;
+      top: 50%;
+      left: 50%;
+      transform: translate(-43%, -48%) skewX(-8deg);
+    }
+    .hero1-img1 {
+      position: absolute;
+      width: 249px;
+      height: 249px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-60%, -42%) rotate(3.5deg);
+      z-index: 3;
+      object-fit: cover;
+      filter: drop-shadow(0 8px 24px rgba(0,0,0,0.15));
+      border-radius: 8px;
+    }
+    .hero1-img2 {
+      position: absolute;
+      width: 212px;
+      height: 169px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-10%, -72%) rotate(130deg) scaleY(-1);
+      z-index: 2;
+      object-fit: cover;
+      filter: drop-shadow(0 8px 24px rgba(0,0,0,0.15));
+      border-radius: 8px;
+    }
+    .hero1-box {
+      position: absolute;
+      width: 120px;
+      height: 117px;
+      bottom: 8%;
+      right: 12%;
+      transform: rotate(-60deg);
+      z-index: 1;
+      object-fit: cover;
+    }
+    .hero1-bolt {
+      position: absolute;
+      width: 75px;
+      height: 75px;
+      top: 38%;
+      left: 6%;
+      transform: rotate(15deg);
+      z-index: 4;
+      object-fit: cover;
+    }
+
+    /* Step 2 hero - green blob with form cards */
+    .hero2-blob {
+      position: absolute;
+      width: 523px;
+      height: 549px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-46%, -54%) rotate(-170deg);
+      z-index: 0;
+    }
+    .hero2-blob img {
+      width: 100%;
+      height: 100%;
+    }
+    .hero2-cards {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 329px;
+      z-index: 2;
+    }
+    .form-card {
+      background: white;
+      border-radius: 12px;
+      padding: 12px 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    .form-card-label {
+      font-size: 12px;
+      color: #6f6f6f;
+      margin-bottom: 8px;
+      font-weight: 400;
+      line-height: 16px;
+    }
+    .form-card-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: nowrap;
+      overflow: hidden;
+    }
+    .nux-chip {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 16px;
+      letter-spacing: -0.2px;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .nux-chip-dark { background: #1c1c1c; color: white; }
+    .nux-chip-light { background: rgba(0,0,0,0.05); color: #1c1c1c; }
+    .form-card-brand {
+      background: white;
+      border-radius: 12px;
+      padding: 12px 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-left .brand-label { font-size: 12px; color: #6f6f6f; line-height: 16px; }
+    .brand-left .brand-value { font-size: 14px; font-weight: 600; color: #1c1c1c; margin-top: 2px; line-height: 19px; letter-spacing: -0.15px; }
+
+    /* Step 3 hero - phone mockup */
+    .hero3-phone {
+      width: 200px;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0px 21px 35px -4px rgba(0,0,0,0.08), 0px 5px 14px -2px rgba(0,0,0,0.04);
+    }
+    .hero3-phone img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Copy block */
+    .nux-copy {
+      padding: 0 16px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .nux-copy h2 {
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 30px;
+      letter-spacing: 0.07px;
+      color: #161616;
+      margin-bottom: 8px;
+    }
+    .nux-copy p {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #1c1c1c;
+    }
+
+    /* Button tray */
+    .nux-buttons {
+      padding: 16px 16px 34px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .btn-primary {
+      width: 100%;
+      height: 44px;
+      border-radius: 999px;
+      background: #ffe414;
+      border: none;
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 20px;
+      letter-spacing: -0.41px;
+      color: #1c1c1c;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:active { opacity: 0.8; }
+    .btn-tertiary {
+      width: 100%;
+      height: 44px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.1);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      border: none;
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 20px;
+      letter-spacing: -0.41px;
+      color: #1c1c1c;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-tertiary:active { opacity: 0.8; }
+
+    .nux-home-indicator {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 135px;
+      height: 5px;
+      background: #1c1c1c;
+      border-radius: 100px;
+    }
+
+    /* Step 4 - Templates list */
+    .nux-templates-copy {
+      padding: 0 16px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .nux-templates-copy h2 {
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 30px;
+      letter-spacing: 0.07px;
+      color: #161616;
+      margin-bottom: 8px;
+    }
+    .nux-templates-copy p {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #1c1c1c;
+    }
+    .nux-templates-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 16px;
+      width: 100%;
+    }
+    .tpl-card {
+      display: flex;
+      gap: 12px;
+      padding: 8px 0;
+      align-items: center;
+    }
+    .tpl-thumb {
+      width: 140px;
+      height: 140px;
+      border-radius: 8px;
+      background: #2a2a2a;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .tpl-thumb svg { width: 40px; height: 40px; opacity: 0.4; }
+    .tpl-thumb-label {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.11px;
+      line-height: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tpl-label-red { background: #ef233c; color: white; }
+    .tpl-label-green { background: rgba(0,158,82,0.1); color: #009e52; }
+    .tpl-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .tpl-details { display: flex; flex-direction: column; gap: 4px; }
+    .tpl-status {
+      display: inline-flex;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.11px;
+      line-height: 16px;
+      align-self: flex-start;
+    }
+    .tpl-status-red { background: rgba(206,41,26,0.1); color: #ce291a; }
+    .tpl-status-green { background: rgba(0,158,82,0.1); color: #009e52; }
+    .tpl-title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #1c1c1c;
+    }
+    .tpl-attr {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: #7f7f7f;
+    }
+    .tpl-price {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: #1c1c1c;
+    }
+    .tpl-edit-btn {
+      height: 32px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.1);
+      backdrop-filter: blur(32px);
+      border: none;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      line-height: 16px;
+      color: #1c1c1c;
+      cursor: pointer;
+      padding: 0 16px;
+    }
+
+    /* Loader */
+    .nux-loader {
+      position: absolute;
+      inset: 0;
+      background: white;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      z-index: 110;
+      border-radius: 24px;
+    }
+    .nux-loader.visible { display: flex; }
+    .nux-loader-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #e5e5e5;
+      border-top-color: #1c1c1c;
+      border-radius: 50%;
+      animation: nuxSpin 0.7s linear infinite;
+    }
+    @keyframes nuxSpin { to { transform: rotate(360deg); } }
+    .nux-loader p {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1c1c1c;
+      letter-spacing: -0.41px;
+    }
+
+    .publish-loader {
+      position: absolute;
+      inset: 0;
+      background: white;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      z-index: 500;
+      border-radius: 24px;
+    }
+    .publish-loader.visible { display: flex; }
+    .publish-loader .nux-loader-spinner { width: 40px; height: 40px; }
+    .publish-loader p {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1c1c1c;
+      letter-spacing: -0.41px;
+    }
+
+    /* ═══ TEMPLATE EDIT PAGE ═══ */
+.edit-page {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  z-index: 200;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease;
+  pointer-events: none;
+}
+.edit-page.active {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+.edit-page.parallax-behind {
+  transform: translateX(-30%);
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+    .edit-nav {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 16px;
+      flex-shrink: 0;
+    }
+    .edit-nav-title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.41px;
+      color: #161616;
+    }
+    .edit-nav-close {
+      position: absolute;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .edit-nav-close svg { width: 20px; height: 20px; }
+    .edit-nav-back {
+      position: absolute;
+      left: 16px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .edit-nav-back svg { width: 20px; height: 20px; }
+
+    .edit-scroll {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .edit-section-title {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 23px;
+      letter-spacing: -0.44px;
+      color: #1c1c1c;
+      padding: 16px 16px 12px;
+    }
+
+    .edit-field {
+      margin: 0 16px 12px;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 12px;
+      padding: 12px 16px;
+    }
+    .edit-field-label {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      color: #6f6f6f;
+      margin-bottom: 4px;
+    }
+    .edit-field-label .required { color: #ce291a; }
+    .edit-field-value {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #1c1c1c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .edit-field-value svg { width: 20px; height: 20px; color: #6f6f6f; flex-shrink: 0; }
+
+    .edit-chips-field {
+      margin: 0 16px 12px;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 12px;
+      padding: 12px 0 12px 16px;
+      overflow: hidden;
+    }
+    .edit-chips-label {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      color: #6f6f6f;
+      margin-bottom: 8px;
+    }
+    .edit-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-right: 16px;
+    }
+    .edit-chips::-webkit-scrollbar { display: none; }
+    .edit-chip { flex-shrink: 0; }
+    .edit-chip {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 16px;
+      letter-spacing: -0.2px;
+      cursor: pointer;
+    }
+    .edit-chip-on { background: #1c1c1c; color: white; }
+    .edit-chip-off { background: rgba(0,0,0,0.05); color: #1c1c1c; }
+
+    .edit-media-field {
+      margin: 0 16px 12px;
+      border: 1px solid #d2d2d2;
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+    }
+    .edit-media-field img { width: 24px; height: 24px; }
+    .edit-media-field span {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: #545454;
+      text-align: center;
+    }
+
+    .edit-divider {
+      height: 4px;
+      background: rgba(0,0,0,0.1);
+      margin: 12px 0;
+    }
+
+    .edit-helper {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      padding: 4px 16px 12px;
+    }
+    .edit-helper svg { width: 16px; height: 16px; color: #6f6f6f; flex-shrink: 0; margin-top: 1px; }
+    .edit-helper span {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      color: #6f6f6f;
+    }
+    .edit-helper a { color: #ef233c; text-decoration: none; }
+
+    .edit-footer {
+      display: flex;
+      gap: 8px;
+      padding: 16px 16px 34px;
+      flex-shrink: 0;
+      background: white;
+    }
+    .edit-btn-draft {
+      flex: 1;
+      height: 44px;
+      border-radius: 999px;
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.41px;
+      color: #1c1c1c;
+      cursor: pointer;
+    }
+    .edit-btn-next {
+      flex: 1;
+      height: 44px;
+      border-radius: 999px;
+      background: #ffe414;
+      border: none;
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.41px;
+      color: #1c1c1c;
+      cursor: pointer;
+    }
+    .edit-btn-publish {
+      flex: 1;
+      height: 44px;
+      border-radius: 999px;
+      background: #ffe414;
+      border: none;
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.41px;
+      color: #1c1c1c;
+      cursor: pointer;
+    }
+
+    /* ═══ BOTTOM SHEET ═══ */
+    .bottom-sheet-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 300;
+      display: none;
+      transition: opacity 0.3s ease;
+      opacity: 0;
+      border-radius: 24px;
+    }
+    .bottom-sheet-overlay.open { display: block; opacity: 1; }
+    .bottom-sheet {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 16px 16px 0 0;
+      max-height: 70%;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+      z-index: 301;
+    }
+    .bottom-sheet-overlay.open .bottom-sheet { transform: translateY(0); }
+    .bottom-sheet-handle {
+      width: 36px;
+      height: 5px;
+      background: #d9d9d9;
+      border-radius: 100px;
+      margin: 8px auto 0;
+      flex-shrink: 0;
+    }
+    .bottom-sheet-title {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 23px;
+      letter-spacing: -0.44px;
+      color: #1c1c1c;
+      padding: 16px 16px 12px;
+      flex-shrink: 0;
+    }
+    .bottom-sheet-list {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 34px;
+    }
+    .bottom-sheet-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 21px;
+      color: #1c1c1c;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .bottom-sheet-item:active { background: #f3f3f3; }
+    .bottom-sheet-item.selected { font-weight: 600; }
+    .bottom-sheet-item .check-mark {
+      width: 20px;
+      height: 20px;
+      display: none;
+    }
+    .bottom-sheet-item.selected .check-mark { display: block; }
+
+    /* ═══ CONFIRM MODAL ═══ */
+    .confirm-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 400;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border-radius: 24px;
+    }
+    .confirm-overlay.open { display: flex; }
+    .confirm-dialog {
+      background: white;
+      border-radius: 12px;
+      width: 361px;
+      overflow: hidden;
+      text-align: center;
+      box-shadow: 0px 2px 16px rgba(0,0,0,0.1);
+      padding-bottom: 16px;
+    }
+    .confirm-spacer { height: 12px; }
+    .confirm-body {
+      padding: 20px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .confirm-title {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 23px;
+      letter-spacing: -0.44px;
+      color: #121212;
+    }
+    .confirm-message {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: #343434;
+    }
+    .confirm-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 0 16px;
+    }
+    .confirm-btn-primary {
+      width: 100%;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      line-height: 16px;
+      color: #121212;
+      cursor: pointer;
+      border: none;
+      background: #ffe414;
+      border-radius: 999px;
+      transition: opacity 0.15s;
+    }
+    .confirm-btn-primary:active { opacity: 0.8; }
+    .confirm-btn-destructive {
+      width: 100%;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      line-height: 16px;
+      color: white;
+      cursor: pointer;
+      border: none;
+      background: #ce291a;
+      border-radius: 999px;
+      transition: opacity 0.15s;
+    }
+    .confirm-btn-destructive:active { opacity: 0.8; }
+
+    /* ═══ TOGGLE ═══ */
+    .toggle-track {
+      width: 51px;
+      height: 31px;
+      border-radius: 16px;
+      background: rgba(0,0,0,0.1);
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .toggle-track.on { background: #34c759; }
+    .toggle-thumb {
+      width: 27px;
+      height: 27px;
+      border-radius: 50%;
+      background: white;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+      transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .toggle-track.on .toggle-thumb { transform: translateX(20px); }
+  </style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="phone-bezel"></div>
+  <div class="device">
+
+  <!-- Global Status Bar -->
+  <div class="global-status-bar">
+    <div class="status-bar">
+      <div class="status-bar-time"><span>9:41</span></div>
+      <div class="status-bar-levels">
+        <div class="sb-icons">
+          <svg class="sb-cellular" viewBox="0 0 17 12" fill="var(--text-primary)"><rect x="0" y="8" width="3" height="4" rx="0.7"/><rect x="4.5" y="5.5" width="3" height="6.5" rx="0.7"/><rect x="9" y="3" width="3" height="9" rx="0.7"/><rect x="13.5" y="0" width="3" height="12" rx="0.7"/></svg>
+          <svg class="sb-wifi" viewBox="0 0 16 12" fill="var(--text-primary)"><path d="M8.36 9.3a1.8 1.8 0 1 1-0.72 0l0.36-0.05 0.36 0.05z"/><path d="M5.1 7.6a4.5 4.5 0 0 1 5.8 0l1.1-1.2a6.2 6.2 0 0 0-8 0L5.1 7.6z" opacity="0.9"/><path d="M2.8 5.2a7.8 7.8 0 0 1 10.4 0l1.1-1.2a9.5 9.5 0 0 0-12.6 0L2.8 5.2z" opacity="0.8"/><path d="M0.5 2.9A11.1 11.1 0 0 1 15.5 2.9l1.1-1.2A12.8 12.8 0 0 0-0.6 1.7L0.5 2.9z" opacity="0.55"/></svg>
+          <div class="sb-battery-wrap"><div class="sb-battery"><div class="sb-battery-fill"></div></div><div class="sb-battery-cap"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+
+    <div style="height:54px;flex-shrink:0"></div>
+
+    <!-- Header -->
+    <div class="sh-header">
+      <h1>Seller Hub</h1>
+      <div class="sh-header-nav">
+        <img src="icons/menu-lines.svg" alt="" onclick="openMenu()" style="width:14px;height:14px;cursor:pointer">
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="sh-body">
+
+      <!-- Buttons -->
+      <div class="sh-buttons">
+        <button class="sh-btn">Schedule Show</button>
+        <button class="sh-btn" onclick="openCreateSheet()">Create</button>
+      </div>
+
+      <!-- Today's Tasks -->
+      <div class="card tasks-card">
+        <div class="section-header">
+          <h2>Today's Tasks</h2>
+        </div>
+        <div class="tasks-list">
+          <!-- Customer Support -->
+          <div class="task-row">
+            <div class="task-leading">
+              <img src="icons/customer-support.svg" alt="" style="width:20px;height:20px">
+            </div>
+            <div class="task-content">
+              <div class="task-title">Customer Support</div>
+              <div class="task-status">2 due tomorrow at 6:30pm</div>
+            </div>
+            <div class="task-trailing">
+              <span class="task-count">5</span>
+              <div class="trailing-chevron">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
+              </div>
+            </div>
+          </div>
+          <!-- Needs Label -->
+          <div class="task-row">
+            <div class="task-leading">
+              <img src="icons/needs-label.svg" alt="" style="width:20px;height:20px">
+            </div>
+            <div class="task-content">
+              <div class="task-title">Needs Label</div>
+              <div class="task-status">2 overdue</div>
+            </div>
+            <div class="task-trailing">
+              <span class="task-count">7</span>
+              <div class="trailing-chevron">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
+              </div>
+            </div>
+          </div>
+          <!-- Ready to Ship -->
+          <div class="task-row">
+            <div class="task-leading">
+              <img src="icons/ready-to-ship.svg" alt="" style="width:20px;height:20px">
+            </div>
+            <div class="task-content">
+              <div class="task-title">Ready to Ship</div>
+              <div class="task-status">2 due tomorrow</div>
+            </div>
+            <div class="task-trailing">
+              <span class="task-count">11</span>
+              <div class="trailing-chevron">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Templates Banner (NUX entry point) -->
+      <div class="banner-card" onclick="openNux()" style="cursor:pointer">
+        <div class="banner-content">
+          <div class="banner-title">Introducing Templates</div>
+          <div class="banner-desc">Create once, sell forever. Set up reusable listings with interchangeable attributes for your shows.</div>
+          <div class="banner-cta">Discover Templates →</div>
+        </div>
+        <div class="banner-image">
+          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&q=80" alt="" loading="lazy">
+        </div>
+        <div class="banner-tags">
+          <div class="banner-tag">Type: Shoes</div>
+          <div class="banner-tag">Brand: Nike</div>
+          <div class="banner-tag">Size: 9M</div>
+        </div>
+      </div>
+
+      <!-- Upcoming Shows -->
+      <div class="card shows-card">
+        <div class="section-header">
+          <h2>Upcoming Shows</h2>
+          <div class="section-chevron">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
+          </div>
+        </div>
+        <div class="shows-list">
+          <!-- Show 1 -->
+          <div class="show-row">
+            <div class="show-leading">
+              <div style="width:100%;height:100%;background:linear-gradient(135deg,#e74c3c,#f39c12)"></div>
+              <div class="show-leading-overlay"></div>
+              <div class="show-bookmark">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><path d="M4 2h8a1 1 0 011 1v10.5a.5.5 0 01-.8.4L8 11l-4.2 2.9a.5.5 0 01-.8-.4V3a1 1 0 011-1z"/></svg>
+                <span class="show-bookmark-count">365</span>
+              </div>
+            </div>
+            <div class="show-content">
+              <div class="show-title">FRESHLY THRIFTED GOODS! 🍓❤️‍🔥🍒🪩</div>
+              <div class="show-meta">Tomorrow at 9AM</div>
+            </div>
+            <div class="show-actions">
+              <div class="show-action">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 6v8M6 10h8"/></svg>
+                <span>Add</span>
+              </div>
+              <div class="show-action" style="width:32px">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M4 12v4a2 2 0 002 2h8a2 2 0 002-2v-4M10 3v10M7 6l3-3 3 3"/></svg>
+                <span>Share</span>
+              </div>
+            </div>
+          </div>
+          <!-- Show 2 -->
+          <div class="show-row">
+            <div class="show-leading">
+              <div style="width:100%;height:100%;background:linear-gradient(135deg,#9b59b6,#3498db)"></div>
+              <div class="show-leading-overlay"></div>
+              <div class="show-bookmark">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><path d="M4 2h8a1 1 0 011 1v10.5a.5.5 0 01-.8.4L8 11l-4.2 2.9a.5.5 0 01-.8-.4V3a1 1 0 011-1z"/></svg>
+                <span class="show-bookmark-count">204</span>
+              </div>
+            </div>
+            <div class="show-content">
+              <div class="show-title">WEDNESDAY VINTAGE JEWELRY! 💖</div>
+              <div class="show-meta">Wed at 9AM</div>
+            </div>
+            <div class="show-actions">
+              <div class="show-action">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 6v8M6 10h8"/></svg>
+                <span>Add</span>
+              </div>
+              <div class="show-action" style="width:32px">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M4 12v4a2 2 0 002 2h8a2 2 0 002-2v-4M10 3v10M7 6l3-3 3 3"/></svg>
+                <span>Share</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Health -->
+      <div class="card card-no-shadow metrics-card">
+        <div class="section-header">
+          <h2>Account Health</h2>
+          <div class="section-chevron">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
+          </div>
+        </div>
+        <div class="metrics-row">
+          <div class="metric">
+            <div class="metric-label">On-Time<br>Scan Rate</div>
+            <div class="metric-value">97%</div>
+          </div>
+          <div class="metric metric-bordered">
+            <div class="metric-label">Defect-Free<br>Order Rate</div>
+            <div class="metric-value">100%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Policy<br>Standing</div>
+            <div class="metric-value">Excellent</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customer Support -->
+      <div class="card card-no-shadow metrics-card">
+        <div class="section-header">
+          <h2>Customer Support</h2>
+          <div class="section-chevron">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
+          </div>
+        </div>
+        <div class="metrics-row">
+          <div class="metric">
+            <div class="metric-label">Needs<br>Response</div>
+            <div class="metric-value">5</div>
+          </div>
+          <div class="metric metric-bordered">
+            <div class="metric-label">Total Open<br>Requests</div>
+            <div class="metric-value">35</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Response Rate</div>
+            <div class="metric-value" style="color:var(--text-positive)">95%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payouts + Orders -->
+      <div class="dual-cards">
+        <!-- Payouts -->
+        <div class="dual-card">
+          <div class="section-header">
+            <h2 style="font-size:18px">Payouts</h2>
+            <div class="section-chevron">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
+            </div>
+          </div>
+          <div class="dual-card-body">
+            <div class="dual-card-value">$5,153.79</div>
+            <div class="dual-card-label">Available for Payout</div>
+            <div class="dual-card-meta">Processing: $7,586.00</div>
+          </div>
+        </div>
+        <!-- Orders -->
+        <div class="dual-card">
+          <div class="section-header">
+            <h2 style="font-size:18px">Orders</h2>
+            <div class="section-chevron">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
+            </div>
+          </div>
+          <div class="dual-card-body">
+            <div class="dual-card-value">408 items</div>
+            <div class="dual-card-label">Aug 5 – Aug 11</div>
+            <div class="dual-card-meta"><span style="color:var(--text-positive)">50%</span> • Prior 7 days</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Tab Bar -->
+    <div class="tab-bar">
+      <!-- Home (active) -->
+      <div class="tab-item">
+        <div class="tab-icon-wrap">
+          <img src="icons/home-active.svg" alt="" style="width:24px;height:24px">
+        </div>
+        <span class="tab-label tab-label-active">Home</span>
+      </div>
+      <!-- Browse -->
+      <div class="tab-item">
+        <div class="tab-icon-wrap">
+          <img src="icons/browse.svg" alt="" style="width:24px;height:24px">
+        </div>
+        <span class="tab-label tab-label-inactive">Browse</span>
+      </div>
+      <!-- Seller Hub -->
+      <div class="tab-item">
+        <div class="tab-icon-wrap">
+          <img src="icons/seller-hub.svg" alt="" style="width:24px;height:24px">
+          <div class="tab-red-dot"><div style="width:6px;height:6px;border-radius:50%;background:#ef233c"></div></div>
+        </div>
+        <span class="tab-label tab-label-inactive">Seller Hub</span>
+      </div>
+      <!-- Activity -->
+      <div class="tab-item">
+        <div class="tab-icon-wrap">
+          <img src="icons/activity.svg" alt="" style="width:24px;height:24px">
+          <div class="tab-red-dot"><div style="width:6px;height:6px;border-radius:50%;background:#ef233c"></div></div>
+        </div>
+        <span class="tab-label tab-label-inactive">Activity</span>
+      </div>
+      <!-- Account -->
+      <div class="tab-item">
+        <div class="tab-icon-wrap">
+          <div class="tab-profile">
+            <img src="icons/profile.png" alt="" style="width:24px;height:24px">
+          </div>
+        </div>
+        <span class="tab-label tab-label-inactive">Account</span>
+      </div>
+      <!-- Home Indicator -->
+      <div class="home-indicator"></div>
+    </div>
+
+  </div>
+
+  <!-- ═══ INVENTORY PAGE ═══ -->
+  <div class="page" id="inventoryPage" style="display:none;background:white;z-index:10">
+    <div style="height:54px;flex-shrink:0"></div>
+    <!-- Nav -->
+    <div style="height:48px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;background:white">
+      <button onclick="goHome()" style="position:absolute;left:8px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg>
+      </button>
+      <span style="font-size:16px;font-weight:600;letter-spacing:-0.31px;color:#000;text-align:center">Inventory</span>
+    </div>
+    <!-- Tabs -->
+    <div style="display:flex;padding-left:16px;gap:16px;position:relative;flex-shrink:0">
+      <div id="invTabActive" onclick="switchInvTab('active')" style="display:flex;flex-direction:column;gap:16px;height:35px;cursor:pointer">
+        <span style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#7f7f7f">Active</span>
+        <div style="height:3px;border-radius:2px 2px 0 0;background:transparent" class="inv-tab-bar"></div>
+      </div>
+      <div id="invTabDraft" onclick="switchInvTab('draft')" style="display:flex;flex-direction:column;gap:16px;height:35px;cursor:pointer">
+        <span style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#7f7f7f">Draft</span>
+        <div style="height:3px;border-radius:2px 2px 0 0;background:transparent" class="inv-tab-bar"></div>
+      </div>
+      <div id="invTabInactive" onclick="switchInvTab('inactive')" style="display:flex;flex-direction:column;gap:16px;height:35px;cursor:pointer">
+        <span style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Inactive</span>
+        <div style="height:3px;border-radius:2px 2px 0 0;background:#1c1c1c" class="inv-tab-bar"></div>
+      </div>
+      <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:rgba(0,0,0,0.05)"></div>
+    </div>
+    <!-- Search -->
+    <div style="padding:8px 16px 0;flex-shrink:0">
+      <div style="display:flex;gap:8px;height:44px;align-items:center;padding:0 16px;border:1px solid rgba(0,0,0,0.2);border-radius:100px">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8d8d8d" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5l4 4"/></svg>
+        <span style="font-size:14px;color:#8d8d8d;line-height:19px;letter-spacing:-0.15px">Search products...</span>
+      </div>
+    </div>
+    <!-- Filters -->
+    <div style="display:flex;gap:8px;padding:16px;flex-shrink:0">
+      <div style="display:flex;align-items:center;justify-content:center;padding:8px 12px;background:rgba(0,0,0,0.1);border-radius:8px;cursor:pointer;backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px)">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5"><path d="M3 5h14M5 10h10M7 15h6"/></svg>
+      </div>
+      <div id="templatesFilterChip" onclick="toggleTemplatesFilter()" style="display:flex;align-items:center;justify-content:center;padding:8px 12px;background:rgba(0,0,0,0.1);border-radius:8px;cursor:pointer;backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px)">
+        <span style="font-size:14px;font-weight:600;line-height:16px;letter-spacing:-0.2px;color:#1c1c1c">Templates</span>
+      </div>
+    </div>
+    <!-- Section Header -->
+    <div style="padding:0 16px 8px;flex-shrink:0">
+      <span id="invProductCount" style="font-size:18px;font-weight:600;line-height:23px;letter-spacing:-0.44px;color:#1c1c1c">20 Products</span>
+    </div>
+    <!-- Active List -->
+    <div id="invActiveList" style="flex:1;overflow-y:auto;padding:0 16px 100px;display:none">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+        <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Lululemon Align High-Rise Pant 25"</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size 6</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$48</div></div>
+      </div>
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+        <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Reformation Midi Floral Dress</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Buy Now <span style="color:#ccc">•</span> Size S</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$85</div></div>
+      </div>
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+        <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1551537482-f2075a1d41f2?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Agolde '90s Pinch Waist Jeans</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size 27</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$62</div></div>
+      </div>
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+        <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Aritzia Babaton Contour Top</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size M</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$28</div></div>
+      </div>
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+        <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Free People Cozy Knit Pullover</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Buy Now <span style="color:#ccc">•</span> Size L</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$35</div></div>
+      </div>
+    </div>
+    <!-- Draft List -->
+    <div id="invDraftList" style="flex:1;overflow-y:auto;padding:0 16px 100px;display:none">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+        <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Zara Satin Slip Skirt</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size XS</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$22</div></div>
+      </div>
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+        <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Oversized Band Tee Vintage Wash</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size M</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$15</div></div>
+      </div>
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+        <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1548624313-0396c75e4b1a?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Alo Yoga Airlift Sports Bra</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Buy Now <span style="color:#ccc">•</span> Size S</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$32</div></div>
+      </div>
+    </div>
+    <!-- Inactive List -->
+    <div id="invInactiveList" style="flex:1;overflow-y:auto;padding:0 16px 100px;display:block">
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="template">
+        <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="display:inline-flex;align-self:flex-start;padding:2px 4px;border-radius:2px;background:rgba(0,158,82,0.1);font-size:10px;font-weight:600;line-height:10px;letter-spacing:0.12px;color:#009e52;min-height:16px;align-items:center" class="new-label">NEW</div><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Tops: Lulu Lemon, Commense, Alo, and more</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>
+      </div>
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(1,'inventory')" data-type="template">
+        <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="display:inline-flex;align-self:flex-start;padding:2px 4px;border-radius:2px;background:rgba(0,158,82,0.1);font-size:10px;font-weight:600;line-height:10px;letter-spacing:0.12px;color:#009e52;min-height:16px;align-items:center" class="new-label">NEW</div><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Bottoms: Lululemon, Alo, Vuori, and more</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>
+      </div>
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(2,'inventory')" data-type="template">
+        <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="display:inline-flex;align-self:flex-start;padding:2px 4px;border-radius:2px;background:rgba(0,158,82,0.1);font-size:10px;font-weight:600;line-height:10px;letter-spacing:0.12px;color:#009e52;min-height:16px;align-items:center" class="new-label">NEW</div><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Dresses: Lululemon, Alo, Vuori, and more</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>
+      </div>
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+        <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Floral Ruffle Blouse NWT</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size S</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$18</div></div>
+      </div>
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+        <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Commense Matching Dress</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Buy Now <span style="color:#ccc">•</span> Size M</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$42</div></div>
+      </div>
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+        <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1551537482-f2075a1d41f2?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Vintage Levi's Denim Jacket</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size M</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$55</div></div>
+      </div>
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+        <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Anthropologie Knit Cardigan</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size L</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$38</div></div>
+      </div>
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+        <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Vuori Performance Joggers</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Buy Now <span style="color:#ccc">•</span> Size XS</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$44</div></div>
+      </div>
+      <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="product">
+        <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=200&q=80" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Skims Soft Lounge Dress</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size S</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$52</div></div>
+      </div>
+    </div>
+    <!-- FAB -->
+    <div onclick="openCreateSheet()" style="position:absolute;bottom:40px;right:16px;width:56px;height:56px;border-radius:50%;background:#ffe414;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:6">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1c1c1c" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </div>
+    <!-- Home Indicator -->
+    <div class="home-indicator"></div>
+  </div>
+
+  <!-- ═══ SELLER TOOLS PAGE ═══ -->
+  <div class="menu-page" id="menuPage">
+    <div style="height:54px;flex-shrink:0"></div>
+    <div style="height:48px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
+      <button onclick="closeMenu()" style="position:absolute;left:8px;width:32px;height:32px;border:none;background:none;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
+        <img src="icons/menu-back.svg" alt="" style="width:20px;height:20px">
+      </button>
+      <span style="font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#000">Seller Tools</span>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:8px 0 40px;-webkit-overflow-scrolling:touch">
+      <!-- Manage -->
+      <div class="menu-section">
+        <div class="menu-section-title">Manage</div>
+        <div class="menu-row" onclick="openInventoryFromMenu()">
+          <div class="menu-row-icon"><img src="icons/menu-inventory.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Inventory</span>
+          <div class="menu-row-trailing"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-shows.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Shows</span>
+          <div class="menu-row-trailing"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-offers.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Offers</span>
+          <div class="menu-row-trailing"><div class="menu-row-badge"></div><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-support.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Customer Support</span>
+          <div class="menu-row-trailing"><div class="menu-row-badge"></div><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+      <!-- Sales -->
+      <div class="menu-section">
+        <div class="menu-section-title">Sales</div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-payouts.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Payouts</span>
+          <div class="menu-row-trailing"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-fulfillment.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Fulfillment</span>
+          <div class="menu-row-trailing"><div class="menu-row-badge"></div><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-orders.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Orders</span>
+          <div class="menu-row-trailing"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-tips.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Tips</span>
+          <div class="menu-row-trailing"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+      <!-- Promotions -->
+      <div class="menu-section">
+        <div class="menu-section-title">Promotions</div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-invite.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Invite a Seller, Earn $100</span>
+          <div class="menu-row-trailing"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-refer.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Refer Buyers, Gain Followers</span>
+          <div class="menu-row-trailing"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-promote.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Promote Tools</span>
+          <div class="menu-row-trailing"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-rewards.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Rewards Club</span>
+          <div class="menu-row-trailing"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+      <!-- Performance -->
+      <div class="menu-section">
+        <div class="menu-section-title">Performance</div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-premier.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Premier Shop</span>
+          <div class="menu-row-trailing"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-analytics.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Seller Analytics</span>
+          <div class="menu-row-trailing"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-health.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Account Health</span>
+          <div class="menu-row-trailing"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+      <!-- Settings -->
+      <div class="menu-section">
+        <div class="menu-section-title">Settings</div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-shipping.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Shipping Settings</span>
+          <div class="menu-row-trailing"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-sellerstatus.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Seller Status</span>
+          <div class="menu-row-trailing"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-rehearsal.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Rehearsal Mode</span>
+          <div class="menu-row-trailing"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="menu-row">
+          <div class="menu-row-icon"><img src="icons/menu-vacation.svg" alt="" style="width:20px;height:20px"></div>
+          <span class="menu-row-label">Vacation Mode</span>
+          <div class="menu-row-trailing">
+            <div class="menu-toggle-track" onclick="event.stopPropagation();this.classList.toggle('on')"><div class="menu-toggle-thumb"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="home-indicator"></div>
+  </div>
+
+  <!-- ═══ TEMPLATE EDIT PAGE ═══ -->
+  <div class="edit-page" id="editPage">
+    <div style="height:54px;flex-shrink:0"></div>
+    <div class="edit-nav">
+      <button class="edit-nav-back" id="editBackBtn" onclick="closeEditPage()"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></button>
+      <span class="edit-nav-title" id="editNavTitle">Templates</span>
+      <button class="edit-nav-close" id="editCloseBtn" onclick="closeEditPageDirect()" style="display:none"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+    </div>
+    <div class="edit-scroll">
+
+      <!-- Null state description -->
+      <div id="editNullDesc" style="display:none;padding:8px 16px 12px">
+        <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create a template to reuse over and over. Start with a type, then add 1–2 brands and a size range. <span style="color:#005ae1;cursor:pointer">Learn more</span></div>
+      </div>
+
+      <div class="edit-field" onclick="openCategorySheet()" style="cursor:pointer">
+        <div class="edit-field-label">Category <span class="required">*</span></div>
+        <div class="edit-field-value"><span id="editCategory">Women's Contemporary</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+      </div>
+
+      <div class="edit-chips-field">
+        <div class="edit-chips-label">Type</div>
+        <div class="edit-chips" id="typeChips">
+          <span class="edit-chip edit-chip-off" onclick="selectChip(this,'type')">Shoes</span>
+          <span class="edit-chip edit-chip-on" onclick="selectChip(this,'type')">Tops</span>
+          <span class="edit-chip edit-chip-off" onclick="selectChip(this,'type')">Bottoms</span>
+          <span class="edit-chip edit-chip-off" onclick="selectChip(this,'type')">Dresses</span>
+          <span class="edit-chip edit-chip-off" onclick="selectChip(this,'type')">Sweaters</span>
+          <span class="edit-chip edit-chip-off" onclick="selectChip(this,'type')">Jumpsuits</span>
+          <span class="edit-chip edit-chip-off" onclick="selectChip(this,'type')">Outerwear</span>
+          <span class="edit-chip edit-chip-off" onclick="selectChip(this,'type')">Activewear</span>
+        </div>
+      </div>
+
+      <div class="edit-field" id="brandsField">
+        <div class="edit-field-label" id="brandsLabel">Brand(s)</div>
+        <div class="edit-field-value"><span id="editBrands">Lulu Lemon, Alo, Vuori, Commense</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+      </div>
+
+      <div class="edit-chips-field">
+        <div class="edit-chips-label">Size(s)</div>
+        <div class="edit-chips">
+          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">OS</span>
+          <span class="edit-chip edit-chip-on" onclick="toggleChip(this)">XS</span>
+          <span class="edit-chip edit-chip-on" onclick="toggleChip(this)">S</span>
+          <span class="edit-chip edit-chip-on" onclick="toggleChip(this)">M</span>
+          <span class="edit-chip edit-chip-on" onclick="toggleChip(this)">L</span>
+          <span class="edit-chip edit-chip-on" onclick="toggleChip(this)">XL</span>
+          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">XXL</span>
+        </div>
+      </div>
+
+      <div class="edit-chips-field">
+        <div class="edit-chips-label">Condition(s)</div>
+        <div class="edit-chips">
+          <span class="edit-chip edit-chip-on" onclick="toggleChip(this)">New w Tag</span>
+          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">New w/out Tag</span>
+          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">New w Defect</span>
+        </div>
+      </div>
+
+      <div class="edit-field" id="titleField">
+        <div class="edit-field-label" id="titleLabel">Title</div>
+        <div class="edit-field-value" id="editTitle">
+          <input type="text" value="Tops: Lulu Lemon, Commense, Alo, and more" id="editTitleInput" placeholder="Title" onfocus="this.style.fontWeight='600';this.style.color='#1c1c1c'" style="border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;width:100%;background:transparent">
+        </div>
+      </div>
+
+      <div class="edit-media-field">
+        <img src="icons/camera.svg" alt="">
+        <span>Capture, Scan or Upload Media</span>
+      </div>
+
+      <div class="edit-divider"></div>
+
+      <div class="edit-section-title">Shipping</div>
+
+      <div class="edit-field" id="weightField">
+        <div class="edit-field-label" id="weightLabel">Weight <span class="required">*</span></div>
+        <div class="edit-field-value" id="weightValue"><span id="weightText">1lb</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+      </div>
+
+      <div class="edit-helper">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="8" r="6"/><path d="M8 5.5v3M8 10.5h0"/></svg>
+        <span>Sellers cover any shipping adjustments.</span>
+      </div>
+
+      <div style="margin:0 16px 12px;border-radius:8px;overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 16px;border:1px solid rgba(0,0,0,0.2);border-radius:8px 8px 0 0">
+          <span style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454">Restricted Items</span>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#545454" stroke-width="1.5" stroke-linecap="round"><path d="M6 8l4 4 4-4"/></svg>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 16px;background:#f3f3f3;border-radius:0 0 8px 8px">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1c1c1c" stroke-width="1.2" style="flex-shrink:0;margin-top:1px"><circle cx="8" cy="8" r="6"/><path d="M8 5.5v3M8 10.5h.01"/></svg>
+          <span style="font-size:12px;font-weight:400;line-height:16px;color:#1c1c1c">Carriers restrict the shipping of any items that may pose risks to <a href="#" style="color:#005ae1;text-decoration:none">health and safety</a>.</span>
+        </div>
+      </div>
+
+      <div style="height:24px"></div>
+    </div>
+    <div class="edit-footer">
+      <button class="edit-btn-draft" onclick="saveDraft()">Save Draft</button>
+      <button class="edit-btn-next" onclick="publishTemplate()">Next</button>
+    </div>
+  </div>
+
+  <!-- ═══ PRICE & FORMAT PAGE (Step 2) ═══ -->
+  <div class="edit-page" id="pricePage">
+    <div style="height:54px;flex-shrink:0"></div>
+    <div class="edit-nav">
+      <button class="edit-nav-back" onclick="closePricePage()"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></button>
+      <span class="edit-nav-title">Templates</span>
+    </div>
+    <div class="edit-scroll">
+      <!-- Buy Format Chips -->
+      <div style="padding:16px 16px 12px">
+        <div class="edit-chips">
+          <span class="edit-chip edit-chip-on" onclick="selectChip(this,'format')">Auction</span>
+          <span class="edit-chip edit-chip-off" onclick="selectChip(this,'format')">Buy Now</span>
+          <span class="edit-chip edit-chip-off" onclick="selectChip(this,'format')">Giveaway</span>
+        </div>
+      </div>
+
+      <!-- Starting Price -->
+      <div class="edit-field">
+        <div class="edit-field-label">Starting Price <span class="required">*</span></div>
+        <div class="edit-field-value">
+          <input type="text" value="$1" style="border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;width:100%;background:transparent">
+        </div>
+      </div>
+
+      <!-- Sudden Death -->
+      <div class="edit-field" style="display:flex;align-items:center;gap:12px">
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Sudden Death</div>
+          <div style="font-size:12px;font-weight:400;line-height:16px;color:#6f6f6f;margin-top:2px">This means when you're down to 00:01, the last person to bid wins!</div>
+        </div>
+        <div class="toggle-track" id="suddenDeathToggle" onclick="this.classList.toggle('on')">
+          <div class="toggle-thumb"></div>
+        </div>
+      </div>
+
+      <!-- Featured In -->
+      <div class="edit-field">
+        <div class="edit-field-label">Featured In <span class="required">*</span></div>
+        <div class="edit-field-value"><span>All Shows</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+      </div>
+    </div>
+    <div class="edit-footer">
+      <button class="edit-btn-draft" onclick="saveDraft()">Save Draft</button>
+      <button class="edit-btn-publish" onclick="publishListing()">Publish</button>
+    </div>
+  </div>
+
+  <!-- NUX Overlay -->
+  <div class="nux-overlay" id="nuxOverlay" style="display:none">
+    <div class="nux-slider">
+
+      <!-- Slide 0: Create once. Sell forever. -->
+      <div class="nux-slide active">
+        <div class="nux-nav">
+          <button class="nux-close" onclick="closeNux()">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+          </button>
+        </div>
+        <div class="nux-body">
+          <div class="nux-hero">
+            <div class="hero1-blob"></div>
+            <img class="hero1-img1" src="icons/nux-shoe1.png" alt="">
+            <img class="hero1-img2" src="icons/nux-shoe2.png" alt="">
+            <img class="hero1-box" src="icons/nux-box.png" alt="">
+            <img class="hero1-bolt" src="icons/nux-bolt.png" alt="">
+          </div>
+          <div class="nux-copy">
+            <h2>Create once. Sell forever.</h2>
+            <p>Templates remember what you sell so you don't have to re-enter it every show.</p>
+          </div>
+        </div>
+        <div class="nux-buttons">
+          <button class="btn-primary" onclick="goNux(1)">Discover Templates</button>
+          <button class="btn-tertiary" onclick="closeNux()">I'll Try it Later</button>
+          <div class="nux-home-indicator"></div>
+        </div>
+      </div>
+
+      <!-- Slide 1: Get the right buyers into your show -->
+      <div class="nux-slide">
+        <div class="nux-nav">
+          <button class="nux-close" onclick="closeNux()">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+          </button>
+        </div>
+        <div class="nux-body">
+          <div class="nux-hero">
+            <div class="hero2-blob"><img src="icons/nux-green-shape.svg" alt=""></div>
+            <div class="hero2-cards">
+              <div class="form-card">
+                <div class="form-card-label">Type</div>
+                <div class="form-card-chips">
+                  <span class="nux-chip nux-chip-dark">Shoes</span>
+                  <span class="nux-chip nux-chip-light">Tops</span>
+                  <span class="nux-chip nux-chip-light">Sweaters</span>
+                  <span class="nux-chip nux-chip-light">Jumpsuits</span>
+                </div>
+              </div>
+              <div class="form-card-brand">
+                <div class="brand-left">
+                  <div class="brand-label">Brand(s) (4/10)</div>
+                  <div class="brand-value">Nike, Adidas, Pumas, New Balance</div>
+                </div>
+                <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1L5.5 6L1 11" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="form-card">
+                <div class="form-card-label">Size(s)</div>
+                <div class="form-card-chips">
+                  <span class="nux-chip nux-chip-dark">8M</span>
+                  <span class="nux-chip nux-chip-dark">8.5M</span>
+                  <span class="nux-chip nux-chip-dark">9M</span>
+                  <span class="nux-chip nux-chip-dark">9.5M</span>
+                  <span class="nux-chip nux-chip-dark">10M</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="nux-copy">
+            <h2>Get the right buyers into your show</h2>
+            <p>Templates tag your shows with attributes like type, brand, and size so the right buyers find you.</p>
+          </div>
+        </div>
+        <div class="nux-buttons">
+          <button class="btn-primary" onclick="goNux(2)">Next</button>
+          <div class="nux-home-indicator"></div>
+        </div>
+      </div>
+
+      <!-- Slide 2: No more 'what size is it?' in chat -->
+      <div class="nux-slide">
+        <div class="nux-nav">
+          <button class="nux-close" onclick="closeNux()">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+          </button>
+        </div>
+        <div class="nux-body">
+          <div class="nux-hero">
+            <div class="hero3-phone">
+              <img src="icons/nux-phone.png" alt="">
+            </div>
+          </div>
+          <div class="nux-copy">
+            <h2>No more "what size is it?" in chat</h2>
+            <p>Buyers see all the details up front — size, brand, condition — so they can bid with confidence.</p>
+          </div>
+        </div>
+        <div class="nux-buttons">
+          <button class="btn-primary" onclick="tryItOut()">Try It Out</button>
+          <div class="nux-home-indicator"></div>
+        </div>
+      </div>
+
+      <!-- Slide 3: Your custom templates -->
+      <div class="nux-slide">
+        <div class="nux-nav">
+          <button class="nux-close" onclick="closeNux()">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+          </button>
+        </div>
+        <div class="nux-body" style="gap:32px">
+          <div class="nux-templates-copy">
+            <h2>Your custom templates</h2>
+            <p>We created 3 templates based on your recent shows. Edit or use them as-is.</p>
+          </div>
+          <div class="nux-templates-list">
+            <!-- Template 1 -->
+            <div class="tpl-card" onclick="openEditPage(0, 'nux')" style="cursor:pointer">
+              <div class="tpl-thumb">
+                <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
+              </div>
+              <div class="tpl-info">
+                <div class="tpl-details">
+                  <div class="tpl-title">Tops: Lululemon, Alo, Vuori, and more</div>
+                  <div class="tpl-attr">Template · Multiple Options</div>
+                  <div class="tpl-price">$1</div>
+                </div>
+              </div>
+            </div>
+            <!-- Template 2 -->
+            <div class="tpl-card" onclick="openEditPage(1, 'nux')" style="cursor:pointer">
+              <div class="tpl-thumb">
+                <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
+              </div>
+              <div class="tpl-info">
+                <div class="tpl-details">
+                  <div class="tpl-title">Bottoms: Lululemon, Alo, Vuori, and more</div>
+                  <div class="tpl-attr">Template · Multiple Options</div>
+                  <div class="tpl-price">$1</div>
+                </div>
+              </div>
+            </div>
+            <!-- Template 3 -->
+            <div class="tpl-card" onclick="openEditPage(2, 'nux')" style="cursor:pointer">
+              <div class="tpl-thumb">
+                <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
+              </div>
+              <div class="tpl-info">
+                <div class="tpl-details">
+                  <div class="tpl-title">Dresses: Lululemon, Alo, Vuori, and more</div>
+                  <div class="tpl-attr">Template · Multiple Options</div>
+                  <div class="tpl-price">$1</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="nux-buttons">
+          <button class="btn-primary" onclick="goToInventory()">Go to Inventory</button>
+          <div class="nux-home-indicator"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Loader -->
+    <div class="nux-loader" id="nuxLoader">
+      <div class="nux-loader-spinner"></div>
+      <p>Creating your templates…</p>
+    </div>
+  </div>
+
+  <!-- Publish Loader -->
+  <div class="publish-loader" id="publishLoader">
+    <div class="nux-loader-spinner"></div>
+    <p>Publishing template…</p>
+  </div>
+
+  <!-- Save Confirmation Modal -->
+  <div class="confirm-overlay" id="saveConfirmModal">
+    <div class="confirm-dialog">
+      <div class="confirm-spacer"></div>
+      <div class="confirm-body">
+        <div class="confirm-title">Save Changes?</div>
+        <div class="confirm-message">You will lose any changes if you don't save it.</div>
+      </div>
+      <div class="confirm-actions">
+        <button class="confirm-btn-primary" onclick="confirmSaveAndClose()">Save as Draft</button>
+        <button class="confirm-btn-destructive" onclick="confirmDiscardAndClose()">Discard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Sheet -->
+  <div class="bottom-sheet-overlay" id="createSheet" onclick="closeCreateSheet()">
+    <div class="bottom-sheet" onclick="event.stopPropagation()" style="padding-bottom:0">
+      <div class="bottom-sheet-handle"></div>
+      <div style="height:48px;display:flex;align-items:center;justify-content:center">
+        <span style="font-size:16px;font-weight:600;letter-spacing:-0.31px;color:#000">Create</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px 0">
+        <!-- Create New Listing -->
+        <div onclick="closeCreateSheet()" style="background:#f3f3f3;border-radius:12px;padding:16px;position:relative;overflow:hidden;min-height:87px;cursor:pointer">
+          <div style="position:relative;z-index:2">
+            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454;margin-top:4px">Create new listings or templates.</div>
+          </div>
+          <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
+        </div>
+        <!-- Create New Template -->
+        <div onclick="createNewTemplate()" style="background:#f3f3f3;border-radius:12px;padding:16px;position:relative;overflow:hidden;min-height:87px;cursor:pointer">
+          <div style="position:relative;z-index:2">
+            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454;margin-top:4px">Create new listings or templates.</div>
+          </div>
+          <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
+        </div>
+      </div>
+      <div style="height:40px;position:relative">
+        <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:135px;height:5px;background:#222;border-radius:100px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Bottom Sheet -->
+  <div class="bottom-sheet-overlay" id="categorySheet" onclick="closeCategorySheet()">
+    <div class="bottom-sheet" onclick="event.stopPropagation()">
+      <div class="bottom-sheet-handle"></div>
+      <div class="bottom-sheet-title">Category</div>
+      <div class="bottom-sheet-list" id="categoryList"></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function openCreateSheet() {
+  const sheet = document.getElementById('createSheet');
+  sheet.style.display = 'block';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      sheet.classList.add('open');
+    });
+  });
+}
+
+function closeCreateSheet() {
+  const sheet = document.getElementById('createSheet');
+  sheet.classList.remove('open');
+  setTimeout(() => { sheet.style.display = 'none'; }, 350);
+}
+
+function createNewTemplate() {
+  closeCreateSheet();
+  editVertical = true;
+  setTimeout(() => {
+    openEditPage(-1, 'create');
+  }, 350);
+}
+
+function openMenu() {
+  const homePage = document.querySelector('.page');
+  homePage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
+  homePage.style.transform = 'translateX(-30%)';
+  homePage.style.opacity = '0.3';
+  document.getElementById('menuPage').classList.add('active');
+}
+
+function closeMenu() {
+  const homePage = document.querySelector('.page');
+  homePage.style.transform = '';
+  homePage.style.opacity = '';
+  setTimeout(() => { homePage.style.transition = ''; }, 400);
+  document.getElementById('menuPage').classList.remove('active');
+}
+
+function openInventoryFromMenu() {
+  const menuPage = document.getElementById('menuPage');
+  const invPage = document.getElementById('inventoryPage');
+
+  menuPage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
+  menuPage.style.transform = 'translateX(-30%)';
+  menuPage.style.opacity = '0.3';
+
+  invPage.style.display = 'flex';
+  invPage.style.transition = 'none';
+  invPage.style.transform = 'translateX(100%)';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      invPage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+      invPage.style.transform = 'translateX(0)';
+    });
+  });
+
+  switchInvTab('active');
+}
+
+let currentNuxSlide = 0;
+
+function openNux() {
+  const nux = document.getElementById('nuxOverlay');
+  nux.style.display = 'block';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      nux.classList.add('open');
+    });
+  });
+}
+
+function closeNux() {
+  const nux = document.getElementById('nuxOverlay');
+  document.querySelector('.page').style.visibility = '';
+  nux.classList.remove('open');
+  nux.classList.add('dismissing');
+  setTimeout(() => {
+    nux.classList.remove('dismissing');
+    nux.style.display = 'none';
+    resetNux();
+  }, 500);
+}
+
+function resetNux() {
+  currentNuxSlide = 0;
+  document.querySelectorAll('.nux-slide').forEach((s, i) => {
+    s.style.transition = 'none';
+    s.style.display = '';
+    s.style.transform = '';
+    s.style.opacity = '';
+    s.classList.remove('active', 'prev');
+    if (i === 0) s.classList.add('active');
+    requestAnimationFrame(() => {
+      s.style.transition = '';
+    });
+  });
+}
+
+function goNux(n) {
+  const slides = document.querySelectorAll('.nux-slide');
+  const prev = slides[currentNuxSlide];
+  const next = slides[n];
+
+  if (n > currentNuxSlide) {
+    prev.classList.remove('active');
+    prev.classList.add('prev');
+    next.style.transition = 'none';
+    next.classList.remove('prev');
+    next.style.transform = 'translateX(100%)';
+    next.style.opacity = '1';
+    requestAnimationFrame(() => {
+      next.style.transition = '';
+      next.style.transform = '';
+      next.style.opacity = '';
+      next.classList.add('active');
+    });
+  }
+  currentNuxSlide = n;
+}
+
+function tryItOut() {
+  const loader = document.getElementById('nuxLoader');
+  loader.classList.add('visible');
+
+  const slides = document.querySelectorAll('.nux-slide');
+  slides[currentNuxSlide].classList.remove('active');
+  slides[currentNuxSlide].style.display = 'none';
+
+  setTimeout(() => {
+    loader.classList.remove('visible');
+    const next = slides[3];
+    next.style.display = '';
+    next.style.transition = 'none';
+    next.classList.remove('prev');
+    next.style.transform = 'translateY(100%)';
+    next.style.opacity = '1';
+    next.classList.add('active');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        next.style.transition = 'transform 0.5s cubic-bezier(0.32, 0.72, 0, 1)';
+        next.style.transform = 'translateY(0)';
+      });
+    });
+    currentNuxSlide = 3;
+  }, 2000);
+}
+
+function goHome() {
+  const invPage = document.getElementById('inventoryPage');
+  const menuPage = document.getElementById('menuPage');
+  const homePage = document.querySelector('.page');
+
+  menuPage.classList.remove('active');
+  menuPage.style.transform = '';
+  menuPage.style.opacity = '';
+  menuPage.style.transition = '';
+
+  homePage.style.transition = 'none';
+  homePage.style.transform = 'translateX(-30%)';
+  homePage.style.opacity = '0.3';
+
+  requestAnimationFrame(() => {
+    homePage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
+    homePage.style.transform = 'translateX(0)';
+    homePage.style.opacity = '1';
+
+    invPage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+    invPage.style.transform = 'translateX(100%)';
+
+    setTimeout(() => {
+      invPage.style.display = 'none';
+      invPage.style.transform = '';
+      invPage.style.transition = '';
+      homePage.style.transform = '';
+      homePage.style.opacity = '';
+      homePage.style.transition = '';
+    }, 400);
+  });
+}
+
+function goToInventory() {
+  document.getElementById('inventoryPage').style.display = 'flex';
+
+  const nux = document.getElementById('nuxOverlay');
+  nux.classList.remove('open');
+  nux.classList.add('dismissing');
+  setTimeout(() => {
+    nux.classList.remove('dismissing');
+    nux.style.display = 'none';
+    resetNux();
+  }, 500);
+}
+
+let editReturnTo = 'nux';
+let currentTemplateIndex = 0;
+let editSnapshot = '';
+let editSourceElement = null;
+let editVertical = false;
+
+const templateData = [
+  { type: 'Tops', brands: 'Lulu Lemon, Alo, Vuori, Commense' },
+  { type: 'Bottoms', brands: 'Lululemon, Alo, Vuori, Commense' },
+  { type: 'Dresses', brands: 'Lululemon, Alo, Vuori, Commense' }
+];
+
+function openEditPage(templateIndex, returnTo) {
+  editReturnTo = returnTo || 'nux';
+  currentTemplateIndex = templateIndex;
+  if (templateIndex !== -1) editVertical = false;
+
+  const isNull = templateIndex === -1;
+  const tpl = isNull ? { type: '', brands: '' } : (templateData[templateIndex] || templateData[0]);
+
+  // Set Type chip selection
+  const typeChips = document.getElementById('typeChips');
+  typeChips.querySelectorAll('.edit-chip').forEach(c => {
+    if (!isNull && c.textContent === tpl.type) {
+      c.classList.remove('edit-chip-off');
+      c.classList.add('edit-chip-on');
+    } else {
+      c.classList.remove('edit-chip-on');
+      c.classList.add('edit-chip-off');
+    }
+  });
+
+  // Set Brands
+  const brandsSpan = document.getElementById('editBrands');
+  const brandsLabel = document.getElementById('brandsLabel');
+  if (isNull) {
+    brandsSpan.textContent = 'Brand(s)';
+    brandsSpan.style.color = '#545454';
+    brandsSpan.style.fontWeight = '400';
+    brandsLabel.style.display = 'none';
+  } else {
+    brandsSpan.textContent = tpl.brands;
+    brandsSpan.style.color = '';
+    brandsSpan.style.fontWeight = '';
+    brandsLabel.style.display = '';
+  }
+
+  // Set Category — always pre-filled per Figma
+  document.getElementById('editCategory').textContent = "Women's Contemporary";
+
+  // Title field: null = just placeholder, filled = value
+  const titleLabel = document.getElementById('titleLabel');
+  const titleInput = document.getElementById('editTitleInput');
+  if (isNull) {
+    titleLabel.style.display = 'none';
+    titleInput.value = '';
+    titleInput.placeholder = 'Title';
+    titleInput.style.fontWeight = '400';
+    titleInput.style.color = '#545454';
+  } else {
+    titleLabel.style.display = '';
+    titleInput.style.fontWeight = '600';
+    titleInput.style.color = '#1c1c1c';
+  }
+
+  // Weight field
+  const weightLabel = document.getElementById('weightLabel');
+  const weightText = document.getElementById('weightText');
+  if (isNull) {
+    weightLabel.style.display = 'none';
+    weightText.textContent = 'Weight';
+    weightText.style.color = '#545454';
+    weightText.style.fontWeight = '400';
+  } else {
+    weightLabel.style.display = '';
+    weightText.textContent = '1lb';
+    weightText.style.color = '';
+    weightText.style.fontWeight = '';
+  }
+
+  // Null state UI
+  document.getElementById('editNullDesc').style.display = isNull ? 'block' : 'none';
+
+  // Nav: null state shows "Create Template" with X close; filled shows "Templates" with back arrow
+  const navTitle = document.getElementById('editNavTitle');
+  const backBtn = document.getElementById('editBackBtn');
+  const closeBtn = document.getElementById('editCloseBtn');
+  if (isNull) {
+    navTitle.textContent = 'Create Template';
+    backBtn.style.display = 'none';
+    closeBtn.style.display = 'flex';
+  } else {
+    navTitle.textContent = 'Templates';
+    backBtn.style.display = 'flex';
+    closeBtn.style.display = 'none';
+  }
+
+  // Reset all chips for null state
+  if (isNull) {
+    document.querySelectorAll('#editPage .edit-chips-field .edit-chip').forEach(c => {
+      c.classList.remove('edit-chip-on');
+      c.classList.add('edit-chip-off');
+    });
+  }
+
+  // Generate title from current selections
+  updateGeneratedTitle();
+
+  backBtn.onclick = function() { attemptCloseEdit(); };
+
+  // Snapshot the form state to detect changes later
+  editSnapshot = getFormSnapshot();
+
+  const editPage = document.getElementById('editPage');
+
+  if (editVertical) {
+    editPage.style.transition = 'none';
+    editPage.style.transform = 'translateY(100%)';
+    editPage.classList.add('active');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        editPage.style.transition = 'transform 0.45s cubic-bezier(0.32, 0.72, 0, 1)';
+        editPage.style.transform = 'translateY(0)';
+      });
+    });
+  } else {
+    // Parallax the page behind
+    const nuxSlider = document.querySelector('.nux-slider');
+    const invPage = document.getElementById('inventoryPage');
+    if (editReturnTo === 'nux' && nuxSlider) {
+      nuxSlider.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
+      nuxSlider.style.transform = 'translateX(-30%)';
+      nuxSlider.style.opacity = '0.3';
+    } else if (invPage && invPage.style.display === 'flex') {
+      invPage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
+      invPage.style.transform = 'translateX(-30%)';
+      invPage.style.opacity = '0.3';
+    }
+    editPage.classList.add('active');
+  }
+}
+
+function getFormSnapshot() {
+  const title = document.getElementById('editTitleInput') ? document.getElementById('editTitleInput').value : '';
+  const typeChips = document.getElementById('typeChips');
+  const activeType = typeChips ? (typeChips.querySelector('.edit-chip-on') || {}).textContent || '' : '';
+  const category = document.getElementById('editCategory') ? document.getElementById('editCategory').textContent : '';
+  const brands = document.getElementById('editBrands') ? document.getElementById('editBrands').textContent : '';
+  const sizes = [...document.querySelectorAll('#editPage .edit-chips-field:nth-of-type(3) .edit-chip-on')].map(c => c.textContent).join(',');
+  const conditions = [...document.querySelectorAll('#editPage .edit-chips-field:nth-of-type(4) .edit-chip-on')].map(c => c.textContent).join(',');
+  return JSON.stringify({ title, activeType, category, brands, sizes, conditions });
+}
+
+function isFormDirty() {
+  return getFormSnapshot() !== editSnapshot;
+}
+
+function attemptCloseEdit() {
+  if (isFormDirty()) {
+    showSaveConfirm();
+  } else {
+    closeEditPageDirect();
+  }
+}
+
+function closeEditPage() {
+  attemptCloseEdit();
+}
+
+function syncTitleToList() {
+  const titleInput = document.getElementById('editTitleInput');
+  if (!titleInput) return;
+  const newTitle = titleInput.value;
+
+  // Update NUX template list
+  const nuxTitles = document.querySelectorAll('.nux-templates-list .tpl-title');
+  if (nuxTitles[currentTemplateIndex]) nuxTitles[currentTemplateIndex].textContent = newTitle;
+
+  // Update inventory list (first 3 are templates)
+  const invItems = document.querySelectorAll('#inventoryPage .inv-item-title');
+  if (invItems[currentTemplateIndex]) invItems[currentTemplateIndex].textContent = newTitle;
+}
+
+function saveDraft() {
+  syncTitleToList();
+  closeEditPageDirect();
+}
+
+function showSaveConfirm() {
+  document.getElementById('saveConfirmModal').classList.add('open');
+}
+
+function closeSaveConfirm() {
+  document.getElementById('saveConfirmModal').classList.remove('open');
+}
+
+function confirmSaveAndClose() {
+  closeSaveConfirm();
+  syncTitleToList();
+  closeEditPageDirect();
+}
+
+function confirmDiscardAndClose() {
+  closeSaveConfirm();
+  closeEditPageDirect();
+}
+
+function closeEditPageDirect() {
+  document.getElementById('pricePage').classList.remove('active');
+  const editPage = document.getElementById('editPage');
+
+  if (editVertical) {
+    editPage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+    editPage.style.transform = 'translateY(100%)';
+    setTimeout(() => {
+      editPage.style.transition = 'none';
+      editPage.classList.remove('active', 'parallax-behind');
+      editPage.style.transform = '';
+      requestAnimationFrame(() => { editPage.style.transition = ''; });
+      editVertical = false;
+    }, 420);
+  } else {
+    editPage.classList.remove('active', 'parallax-behind');
+    const nuxSlider = document.querySelector('.nux-slider');
+    const invPage = document.getElementById('inventoryPage');
+    if (editReturnTo === 'nux' && nuxSlider) {
+      nuxSlider.style.transform = '';
+      nuxSlider.style.opacity = '';
+      setTimeout(() => { nuxSlider.style.transition = ''; }, 400);
+    } else if (invPage) {
+      invPage.style.transform = '';
+      invPage.style.opacity = '';
+      setTimeout(() => { invPage.style.transition = ''; }, 400);
+    }
+  }
+}
+
+// Single-select chips
+function selectChip(el, group) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.edit-chip').forEach(c => {
+    c.classList.remove('edit-chip-on');
+    c.classList.add('edit-chip-off');
+  });
+  el.classList.remove('edit-chip-off');
+  el.classList.add('edit-chip-on');
+  if (group === 'type') updateGeneratedTitle();
+}
+
+// Multi-select chips
+function toggleChip(el) {
+  el.classList.toggle('edit-chip-on');
+  el.classList.toggle('edit-chip-off');
+}
+
+// Auto-generate title from Type + Brands
+function updateGeneratedTitle() {
+  const typeChips = document.getElementById('typeChips');
+  const activeType = typeChips ? typeChips.querySelector('.edit-chip-on') : null;
+  const typeName = activeType ? activeType.textContent : '';
+  const brands = document.getElementById('editBrands').textContent;
+
+  let title = '';
+  if (typeName && brands) {
+    const brandList = brands.split(',').map(b => b.trim());
+    if (brandList.length > 3) {
+      title = typeName + ': ' + brandList.slice(0, 3).join(', ') + ', and more';
+    } else {
+      title = typeName + ': ' + brandList.join(', ');
+    }
+  } else if (typeName) {
+    title = typeName;
+  }
+
+  const titleInput = document.getElementById('editTitleInput');
+  if (titleInput) titleInput.value = title;
+}
+
+// Category bottom sheet
+const whatnotCategories = [
+  "Women's Contemporary", "Men's Fashion", "Sneakers", "Streetwear",
+  "Vintage", "Designer", "Sportswear", "Accessories",
+  "Jewelry", "Handbags", "Watches", "Shoes",
+  "Beauty", "Home & Garden", "Electronics", "Toys & Collectibles",
+  "Trading Cards", "Comics", "Funko", "Art"
+];
+
+function openCategorySheet() {
+  const sheet = document.getElementById('categorySheet');
+  const list = document.getElementById('categoryList');
+  const current = document.getElementById('editCategory').textContent;
+
+  list.innerHTML = whatnotCategories.map(cat => `
+    <div class="bottom-sheet-item ${cat === current ? 'selected' : ''}" onclick="selectCategory('${cat}')">
+      <span>${cat}</span>
+      <svg class="check-mark" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,10 8,14 16,6"/></svg>
+    </div>
+  `).join('');
+
+  sheet.style.display = 'block';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      sheet.classList.add('open');
+    });
+  });
+}
+
+function closeCategorySheet() {
+  const sheet = document.getElementById('categorySheet');
+  sheet.classList.remove('open');
+  setTimeout(() => { sheet.style.display = 'none'; }, 350);
+}
+
+function selectCategory(cat) {
+  document.getElementById('editCategory').textContent = cat;
+  closeCategorySheet();
+}
+
+// Step 2: Price & Format page
+function publishTemplate() {
+  document.getElementById('editPage').classList.add('parallax-behind');
+  document.getElementById('pricePage').classList.add('active');
+}
+
+function closePricePage() {
+  document.getElementById('pricePage').classList.remove('active');
+  document.getElementById('editPage').classList.remove('parallax-behind');
+}
+
+function publishListing() {
+  syncTitleToList();
+  const titleInput = document.getElementById('editTitleInput');
+  const publishedTitle = titleInput ? titleInput.value : 'Template';
+
+  const loader = document.getElementById('publishLoader');
+  loader.classList.add('visible');
+
+  setTimeout(() => {
+    document.getElementById('pricePage').classList.remove('active');
+    document.getElementById('editPage').classList.remove('active', 'parallax-behind');
+
+    const nuxOverlay = document.getElementById('nuxOverlay');
+    if (nuxOverlay.style.display !== 'none') {
+      nuxOverlay.classList.remove('open');
+      nuxOverlay.style.display = 'none';
+      resetNux();
+    }
+
+    document.querySelector('.page').style.visibility = '';
+    document.querySelector('.page').style.display = 'none';
+    const nuxSlider = document.querySelector('.nux-slider');
+    if (nuxSlider) { nuxSlider.style.transform = ''; nuxSlider.style.opacity = ''; nuxSlider.style.transition = ''; }
+
+    const invPage = document.getElementById('inventoryPage');
+    invPage.style.display = 'flex';
+    invPage.style.transform = '';
+    invPage.style.opacity = '';
+    invPage.style.transition = '';
+
+    moveItemToActive(publishedTitle);
+    switchInvTab('active');
+
+    loader.classList.remove('visible');
+  }, 1800);
+}
+
+function moveItemToActive(title) {
+  const activeList = document.getElementById('invActiveList');
+  const inactiveList = document.getElementById('invInactiveList');
+  const draftList = document.getElementById('invDraftList');
+
+  const sourceList = editReturnTo === 'inventory'
+    ? (inactiveList.style.display === 'block' ? inactiveList : draftList.style.display === 'block' ? draftList : activeList)
+    : inactiveList;
+
+  const items = sourceList.querySelectorAll('[data-type]');
+  let movedItem = null;
+
+  items.forEach(item => {
+    const titleEl = item.querySelector('[style*="font-size:14px"]');
+    if (titleEl && titleEl.textContent.trim() === title.trim()) {
+      movedItem = item;
+    }
+  });
+
+  if (!movedItem) {
+    const newItem = document.createElement('div');
+    newItem.setAttribute('data-type', 'template');
+    newItem.setAttribute('onclick', "openEditPage(0,'inventory')");
+    newItem.style.cssText = 'display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start';
+    newItem.innerHTML = `
+      <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px">
+        <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${title}</div>
+        <div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div>
+        <div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div>
+      </div>
+    `;
+    movedItem = newItem;
+  } else {
+    movedItem.parentNode.removeChild(movedItem);
+  }
+
+  // Remove "NEW" label when moving to active
+  const newLabel = movedItem.querySelector('.new-label');
+  if (newLabel) newLabel.remove();
+
+  movedItem.style.display = 'flex';
+  activeList.insertBefore(movedItem, activeList.firstChild);
+}
+
+let templatesFilterOn = false;
+
+function toggleTemplatesFilter() {
+  templatesFilterOn = !templatesFilterOn;
+  const chip = document.getElementById('templatesFilterChip');
+  if (templatesFilterOn) {
+    chip.style.background = '#1c1c1c';
+    chip.querySelector('span').style.color = 'white';
+  } else {
+    chip.style.background = 'rgba(0,0,0,0.1)';
+    chip.querySelector('span').style.color = '#1c1c1c';
+  }
+  applyTemplatesFilter();
+}
+
+function applyTemplatesFilter() {
+  const lists = ['invActiveList', 'invInactiveList', 'invDraftList'];
+  lists.forEach(listId => {
+    const list = document.getElementById(listId);
+    if (!list) return;
+    list.querySelectorAll('[data-type]').forEach(item => {
+      if (templatesFilterOn && item.dataset.type !== 'template') {
+        item.style.display = 'none';
+      } else {
+        item.style.display = 'flex';
+      }
+    });
+  });
+  updateProductCount();
+}
+
+function updateProductCount() {
+  const lists = ['invActiveList', 'invInactiveList', 'invDraftList'];
+  let visibleList = null;
+  lists.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.style.display === 'block') visibleList = el;
+  });
+  if (!visibleList) return;
+  let count = 0;
+  visibleList.querySelectorAll('[data-type]').forEach(item => { if (item.style.display !== 'none') count++; });
+  document.getElementById('invProductCount').textContent = count + (count === 1 ? ' Product' : ' Products');
+}
+
+function switchInvTab(tab) {
+  const tabMap = { active: 'invTabActive', draft: 'invTabDraft', inactive: 'invTabInactive' };
+  Object.entries(tabMap).forEach(([key, id]) => {
+    const el = document.getElementById(id);
+    const span = el.querySelector('span');
+    const bar = el.querySelector('.inv-tab-bar');
+    if (key === tab) {
+      span.style.color = '#1c1c1c';
+      bar.style.background = '#1c1c1c';
+    } else {
+      span.style.color = '#7f7f7f';
+      bar.style.background = 'transparent';
+    }
+  });
+
+  ['invActiveList', 'invDraftList', 'invInactiveList'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+
+  const showId = tab === 'active' ? 'invActiveList' : tab === 'draft' ? 'invDraftList' : 'invInactiveList';
+  document.getElementById(showId).style.display = 'block';
+
+  applyTemplatesFilter();
+}
+</script>
+</body>
+</html>
