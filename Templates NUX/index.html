@@ -3193,12 +3193,40 @@ function openEditPage(templateIndex, returnTo) {
     moreBtn.style.display = 'flex';
   }
 
-  // Reset all chips for null state
+  // Set chips state
   if (isNull) {
     document.querySelectorAll('#editPage .edit-chips-field .edit-chip').forEach(c => {
       c.classList.remove('edit-chip-on');
       c.classList.add('edit-chip-off');
     });
+  } else {
+    // Restore default size selections: XS, S, M, L, XL on
+    const sizeChipsField = document.querySelectorAll('#editPage .edit-chips-field')[1];
+    if (sizeChipsField) {
+      const defaultSizes = ['XS', 'S', 'M', 'L', 'XL'];
+      sizeChipsField.querySelectorAll('.edit-chip').forEach(c => {
+        if (defaultSizes.includes(c.textContent)) {
+          c.classList.remove('edit-chip-off');
+          c.classList.add('edit-chip-on');
+        } else {
+          c.classList.remove('edit-chip-on');
+          c.classList.add('edit-chip-off');
+        }
+      });
+    }
+    // Restore default condition: New w Tag on
+    const condChipsField = document.querySelectorAll('#editPage .edit-chips-field')[2];
+    if (condChipsField) {
+      condChipsField.querySelectorAll('.edit-chip').forEach(c => {
+        if (c.textContent === 'New w Tag') {
+          c.classList.remove('edit-chip-off');
+          c.classList.add('edit-chip-on');
+        } else {
+          c.classList.remove('edit-chip-on');
+          c.classList.add('edit-chip-off');
+        }
+      });
+    }
   }
 
   // Generate title from current selections
