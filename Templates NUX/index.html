@@ -35,10 +35,54 @@
       font-family: var(--font);
       background: #1a1a1a;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       min-height: 100vh;
       overflow: hidden;
+    }
+
+    .proto-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      z-index: 10000;
+    }
+    .proto-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.4);
+    }
+    .proto-breadcrumb a {
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .proto-breadcrumb a:hover { color: rgba(255,255,255,0.7); }
+    .proto-breadcrumb .separator { margin: 0 2px; }
+    .proto-breadcrumb .current {
+      color: rgba(255,255,255,0.7);
+      font-weight: 500;
+    }
+    .proto-timestamp {
+      font-size: 12px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .proto-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .phone-frame {
@@ -186,7 +230,7 @@
       right: 0;
       height: 54px;
       z-index: 9999;
-      background: white;
+      background: transparent;
     }
     .status-bar {
       height: 54px;
@@ -764,6 +808,54 @@
       overflow: hidden;
     }
     .tab-profile img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ═══ TOOLTIP ═══ */
+    .nux-tooltip {
+      margin: 0 16px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .nux-tooltip.visible {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .nux-tooltip-arrow {
+      width: 12px;
+      height: 8px;
+    }
+    .nux-tooltip-body {
+      background: #2d2d2d;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      width: 100%;
+      box-shadow: 0px 2px 16px rgba(0,0,0,0.1);
+    }
+    .nux-tooltip-body p {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: white;
+    }
+    .nux-tooltip-close {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .nux-tooltip-close svg { width: 10px; height: 10px; }
 
     .toast {
       position: absolute;
@@ -1689,6 +1781,16 @@
   </style>
 </head>
 <body>
+<div class="proto-header">
+  <div class="proto-breadcrumb">
+    <a href="https://sturdy-parakeet-o3wwv73.pages.github.io/">Index</a>
+    <span class="separator">›</span>
+    <span>st</span>
+    <span class="separator">›</span>
+    <span class="current">Templates NUX - Mobile</span>
+  </div>
+  <div class="proto-timestamp" id="protoTimestamp"></div>
+</div>
 <div class="phone-frame">
   <div class="phone-bezel"></div>
   <div class="device">
@@ -2278,9 +2380,22 @@
         <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create a template to reuse over and over. Start with a type, then add 1–2 brands and a size range. <span style="color:#005ae1;cursor:pointer">Learn more</span></div>
       </div>
 
-      <div class="edit-field" onclick="openCategorySheet()" style="cursor:pointer">
-        <div class="edit-field-label">Category <span class="required">*</span></div>
-        <div class="edit-field-value"><span id="editCategory">Women's Contemporary</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+      <div style="position:relative">
+        <div class="edit-field" onclick="openCategorySheet();dismissTooltip('tooltip1')" style="cursor:pointer">
+          <div class="edit-field-label">Category <span class="required">*</span></div>
+          <div class="edit-field-value"><span id="editCategory">Women's Contemporary</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+        </div>
+
+        <!-- Tooltip 1: Category -->
+        <div class="nux-tooltip" id="tooltip1" style="position:absolute;top:100%;left:0;right:0;z-index:50;padding-top:4px">
+          <svg class="nux-tooltip-arrow" viewBox="0 0 12 8" fill="#2d2d2d"><path d="M6 0L12 8H0z"/></svg>
+          <div class="nux-tooltip-body">
+            <p>Start by confirming the category to set the right attributes for your template.</p>
+            <div class="nux-tooltip-close" onclick="event.stopPropagation();dismissTooltip('tooltip1')">
+              <svg viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="edit-chips-field">
@@ -2297,22 +2412,27 @@
         </div>
       </div>
 
-      <div class="edit-field" id="brandsField">
-        <div class="edit-field-label" id="brandsLabel">Brand(s)</div>
-        <div class="edit-field-value"><span id="editBrands">Lulu Lemon, Alo, Vuori, Commense</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+      <div style="position:relative">
+        <div class="edit-field" id="brandsField" onclick="dismissTooltip('tooltip2');openBrandsSheet()" style="cursor:pointer">
+          <div class="edit-field-label" id="brandsLabel">Brand(s)</div>
+          <div class="edit-field-value"><span id="editBrands">Lulu Lemon, Alo, Vuori, Commense</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+        </div>
+
+        <!-- Tooltip 2: Brands -->
+        <div class="nux-tooltip" id="tooltip2" style="position:absolute;top:100%;left:0;right:0;z-index:50;padding-top:4px">
+          <svg class="nux-tooltip-arrow" viewBox="0 0 12 8" fill="#2d2d2d"><path d="M6 0L12 8H0z"/></svg>
+          <div class="nux-tooltip-body">
+            <p>Group listings with 2 or more brands show up in more searches. You can add up to 10 brands.</p>
+            <div class="nux-tooltip-close" onclick="event.stopPropagation();dismissTooltip('tooltip2')">
+              <svg viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="edit-chips-field">
+      <div class="edit-chips-field" id="sizeChipsField">
         <div class="edit-chips-label">Size(s)</div>
-        <div class="edit-chips">
-          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">OS</span>
-          <span class="edit-chip edit-chip-on" onclick="toggleChip(this)">XS</span>
-          <span class="edit-chip edit-chip-on" onclick="toggleChip(this)">S</span>
-          <span class="edit-chip edit-chip-on" onclick="toggleChip(this)">M</span>
-          <span class="edit-chip edit-chip-on" onclick="toggleChip(this)">L</span>
-          <span class="edit-chip edit-chip-on" onclick="toggleChip(this)">XL</span>
-          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">XXL</span>
-        </div>
+        <div class="edit-chips" id="sizeChipsContainer"></div>
       </div>
 
       <div class="edit-chips-field">
@@ -2340,14 +2460,31 @@
 
       <div class="edit-section-title">Shipping</div>
 
-      <div class="edit-field" id="weightField">
-        <div class="edit-field-label" id="weightLabel">Weight <span class="required">*</span></div>
-        <div class="edit-field-value" id="weightValue"><span id="weightText">1lb</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
-      </div>
+      <div style="position:relative">
+        <div style="margin:0 16px 12px;border-radius:8px;overflow:hidden">
+          <div id="weightField" onclick="dismissTooltip('tooltip3');openWeightSheet()" style="display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 16px;border:1px solid rgba(0,0,0,0.2);border-radius:8px 8px 0 0;cursor:pointer">
+            <div>
+              <div class="edit-field-label" id="weightLabel" style="margin-bottom:0">Weight <span class="required">*</span></div>
+              <span id="weightText" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">1lb</span>
+            </div>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#545454" stroke-width="1.5" stroke-linecap="round"><path d="M6 8l4 4 4-4"/></svg>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 16px;background:#f3f3f3;border-radius:0 0 8px 8px">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1c1c1c" stroke-width="1.2" style="flex-shrink:0;margin-top:1px"><circle cx="8" cy="8" r="6"/><path d="M8 5.5v3M8 10.5h.01"/></svg>
+            <span style="font-size:12px;font-weight:400;line-height:16px;color:#1c1c1c">Sellers cover any shipping adjustments.</span>
+          </div>
+        </div>
 
-      <div class="edit-helper">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="8" r="6"/><path d="M8 5.5v3M8 10.5h0"/></svg>
-        <span>Sellers cover any shipping adjustments.</span>
+        <!-- Tooltip 3: Weight -->
+        <div class="nux-tooltip" id="tooltip3" style="position:absolute;top:100%;left:0;right:0;z-index:50;padding-top:4px">
+          <svg class="nux-tooltip-arrow" viewBox="0 0 12 8" fill="#2d2d2d"><path d="M6 0L12 8H0z"/></svg>
+          <div class="nux-tooltip-body">
+            <p>If the shipping weight in your product range is wide, split them into separate templates so each ships at the right rate.</p>
+            <div class="nux-tooltip-close" onclick="event.stopPropagation();dismissTooltip('tooltip3')">
+              <svg viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div style="margin:0 16px 12px;border-radius:8px;overflow:hidden">
@@ -2841,6 +2978,39 @@
     </div>
   </div>
 
+  <!-- Sizes Bottom Sheet -->
+  <div class="bottom-sheet-overlay" id="sizesSheet" onclick="closeSizesSheet()">
+    <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height:75%;padding-bottom:0">
+      <div class="bottom-sheet-handle"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px">
+        <span class="bottom-sheet-title" style="padding:0">Sizes</span>
+        <button onclick="applySizesFromSheet()" style="border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;color:#005ae1;cursor:pointer">Done</button>
+      </div>
+      <div class="bottom-sheet-list" id="sizesList" style="padding-bottom:34px"></div>
+    </div>
+  </div>
+
+  <!-- Weight Bottom Sheet -->
+  <div class="bottom-sheet-overlay" id="weightSheet" onclick="closeWeightSheet()">
+    <div class="bottom-sheet" onclick="event.stopPropagation()" style="padding-bottom:0">
+      <div class="bottom-sheet-handle"></div>
+      <div class="bottom-sheet-title">Weight</div>
+      <div class="bottom-sheet-list" id="weightList" style="padding-bottom:34px"></div>
+    </div>
+  </div>
+
+  <!-- Brands Bottom Sheet -->
+  <div class="bottom-sheet-overlay" id="brandsSheet" onclick="closeBrandsSheet()">
+    <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height:75%;padding-bottom:0">
+      <div class="bottom-sheet-handle"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px">
+        <span class="bottom-sheet-title" style="padding:0">Brand(s)</span>
+        <button onclick="applyBrands()" style="border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;color:#005ae1;cursor:pointer">Done</button>
+      </div>
+      <div class="bottom-sheet-list" id="brandsList" style="padding-bottom:34px"></div>
+    </div>
+  </div>
+
   <!-- Category Bottom Sheet -->
   <div class="bottom-sheet-overlay" id="categorySheet" onclick="closeCategorySheet()">
     <div class="bottom-sheet" onclick="event.stopPropagation()">
@@ -2920,6 +3090,32 @@ function createNewTemplate() {
   setTimeout(() => {
     openEditPage(-1, 'create');
   }, 350);
+}
+
+let nuxFirstTime = true;
+
+function showTooltip(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = 'flex';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      el.classList.add('visible');
+    });
+  });
+}
+
+function dismissTooltip(id) {
+  const el = document.getElementById(id);
+  if (!el || !el.classList.contains('visible')) return;
+  el.classList.remove('visible');
+  setTimeout(() => { el.style.display = 'none'; }, 300);
+
+  if (id === 'tooltip1') {
+    setTimeout(() => { showTooltip('tooltip2'); }, 2000);
+  } else if (id === 'tooltip2') {
+    setTimeout(() => { showTooltip('tooltip3'); }, 2000);
+  }
 }
 
 function openMenu() {
@@ -3176,6 +3372,12 @@ function openEditPage(templateIndex, returnTo) {
   // Null state UI
   document.getElementById('editNullDesc').style.display = isNull ? 'block' : 'none';
 
+  // Reset tooltips
+  ['tooltip1', 'tooltip2', 'tooltip3'].forEach(id => {
+    const t = document.getElementById(id);
+    if (t) { t.classList.remove('visible'); t.style.display = 'none'; }
+  });
+
   // Nav: null state shows "Create Template" with X close; filled shows "Templates" with back arrow
   const navTitle = document.getElementById('editNavTitle');
   const backBtn = document.getElementById('editBackBtn');
@@ -3195,38 +3397,34 @@ function openEditPage(templateIndex, returnTo) {
 
   // Set chips state
   if (isNull) {
-    document.querySelectorAll('#editPage .edit-chips-field .edit-chip').forEach(c => {
+    selectedSizes.clear();
+    currentSizeMode = 'clothing';
+    renderSizeChips();
+    // Reset condition chips
+    document.querySelectorAll('#editPage .edit-chips-field:last-of-type .edit-chip').forEach(c => {
       c.classList.remove('edit-chip-on');
       c.classList.add('edit-chip-off');
     });
   } else {
-    // Restore default size selections: XS, S, M, L, XL on
-    const sizeChipsField = document.querySelectorAll('#editPage .edit-chips-field')[1];
-    if (sizeChipsField) {
-      const defaultSizes = ['XS', 'S', 'M', 'L', 'XL'];
-      sizeChipsField.querySelectorAll('.edit-chip').forEach(c => {
-        if (defaultSizes.includes(c.textContent)) {
-          c.classList.remove('edit-chip-off');
-          c.classList.add('edit-chip-on');
-        } else {
-          c.classList.remove('edit-chip-on');
-          c.classList.add('edit-chip-off');
-        }
-      });
+    // Set size mode based on type
+    currentSizeMode = tpl.type === 'Shoes' ? 'shoes' : 'clothing';
+    selectedSizes.clear();
+    if (currentSizeMode === 'shoes') {
+      ['7W', '7.5W', '8W', '8.5W', '9W'].forEach(s => selectedSizes.add(s));
+    } else {
+      ['XS', 'S', 'M', 'L', 'XL'].forEach(s => selectedSizes.add(s));
     }
+    renderSizeChips();
     // Restore default condition: New w Tag on
-    const condChipsField = document.querySelectorAll('#editPage .edit-chips-field')[2];
-    if (condChipsField) {
-      condChipsField.querySelectorAll('.edit-chip').forEach(c => {
-        if (c.textContent === 'New w Tag') {
-          c.classList.remove('edit-chip-off');
-          c.classList.add('edit-chip-on');
-        } else {
-          c.classList.remove('edit-chip-on');
-          c.classList.add('edit-chip-off');
-        }
-      });
-    }
+    document.querySelectorAll('#editPage .edit-chips-field:last-of-type .edit-chip').forEach(c => {
+      if (c.textContent === 'New w Tag') {
+        c.classList.remove('edit-chip-off');
+        c.classList.add('edit-chip-on');
+      } else {
+        c.classList.remove('edit-chip-on');
+        c.classList.add('edit-chip-off');
+      }
+    });
   }
 
   // Generate title from current selections
@@ -3263,6 +3461,12 @@ function openEditPage(templateIndex, returnTo) {
       invPage.style.opacity = '0.3';
     }
     editPage.classList.add('active');
+  }
+
+  // Show tooltip 1 on first template edit/create
+  if (nuxFirstTime) {
+    setTimeout(() => { showTooltip('tooltip1'); }, 1000);
+    nuxFirstTime = false;
   }
 }
 
@@ -3488,6 +3692,88 @@ function createNewListing() {
   }, 350);
 }
 
+const clothingSizes = ['OS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
+const shoeSizesCommon = ['6W', '6.5W', '7W', '7.5W', '8W', '8.5W', '9W', '9.5W', '10W'];
+const shoeSizesAll = [
+  '4W', '4.5W', '5W', '5.5W', '6W', '6.5W', '7W', '7.5W', '8W', '8.5W',
+  '9W', '9.5W', '10W', '10.5W', '11W', '11.5W', '12W', '13W',
+  '6M', '6.5M', '7M', '7.5M', '8M', '8.5M', '9M', '9.5M', '10M',
+  '10.5M', '11M', '11.5M', '12M', '13M', '14M'
+];
+let selectedSizes = new Set();
+let currentSizeMode = 'clothing';
+
+function renderSizeChips() {
+  const container = document.getElementById('sizeChipsContainer');
+  const sizes = currentSizeMode === 'shoes' ? shoeSizesCommon : clothingSizes;
+
+  let html = sizes.map(s => {
+    const isOn = selectedSizes.has(s);
+    return `<span class="edit-chip ${isOn ? 'edit-chip-on' : 'edit-chip-off'}" onclick="toggleSizeChip('${s}')">${s}</span>`;
+  }).join('');
+
+  if (currentSizeMode === 'shoes') {
+    html += `<span class="edit-chip edit-chip-off" onclick="openSizesSheet()" style="letter-spacing:2px">...</span>`;
+  }
+
+  container.innerHTML = html;
+}
+
+function toggleSizeChip(size) {
+  if (selectedSizes.has(size)) {
+    selectedSizes.delete(size);
+  } else {
+    selectedSizes.add(size);
+  }
+  renderSizeChips();
+}
+
+function openSizesSheet() {
+  const sheet = document.getElementById('sizesSheet');
+  const list = document.getElementById('sizesList');
+
+  const selected = shoeSizesAll.filter(s => selectedSizes.has(s));
+  const unselected = shoeSizesAll.filter(s => !selectedSizes.has(s));
+  const ordered = [...selected, ...unselected];
+
+  list.innerHTML = ordered.map(s => {
+    const isSelected = selectedSizes.has(s);
+    return `<div class="bottom-sheet-item" onclick="toggleSizeInSheet('${s}')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer">
+      <span style="font-size:16px;font-weight:${isSelected ? '600' : '400'};color:#1c1c1c">${s}</span>
+      <div style="width:22px;height:22px;border-radius:4px;${isSelected ? 'background:#1c1c1c' : 'border:1.5px solid #bbb'};display:flex;align-items:center;justify-content:center">
+        ${isSelected ? '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7l3 3 6-6"/></svg>' : ''}
+      </div>
+    </div>`;
+  }).join('');
+
+  sheet.style.display = 'block';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      sheet.classList.add('open');
+    });
+  });
+}
+
+function toggleSizeInSheet(size) {
+  if (selectedSizes.has(size)) {
+    selectedSizes.delete(size);
+  } else {
+    selectedSizes.add(size);
+  }
+  openSizesSheet();
+}
+
+function applySizesFromSheet() {
+  renderSizeChips();
+  closeSizesSheet();
+}
+
+function closeSizesSheet() {
+  const sheet = document.getElementById('sizesSheet');
+  sheet.classList.remove('open');
+  setTimeout(() => { sheet.style.display = 'none'; }, 350);
+}
+
 // Single-select chips
 function selectChip(el, group) {
   const parent = el.parentElement;
@@ -3497,7 +3783,16 @@ function selectChip(el, group) {
   });
   el.classList.remove('edit-chip-off');
   el.classList.add('edit-chip-on');
-  if (group === 'type') updateGeneratedTitle();
+  if (group === 'type') {
+    const typeName = el.textContent;
+    const newMode = typeName === 'Shoes' ? 'shoes' : 'clothing';
+    if (newMode !== currentSizeMode) {
+      currentSizeMode = newMode;
+      selectedSizes.clear();
+      renderSizeChips();
+    }
+    updateGeneratedTitle();
+  }
 }
 
 // Multi-select chips
@@ -3537,6 +3832,139 @@ const whatnotCategories = [
   "Beauty", "Home & Garden", "Electronics", "Toys & Collectibles",
   "Trading Cards", "Comics", "Funko", "Art"
 ];
+
+const womensFashionBrands = [
+  'Alo Yoga', 'Anthropologie', 'Aritzia', 'Babaton', 'Commense',
+  'COS', 'Eileen Fisher', 'Everlane', 'Farm Rio', 'Free People',
+  'Good American', 'H&M', 'J.Crew', 'Lulu Lemon', 'Madewell',
+  'Nordstrom', 'Princess Polly', 'Reformation', 'Skims', 'Theory',
+  'Urban Outfitters', 'Vince', 'Vuori', 'Zara'
+];
+
+let selectedBrands = new Set();
+let brandsDisplayOrder = [];
+
+function openBrandsSheet() {
+  const sheet = document.getElementById('brandsSheet');
+  const currentBrands = document.getElementById('editBrands').textContent;
+
+  selectedBrands.clear();
+  if (currentBrands && currentBrands !== 'Brand(s)') {
+    currentBrands.split(',').map(b => b.trim()).filter(b => b && b !== 'and more').forEach(b => {
+      selectedBrands.add(b);
+    });
+  }
+
+  const selected = [...selectedBrands].sort();
+  const unselected = womensFashionBrands.filter(b => !selectedBrands.has(b));
+  brandsDisplayOrder = [...selected, ...unselected];
+
+  renderBrandsList();
+
+  sheet.style.display = 'block';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      sheet.classList.add('open');
+    });
+  });
+}
+
+function renderBrandsList() {
+  const list = document.getElementById('brandsList');
+
+  list.innerHTML = brandsDisplayOrder.map(brand => {
+    const isSelected = selectedBrands.has(brand);
+    return `<div class="bottom-sheet-item" onclick="toggleBrand('${brand}')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer">
+      <span style="font-size:16px;font-weight:${isSelected ? '600' : '400'};color:#1c1c1c">${brand}</span>
+      <div style="width:22px;height:22px;border-radius:4px;${isSelected ? 'background:#1c1c1c' : 'border:1.5px solid #bbb'};display:flex;align-items:center;justify-content:center">
+        ${isSelected ? '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7l3 3 6-6"/></svg>' : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleBrand(brand) {
+  if (selectedBrands.has(brand)) {
+    selectedBrands.delete(brand);
+  } else {
+    if (selectedBrands.size >= 10) return;
+    selectedBrands.add(brand);
+  }
+  renderBrandsList();
+}
+
+function applyBrands() {
+  const brandsSpan = document.getElementById('editBrands');
+  const brandsLabel = document.getElementById('brandsLabel');
+
+  if (selectedBrands.size > 0) {
+    const brandsList = [...selectedBrands].sort();
+    if (brandsList.length > 3) {
+      brandsSpan.textContent = brandsList.slice(0, 3).join(', ') + ', and more';
+    } else {
+      brandsSpan.textContent = brandsList.join(', ');
+    }
+    brandsSpan.style.color = '';
+    brandsSpan.style.fontWeight = '';
+    brandsLabel.style.display = '';
+  } else {
+    brandsSpan.textContent = 'Brand(s)';
+    brandsSpan.style.color = '#545454';
+    brandsSpan.style.fontWeight = '400';
+    brandsLabel.style.display = 'none';
+  }
+
+  updateGeneratedTitle();
+  closeBrandsSheet();
+}
+
+function closeBrandsSheet() {
+  const sheet = document.getElementById('brandsSheet');
+  sheet.classList.remove('open');
+  setTimeout(() => { sheet.style.display = 'none'; }, 350);
+}
+
+const weightOptions = [
+  '< 4oz', '4oz – 8oz', '8oz – 1lb', '1lb', '1lb – 2lb',
+  '2lb – 3lb', '3lb – 5lb', '5lb – 10lb', '10lb – 20lb', '20lb+'
+];
+
+function openWeightSheet() {
+  const sheet = document.getElementById('weightSheet');
+  const list = document.getElementById('weightList');
+  const current = document.getElementById('weightText').textContent;
+
+  list.innerHTML = weightOptions.map(w => {
+    const isSelected = w === current;
+    return `<div class="bottom-sheet-item" onclick="selectWeight('${w}')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer">
+      <span style="font-size:16px;font-weight:${isSelected ? '600' : '400'};color:#1c1c1c">${w}</span>
+      <div style="width:22px;height:22px;border-radius:50%;${isSelected ? 'border:6px solid #1c1c1c' : 'border:1.5px solid #bbb'}"></div>
+    </div>`;
+  }).join('');
+
+  sheet.style.display = 'block';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      sheet.classList.add('open');
+    });
+  });
+}
+
+function selectWeight(w) {
+  const weightLabel = document.getElementById('weightLabel');
+  const weightText = document.getElementById('weightText');
+  weightText.textContent = w;
+  weightText.style.color = '';
+  weightText.style.fontWeight = '';
+  weightLabel.style.display = '';
+  closeWeightSheet();
+}
+
+function closeWeightSheet() {
+  const sheet = document.getElementById('weightSheet');
+  sheet.classList.remove('open');
+  setTimeout(() => { sheet.style.display = 'none'; }, 350);
+}
 
 function openCategorySheet() {
   const sheet = document.getElementById('categorySheet');
@@ -3589,8 +4017,19 @@ function publishListing() {
   loader.classList.add('visible');
 
   setTimeout(() => {
-    document.getElementById('pricePage').classList.remove('active');
-    document.getElementById('editPage').classList.remove('active', 'parallax-behind');
+    const pricePage = document.getElementById('pricePage');
+    const editPage = document.getElementById('editPage');
+    pricePage.style.transition = 'none';
+    pricePage.classList.remove('active');
+    pricePage.style.transform = '';
+    editPage.style.transition = 'none';
+    editPage.classList.remove('active', 'parallax-behind');
+    editPage.style.transform = '';
+    requestAnimationFrame(() => {
+      pricePage.style.transition = '';
+      editPage.style.transition = '';
+    });
+    editVertical = false;
 
     const nuxOverlay = document.getElementById('nuxOverlay');
     if (nuxOverlay.style.display !== 'none') {
@@ -3754,6 +4193,13 @@ function switchInvTab(tab) {
 
   applyTemplatesFilter();
 }
+
+// Set timestamp
+(function() {
+  const now = new Date();
+  const options = { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
+  document.getElementById('protoTimestamp').textContent = 'Last updated: ' + now.toLocaleDateString('en-US', options);
+})();
 </script>
 </body>
 </html>
