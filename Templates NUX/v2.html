@@ -2065,36 +2065,37 @@
         <!-- Text -->
         <div style="display:flex;flex-direction:column;gap:8px;width:100%">
           <div style="display:flex;flex-direction:column;gap:4px">
-            <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#6a6a6a">Getting Started</div>
-            <div style="font-size:24px;font-weight:600;line-height:30px;letter-spacing:0.07px;color:#161616">List your products one at a time, or list lots of products together</div>
+            <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#6a6a6a">Women's Fashion</div>
+            <div style="font-size:24px;font-weight:600;line-height:30px;letter-spacing:0.07px;color:#161616">What kind of fashion are you planning to sell?</div>
           </div>
-          <div style="font-size:18px;font-weight:400;line-height:23px;letter-spacing:-0.44px;color:#393939">Different inventory, different approaches. Pick the one that fits how you sell.</div>
+          <div style="font-size:16px;font-weight:400;line-height:22px;letter-spacing:-0.31px;color:#393939">This helps us recommend the best way to list your products so buyers can find them fast.</div>
         </div>
-        <!-- List Items -->
-        <div style="display:flex;flex-direction:column;gap:24px;width:100%">
-          <!-- Individual Listings -->
-          <div style="display:flex;gap:8px;align-items:flex-start;width:100%">
-            <div style="width:72px;height:56px;position:relative;flex-shrink:0">
-              <img src="icons/onboard-offset-dark.svg" style="position:absolute;left:calc(50% + 1px);top:14px;width:36px;height:36px;transform:translateX(-50%)" alt="">
-              <img src="icons/onboard-offset-light.svg" style="position:absolute;left:calc(50% + 1px);top:14px;width:36px;height:36px;transform:translateX(-50%)" alt="">
-              <img src="icons/onboard-icon-tag.svg" style="position:absolute;left:calc(50% + 1px);top:9px;width:36px;height:36px;transform:translateX(-50%)" alt="">
+        <!-- Selection Options -->
+        <div style="display:flex;flex-direction:column;gap:12px;width:100%">
+          <!-- Option A: Unique / one-of-a-kind -->
+          <button id="onboardOptA" onclick="selectSellerType('unique')" style="display:flex;gap:12px;align-items:center;width:100%;padding:16px;background:white;border:2px solid #e0e0e0;border-radius:12px;cursor:pointer;text-align:left;font-family:var(--font);transition:border-color 0.15s,background 0.15s">
+            <div style="width:44px;height:44px;border-radius:10px;background:#fef9e7;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:24px">👗</div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+              <div style="font-size:15px;font-weight:600;line-height:20px;color:#161616">Unique or high-value pieces</div>
+              <div style="font-size:13px;font-weight:400;line-height:18px;color:#6a6a6a">Designer items, vintage finds, rare pieces worth showcasing individually</div>
             </div>
-            <div style="flex:1;display:flex;flex-direction:column;gap:4px">
-              <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#161616">Individual Listings</div>
-              <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#393939">List one product or multiples of the same product to maximize discoverability.</div>
+          </button>
+          <!-- Option B: Lots of similar items -->
+          <button id="onboardOptB" onclick="selectSellerType('bulk')" style="display:flex;gap:12px;align-items:center;width:100%;padding:16px;background:white;border:2px solid #e0e0e0;border-radius:12px;cursor:pointer;text-align:left;font-family:var(--font);transition:border-color 0.15s,background 0.15s">
+            <div style="width:44px;height:44px;border-radius:10px;background:#f0f4ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:24px">👚</div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+              <div style="font-size:15px;font-weight:600;line-height:20px;color:#161616">Lots of similar items</div>
+              <div style="font-size:13px;font-weight:400;line-height:18px;color:#6a6a6a">Tops, bottoms, dresses in various sizes and brands — fast-paced selling</div>
             </div>
-          </div>
-          <!-- Templates -->
-          <div style="display:flex;gap:8px;align-items:flex-start;width:100%">
-            <div style="width:72px;height:56px;position:relative;flex-shrink:0">
-              <img src="icons/onboard-icon-bg.svg" style="position:absolute;left:calc(50% + 1px);top:14px;width:36px;height:36px;transform:translateX(-50%)" alt="">
-              <img src="icons/onboard-icon-fg.svg" style="position:absolute;left:calc(50% + 1px);top:14px;width:36px;height:36px;transform:translateX(-50%)" alt="">
+          </button>
+          <!-- Option C: Mix of both -->
+          <button id="onboardOptC" onclick="selectSellerType('mix')" style="display:flex;gap:12px;align-items:center;width:100%;padding:16px;background:white;border:2px solid #e0e0e0;border-radius:12px;cursor:pointer;text-align:left;font-family:var(--font);transition:border-color 0.15s,background 0.15s">
+            <div style="width:44px;height:44px;border-radius:10px;background:#f3f0ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:24px">✨</div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+              <div style="font-size:15px;font-weight:600;line-height:20px;color:#161616">A mix of both</div>
+              <div style="font-size:13px;font-weight:400;line-height:18px;color:#6a6a6a">Some standout pieces and some everyday fashion you want to move quickly</div>
             </div>
-            <div style="flex:1;display:flex;flex-direction:column;gap:4px">
-              <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#161616">Templates Ipsum</div>
-              <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#393939">List lots of related products together if you're short on time or have lower-value products.</div>
-            </div>
-          </div>
+          </button>
         </div>
       </div>
     </div>
@@ -2106,7 +2107,7 @@
         </div>
         <div style="display:flex;align-items:center;justify-content:flex-end;gap:19px;padding:0 16px">
           <div style="flex:1;font-size:12px;font-weight:600;line-height:16px;color:#6f6f6f;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">1 of 4</div>
-          <button onclick="openOnboardingStep2()" style="height:40px;padding:0 24px;border-radius:999px;background:#f9dc00;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616;cursor:pointer">Next</button>
+          <button id="onboardStep1Cta" onclick="openOnboardingStep2()" style="height:40px;padding:0 24px;border-radius:999px;background:#e0e0e0;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#999;cursor:not-allowed;transition:background 0.2s,color 0.2s" disabled>Next</button>
         </div>
       </div>
       <div style="height:32px;overflow:hidden;width:375px;position:relative">
@@ -2123,59 +2124,14 @@
       <button onclick="closeStep2()" style="position:absolute;left:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg>
       </button>
-      <span style="font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616">Listing Products</span>
+      <span style="font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616">Your Recommendation</span>
       <button onclick="closeOnboarding()" style="position:absolute;right:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
       </button>
     </div>
-    <!-- Content -->
-    <div style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:24px;overflow-y:auto">
-      <!-- Illustration -->
-      <div style="height:200px;position:relative;width:100%">
-        <!-- Phone outline -->
-        <div style="position:absolute;left:135px;top:26px;width:92px;height:148px;border:2px solid #110f0f;border-radius:11px;background:white"></div>
-        <!-- Description lines -->
-        <div style="position:absolute;left:156px;top:146px;width:60px;height:2px;background:#d2d2d2;border-radius:1px"></div>
-        <div style="position:absolute;left:156px;top:153px;width:17px;height:2px;background:#d2d2d2;border-radius:1px"></div>
-        <!-- Tag illustration -->
-        <img src="icons/step2-label.svg" style="position:absolute;left:143px;top:62px;width:70px;height:70px" alt="">
-        <!-- Heart -->
-        <img src="icons/step2-heart-fill.svg" style="position:absolute;left:213px;top:37px;width:36px;height:29px" alt="">
-        <img src="icons/step2-heart-stroke.svg" style="position:absolute;left:215px;top:35px;width:36px;height:29px" alt="">
-        <!-- Message bubble -->
-        <img src="icons/step2-message.svg" style="position:absolute;left:101px;top:128px;width:44px;height:39px;transform:rotate(-5.21deg)" alt="">
-        <!-- Stars -->
-        <img src="icons/step2-star1.svg" style="position:absolute;left:101px;top:59px;width:16px;height:16px" alt="">
-        <img src="icons/step2-star2.svg" style="position:absolute;left:249px;top:123px;width:26px;height:26px" alt="">
-        <!-- Lines left -->
-        <div style="position:absolute;left:48px;top:91px">
-          <div style="position:absolute;left:32px;top:0;width:17px;height:2px;background:#1c1c1c;border-radius:1px"></div>
-          <div style="position:absolute;left:10px;top:9px;width:51px;height:2px;background:#1c1c1c;border-radius:1px"></div>
-          <div style="position:absolute;left:0;top:9px;width:4px;height:2px;background:#1c1c1c;border-radius:1px"></div>
-          <div style="position:absolute;left:11px;top:22px;width:18px;height:2px;background:#1c1c1c;border-radius:1px"></div>
-        </div>
-        <!-- Lines right -->
-        <div style="position:absolute;left:254px;top:96px">
-          <div style="position:absolute;left:10px;top:0;width:31px;height:2px;background:#1c1c1c;border-radius:1px"></div>
-          <div style="position:absolute;left:0;top:8px;width:21px;height:2px;background:#1c1c1c;border-radius:1px"></div>
-          <div style="position:absolute;left:32px;top:8px;width:10px;height:2px;background:#1c1c1c;border-radius:1px"></div>
-        </div>
-      </div>
-      <!-- Text -->
-      <div style="display:flex;flex-direction:column;gap:8px;width:100%">
-        <div style="display:flex;flex-direction:column;gap:4px">
-          <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#6a6a6a">Individual Listings</div>
-          <div style="font-size:24px;font-weight:600;line-height:30px;letter-spacing:0.07px;color:#161616">Get discovered by listing your products one at a time</div>
-        </div>
-        <div style="font-size:18px;font-weight:400;line-height:23px;letter-spacing:-0.44px;color:#393939">Show up in more searches by creating listings for each of your products. It takes more time, but gains more buyers.</div>
-      </div>
-      <!-- Best when card -->
-      <div style="background:#f3f3f3;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:4px;width:100%">
-        <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Best when:</div>
-        <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454;padding-left:21px">• You want higher search rankings</div>
-        <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454;padding-left:21px">• You have high-value items</div>
-        <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454;padding-left:21px">• You have extra info you think the buyer will need</div>
-      </div>
+    <!-- Content (dynamically populated by JS based on selection) -->
+    <div id="step2Content" style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:24px;overflow-y:auto">
+      <!-- Populated by configureStep2() -->
     </div>
     <!-- Bottom: Progress + CTA -->
     <div style="flex-shrink:0;display:flex;flex-direction:column;gap:2px;align-items:center;width:100%">
@@ -2201,48 +2157,14 @@
       <button onclick="closeStep3()" style="position:absolute;left:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg>
       </button>
-      <span style="font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616">Listing Products</span>
+      <span id="step3NavTitle" style="font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616">How It Works</span>
       <button onclick="closeOnboarding()" style="position:absolute;right:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
       </button>
     </div>
-    <div style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:24px;overflow-y:auto">
-      <div style="height:200px;position:relative;width:100%">
-        <div style="position:absolute;left:135px;top:24px;width:92px;height:148px;border:2px solid #110f0f;border-radius:11px;background:white"></div>
-        <img src="icons/step2-label.svg" style="position:absolute;left:112px;top:38px;width:92px;height:92px;transform:rotate(4.68deg)" alt="">
-        <div style="position:absolute;left:152px;top:145px;width:64px;height:15px;border:2px solid #110f0f;border-radius:110px"></div>
-        <div style="position:absolute;left:154px;top:147px;width:24px;height:11px;background:#ffe414;border:2px solid #110f0f;border-radius:110px"></div>
-        <img src="icons/step3-repeat.svg" style="position:absolute;left:198px;top:89px;width:50px;height:50px" alt="">
-        <img src="icons/step2-star1.svg" style="position:absolute;left:234px;top:25px;width:16px;height:16px" alt="">
-        <img src="icons/step2-star2.svg" style="position:absolute;left:254px;top:43px;width:26px;height:26px" alt="">
-        <img src="icons/step2-star1.svg" style="position:absolute;left:98px;top:132px;width:16px;height:16px" alt="">
-        <div style="position:absolute;left:49px;top:89px">
-          <div style="position:absolute;left:32px;top:0;width:17px;height:2px;background:#1c1c1c;border-radius:1px"></div>
-          <div style="position:absolute;left:10px;top:9px;width:51px;height:2px;background:#1c1c1c;border-radius:1px"></div>
-          <div style="position:absolute;left:0;top:9px;width:4px;height:2px;background:#1c1c1c;border-radius:1px"></div>
-          <div style="position:absolute;left:11px;top:22px;width:18px;height:2px;background:#1c1c1c;border-radius:1px"></div>
-        </div>
-        <div style="position:absolute;left:257px;top:94px">
-          <div style="position:absolute;left:10px;top:0;width:31px;height:2px;background:#1c1c1c;border-radius:1px"></div>
-          <div style="position:absolute;left:0;top:8px;width:21px;height:2px;background:#1c1c1c;border-radius:1px"></div>
-          <div style="position:absolute;left:32px;top:8px;width:10px;height:2px;background:#1c1c1c;border-radius:1px"></div>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:12px;width:100%">
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;flex-direction:column;gap:4px">
-            <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#6a6a6a">Templates</div>
-            <div style="font-size:24px;font-weight:600;line-height:30px;letter-spacing:0.07px;color:#161616">Move quickly by using reusable templates</div>
-          </div>
-          <div style="font-size:18px;font-weight:400;line-height:23px;letter-spacing:-0.44px;color:#393939">Create templates for lots of related products. Just add the broad strokes, like type, brands, and sizes.</div>
-        </div>
-      </div>
-      <div style="background:#f3f3f3;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:4px;width:100%">
-        <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Best when:</div>
-        <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454;padding-left:21px">• You have too much inventory to list individually</div>
-        <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454;padding-left:21px">• You want to run fast-paced shows</div>
-        <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454;padding-left:21px">• Your products are similar in type, style, size, etc.</div>
-      </div>
+    <!-- Content (dynamically populated by JS based on selection) -->
+    <div id="step3Content" style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:24px;overflow-y:auto">
+      <!-- Populated by configureStep3() -->
     </div>
     <div style="flex-shrink:0;display:flex;flex-direction:column;gap:2px;align-items:center;width:100%">
       <div style="display:flex;flex-direction:column;gap:12px;width:100%">
@@ -2295,10 +2217,10 @@
         <div style="display:flex;flex-direction:column;gap:8px">
           <div style="display:flex;flex-direction:column;gap:4px">
             <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#6a6a6a">Shipping Weight</div>
-            <div style="font-size:24px;font-weight:600;line-height:30px;letter-spacing:0.07px;color:#161616">Buyers pay for shipping based on weight and distance</div>
+            <div style="font-size:24px;font-weight:600;line-height:30px;letter-spacing:0.07px;color:#161616">Set the right weight so buyers see accurate shipping costs</div>
           </div>
-          <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#393939">To ensure buyers are charged accurately, select the correct weight for each listing.</div>
-          <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#393939">Buyers see shipping fees based on their location. This dynamic pricing—rather than a flat fee—keeps costs as low as possible.</div>
+          <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#393939">Most women's fashion ships light — a top or dress typically falls under 1 lb. Heavier items like coats or boots may need a higher weight tier.</div>
+          <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#393939">Buyers see shipping fees based on their location. Accurate weights keep costs fair and reduce post-sale issues.</div>
         </div>
       </div>
       <div style="background:#f3f3f3;border-radius:8px;padding:12px;display:flex;gap:8px;align-items:center;width:100%">
@@ -5018,7 +4940,198 @@ function switchInvTab(tab) {
   applyTemplatesFilter();
 }
 
+let sellerType = null; // 'unique', 'bulk', or 'mix'
+
+function selectSellerType(type) {
+  sellerType = type;
+  const optA = document.getElementById('onboardOptA');
+  const optB = document.getElementById('onboardOptB');
+  const optC = document.getElementById('onboardOptC');
+  const cta = document.getElementById('onboardStep1Cta');
+
+  [optA, optB, optC].forEach(btn => {
+    btn.style.borderColor = '#e0e0e0';
+    btn.style.background = 'white';
+  });
+
+  const selected = type === 'unique' ? optA : type === 'bulk' ? optB : optC;
+  selected.style.borderColor = '#161616';
+  selected.style.background = '#fafafa';
+
+  cta.disabled = false;
+  cta.style.background = '#f9dc00';
+  cta.style.color = '#161616';
+  cta.style.cursor = 'pointer';
+}
+
+function configureStep2() {
+  const container = document.getElementById('step2Content');
+  const configs = {
+    unique: {
+      badge: '👗',
+      badgeBg: '#fef9e7',
+      subtitle: 'Individual Listings',
+      headline: 'Showcase each piece to attract the right buyers',
+      body: 'For designer items, vintage finds, and rare fashion — individual listings give every piece its own spotlight so buyers find exactly what they\'re looking for.',
+      examples: [
+        { emoji: '👜', title: 'Designer handbag', desc: 'Detailed photos, authenticity info, and brand story' },
+        { emoji: '👠', title: 'Vintage heels', desc: 'Highlight era, condition, and unique details' },
+        { emoji: '🧥', title: 'Statement coat', desc: 'Show off the fit, fabric, and styling options' }
+      ],
+      bestWhen: [
+        'Each item is unique or high-value',
+        'Buyers need detailed photos and descriptions',
+        'You want higher search rankings per item'
+      ]
+    },
+    bulk: {
+      badge: '👚',
+      badgeBg: '#f0f4ff',
+      subtitle: 'Templates',
+      headline: 'List faster with reusable templates for similar fashion',
+      body: 'When you have racks of tops, bottoms, and dresses in different sizes and brands — templates let you fly through listings by reusing the attributes that stay the same.',
+      examples: [
+        { emoji: '👕', title: 'Tops template', desc: 'Set brand, size range, and condition once — reuse for every top' },
+        { emoji: '👖', title: 'Bottoms template', desc: 'Jeans, leggings, skirts — swap size and brand per item' },
+        { emoji: '👗', title: 'Dresses template', desc: 'Cover cocktail to casual with one flexible template' }
+      ],
+      bestWhen: [
+        'You have high volume of similar items',
+        'You want to run fast-paced live shows',
+        'Items share common attributes like type and brand'
+      ]
+    },
+    mix: {
+      badge: '✨',
+      badgeBg: '#f3f0ff',
+      subtitle: 'Both Approaches',
+      headline: 'Use both — individual listings for standouts, templates for the rest',
+      body: 'Mix and match based on your inventory. Feature your best pieces individually and use templates to quickly list everyday fashion like basics, athleisure, and seasonal staples.',
+      examples: [
+        { emoji: '⭐', title: 'Feature pieces', desc: 'Individual listings for designer or rare finds' },
+        { emoji: '⚡', title: 'Everyday fashion', desc: 'Templates for basics, athleisure, and common brands' },
+        { emoji: '🔄', title: 'Flexible workflow', desc: 'Switch between methods based on what you\'re selling' }
+      ],
+      bestWhen: [
+        'Your inventory is a mix of high-value and everyday items',
+        'You want flexibility in how you list',
+        'You sell across different price points'
+      ]
+    }
+  };
+
+  const c = configs[sellerType] || configs.mix;
+  container.innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;padding:8px 0">
+      <div style="width:52px;height:52px;border-radius:14px;background:${c.badgeBg};display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">${c.badge}</div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div style="font-size:13px;font-weight:600;line-height:18px;letter-spacing:0.5px;text-transform:uppercase;color:#ef6a1f">Recommended for you</div>
+        <div style="font-size:20px;font-weight:700;line-height:26px;color:#161616">${c.subtitle}</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:22px;font-weight:600;line-height:28px;letter-spacing:0.07px;color:#161616">${c.headline}</div>
+      <div style="font-size:16px;font-weight:400;line-height:22px;letter-spacing:-0.31px;color:#393939">${c.body}</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0;width:100%">
+      <div style="font-size:14px;font-weight:600;line-height:19px;color:#6a6a6a;padding-bottom:12px">For example, in Women's Fashion:</div>
+      ${c.examples.map((ex, i) => `
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 0;${i < c.examples.length - 1 ? 'border-bottom:1px solid #f0f0f0' : ''}">
+          <div style="width:40px;height:40px;border-radius:10px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">${ex.emoji}</div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+            <div style="font-size:15px;font-weight:600;line-height:20px;color:#161616">${ex.title}</div>
+            <div style="font-size:13px;font-weight:400;line-height:18px;color:#6a6a6a">${ex.desc}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <div style="background:#f3f3f3;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:6px;width:100%">
+      <div style="font-size:15px;font-weight:600;line-height:20px;color:#1c1c1c">Best when:</div>
+      ${c.bestWhen.map(item => `<div style="font-size:14px;font-weight:400;line-height:19px;color:#545454;padding-left:16px">• ${item}</div>`).join('')}
+    </div>
+  `;
+}
+
+function configureStep3() {
+  const container = document.getElementById('step3Content');
+  const navTitle = document.getElementById('step3NavTitle');
+  const configs = {
+    unique: {
+      navTitle: 'Individual Listings',
+      headline: 'How individual listings work',
+      steps: [
+        { num: '1', title: 'Add photos & details', desc: 'Upload photos of the actual item. Add brand, size, condition, and anything a buyer needs to know.' },
+        { num: '2', title: 'Set your price', desc: 'Choose auction or fixed price. For designer pieces, starting low can drive bidding wars.' },
+        { num: '3', title: 'Assign to a show', desc: 'Drop listings into your upcoming live shows. Buyers see them when you go live.' },
+        { num: '4', title: 'Sell live', desc: 'Present each item on camera. Buyers bid or buy in real time — the more detail, the more confidence.' }
+      ],
+      tip: 'For women\'s fashion, great photos are everything. Show the label, fabric texture, and how it fits.'
+    },
+    bulk: {
+      navTitle: 'Templates',
+      headline: 'How templates work',
+      steps: [
+        { num: '1', title: 'Create a template', desc: 'Pick a category like "Tops" and set the shared attributes — brands, size range, condition, and price.' },
+        { num: '2', title: 'Reuse across items', desc: 'Each time you sell a top, the template pre-fills everything. Just confirm which size and brand you\'re holding.' },
+        { num: '3', title: 'Sell fast in shows', desc: 'During a live show, cycle through items quickly. No re-entering details every time.' },
+        { num: '4', title: 'Edit anytime', desc: 'Update the template as your inventory changes — add new brands, adjust price ranges, or switch sizes.' }
+      ],
+      tip: 'Templates are perfect for sellers with lots of similar items across sizes. Think: a rack of Lululemon tops in S through XL.'
+    },
+    mix: {
+      navTitle: 'Mixed Approach',
+      headline: 'How to use both together',
+      steps: [
+        { num: '1', title: 'Sort your inventory', desc: 'Separate standout pieces (designer, vintage, rare) from everyday items (basics, common brands).' },
+        { num: '2', title: 'Feature pieces → Individual listings', desc: 'Give your best items their own detailed listing with photos, descriptions, and pricing.' },
+        { num: '3', title: 'Everyday items → Templates', desc: 'Create templates for categories like "Casual Tops" or "Athleisure" to list in bulk.' },
+        { num: '4', title: 'Mix in your shows', desc: 'Start shows with featured pieces to draw buyers in, then move fast through templated items.' }
+      ],
+      tip: 'A great strategy for women\'s fashion: lead your show with a statement piece, then move through racks of similar items with templates.'
+    }
+  };
+
+  const c = configs[sellerType] || configs.mix;
+  navTitle.textContent = c.navTitle;
+  container.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:22px;font-weight:600;line-height:28px;color:#161616">${c.headline}</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0;width:100%">
+      ${c.steps.map((s, i) => `
+        <div style="display:flex;gap:14px;align-items:flex-start;padding:14px 0;${i < c.steps.length - 1 ? 'border-bottom:1px solid #f0f0f0' : ''}">
+          <div style="width:32px;height:32px;border-radius:999px;background:#161616;color:white;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0">${s.num}</div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:16px;font-weight:600;line-height:21px;color:#161616">${s.title}</div>
+            <div style="font-size:14px;font-weight:400;line-height:19px;color:#545454">${s.desc}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <div style="background:linear-gradient(135deg,#fef9e7,#fff8e1);border:1px solid #f0e6c0;border-radius:12px;padding:16px;display:flex;gap:10px;align-items:flex-start;width:100%">
+      <div style="font-size:18px;flex-shrink:0;margin-top:1px">💡</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600;line-height:18px;color:#8b7000;margin-bottom:2px">Pro tip</div>
+        <div style="font-size:14px;font-weight:400;line-height:19px;color:#5c4a00">${c.tip}</div>
+      </div>
+    </div>
+  `;
+}
+
 function openOnboardingStep1() {
+  sellerType = null;
+  const cta = document.getElementById('onboardStep1Cta');
+  if (cta) {
+    cta.disabled = true;
+    cta.style.background = '#e0e0e0';
+    cta.style.color = '#999';
+    cta.style.cursor = 'not-allowed';
+  }
+  ['onboardOptA', 'onboardOptB', 'onboardOptC'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.style.borderColor = '#e0e0e0'; el.style.background = 'white'; }
+  });
+
   const step1 = document.getElementById('onboardStep1');
   step1.style.display = 'flex';
   step1.style.transition = 'none';
@@ -5207,6 +5320,8 @@ function goToShop() {
 }
 
 function openOnboardingStep2() {
+  configureStep2();
+
   const step1 = document.getElementById('onboardStep1');
   step1.classList.add('pushed-back');
   step1.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
@@ -5243,6 +5358,8 @@ function closeStep2() {
 }
 
 function openOnboardingStep3() {
+  configureStep3();
+
   const step2 = document.getElementById('onboardStep2');
   step2.classList.add('pushed-back');
   step2.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
