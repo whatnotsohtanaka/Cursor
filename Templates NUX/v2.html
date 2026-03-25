@@ -81,14 +81,14 @@
       display: flex;
       background: rgba(255,255,255,0.1);
       border-radius: 999px;
-      padding: 3px;
+      padding: 4px;
       gap: 2px;
-      margin-bottom: 16px;
+      margin-bottom: 32px;
     }
     .scene-tab {
-      padding: 6px 16px;
+      padding: 8px 20px;
       border-radius: 999px;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
       color: rgba(255,255,255,0.4);
       cursor: pointer;
@@ -2122,14 +2122,20 @@
       <button onclick="closeStep2()" style="position:absolute;left:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg>
       </button>
-      <span style="font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616">Your Recommendation</span>
+      <span style="font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616">What You're Selling</span>
       <button onclick="closeOnboarding()" style="position:absolute;right:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
       </button>
     </div>
-    <!-- Content (dynamically populated by JS based on selection) -->
-    <div id="step2Content" style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:24px;overflow-y:auto">
-      <!-- Populated by configureStep2() -->
+    <!-- Content -->
+    <div id="step2Content" style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:20px;overflow-y:auto">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:22px;font-weight:600;line-height:28px;color:#161616">What will you be selling?</div>
+        <div style="font-size:15px;font-weight:400;line-height:21px;color:#6a6a6a">Select all that apply. We'll set up templates to match.</div>
+      </div>
+      <div id="step2Grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%">
+        <!-- Populated by configureStep2() -->
+      </div>
     </div>
     <!-- Bottom: Progress + CTA -->
     <div style="flex-shrink:0;display:flex;flex-direction:column;gap:2px;align-items:center;width:100%">
@@ -2139,7 +2145,7 @@
         </div>
         <div style="display:flex;align-items:center;justify-content:flex-end;gap:19px;padding:0 16px">
           <div style="flex:1;font-size:12px;font-weight:600;line-height:16px;color:#6f6f6f">2 of 4</div>
-          <button onclick="openOnboardingStep3()" style="height:40px;padding:0 24px;border-radius:999px;background:#f9dc00;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616;cursor:pointer">Next</button>
+          <button id="step2Cta" onclick="openOnboardingStep3()" style="height:40px;padding:0 24px;border-radius:999px;background:#e0e0e0;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#999;cursor:not-allowed;transition:background 0.2s,color 0.2s" disabled>Next</button>
         </div>
       </div>
       <div style="height:32px;overflow:hidden;width:375px;position:relative">
@@ -2160,8 +2166,8 @@
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
       </button>
     </div>
-    <!-- Content (dynamically populated by JS based on selection) -->
-    <div id="step3Content" style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:24px;overflow-y:auto">
+    <!-- Content -->
+    <div id="step3Content" style="flex:1;display:flex;flex-direction:column;padding:0;gap:0;overflow-y:auto">
       <!-- Populated by configureStep3() -->
     </div>
     <div style="flex-shrink:0;display:flex;flex-direction:column;gap:2px;align-items:center;width:100%">
@@ -4963,156 +4969,105 @@ function selectSellerType(type) {
   cta.style.cursor = 'pointer';
 }
 
-function configureStep2() {
-  const container = document.getElementById('step2Content');
-  const configs = {
-    unique: {
-      badge: '👗',
-      badgeBg: '#fef9e7',
-      subtitle: 'Individual Listings',
-      headline: 'Showcase each piece to attract the right buyers',
-      body: 'For designer items, vintage finds, and rare fashion — individual listings give every piece its own spotlight so buyers find exactly what they\'re looking for.',
-      examples: [
-        { emoji: '👜', title: 'Designer handbag', desc: 'Detailed photos, authenticity info, and brand story' },
-        { emoji: '👠', title: 'Vintage heels', desc: 'Highlight era, condition, and unique details' },
-        { emoji: '🧥', title: 'Statement coat', desc: 'Show off the fit, fabric, and styling options' }
-      ],
-      bestWhen: [
-        'Each item is unique or high-value',
-        'Buyers need detailed photos and descriptions',
-        'You want higher search rankings per item'
-      ]
-    },
-    bulk: {
-      badge: '👚',
-      badgeBg: '#f0f4ff',
-      subtitle: 'Templates',
-      headline: 'List faster with reusable templates for similar fashion',
-      body: 'When you have racks of tops, bottoms, and dresses in different sizes and brands — templates let you fly through listings by reusing the attributes that stay the same.',
-      examples: [
-        { emoji: '👕', title: 'Tops template', desc: 'Set brand, size range, and condition once — reuse for every top' },
-        { emoji: '👖', title: 'Bottoms template', desc: 'Jeans, leggings, skirts — swap size and brand per item' },
-        { emoji: '👗', title: 'Dresses template', desc: 'Cover cocktail to casual with one flexible template' }
-      ],
-      bestWhen: [
-        'You have high volume of similar items',
-        'You want to run fast-paced live shows',
-        'Items share common attributes like type and brand'
-      ]
-    },
-    mix: {
-      badge: '✨',
-      badgeBg: '#f3f0ff',
-      subtitle: 'Both Approaches',
-      headline: 'Use both — individual listings for standouts, templates for the rest',
-      body: 'Mix and match based on your inventory. Feature your best pieces individually and use templates to quickly list everyday fashion like basics, athleisure, and seasonal staples.',
-      examples: [
-        { emoji: '⭐', title: 'Feature pieces', desc: 'Individual listings for designer or rare finds' },
-        { emoji: '⚡', title: 'Everyday fashion', desc: 'Templates for basics, athleisure, and common brands' },
-        { emoji: '🔄', title: 'Flexible workflow', desc: 'Switch between methods based on what you\'re selling' }
-      ],
-      bestWhen: [
-        'Your inventory is a mix of high-value and everyday items',
-        'You want flexibility in how you list',
-        'You sell across different price points'
-      ]
-    }
-  };
+const fashionTypes = [
+  { id: 'tops', emoji: '👚', label: 'Tops' },
+  { id: 'bottoms', emoji: '👖', label: 'Bottoms' },
+  { id: 'dresses', emoji: '👗', label: 'Dresses' },
+  { id: 'outerwear', emoji: '🧥', label: 'Outerwear' },
+  { id: 'shoes', emoji: '👠', label: 'Shoes' },
+  { id: 'bags', emoji: '👜', label: 'Bags' },
+  { id: 'activewear', emoji: '🏃‍♀️', label: 'Activewear' },
+  { id: 'swimwear', emoji: '👙', label: 'Swimwear' },
+  { id: 'accessories', emoji: '💍', label: 'Accessories' },
+];
+let selectedTypes = new Set();
 
-  const c = configs[sellerType] || configs.mix;
-  container.innerHTML = `
-    <div style="display:flex;align-items:center;gap:12px;padding:8px 0">
-      <div style="width:52px;height:52px;border-radius:14px;background:${c.badgeBg};display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">${c.badge}</div>
-      <div style="display:flex;flex-direction:column;gap:2px">
-        <div style="font-size:13px;font-weight:600;line-height:18px;letter-spacing:0.5px;text-transform:uppercase;color:#ef6a1f">Recommended for you</div>
-        <div style="font-size:20px;font-weight:700;line-height:26px;color:#161616">${c.subtitle}</div>
-      </div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:8px">
-      <div style="font-size:22px;font-weight:600;line-height:28px;letter-spacing:0.07px;color:#161616">${c.headline}</div>
-      <div style="font-size:16px;font-weight:400;line-height:22px;letter-spacing:-0.31px;color:#393939">${c.body}</div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:0;width:100%">
-      <div style="font-size:14px;font-weight:600;line-height:19px;color:#6a6a6a;padding-bottom:12px">For example, in Women's Fashion:</div>
-      ${c.examples.map((ex, i) => `
-        <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 0;${i < c.examples.length - 1 ? 'border-bottom:1px solid #f0f0f0' : ''}">
-          <div style="width:40px;height:40px;border-radius:10px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">${ex.emoji}</div>
-          <div style="flex:1;display:flex;flex-direction:column;gap:2px">
-            <div style="font-size:15px;font-weight:600;line-height:20px;color:#161616">${ex.title}</div>
-            <div style="font-size:13px;font-weight:400;line-height:18px;color:#6a6a6a">${ex.desc}</div>
-          </div>
-        </div>
-      `).join('')}
-    </div>
-    <div style="background:#f3f3f3;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:6px;width:100%">
-      <div style="font-size:15px;font-weight:600;line-height:20px;color:#1c1c1c">Best when:</div>
-      ${c.bestWhen.map(item => `<div style="font-size:14px;font-weight:400;line-height:19px;color:#545454;padding-left:16px">• ${item}</div>`).join('')}
-    </div>
-  `;
+function configureStep2() {
+  const grid = document.getElementById('step2Grid');
+  selectedTypes.clear();
+  updateStep2Cta();
+  grid.innerHTML = fashionTypes.map(t => `
+    <button id="typeBtn_${t.id}" onclick="toggleType('${t.id}')" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;background:white;border:2px solid #e0e0e0;border-radius:12px;cursor:pointer;font-family:var(--font);transition:border-color 0.15s,background 0.15s">
+      <div style="font-size:32px;line-height:1">${t.emoji}</div>
+      <div style="font-size:13px;font-weight:600;line-height:16px;color:#161616">${t.label}</div>
+    </button>
+  `).join('');
+}
+
+function toggleType(id) {
+  if (selectedTypes.has(id)) selectedTypes.delete(id);
+  else selectedTypes.add(id);
+
+  fashionTypes.forEach(t => {
+    const btn = document.getElementById('typeBtn_' + t.id);
+    if (!btn) return;
+    if (selectedTypes.has(t.id)) {
+      btn.style.borderColor = '#161616';
+      btn.style.background = '#fafafa';
+    } else {
+      btn.style.borderColor = '#e0e0e0';
+      btn.style.background = 'white';
+    }
+  });
+  updateStep2Cta();
+}
+
+function updateStep2Cta() {
+  const cta = document.getElementById('step2Cta');
+  if (!cta) return;
+  if (selectedTypes.size > 0) {
+    cta.disabled = false;
+    cta.style.background = '#f9dc00';
+    cta.style.color = '#161616';
+    cta.style.cursor = 'pointer';
+  } else {
+    cta.disabled = true;
+    cta.style.background = '#e0e0e0';
+    cta.style.color = '#999';
+    cta.style.cursor = 'not-allowed';
+  }
 }
 
 function configureStep3() {
   const container = document.getElementById('step3Content');
   const navTitle = document.getElementById('step3NavTitle');
-  const configs = {
-    unique: {
-      navTitle: 'Individual Listings',
-      headline: 'How individual listings work',
-      steps: [
-        { num: '1', title: 'Add photos & details', desc: 'Upload photos of the actual item. Add brand, size, condition, and anything a buyer needs to know.' },
-        { num: '2', title: 'Set your price', desc: 'Choose auction or fixed price. For designer pieces, starting low can drive bidding wars.' },
-        { num: '3', title: 'Assign to a show', desc: 'Drop listings into your upcoming live shows. Buyers see them when you go live.' },
-        { num: '4', title: 'Sell live', desc: 'Present each item on camera. Buyers bid or buy in real time — the more detail, the more confidence.' }
-      ],
-      tip: 'For women\'s fashion, great photos are everything. Show the label, fabric texture, and how it fits.'
-    },
-    bulk: {
-      navTitle: 'Templates',
-      headline: 'How templates work',
-      steps: [
-        { num: '1', title: 'Create a template', desc: 'Pick a category like "Tops" and set the shared attributes — brands, size range, condition, and price.' },
-        { num: '2', title: 'Reuse across items', desc: 'Each time you sell a top, the template pre-fills everything. Just confirm which size and brand you\'re holding.' },
-        { num: '3', title: 'Sell fast in shows', desc: 'During a live show, cycle through items quickly. No re-entering details every time.' },
-        { num: '4', title: 'Edit anytime', desc: 'Update the template as your inventory changes — add new brands, adjust price ranges, or switch sizes.' }
-      ],
-      tip: 'Templates are perfect for sellers with lots of similar items across sizes. Think: a rack of Lululemon tops in S through XL.'
-    },
-    mix: {
-      navTitle: 'Mixed Approach',
-      headline: 'How to use both together',
-      steps: [
-        { num: '1', title: 'Sort your inventory', desc: 'Separate standout pieces (designer, vintage, rare) from everyday items (basics, common brands).' },
-        { num: '2', title: 'Feature pieces → Individual listings', desc: 'Give your best items their own detailed listing with photos, descriptions, and pricing.' },
-        { num: '3', title: 'Everyday items → Templates', desc: 'Create templates for categories like "Casual Tops" or "Athleisure" to list in bulk.' },
-        { num: '4', title: 'Mix in your shows', desc: 'Start shows with featured pieces to draw buyers in, then move fast through templated items.' }
-      ],
-      tip: 'A great strategy for women\'s fashion: lead your show with a statement piece, then move through racks of similar items with templates.'
-    }
+  navTitle.textContent = 'Your Templates';
+
+  const selected = fashionTypes.filter(t => selectedTypes.has(t.id));
+  const brandMap = {
+    tops: 'Lululemon, Alo, Vuori',
+    bottoms: 'Lululemon, Alo, Vuori',
+    dresses: 'Reformation, Zara, H&M',
+    outerwear: 'The North Face, Patagonia, Aritzia',
+    shoes: 'Nike, Adidas, New Balance',
+    bags: 'Coach, Kate Spade, Tory Burch',
+    activewear: 'Nike, Lululemon, Gymshark',
+    swimwear: 'Skims, Aerie, Triangl',
+    accessories: 'Mejuri, BaubleBar, Kendra Scott',
   };
 
-  const c = configs[sellerType] || configs.mix;
-  navTitle.textContent = c.navTitle;
-  container.innerHTML = `
-    <div style="display:flex;flex-direction:column;gap:8px">
-      <div style="font-size:22px;font-weight:600;line-height:28px;color:#161616">${c.headline}</div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:0;width:100%">
-      ${c.steps.map((s, i) => `
-        <div style="display:flex;gap:14px;align-items:flex-start;padding:14px 0;${i < c.steps.length - 1 ? 'border-bottom:1px solid #f0f0f0' : ''}">
-          <div style="width:32px;height:32px;border-radius:999px;background:#161616;color:white;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0">${s.num}</div>
-          <div style="flex:1;display:flex;flex-direction:column;gap:4px">
-            <div style="font-size:16px;font-weight:600;line-height:21px;color:#161616">${s.title}</div>
-            <div style="font-size:14px;font-weight:400;line-height:19px;color:#545454">${s.desc}</div>
-          </div>
-        </div>
-      `).join('')}
-    </div>
-    <div style="background:linear-gradient(135deg,#fef9e7,#fff8e1);border:1px solid #f0e6c0;border-radius:12px;padding:16px;display:flex;gap:10px;align-items:flex-start;width:100%">
-      <div style="font-size:18px;flex-shrink:0;margin-top:1px">💡</div>
-      <div style="flex:1">
-        <div style="font-size:13px;font-weight:600;line-height:18px;color:#8b7000;margin-bottom:2px">Pro tip</div>
-        <div style="font-size:14px;font-weight:400;line-height:19px;color:#5c4a00">${c.tip}</div>
+  const templateCards = selected.map(t => `
+    <div class="tpl-card" style="cursor:pointer">
+      <div class="tpl-thumb">
+        <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
       </div>
+      <div class="tpl-info">
+        <div class="tpl-details">
+          <div class="tpl-title">${t.label}: ${brandMap[t.id] || 'Various brands'}</div>
+          <div class="tpl-attr">Template · Multiple Options</div>
+          <div class="tpl-price">$1</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  container.innerHTML = `
+    <div style="padding:24px 16px 16px;display:flex;flex-direction:column;gap:6px">
+      <div style="font-size:22px;font-weight:600;line-height:28px;color:#161616">We made ${selected.length} template${selected.length !== 1 ? 's' : ''} for you</div>
+      <div style="font-size:15px;font-weight:400;line-height:21px;color:#6a6a6a">Each template covers a range of sizes, brands, and conditions — so you can list fast during your show.</div>
+    </div>
+    <div class="nux-templates-list" style="padding:0 16px">
+      ${templateCards}
     </div>
   `;
 }
