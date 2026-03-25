@@ -2285,22 +2285,6 @@
           <div style="height:3px;border-radius:2px 2px 0 0;background:transparent"></div>
         </div>
       </div>
-    <!-- Generate Template Banner -->
-    <div id="shopGenBanner" style="padding:0 16px;flex-shrink:0;margin-top:24px">
-      <div style="padding:12px;background:#f3f3f3;border-radius:8px;display:flex;gap:12px;align-items:flex-start">
-        <div style="width:40px;height:40px;border-radius:20px;background:rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:8px">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1c1c1c" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M10 4v16"/></svg>
-        </div>
-        <div style="flex:1;font-size:13px;letter-spacing:-0.11px">
-          <div style="font-weight:600;line-height:18px;color:#1c1c1c;overflow:hidden;text-overflow:ellipsis">Generate Template</div>
-          <div style="font-weight:400;line-height:18px;color:#545454">Generate a starter template based on your category to help you get started.</div>
-          <div style="line-height:16px;margin-top:2px"><span onclick="event.stopPropagation();openShopGenerate()" style="font-weight:600;color:#005ae1;cursor:pointer">Generate Now</span><span style="font-weight:600;color:#7f7f7f">  |  </span><span onclick="event.stopPropagation();openShopLearnMore()" style="font-weight:600;color:#005ae1;cursor:pointer">Learn More</span></div>
-        </div>
-        <div onclick="document.getElementById('shopGenBanner').style.display='none'" style="width:20px;height:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg>
-        </div>
-      </div>
-    </div>
       <!-- Empty State -->
       <div id="shopEmptyState" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 16px;gap:8px">
         <div style="width:223px;height:112px;position:relative;overflow:hidden">
@@ -3924,9 +3908,7 @@ function nuxSlide4Action() {
 }
 
 function importToShopFromNux() {
-  // Prepare shop behind the NUX before dismissing
-  document.getElementById('shopEmptyState').style.display = 'none';
-  document.getElementById('shopProductList').style.display = 'block';
+  populateShopWithTemplates();
 
   const showLobby = document.getElementById('showLobbyScene');
   showLobby.style.display = 'flex';
@@ -5219,8 +5201,7 @@ function openEditFromShop() {
 }
 
 function backToShopFromGen() {
-  document.getElementById('shopEmptyState').style.display = 'none';
-  document.getElementById('shopProductList').style.display = 'block';
+  populateShopWithTemplates();
   closeShopGenerate();
 }
 
@@ -5242,7 +5223,43 @@ function openShopLearnMore() {
   }, 450);
 }
 
+function populateShopWithTemplates() {
+  const list = document.getElementById('shopProductList');
+  const brandMap = {
+    tops: 'Lululemon, Alo, Vuori',
+    bottoms: 'Lululemon, Alo, Vuori',
+    dresses: 'Reformation, Zara, H&M',
+    outerwear: 'The North Face, Patagonia, Aritzia',
+    shoes: 'Nike, Adidas, New Balance',
+    bags: 'Coach, Kate Spade, Tory Burch',
+    activewear: 'Nike, Lululemon, Gymshark',
+    swimwear: 'Skims, Aerie, Triangl',
+    accessories: 'Mejuri, BaubleBar, Kendra Scott',
+  };
+  const selected = fashionTypes.filter(t => selectedTypes.has(t.id));
+  if (selected.length === 0) return;
+
+  list.innerHTML = selected.map((t, i) => `
+    <div onclick="openEditFromShop(${i})" style="display:flex;gap:12px;padding:12px 0;align-items:flex-start;border-bottom:1px solid rgba(0,0,0,0.05);cursor:pointer">
+      <div style="width:64px;height:64px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:64px">
+        <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${t.label}: ${brandMap[t.id] || 'Various brands'}</div>
+        <div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template · Multiple Options</div>
+        <div style="font-size:14px;font-weight:600;line-height:19px;color:#161616">$1</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;padding:4px 0">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round"><path d="M8 4l6 6-6 6"/></svg>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('shopEmptyState').style.display = 'none';
+  list.style.display = 'block';
+}
+
 function goToShop() {
+  populateShopWithTemplates();
+
   const step1 = document.getElementById('onboardStep1');
   ['onboardStep1', 'onboardStep2', 'onboardStep3', 'onboardStep4'].forEach(id => {
     const el = document.getElementById(id);
@@ -5261,7 +5278,6 @@ function goToShop() {
     step1.style.transform = 'translateY(100%)';
   });
 
-  // Hide tooltip after onboarding (keep side menu visible)
   const tooltip = document.getElementById('lobbyTooltip');
   if (tooltip) tooltip.style.display = 'none';
 
