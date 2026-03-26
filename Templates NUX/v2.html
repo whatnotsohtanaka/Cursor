@@ -2023,8 +2023,43 @@
       </div>
     </div>
 
-    <!-- Start Show Button -->
-    <div style="position:absolute;left:0;right:0;top:761px;z-index:10;padding:0 16px">
+    <!-- Pinned Product (hidden by default) -->
+    <div id="lobbyPinnedProduct" style="display:none;position:absolute;bottom:32px;left:0;right:0;z-index:10;padding:0 16px;flex-direction:column;gap:16px">
+      <!-- Pinned Product Tooltip -->
+      <div id="pinnedProductTip" style="display:none;align-self:center;width:fit-content;max-width:100%;flex-direction:column;align-items:center">
+        <div style="background:white;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 16px rgba(0,0,0,0.1)">
+          <span style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c">This product is now ready to be auctioned. When you're ready to go live, you will see the start auction button.</span>
+          <div onclick="dismissPinnedProductTip()" style="width:16px;height:16px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
+          </div>
+        </div>
+        <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid white"></div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="width:64px;height:64px;border-radius:8px;overflow:hidden;flex-shrink:0;border:1px solid #7f7f7f">
+          <img id="pinnedImg" src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;min-height:64px;justify-content:center">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between">
+            <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+              <div id="pinnedTitle" style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:white"></div>
+              <div id="pinnedAttrs" style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:white"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;width:64px">
+              <div id="pinnedPrice" style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:white">$1</div>
+              <div style="font-size:13px;font-weight:600;line-height:18px;letter-spacing:-0.08px;color:rgba(255,255,255,0.4)">00:30</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px">
+        <button onclick="reopenLiveShowFromLobby()" style="flex:1;height:44px;border:none;border-radius:999px;background:rgba(255,255,255,0.2);backdrop-filter:blur(32px);font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:white;cursor:pointer">Options</button>
+        <button style="flex:1;height:44px;border:none;border-radius:999px;background:#ffe414;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#1c1c1c;cursor:pointer">Start Show</button>
+      </div>
+    </div>
+
+    <!-- Start Show Button (default, no pinned product) -->
+    <div id="lobbyDefaultCta" style="position:absolute;left:0;right:0;top:761px;z-index:10;padding:0 16px">
       <button style="width:100%;height:44px;border-radius:999px;background:#fff7b9;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:rgba(0,0,0,0.4);cursor:default">Start Show</button>
     </div>
 
@@ -2044,10 +2079,10 @@
       </div>
     </div>
     <!-- Content -->
-    <div style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:0;overflow-y:auto">
-      <div style="flex:1;display:flex;flex-direction:column;gap:24px;align-items:center">
+    <div style="flex:1;display:flex;flex-direction:column;padding:8px 16px 12px;gap:0;overflow-y:auto">
+      <div style="flex:1;display:flex;flex-direction:column;gap:16px;align-items:center">
         <!-- Illustration -->
-        <div style="height:200px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center">
+        <div style="height:148px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center">
           <div style="position:relative;width:343px;height:144px">
             <img src="icons/onboard-llines.svg" style="position:absolute;left:49px;top:58px;width:64.5px;height:8px" alt="">
             <img src="icons/onboard-rlines.svg" style="position:absolute;left:235px;top:97px;width:59.5px;height:6px" alt="">
@@ -2064,7 +2099,7 @@
         <div style="display:flex;flex-direction:column;gap:8px;width:100%">
           <div style="display:flex;flex-direction:column;gap:4px">
             <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#6a6a6a">Women's Fashion</div>
-            <div style="font-size:24px;font-weight:600;line-height:30px;letter-spacing:0.07px;color:#161616">What kind of fashion are you planning to sell?</div>
+            <div style="font-size:24px;font-weight:600;line-height:30px;letter-spacing:0.07px;color:#161616">What kind of products are you planning to sell?</div>
           </div>
           <div style="font-size:16px;font-weight:400;line-height:22px;letter-spacing:-0.31px;color:#393939">This helps us recommend the best way to list your products so buyers can find them fast.</div>
         </div>
@@ -2095,6 +2130,7 @@
             </div>
           </button>
         </div>
+        <div style="height:32px;flex-shrink:0"></div>
       </div>
     </div>
     <!-- Bottom: Progress + CTA -->
@@ -2226,8 +2262,7 @@
             <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#6a6a6a">Shipping Weight</div>
             <div style="font-size:24px;font-weight:600;line-height:30px;letter-spacing:0.07px;color:#161616">Set the right weight so buyers see accurate shipping costs</div>
           </div>
-          <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#393939">Most women's fashion ships light — a top or dress typically falls under 1 lb. Heavier items like coats or boots may need a higher weight tier.</div>
-          <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#393939">Buyers see shipping fees based on their location. Accurate weights keep costs fair and reduce post-sale issues.</div>
+          <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#393939">Buyers see shipping fees based on their location. Accurate weights keep costs fair and reduce post-sale issues. As a seller, you're responsible for setting the correct weight — inaccurate weights can lead to unexpected fees or delivery problems.</div>
         </div>
       </div>
       <div style="background:#f3f3f3;border-radius:8px;padding:12px;display:flex;gap:8px;align-items:center;width:100%">
@@ -2712,6 +2747,16 @@
       </div>
     </div>
     <!-- Draft List -->
+    <!-- Inventory tooltip (overlays above first template item) -->
+    <div id="invTemplateTip" style="display:none;position:absolute;left:16px;right:16px;z-index:20;pointer-events:auto">
+      <div style="background:#2d2d2d;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 16px rgba(0,0,0,0.1)">
+        <span style="flex:1;font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:white">Just edit, assign to show, and publish</span>
+        <div onclick="dismissInvTemplateTip()" style="width:16px;height:16px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
+        </div>
+      </div>
+      <div style="display:flex;padding-left:24px"><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #2d2d2d"></div></div>
+    </div>
     <div id="invDraftList" style="flex:1;overflow-y:auto;padding:0 16px 100px;display:block">
       <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="template">
         <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
@@ -3054,7 +3099,7 @@
   </div>
 
   <!-- ═══ PRICE & FORMAT PAGE (Step 2) ═══ -->
-  <div class="edit-page" id="pricePage">
+  <div id="pricePage" style="position:absolute;inset:0;z-index:250;display:none;flex-direction:column;background:white;transform:translateX(100%);pointer-events:none">
     <div style="height:54px;flex-shrink:0"></div>
     <div class="edit-nav">
       <button class="edit-nav-back" onclick="closePricePage()"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></button>
@@ -3096,8 +3141,7 @@
       </div>
     </div>
     <div class="edit-footer">
-      <button class="edit-btn-draft" onclick="saveDraft()">Save Draft</button>
-      <button class="edit-btn-publish" onclick="publishListing()">Publish</button>
+      <button id="pricePageCta" class="edit-btn-publish" onclick="pricePageAction()" style="flex:1">Publish</button>
     </div>
   </div>
 
@@ -3376,7 +3420,7 @@
         <div class="nux-body" style="gap:32px">
           <div class="nux-templates-copy">
             <h2>Your custom templates</h2>
-            <p>We created 3 templates based on your recent shows. Edit or use them as-is.</p>
+            <p>We created 3 templates based on your recent shows. Just edit the details, assign to a show, and publish. Templates never run out of quantity and stay live as long as they're assigned to a show.</p>
           </div>
           <div class="nux-templates-list">
             <div class="tpl-card">
@@ -3416,6 +3460,9 @@
               </div>
             </div>
           </div>
+        </div>
+        <div style="padding:0 16px 16px">
+          <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#7f7f7f;text-align:center">You can edit or delete your templates at anytime.</div>
         </div>
         <div class="nux-buttons">
           <button class="btn-primary" id="nuxSlide4Cta" onclick="nuxSlide4Action()">Go to Inventory</button>
@@ -3563,6 +3610,266 @@
     </div>
   </div>
 
+  <!-- ═══ LISTING DETAIL PAGE ═══ -->
+  <div id="listingDetailPage" class="edit-page" style="z-index:199">
+    <div style="height:54px;flex-shrink:0"></div>
+    <!-- Nav -->
+    <div class="edit-nav">
+      <button class="edit-nav-back" onclick="closeListingDetail()"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></button>
+      <span class="edit-nav-title"></span>
+      <div style="position:absolute;right:16px">
+        <button style="width:32px;height:32px;border:none;background:rgba(0,0,0,0.05);border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="#1c1c1c"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Scrollable content -->
+    <div class="edit-scroll" style="flex:1;overflow-y:auto">
+      <!-- Product Image -->
+      <div id="detailImageCarousel" style="width:100%;aspect-ratio:1;background:#f3f3f3;position:relative;overflow:hidden">
+        <img id="detailHeroImg" src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
+        <!-- Dots -->
+        <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px">
+          <div style="width:8px;height:8px;border-radius:50%;background:#1c1c1c"></div>
+          <div style="width:8px;height:8px;border-radius:50%;background:rgba(0,0,0,0.2)"></div>
+          <div style="width:8px;height:8px;border-radius:50%;background:rgba(0,0,0,0.2)"></div>
+        </div>
+      </div>
+
+      <!-- Product Info -->
+      <div style="padding:16px">
+        <div id="detailTitle" style="font-size:18px;font-weight:600;line-height:23px;letter-spacing:-0.37px;color:#1c1c1c"></div>
+        <div id="detailSubtitle" style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#7f7f7f;margin-top:2px"></div>
+        <div style="margin-top:12px;display:flex;align-items:baseline;gap:4px">
+          <span id="detailPrice" style="font-size:22px;font-weight:700;line-height:28px;letter-spacing:0.35px;color:#1c1c1c">$1</span>
+          <span style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#7f7f7f">+ $7.50 Shipping + Taxes</span>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div style="height:1px;background:rgba(0,0,0,0.1);margin:0 16px"></div>
+
+      <!-- Views -->
+      <div style="padding:16px;display:flex;align-items:center;gap:4px">
+        <span style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">1.3k views</span>
+        <span style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#7f7f7f">on this item</span>
+      </div>
+
+      <!-- Social buttons -->
+      <div style="display:flex;gap:8px;padding:0 16px">
+        <button style="flex:1;height:40px;border:1px solid rgba(0,0,0,0.15);border-radius:999px;background:white;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.15px;color:#1c1c1c">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#1c1c1c" stroke-width="1.3"><path d="M2.6 10.5l5.4 5.9 7.4-8.1a3.5 3.5 0 00-5-5L9 4.8l-1.4-1.5a3.5 3.5 0 00-5 5z"/></svg>
+          61
+        </button>
+        <button style="flex:1;height:40px;border:1px solid rgba(0,0,0,0.15);border-radius:999px;background:white;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.15px;color:#1c1c1c">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#1c1c1c" stroke-width="1.3" stroke-linecap="round"><path d="M3 9.5v6a1.5 1.5 0 001.5 1.5h9a1.5 1.5 0 001.5-1.5v-6M12.75 4.5L9 1 5.25 4.5M9 1v10"/></svg>
+          Share
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <div style="height:1px;background:rgba(0,0,0,0.1);margin:16px"></div>
+
+      <!-- Seller Info -->
+      <div style="padding:0 16px 16px;display:flex;align-items:center;gap:12px">
+        <div style="width:40px;height:40px;border-radius:50%;background:#f3f3f3;overflow:hidden;flex-shrink:0">
+          <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
+        </div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:600;line-height:18px;letter-spacing:-0.11px;color:#1c1c1c">sadiesells</div>
+        </div>
+        <button style="width:32px;height:32px;border:none;background:rgba(0,0,0,0.05);border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M17 11.5v-3a7 7 0 00-14 0v3M4 18h1a2 2 0 002-2v-2a2 2 0 00-2-2H4a1 1 0 00-1 1v4a1 1 0 001 1zM16 18h-1a2 2 0 01-2-2v-2a2 2 0 012-2h1a1 1 0 011 1v4a1 1 0 01-1 1z"/></svg>
+        </button>
+      </div>
+
+      <!-- Seller Stats -->
+      <div style="display:flex;padding:0 16px 24px;gap:0">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;border:1px solid rgba(0,0,0,0.1);border-radius:8px 0 0 8px">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" fill="#ffe414"/><text x="10" y="13" text-anchor="middle" font-size="10" font-weight="700" fill="#1c1c1c">★</text></svg>
+          <span style="font-size:10px;font-weight:600;color:#1c1c1c;letter-spacing:0.12px">Premier Shop</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;border:1px solid rgba(0,0,0,0.1);border-left:none">
+          <span style="font-size:12px;font-weight:700;color:#1c1c1c">★ 4.8</span>
+          <span style="font-size:10px;font-weight:600;color:#1c1c1c;letter-spacing:0.12px">Rating</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;border:1px solid rgba(0,0,0,0.1);border-left:none">
+          <span style="font-size:12px;font-weight:700;color:#1c1c1c">50k</span>
+          <span style="font-size:10px;font-weight:600;color:#1c1c1c;letter-spacing:0.12px">Reviews</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;border:1px solid rgba(0,0,0,0.1);border-left:none;border-radius:0 8px 8px 0">
+          <span style="font-size:12px;font-weight:700;color:#1c1c1c">169k</span>
+          <span style="font-size:10px;font-weight:600;color:#1c1c1c;letter-spacing:0.12px">Sold</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer CTAs -->
+    <div style="padding:8px 16px 34px;border-top:1px solid rgba(0,0,0,0.1);display:flex;gap:8px;background:white">
+      <button onclick="closeListingDetail()" style="width:auto;padding:0 20px;height:44px;border:1px solid rgba(0,0,0,0.15);border-radius:999px;background:white;font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.2px;color:#1c1c1c;cursor:pointer">Options</button>
+      <button id="detailEditBtn" onclick="editListingFromDetail()" style="flex:1;height:44px;border:none;border-radius:999px;background:#ffe414;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#1c1c1c;cursor:pointer">Edit Listing</button>
+    </div>
+  </div>
+
+  <!-- ═══ LIVE SHOW OVERLAY (Select Option) ═══ -->
+  <div id="liveShowOverlay" style="display:none;position:absolute;inset:0;z-index:30;background:black;flex-direction:column;overflow:hidden">
+    <!-- Background video placeholder -->
+    <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,0) 40%,rgba(0,0,0,0.8) 85%);z-index:1"></div>
+    <div style="position:absolute;inset:0;background:#1a1a2e;z-index:0"></div>
+
+    <!-- Close button -->
+    <div style="position:absolute;top:58px;right:16px;z-index:5">
+      <button onclick="closeLiveShow()" style="width:32px;height:32px;border-radius:999px;background:rgba(0,0,0,0.2);backdrop-filter:blur(5px);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+      </button>
+    </div>
+
+    <!-- Bottom content: Product + Selectors + CTAs -->
+    <div style="position:absolute;bottom:0;left:0;right:0;z-index:3;display:flex;flex-direction:column;gap:12px;padding:0 16px">
+      <!-- Product Details Row -->
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="width:64px;height:64px;border-radius:8px;overflow:hidden;flex-shrink:0;border:1px solid #7f7f7f">
+          <img id="liveProductImg" src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;min-height:64px;justify-content:center">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between">
+            <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+              <div style="display:flex;align-items:center;gap:4px">
+                <span style="background:white;color:#1c1c1c;font-size:10px;font-weight:600;padding:2px 4px;border-radius:2px;letter-spacing:0.12px;line-height:10px">#1</span>
+              </div>
+              <div id="liveProductTitle" style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:white">Lulu Lemon - Women's Contemporary</div>
+              <div id="liveProductAttrs" style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:white">XS • New w Tag</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;width:64px">
+              <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:white">$1</div>
+              <div style="font-size:13px;font-weight:600;line-height:18px;letter-spacing:-0.08px;color:rgba(255,255,255,0.4)">00:30</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Selection: Brand + Size -->
+      <div id="liveSelectionUI" style="display:flex;flex-direction:column;gap:0">
+        <div style="background:#1c1c1c;border:1px solid #545454;border-radius:8px 8px 0 0;border-bottom:none;padding:12px 16px;display:flex;flex-direction:column;gap:8px">
+          <div style="position:relative;display:flex;align-items:center;gap:2px">
+            <span style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:white">Brand</span>
+            <span style="font-size:12px;font-weight:600;line-height:16px;color:#de665b">*</span>
+            <!-- Tooltip 1: Brand -->
+            <div id="liveTip1" style="display:none;position:absolute;bottom:calc(100% + 4px);left:0;z-index:10;width:fit-content">
+              <div style="background:white;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 16px rgba(0,0,0,0.1);white-space:nowrap">
+                <span style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c">Which brand are you running next?</span>
+                <div onclick="dismissLiveTip(1)" style="width:16px;height:16px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
+                </div>
+              </div>
+              <div style="padding-left:12px"><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid white"></div></div>
+            </div>
+          </div>
+          <div id="liveBrandChips" style="display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch"></div>
+        </div>
+        <div style="background:#1c1c1c;border:1px solid #545454;border-radius:0 0 8px 8px;padding:12px 16px;display:flex;flex-direction:column;gap:8px">
+          <div style="position:relative;display:flex;align-items:center;gap:2px">
+            <span style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:white">Size</span>
+            <span style="font-size:12px;font-weight:600;line-height:16px;color:#de665b">*</span>
+            <!-- Tooltip 2: Size -->
+            <div id="liveTip2" style="display:none;position:absolute;bottom:calc(100% + 4px);left:0;z-index:10;width:fit-content">
+              <div style="background:white;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 16px rgba(0,0,0,0.1);white-space:nowrap">
+                <span style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c">Which size is it?</span>
+                <div onclick="dismissLiveTip(2)" style="width:16px;height:16px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
+                </div>
+              </div>
+              <div style="padding-left:12px"><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid white"></div></div>
+            </div>
+          </div>
+          <div id="liveSizeChips" style="display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch"></div>
+        </div>
+      </div>
+
+      <!-- CTAs -->
+      <div style="display:flex;gap:12px;padding-bottom:34px">
+        <div style="position:relative;flex:1">
+          <!-- Tooltip 3: Pin -->
+          <div id="liveTip3" style="display:none;position:absolute;top:0;left:50%;transform:translate(-50%,calc(-100% - 8px));z-index:10;width:fit-content;white-space:nowrap">
+            <div style="background:white;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 16px rgba(0,0,0,0.1)">
+              <span style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c">Try to pin this product</span>
+              <div onclick="dismissLiveTip(3)" style="width:16px;height:16px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:center"><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid white"></div></div>
+          </div>
+          <button id="livePinBtn" onclick="pinProduct()" style="width:100%;height:44px;border:none;border-radius:999px;background:rgba(255,255,255,0.2);backdrop-filter:blur(32px);font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:white;cursor:pointer">Pin Product</button>
+        </div>
+        <button style="flex:1;height:44px;border:none;border-radius:999px;background:#a59200;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:rgba(0,0,0,0.4);cursor:default">Start Auction</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SHOP LISTING OPTIONS SHEET ═══ -->
+  <div id="shopListingOptionsSheet" onclick="closeShopListingOptions()" style="display:none;position:absolute;inset:0;z-index:35;background:rgba(0,0,0,0.7)">
+    <div onclick="event.stopPropagation()" style="position:absolute;bottom:0;left:0;right:0;background:white;border-radius:16px 16px 0 0;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.32,0.72,0,1)">
+      <!-- Handle -->
+      <div style="display:flex;flex-direction:column;align-items:center;padding:8px 50px">
+        <div style="width:40px;height:4px;border-radius:30px;background:#f3efee"></div>
+      </div>
+      <!-- Title -->
+      <div style="height:48px;display:flex;align-items:center;justify-content:center">
+        <span style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.41px;color:#121212">Listing Options</span>
+      </div>
+      <!-- List -->
+      <div id="shopListingOptionsList" style="padding:16px 16px 40px">
+        <!-- Select Option (shown when not pinned) -->
+        <div id="shopOptionSelectOption" onclick="shopListingOptionSelectOption()" style="display:none;flex-direction:row;gap:12px;align-items:center;min-height:56px;padding:12px 0;cursor:pointer">
+          <div style="width:40px;height:40px;border-radius:100px;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v16M2 10h16"/></svg>
+          </div>
+          <span style="flex:1;font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Select Option</span>
+        </div>
+        <div id="shopOptionSelectOptionDivider" style="display:none;height:1px;background:rgba(0,0,0,0.1)"></div>
+        <!-- Edit Listing -->
+        <div onclick="shopListingOptionEdit()" style="display:flex;gap:12px;align-items:center;min-height:56px;padding:12px 0;cursor:pointer">
+          <div style="width:40px;height:40px;border-radius:100px;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.166 2.5a2.357 2.357 0 013.334 3.333L6.25 17.083l-4.583 1.25 1.25-4.583L14.166 2.5z"/></svg>
+          </div>
+          <span style="flex:1;font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Edit Listing</span>
+        </div>
+        <div style="height:1px;background:rgba(0,0,0,0.1)"></div>
+        <!-- Clone Template -->
+        <div onclick="shopListingOptionClone()" style="display:flex;gap:12px;align-items:center;min-height:56px;padding:12px 0;cursor:pointer">
+          <div style="width:40px;height:40px;border-radius:100px;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6.667" y="6.667" width="11.667" height="11.667" rx="2"/><path d="M3.333 13.333H2.5a1.667 1.667 0 01-1.667-1.666V2.5A1.667 1.667 0 012.5.833h9.167a1.667 1.667 0 011.666 1.667v.833"/></svg>
+          </div>
+          <span style="flex:1;font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Clone Template</span>
+        </div>
+        <div style="height:1px;background:rgba(0,0,0,0.1)"></div>
+        <!-- Remove from Show -->
+        <div onclick="shopListingOptionDelete()" style="display:flex;gap:12px;align-items:center;min-height:56px;padding:12px 0;cursor:pointer">
+          <div style="width:40px;height:40px;border-radius:100px;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 5h15M6.667 5V3.333a1.667 1.667 0 011.666-1.666h3.334a1.667 1.667 0 011.666 1.666V5m2.5 0v11.667a1.667 1.667 0 01-1.666 1.666H5.833a1.667 1.667 0 01-1.666-1.666V5h11.666z"/></svg>
+          </div>
+          <span style="flex:1;font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Remove from Show</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ REMOVE CONFIRMATION MODAL ═══ -->
+  <div id="deleteListingModal" onclick="closeDeleteModal()" style="display:none;position:absolute;inset:0;z-index:40;background:rgba(0,0,0,0.5);align-items:center;justify-content:center">
+    <div onclick="event.stopPropagation()" style="background:white;border-radius:14px;width:270px;overflow:hidden;text-align:center">
+      <div style="padding:20px 16px 0">
+        <div style="font-size:17px;font-weight:600;line-height:22px;letter-spacing:-0.41px;color:#1c1c1c">Remove from Show?</div>
+        <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#7f7f7f;margin-top:4px">This listing will be removed from your show. You can add it back anytime from your shop.</div>
+      </div>
+      <div style="margin-top:16px">
+        <div style="height:1px;background:rgba(0,0,0,0.1)"></div>
+        <div onclick="confirmDeleteListing()" style="padding:11px 0;font-size:17px;font-weight:600;line-height:22px;letter-spacing:-0.41px;color:#de3b30;cursor:pointer">Remove</div>
+        <div style="height:1px;background:rgba(0,0,0,0.1)"></div>
+        <div onclick="closeDeleteModal()" style="padding:11px 0;font-size:17px;font-weight:400;line-height:22px;letter-spacing:-0.41px;color:#007aff;cursor:pointer">Cancel</div>
+      </div>
+    </div>
+  </div>
+
 </div>
 </div>
 </div>
@@ -3657,9 +3964,9 @@ function dismissTooltip(id) {
   setTimeout(() => { el.style.display = 'none'; }, 300);
 
   if (id === 'tooltip1') {
-    setTimeout(() => { showTooltip('tooltip2'); }, 2000);
+    setTimeout(() => { showTooltip('tooltip2'); }, 1000);
   } else if (id === 'tooltip2') {
-    setTimeout(() => { showTooltip('tooltip3'); }, 2000);
+    setTimeout(() => { showTooltip('tooltip3'); }, 1000);
   }
 }
 
@@ -3738,7 +4045,7 @@ function configureNuxSlide4() {
   } else {
     if (loaderText) loaderText.textContent = 'Creating your templates…';
     copyEl.querySelector('h2').textContent = 'Your custom templates';
-    copyEl.querySelector('p').textContent = 'We created 3 templates based on your recent shows. Edit or use them as-is.';
+    copyEl.querySelector('p').textContent = 'We created 3 templates based on your recent shows. Just edit the details, assign to a show, and publish. Templates never run out of quantity and stay live as long as they\u2019re assigned to a show.';
     listEl.innerHTML = `
       <div class="tpl-card">
         <div class="tpl-thumb"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
@@ -3888,6 +4195,7 @@ function goToInventory() {
     nux.classList.remove('dismissing');
     nux.style.display = 'none';
     resetNux();
+    setTimeout(() => showInvTemplateTip(), 600);
   }, 500);
 }
 
@@ -3901,6 +4209,7 @@ function nuxSlide4Action() {
 
 function importToShopFromNux() {
   populateShopWithTemplates();
+  markChecklistStep2Complete();
 
   const showLobby = document.getElementById('showLobbyScene');
   showLobby.style.display = 'flex';
@@ -3925,6 +4234,7 @@ function importToShopFromNux() {
     nux.style.display = 'none';
     resetNux();
     inner.style.transition = '';
+    if (!shopSelectOptionTipShown) setTimeout(() => showShopSelectOptionTip(), 600);
   }, 500);
 }
 
@@ -3941,6 +4251,7 @@ const templateData = [
 ];
 
 function openEditPage(templateIndex, returnTo) {
+  dismissInvTemplateTip();
   editReturnTo = returnTo || 'nux';
   currentTemplateIndex = templateIndex;
   if (templateIndex !== -1 && returnTo !== 'shop') editVertical = false;
@@ -4183,8 +4494,14 @@ function confirmDiscardAndClose() {
 }
 
 function closeEditPageDirect() {
-  document.getElementById('pricePage').classList.remove('active');
+  const pp = document.getElementById('pricePage');
+  pp.style.display = 'none';
+  pp.style.transform = 'translateX(100%)';
+  pp.style.pointerEvents = 'none';
+  pp.style.transition = '';
   const editPage = document.getElementById('editPage');
+  editPage.style.opacity = '';
+  editPage.style.transform = '';
 
   if (editVertical) {
     editPage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
@@ -4487,7 +4804,7 @@ const whatnotCategories = [
 
 const categoryConfig = {
   "Women's Contemporary": {
-    types: ['Shoes', 'Tops', 'Bottoms', 'Dresses', 'Sweaters', 'Jumpsuits', 'Outerwear', 'Activewear'],
+    types: ['Tops', 'Leggings', 'Pants', 'Shorts', 'Skirts', 'Outerwear', 'Sets', 'Sports Bras', 'Accessories'],
     brands: ['Alo Yoga', 'Anthropologie', 'Aritzia', 'Babaton', 'Commense', 'COS', 'Eileen Fisher', 'Everlane', 'Farm Rio', 'Free People', 'Good American', 'H&M', 'J.Crew', 'Lulu Lemon', 'Madewell', 'Nordstrom', 'Princess Polly', 'Reformation', 'Skims', 'Theory', 'Urban Outfitters', 'Vince', 'Vuori', 'Zara'],
     defaultSizeMode: 'clothing',
     clothingSizes: ['OS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'],
@@ -4719,13 +5036,61 @@ function selectCategory(cat) {
 
 // Step 2: Price & Format page
 function publishTemplate() {
-  document.getElementById('editPage').classList.add('parallax-behind');
-  document.getElementById('pricePage').classList.add('active');
+  const pricePage = document.getElementById('pricePage');
+  const editPage = document.getElementById('editPage');
+
+  const cta = document.getElementById('pricePageCta');
+  if (editReturnTo === 'shop') {
+    cta.textContent = 'Save';
+  } else {
+    cta.textContent = 'Publish';
+  }
+
+  pricePage.style.display = 'flex';
+  pricePage.style.transition = 'none';
+  pricePage.style.transform = 'translateX(100%)';
+  pricePage.style.pointerEvents = 'auto';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      pricePage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+      pricePage.style.transform = 'translateX(0)';
+      editPage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
+      editPage.style.transform = 'translateX(-30%)';
+      editPage.style.opacity = '0.3';
+    });
+  });
+}
+
+function pricePageAction() {
+  if (editReturnTo === 'shop') {
+    savePriceAndReturn();
+  } else {
+    publishListing();
+  }
+}
+
+function savePriceAndReturn() {
+  closePricePage();
+  setTimeout(() => {
+    closeEditPageDirect();
+    showToastMessage('Changes saved');
+  }, 450);
 }
 
 function closePricePage() {
-  document.getElementById('pricePage').classList.remove('active');
-  document.getElementById('editPage').classList.remove('parallax-behind');
+  const pricePage = document.getElementById('pricePage');
+  const editPage = document.getElementById('editPage');
+  pricePage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+  pricePage.style.transform = 'translateX(100%)';
+  editPage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
+  editPage.style.transform = 'translateX(0)';
+  editPage.style.opacity = '1';
+  setTimeout(() => {
+    pricePage.style.display = 'none';
+    pricePage.style.transition = '';
+    pricePage.style.transform = 'translateX(100%)';
+    pricePage.style.pointerEvents = 'none';
+  }, 420);
 }
 
 function publishListing() {
@@ -4739,14 +5104,15 @@ function publishListing() {
   setTimeout(() => {
     const pricePage = document.getElementById('pricePage');
     const editPage = document.getElementById('editPage');
-    pricePage.style.transition = 'none';
-    pricePage.classList.remove('active');
-    pricePage.style.transform = '';
+    pricePage.style.display = 'none';
+    pricePage.style.transition = '';
+    pricePage.style.transform = 'translateX(100%)';
+    pricePage.style.pointerEvents = 'none';
     editPage.style.transition = 'none';
     editPage.classList.remove('active', 'parallax-behind');
     editPage.style.transform = '';
+    editPage.style.opacity = '';
     requestAnimationFrame(() => {
-      pricePage.style.transition = '';
       editPage.style.transition = '';
     });
     editVertical = false;
@@ -4945,13 +5311,13 @@ function selectSellerType(type) {
 
 const fashionTypes = [
   { id: 'tops', emoji: '👚', label: 'Tops' },
-  { id: 'bottoms', emoji: '👖', label: 'Bottoms' },
-  { id: 'dresses', emoji: '👗', label: 'Dresses' },
+  { id: 'leggings', emoji: '🦵', label: 'Leggings' },
+  { id: 'pants', emoji: '👖', label: 'Pants' },
+  { id: 'shorts', emoji: '🩳', label: 'Shorts' },
+  { id: 'skirts', emoji: '💃', label: 'Skirts' },
   { id: 'outerwear', emoji: '🧥', label: 'Outerwear' },
-  { id: 'shoes', emoji: '👠', label: 'Shoes' },
-  { id: 'bags', emoji: '👜', label: 'Bags' },
-  { id: 'activewear', emoji: '🏃‍♀️', label: 'Activewear' },
-  { id: 'swimwear', emoji: '👙', label: 'Swimwear' },
+  { id: 'sets', emoji: '👗', label: 'Sets' },
+  { id: 'sportsbras', emoji: '🏃‍♀️', label: 'Sports Bras' },
   { id: 'accessories', emoji: '💍', label: 'Accessories' },
 ];
 let selectedTypes = new Set();
@@ -5010,18 +5376,18 @@ function configureStep3() {
   const selected = fashionTypes.filter(t => selectedTypes.has(t.id));
   const brandMap = {
     tops: 'Lululemon, Alo, Vuori',
-    bottoms: 'Lululemon, Alo, Vuori',
-    dresses: 'Reformation, Zara, H&M',
+    leggings: 'Lululemon, Alo, Gymshark',
+    pants: 'Lululemon, Aritzia, Zara',
+    shorts: 'Lululemon, Nike, Vuori',
+    skirts: 'Zara, Reformation, H&M',
     outerwear: 'The North Face, Patagonia, Aritzia',
-    shoes: 'Nike, Adidas, New Balance',
-    bags: 'Coach, Kate Spade, Tory Burch',
-    activewear: 'Nike, Lululemon, Gymshark',
-    swimwear: 'Skims, Aerie, Triangl',
+    sets: 'Skims, Alo, Free People',
+    sportsbras: 'Nike, Lululemon, Gymshark',
     accessories: 'Mejuri, BaubleBar, Kendra Scott',
   };
 
   const templateCards = selected.map(t => `
-    <div class="tpl-card" style="cursor:pointer">
+    <div class="tpl-card" style="cursor:default;pointer-events:none">
       <div class="tpl-thumb">
         <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
       </div>
@@ -5036,7 +5402,7 @@ function configureStep3() {
   `).join('');
 
   container.innerHTML = `
-    <div style="padding:24px 16px 16px;display:flex;flex-direction:column;gap:6px">
+    <div style="padding:24px 16px 16px;display:flex;flex-direction:column;gap:6px;text-align:center">
       <div style="font-size:22px;font-weight:600;line-height:28px;color:#161616">We made ${selected.length} template${selected.length !== 1 ? 's' : ''} for you</div>
       <div style="font-size:15px;font-weight:400;line-height:21px;color:#6a6a6a">Each template covers a range of sizes, brands, and conditions — so you can list fast during your show.</div>
     </div>
@@ -5109,6 +5475,12 @@ function openShopSheet() {
       inner.style.transform = 'translateY(0)';
     });
   });
+  if (!shopSelectOptionTipShown && document.getElementById('shopProductList').style.display === 'block') {
+    setTimeout(() => showShopSelectOptionTip(), 800);
+  }
+  if (hasEverPinned && !shopMoreTipShown && document.getElementById('shopProductList').style.display === 'block') {
+    setTimeout(() => showShopMoreTip(), 800);
+  }
 }
 
 function closeShopSheet() {
@@ -5185,16 +5557,17 @@ function openEditFromShopGen() {
   }, 200);
 }
 
-function openEditFromShop() {
+function openEditFromShop(idx) {
   const editPage = document.getElementById('editPage');
   editPage.style.visibility = '';
   editVertical = false;
-  openEditPage(0, 'shop');
+  openEditPage(idx || 0, 'shop');
 }
 
 function backToShopFromGen() {
   populateShopWithTemplates();
   closeShopGenerate();
+  if (!shopSelectOptionTipShown) setTimeout(() => showShopSelectOptionTip(), 800);
 }
 
 function openShopLearnMore() {
@@ -5218,14 +5591,14 @@ function openShopLearnMore() {
 function populateShopWithTemplates() {
   const list = document.getElementById('shopProductList');
   const brandMap = {
-    tops: 'Lulu Lemon, Commense, Alo, and more',
-    bottoms: 'Lulu Lemon, Commense, Alo, and more',
-    dresses: 'Reformation, Zara, H&M, and more',
+    tops: 'Lululemon, Alo, Vuori, and more',
+    leggings: 'Lululemon, Alo, Gymshark, and more',
+    pants: 'Lululemon, Aritzia, Zara, and more',
+    shorts: 'Lululemon, Nike, Vuori, and more',
+    skirts: 'Zara, Reformation, H&M, and more',
     outerwear: 'The North Face, Patagonia, Aritzia, and more',
-    shoes: 'Nike, Adidas, New Balance, and more',
-    bags: 'Coach, Kate Spade, Tory Burch, and more',
-    activewear: 'Nike, Lululemon, Gymshark, and more',
-    swimwear: 'Skims, Aerie, Triangl, and more',
+    sets: 'Skims, Alo, Free People, and more',
+    sportsbras: 'Nike, Lululemon, Gymshark, and more',
     accessories: 'Mejuri, BaubleBar, Kendra Scott, and more',
   };
   const selected = fashionTypes.filter(t => selectedTypes.has(t.id));
@@ -5233,22 +5606,42 @@ function populateShopWithTemplates() {
 
   list.innerHTML = selected.map((t, i) => `
     <div style="display:flex;gap:12px;align-items:center;padding:8px 0;border-radius:4px">
-      <div style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative">
+      <div onclick="openListingDetail(${i})" style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;cursor:pointer">
         <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
       </div>
       <div style="flex:1;display:flex;flex-direction:column;gap:12px;min-width:0">
-        <div style="display:flex;flex-direction:column;gap:4px">
+        <div onclick="openListingDetail(${i})" style="display:flex;flex-direction:column;gap:4px;cursor:pointer">
           <div style="display:flex;flex-direction:column;gap:2px">
             <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">${t.label}: ${brandMap[t.id]}</div>
-            <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#7f7f7f">Multiple Options</div>
+            <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#7f7f7f">Template · Multiple Options</div>
           </div>
           <div style="font-size:13px;font-weight:600;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c">$1</div>
         </div>
-        <div style="display:flex;gap:8px;align-items:center;height:32px">
-          <button onclick="event.stopPropagation();openEditFromShop(${i})" style="flex:1;height:32px;border:none;border-radius:999px;background:rgba(0,0,0,0.1);font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.2px;color:#1c1c1c;cursor:pointer;line-height:16px">Select Option</button>
-          <button style="width:32px;height:32px;border:none;border-radius:999px;background:rgba(0,0,0,0.1);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="#1c1c1c"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
-          </button>
+        <div style="position:relative;display:flex;gap:8px;align-items:center;height:32px">
+          ${i === 0 ? `<div id="shopSelectOptionTip" style="display:none;position:absolute;bottom:calc(100% + 4px);left:0;right:0;z-index:10">
+            <div style="background:#2d2d2d;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 16px rgba(0,0,0,0.1)">
+              <span style="flex:1;font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:white">Don't worry you're not live yet. Let's try to run this template!</span>
+              <div onclick="event.stopPropagation();dismissShopSelectOptionTip()" style="width:16px;height:16px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:center"><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #2d2d2d"></div></div>
+          </div>` : ''}
+          <button onclick="event.stopPropagation();dismissShopSelectOptionTip();openLiveShow(${i})" style="flex:1;height:32px;border:none;border-radius:999px;background:rgba(0,0,0,0.1);font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.2px;color:#1c1c1c;cursor:pointer;line-height:16px">Select Option</button>
+          <div style="position:relative;flex-shrink:0">
+            ${i === 0 ? `<div id="shopMoreTip" style="display:none;position:absolute;bottom:calc(100% + 4px);right:0;z-index:10;width:fit-content;white-space:nowrap">
+              <div style="background:#2d2d2d;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 16px rgba(0,0,0,0.1)">
+                <span style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:white">You can edit, clone, or remove from show at anytime.</span>
+                <div onclick="event.stopPropagation();dismissShopMoreTip()" style="width:16px;height:16px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:flex-end;padding-right:8px"><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #2d2d2d"></div></div>
+            </div>` : ''}
+            <button onclick="event.stopPropagation();openShopListingOptions(${i})" style="width:32px;height:32px;border:none;border-radius:999px;background:rgba(0,0,0,0.1);cursor:pointer;display:flex;align-items:center;justify-content:center">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="#1c1c1c"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -5260,6 +5653,7 @@ function populateShopWithTemplates() {
 
 function goToShop() {
   populateShopWithTemplates();
+  markChecklistStep2Complete();
 
   const step1 = document.getElementById('onboardStep1');
   ['onboardStep1', 'onboardStep2', 'onboardStep3', 'onboardStep4'].forEach(id => {
@@ -5384,6 +5778,524 @@ function closeStep4() {
   setTimeout(() => { step4.style.display = 'none'; step4.style.transform = ''; step4.style.transition = ''; }, 420);
 }
 
+let currentLiveTemplate = null;
+let selectedBrand = null;
+let selectedSize = null;
+let liveShowFirstTime = true;
+let liveTipActive = 0;
+let shopSelectOptionTipShown = false;
+let pinnedProductTipShown = false;
+let hasEverPinned = false;
+let pinnedShopIndex = -1;
+
+function updateShopListingPinState(idx, pinned) {
+  const list = document.getElementById('shopProductList');
+  if (!list) return;
+  const rows = list.querySelectorAll(':scope > div');
+  if (idx < 0 || idx >= rows.length) return;
+  const btnRow = rows[idx].querySelector('[style*="position:relative;display:flex;gap:8px"]');
+  if (!btnRow) return;
+  const selectBtn = btnRow.querySelector('button:first-of-type') || btnRow.querySelector('button');
+  if (!selectBtn) return;
+  if (pinned) {
+    selectBtn.textContent = 'Unpin';
+    selectBtn.style.background = '#1c1c1c';
+    selectBtn.style.color = 'white';
+    selectBtn.setAttribute('onclick', `event.stopPropagation();unpinProduct(${idx})`);
+  } else {
+    selectBtn.textContent = 'Select Option';
+    selectBtn.style.background = 'rgba(0,0,0,0.1)';
+    selectBtn.style.color = '#1c1c1c';
+    selectBtn.setAttribute('onclick', `event.stopPropagation();dismissShopSelectOptionTip();openLiveShow(${idx})`);
+  }
+}
+
+function unpinProduct(idx) {
+  pinnedShopIndex = -1;
+  updateShopListingPinState(idx, false);
+  document.getElementById('lobbyPinnedProduct').style.display = 'none';
+  document.getElementById('lobbyDefaultCta').style.display = 'block';
+  document.getElementById('lobbySideMenu').style.bottom = '';
+}
+let invTemplateTipShown = false;
+let shopMoreTipShown = false;
+
+function showShopMoreTip() {
+  if (shopMoreTipShown) return;
+  shopMoreTipShown = true;
+  const tip = document.getElementById('shopMoreTip');
+  if (!tip) return;
+  tip.style.display = 'block';
+  tip.style.opacity = '0';
+  tip.style.transition = 'opacity 0.3s ease';
+  requestAnimationFrame(() => { tip.style.opacity = '1'; });
+}
+
+function dismissShopMoreTip() {
+  const tip = document.getElementById('shopMoreTip');
+  if (!tip || tip.style.display === 'none') return;
+  tip.style.opacity = '0';
+  setTimeout(() => { tip.style.display = 'none'; }, 300);
+}
+
+function showInvTemplateTip() {
+  if (invTemplateTipShown) return;
+  invTemplateTipShown = true;
+  const tip = document.getElementById('invTemplateTip');
+  if (!tip) return;
+  const draftList = document.getElementById('invDraftList');
+  const firstRow = draftList ? draftList.querySelector('[data-type="template"]') : null;
+  if (firstRow && tip.parentElement) {
+    const parentRect = tip.parentElement.getBoundingClientRect();
+    const rowRect = firstRow.getBoundingClientRect();
+    tip.style.bottom = (parentRect.bottom - rowRect.top + 4) + 'px';
+  }
+  tip.style.display = 'block';
+  tip.style.opacity = '0';
+  tip.style.transition = 'opacity 0.3s ease';
+  requestAnimationFrame(() => { tip.style.opacity = '1'; });
+}
+
+function dismissInvTemplateTip() {
+  const tip = document.getElementById('invTemplateTip');
+  if (!tip || tip.style.display === 'none') return;
+  tip.style.opacity = '0';
+  setTimeout(() => { tip.style.display = 'none'; }, 300);
+}
+
+function showPinnedProductTip() {
+  if (pinnedProductTipShown) return;
+  pinnedProductTipShown = true;
+  const tip = document.getElementById('pinnedProductTip');
+  if (!tip) return;
+  tip.style.display = 'flex';
+  tip.style.opacity = '0';
+  tip.style.transition = 'opacity 0.3s ease';
+  requestAnimationFrame(() => { tip.style.opacity = '1'; });
+}
+
+function dismissPinnedProductTip() {
+  const tip = document.getElementById('pinnedProductTip');
+  if (!tip || tip.style.display === 'none') return;
+  tip.style.opacity = '0';
+  setTimeout(() => { tip.style.display = 'none'; }, 300);
+}
+
+function showShopSelectOptionTip() {
+  if (shopSelectOptionTipShown) return;
+  shopSelectOptionTipShown = true;
+  const tip = document.getElementById('shopSelectOptionTip');
+  if (!tip) return;
+  tip.style.display = 'block';
+  tip.style.opacity = '0';
+  tip.style.transition = 'opacity 0.3s ease';
+  requestAnimationFrame(() => { tip.style.opacity = '1'; });
+}
+
+function dismissShopSelectOptionTip() {
+  const tip = document.getElementById('shopSelectOptionTip');
+  if (!tip || tip.style.display === 'none') return;
+  tip.style.opacity = '0';
+  setTimeout(() => { tip.style.display = 'none'; }, 300);
+}
+
+function showLiveTip(num) {
+  liveTipActive = num;
+  const tip = document.getElementById('liveTip' + num);
+  if (!tip) return;
+  tip.style.display = 'block';
+  tip.style.opacity = '0';
+  tip.style.transition = 'opacity 0.3s ease';
+  requestAnimationFrame(() => { tip.style.opacity = '1'; });
+}
+
+function dismissLiveTip(num) {
+  const tip = document.getElementById('liveTip' + num);
+  if (tip) {
+    tip.style.opacity = '0';
+    setTimeout(() => { tip.style.display = 'none'; }, 300);
+  }
+  liveTipActive = 0;
+  if (num === 1) setTimeout(() => showLiveTip(2), 500);
+  if (num === 2) setTimeout(() => showLiveTip(3), 500);
+}
+
+function clearAllLiveTips() {
+  [1, 2, 3].forEach(n => {
+    const tip = document.getElementById('liveTip' + n);
+    if (tip) { tip.style.display = 'none'; tip.style.opacity = ''; }
+  });
+  liveTipActive = 0;
+}
+let shopListingOptionsIndex = -1;
+
+function openShopListingOptions(idx) {
+  dismissShopMoreTip();
+  shopListingOptionsIndex = idx;
+  const selectOpt = document.getElementById('shopOptionSelectOption');
+  const selectOptDiv = document.getElementById('shopOptionSelectOptionDivider');
+  if (idx !== pinnedShopIndex) {
+    selectOpt.style.display = 'flex';
+    selectOptDiv.style.display = 'block';
+  } else {
+    selectOpt.style.display = 'none';
+    selectOptDiv.style.display = 'none';
+  }
+  const sheet = document.getElementById('shopListingOptionsSheet');
+  sheet.style.display = 'block';
+  const inner = sheet.querySelector(':scope > div:last-child');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      inner.style.transform = 'translateY(0)';
+    });
+  });
+}
+
+function closeShopListingOptions() {
+  const sheet = document.getElementById('shopListingOptionsSheet');
+  const inner = sheet.querySelector(':scope > div:last-child');
+  inner.style.transform = 'translateY(100%)';
+  setTimeout(() => { sheet.style.display = 'none'; }, 420);
+}
+
+function shopListingOptionSelectOption() {
+  const idx = shopListingOptionsIndex;
+  closeShopListingOptions();
+  setTimeout(() => {
+    openLiveShow(idx);
+  }, 450);
+}
+
+function shopListingOptionEdit() {
+  closeShopListingOptions();
+  setTimeout(() => {
+    closeShopSheet();
+    setTimeout(() => {
+      openEditFromShop(shopListingOptionsIndex);
+    }, 450);
+  }, 450);
+}
+
+function shopListingOptionClone() {
+  closeShopListingOptions();
+  const selected = fashionTypes.filter(t => selectedTypes.has(t.id));
+  const tpl = selected[shopListingOptionsIndex];
+  if (!tpl) return;
+
+  setTimeout(() => {
+    const brandMap = {
+      tops: 'Lululemon, Alo, Vuori, and more',
+      leggings: 'Lululemon, Alo, Gymshark, and more',
+      pants: 'Lululemon, Aritzia, Zara, and more',
+      shorts: 'Lululemon, Nike, Vuori, and more',
+      skirts: 'Zara, Reformation, H&M, and more',
+      outerwear: 'The North Face, Patagonia, Aritzia, and more',
+      sets: 'Skims, Alo, Free People, and more',
+      sportsbras: 'Nike, Lululemon, Gymshark, and more',
+      accessories: 'Mejuri, BaubleBar, Kendra Scott, and more',
+    };
+    const list = document.getElementById('shopProductList');
+    const cloneHtml = `
+      <div style="display:flex;gap:12px;align-items:center;padding:8px 0;border-radius:4px">
+        <div style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative">
+          <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:12px;min-width:0">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;flex-direction:column;gap:2px">
+              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">${tpl.label}: ${brandMap[tpl.id] || 'Various'} (Copy)</div>
+              <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#7f7f7f">Multiple Options</div>
+            </div>
+            <div style="font-size:13px;font-weight:600;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c">$1</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;height:32px">
+            <button onclick="event.stopPropagation();openLiveShow(0)" style="flex:1;height:32px;border:none;border-radius:999px;background:rgba(0,0,0,0.1);font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.2px;color:#1c1c1c;cursor:pointer;line-height:16px">Select Option</button>
+            <button onclick="event.stopPropagation();openShopListingOptions(0)" style="width:32px;height:32px;border:none;border-radius:999px;background:rgba(0,0,0,0.1);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="#1c1c1c"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>`;
+    list.insertAdjacentHTML('afterbegin', cloneHtml);
+  }, 450);
+}
+
+function shopListingOptionDelete() {
+  closeShopListingOptions();
+  setTimeout(() => {
+    const modal = document.getElementById('deleteListingModal');
+    modal.style.display = 'flex';
+  }, 450);
+}
+
+function closeDeleteModal() {
+  document.getElementById('deleteListingModal').style.display = 'none';
+}
+
+function confirmDeleteListing() {
+  closeDeleteModal();
+  const list = document.getElementById('shopProductList');
+  const items = list.children;
+  if (shopListingOptionsIndex >= 0 && shopListingOptionsIndex < items.length) {
+    items[shopListingOptionsIndex].remove();
+  }
+  if (list.children.length === 0) {
+    list.style.display = 'none';
+    document.getElementById('shopEmptyState').style.display = 'flex';
+  }
+}
+
+const templateBrands = {
+  tops: ['Lululemon', 'Alo', 'Vuori', 'Other'],
+  leggings: ['Lululemon', 'Alo', 'Gymshark', 'Other'],
+  pants: ['Lululemon', 'Aritzia', 'Zara', 'Other'],
+  shorts: ['Lululemon', 'Nike', 'Vuori', 'Other'],
+  skirts: ['Zara', 'Reformation', 'H&M', 'Other'],
+  outerwear: ['North Face', 'Patagonia', 'Aritzia', 'Other'],
+  sets: ['Skims', 'Alo', 'Free People', 'Other'],
+  sportsbras: ['Nike', 'Lululemon', 'Gymshark', 'Other'],
+  accessories: ['Mejuri', 'BaubleBar', 'Kendra Scott', 'Other'],
+};
+
+const templateSizes = {
+  tops: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+  leggings: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+  pants: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+  shorts: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+  skirts: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+  outerwear: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+  sets: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+  sportsbras: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+  accessories: ['One Size'],
+};
+
+let currentLiveShopIndex = -1;
+
+function openLiveShow(templateIndex) {
+  currentLiveShopIndex = templateIndex;
+  const selected = fashionTypes.filter(t => selectedTypes.has(t.id));
+  const tpl = selected[templateIndex] || selected[0];
+  currentLiveTemplate = tpl;
+  selectedBrand = null;
+  selectedSize = null;
+
+  const brandMap = {
+    tops: 'Lululemon, Alo, Vuori, and more',
+    leggings: 'Lululemon, Alo, Gymshark, and more',
+    pants: 'Lululemon, Aritzia, Zara, and more',
+    shorts: 'Lululemon, Nike, Vuori, and more',
+    skirts: 'Zara, Reformation, H&M, and more',
+    outerwear: 'The North Face, Patagonia, Aritzia, and more',
+    sets: 'Skims, Alo, Free People, and more',
+    sportsbras: 'Nike, Lululemon, Gymshark, and more',
+    accessories: 'Mejuri, BaubleBar, Kendra Scott, and more',
+  };
+
+  const brands = templateBrands[tpl.id] || ['Other'];
+  const sizes = templateSizes[tpl.id] || ['One Size'];
+
+  document.getElementById('liveProductTitle').textContent = tpl.label + ': ' + brands[0] + ' - Women\'s Contemporary';
+  document.getElementById('liveProductAttrs').textContent = sizes[0] + ' • New w Tag';
+
+  selectedBrand = brands[0];
+  selectedSize = sizes[0];
+
+  document.getElementById('liveBrandChips').innerHTML = brands.map((b, idx) =>
+    `<div onclick="selectLiveBrand(this,'${b}')" style="padding:8px 12px;border-radius:8px;background:${idx === 0 ? '#f3f3f3' : 'rgba(255,255,255,0.1)'};backdrop-filter:blur(32px);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:${idx === 0 ? '#1c1c1c' : 'white'};cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background 0.15s,color 0.15s">${b}</div>`
+  ).join('') + `<div style="padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.1);backdrop-filter:blur(32px);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer"><svg width="16" height="16" viewBox="0 0 16 16" fill="white"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg></div>`;
+
+  document.getElementById('liveSizeChips').innerHTML = sizes.map((s, idx) =>
+    `<div onclick="selectLiveSize(this,'${s}')" style="padding:8px 12px;border-radius:8px;background:${idx === 0 ? '#f3f3f3' : 'rgba(255,255,255,0.1)'};backdrop-filter:blur(32px);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:${idx === 0 ? '#1c1c1c' : 'white'};cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background 0.15s,color 0.15s">${s}</div>`
+  ).join('') + `<div style="padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.1);backdrop-filter:blur(32px);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer"><svg width="16" height="16" viewBox="0 0 16 16" fill="white"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg></div>`;
+
+  clearAllLiveTips();
+
+  // Close shop first
+  const inner = document.getElementById('shopSheetInner');
+  inner.style.transform = 'translateY(100%)';
+  setTimeout(() => {
+    document.getElementById('shopSheet').style.display = 'none';
+    const overlay = document.getElementById('liveShowOverlay');
+    overlay.style.display = 'flex';
+    overlay.style.opacity = '0';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        overlay.style.transition = 'opacity 0.3s ease';
+        overlay.style.opacity = '1';
+      });
+    });
+    if (liveShowFirstTime) {
+      liveShowFirstTime = false;
+      setTimeout(() => showLiveTip(1), 800);
+    }
+  }, 420);
+}
+
+function selectLiveBrand(el, brand) {
+  selectedBrand = brand;
+  el.parentNode.querySelectorAll('div').forEach(c => {
+    c.style.background = 'rgba(255,255,255,0.1)';
+    c.style.color = 'white';
+  });
+  el.style.background = '#f3f3f3';
+  el.style.color = '#1c1c1c';
+  updateLiveAttrs();
+  if (liveTipActive === 1) dismissLiveTip(1);
+}
+
+function selectLiveSize(el, size) {
+  selectedSize = size;
+  el.parentNode.querySelectorAll('div').forEach(c => {
+    c.style.background = 'rgba(255,255,255,0.1)';
+    c.style.color = 'white';
+  });
+  el.style.background = '#f3f3f3';
+  el.style.color = '#1c1c1c';
+  updateLiveAttrs();
+  if (liveTipActive === 2) dismissLiveTip(2);
+}
+
+function updateLiveAttrs() {
+  const parts = [];
+  if (selectedSize) parts.push(selectedSize);
+  parts.push('New w Tag');
+  document.getElementById('liveProductAttrs').textContent = parts.join(' • ');
+  if (selectedBrand && currentLiveTemplate) {
+    document.getElementById('liveProductTitle').textContent = currentLiveTemplate.label + ': ' + selectedBrand + ' - Women\'s Contemporary';
+  }
+}
+
+function pinProduct() {
+  clearAllLiveTips();
+  hasEverPinned = true;
+  if (pinnedShopIndex >= 0) updateShopListingPinState(pinnedShopIndex, false);
+  pinnedShopIndex = currentLiveShopIndex;
+  updateShopListingPinState(pinnedShopIndex, true);
+  const selectionUI = document.getElementById('liveSelectionUI');
+  selectionUI.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+  selectionUI.style.opacity = '0';
+  selectionUI.style.transform = 'translateY(20px)';
+
+  setTimeout(() => {
+    selectionUI.style.display = 'none';
+
+    // Update pinned product in lobby
+    const title = document.getElementById('liveProductTitle').textContent;
+    const attrs = document.getElementById('liveProductAttrs').textContent;
+    document.getElementById('pinnedTitle').textContent = title;
+    document.getElementById('pinnedAttrs').textContent = attrs;
+
+    // Close live overlay, show lobby with pinned product
+    const overlay = document.getElementById('liveShowOverlay');
+    overlay.style.transition = 'opacity 0.3s ease';
+    overlay.style.opacity = '0';
+
+    setTimeout(() => {
+      overlay.style.display = 'none';
+      overlay.style.opacity = '';
+      overlay.style.transition = '';
+      selectionUI.style.display = '';
+      selectionUI.style.opacity = '';
+      selectionUI.style.transform = '';
+
+      // Show pinned product in lobby, hide default CTA
+      document.getElementById('lobbyPinnedProduct').style.display = 'flex';
+      document.getElementById('lobbyDefaultCta').style.display = 'none';
+
+      // Move side menu above the pinned product (16px gap)
+      document.getElementById('lobbySideMenu').style.bottom = '188px';
+
+      // Update shop badge count
+      const badge = document.querySelector('#lobbySideMenu .shop-badge');
+      if (badge) badge.textContent = selectedTypes.size;
+
+      setTimeout(() => showPinnedProductTip(), 600);
+    }, 300);
+  }, 300);
+}
+
+function closeLiveShow() {
+  clearAllLiveTips();
+  const overlay = document.getElementById('liveShowOverlay');
+  overlay.style.transition = 'opacity 0.3s ease';
+  overlay.style.opacity = '0';
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    overlay.style.opacity = '';
+    overlay.style.transition = '';
+    openShopSheet();
+  }, 300);
+}
+
+let detailTemplateIndex = -1;
+
+function openListingDetail(idx) {
+  detailTemplateIndex = idx;
+  const selected = fashionTypes.filter(t => selectedTypes.has(t.id));
+  const tpl = selected[idx] || selected[0];
+  const brandMap = {
+    tops: 'Lululemon, Alo, Vuori',
+    leggings: 'Lululemon, Alo, Gymshark',
+    pants: 'Lululemon, Aritzia, Zara',
+    shorts: 'Lululemon, Nike, Vuori',
+    skirts: 'Zara, Reformation, H&M',
+    outerwear: 'The North Face, Patagonia, Aritzia',
+    sets: 'Skims, Alo, Free People',
+    sportsbras: 'Nike, Lululemon, Gymshark',
+    accessories: 'Mejuri, BaubleBar, Kendra Scott',
+  };
+
+  document.getElementById('detailTitle').textContent = tpl.label + ': ' + (brandMap[tpl.id] || 'Various');
+  document.getElementById('detailSubtitle').textContent = '1 Available • Multiple Options';
+  document.getElementById('detailPrice').textContent = '$1';
+
+  const page = document.getElementById('listingDetailPage');
+  const shopInner = document.getElementById('shopSheetInner');
+  if (shopInner) {
+    shopInner.style.transition = 'transform 0.4s cubic-bezier(0.32,0.72,0,1), opacity 0.4s ease';
+    shopInner.style.transform = 'translateX(-30%)';
+    shopInner.style.opacity = '0.3';
+  }
+  page.classList.add('active');
+}
+
+function closeListingDetail() {
+  const page = document.getElementById('listingDetailPage');
+  page.classList.remove('active');
+  const shopInner = document.getElementById('shopSheetInner');
+  if (shopInner) {
+    shopInner.style.transform = '';
+    shopInner.style.opacity = '';
+  }
+}
+
+function editListingFromDetail() {
+  closeListingDetail();
+  setTimeout(() => {
+    closeShopSheet();
+    setTimeout(() => {
+      openEditFromShop(detailTemplateIndex);
+    }, 450);
+  }, 200);
+}
+
+function reopenLiveShowFromLobby() {
+  if (!currentLiveTemplate) return;
+  const overlay = document.getElementById('liveShowOverlay');
+  const selectionUI = document.getElementById('liveSelectionUI');
+  selectionUI.style.display = '';
+  selectionUI.style.opacity = '';
+  selectionUI.style.transform = '';
+  overlay.style.display = 'flex';
+  overlay.style.opacity = '0';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      overlay.style.transition = 'opacity 0.3s ease';
+      overlay.style.opacity = '1';
+    });
+  });
+}
+
 function switchScene(scene) {
   document.querySelectorAll('.scene-tab').forEach(t => t.classList.remove('active'));
   event.target.classList.add('active');
@@ -5393,7 +6305,6 @@ function switchScene(scene) {
     document.getElementById('inventoryPage'),
     document.getElementById('menuPage'),
     document.getElementById('editPage'),
-    document.getElementById('pricePage'),
     document.getElementById('productPage'),
     document.getElementById('nuxOverlay')
   ];
