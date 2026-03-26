@@ -2304,19 +2304,24 @@
       </div>
     </div>
     <!-- Bottom: Progress + CTA -->
-    <div style="flex-shrink:0;display:flex;flex-direction:column;gap:2px;align-items:center;width:100%">
+    <div id="step2Footer" style="flex-shrink:0;display:flex;flex-direction:column;gap:2px;align-items:center;width:100%">
       <div style="display:flex;flex-direction:column;gap:12px;width:100%">
         <div style="height:4px;background:rgba(0,0,0,0.1);border-radius:999px;overflow:hidden;width:100%">
           <div style="height:8px;width:50%;background:linear-gradient(to right,#ffe414,#ef6a1f);border-radius:999px;transform:translateY(-2px)"></div>
         </div>
         <div style="display:flex;align-items:center;justify-content:flex-end;gap:19px;padding:0 16px">
           <div style="flex:1;font-size:12px;font-weight:600;line-height:16px;color:#6f6f6f">2 of 4</div>
-          <button id="step2Cta" onclick="openOnboardingStep3()" style="height:40px;padding:0 24px;border-radius:999px;background:#e0e0e0;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#999;cursor:not-allowed;transition:background 0.2s,color 0.2s" disabled>Next</button>
+          <button id="step2Cta" onclick="showStep2Loader()" style="height:40px;padding:0 24px;border-radius:999px;background:#e0e0e0;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#999;cursor:not-allowed;transition:background 0.2s,color 0.2s" disabled>Next</button>
         </div>
       </div>
       <div style="height:32px;overflow:hidden;width:375px;position:relative">
         <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:135px;height:5px;background:#222;border-radius:100px"></div>
       </div>
+    </div>
+    <!-- Loader overlay -->
+    <div id="step2Loader" style="display:none;position:absolute;inset:0;background:white;flex-direction:column;align-items:center;justify-content:center;gap:24px;z-index:5;border-radius:24px">
+      <div class="nux-loader-spinner"></div>
+      <p style="font-size:16px;font-weight:600;color:#1c1c1c;letter-spacing:-0.41px">Setting up your templates…</p>
     </div>
   </div>
 
@@ -5061,6 +5066,8 @@ function closeProductPageDirect() {
       productVertical = false;
       if (productReturnTo === 'edu') {
         closeOnboarding();
+      } else if (productReturnTo === 'shop') {
+        setTimeout(() => openShopSheet(), 100);
       }
     }, 420);
   } else {
@@ -5184,6 +5191,7 @@ function publishProduct() {
 
     if (productReturnTo === 'shop') {
       addListingToShop(title);
+      setTimeout(() => openShopSheet(), 100);
     } else if (productReturnTo === 'edu') {
       closeOnboarding();
       addListingToShop(title);
@@ -5200,8 +5208,9 @@ function publishProduct() {
 function addListingToShop(title) {
   const list = document.getElementById('shopProductList');
   const count = list.children.length;
+  const safeTitle = title.replace(/'/g, "\\'");
   const listingHtml = `
-    <div style="display:flex;gap:12px;align-items:center;padding:8px 0;border-radius:4px">
+    <div data-type="listing" data-title="${safeTitle}" onclick="openShopListing('${safeTitle}')" style="display:flex;gap:12px;align-items:center;padding:8px 0;border-radius:4px;cursor:pointer">
       <div style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;background:#f3f3f3;display:flex;align-items:center;justify-content:center">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
       </div>
@@ -5214,7 +5223,7 @@ function addListingToShop(title) {
           <div style="font-size:13px;font-weight:600;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c">$1</div>
         </div>
         <div style="position:relative;display:flex;gap:8px;align-items:center;height:32px">
-          <button onclick="event.stopPropagation();openLiveShow(${count})" style="flex:1;height:32px;border:none;border-radius:999px;background:rgba(0,0,0,0.1);font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.2px;color:#1c1c1c;cursor:pointer;line-height:16px">Select Option</button>
+          <button onclick="event.stopPropagation();openLiveShow(${count})" style="flex:1;height:32px;border:none;border-radius:999px;background:rgba(0,0,0,0.1);font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.2px;color:#1c1c1c;cursor:pointer;line-height:16px">Pin Product</button>
           <div style="position:relative;flex-shrink:0">
             <button onclick="event.stopPropagation();openShopListingOptions(${count})" style="width:32px;height:32px;border:none;border-radius:999px;background:rgba(0,0,0,0.1);cursor:pointer;display:flex;align-items:center;justify-content:center">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="#1c1c1c"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
@@ -5226,6 +5235,43 @@ function addListingToShop(title) {
   list.insertAdjacentHTML('beforeend', listingHtml);
   document.getElementById('shopEmptyState').style.display = 'none';
   list.style.display = 'block';
+}
+
+function openShopListing(title) {
+  closeShopSheet();
+  productReturnTo = 'shop';
+  setTimeout(() => {
+    const page = document.getElementById('productPage');
+    const titleInput = document.getElementById('productTitleInput');
+    const descInput = document.getElementById('productDescInput');
+    const navTitle = document.getElementById('productNavTitle');
+    const backBtn = document.getElementById('productBackBtn');
+    const closeBtn = document.getElementById('productCloseBtn');
+    const nullHeader = document.getElementById('productNullHeader');
+
+    navTitle.textContent = 'Edit Listing';
+    backBtn.style.display = 'none';
+    closeBtn.style.display = 'flex';
+    nullHeader.style.display = 'none';
+    titleInput.value = title || '';
+    titleInput.style.fontWeight = '600';
+    titleInput.style.color = '#1c1c1c';
+    descInput.value = 'A stylish piece that is light and comfortable.';
+    productQty = 1;
+    document.getElementById('productQty').textContent = productQty;
+
+    productVertical = true;
+    page.style.visibility = '';
+    page.style.transition = 'none';
+    page.style.transform = 'translateY(100%)';
+    page.classList.add('active');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        page.style.transition = 'transform 0.45s cubic-bezier(0.32, 0.72, 0, 1)';
+        page.style.transform = 'translateY(0)';
+      });
+    });
+  }, 450);
 }
 
 let clothingSizes = ['OS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
@@ -6312,7 +6358,7 @@ function populateShopWithTemplates() {
   });
 
   list.innerHTML = selected.map((t, i) => `
-    <div style="display:flex;gap:12px;align-items:center;padding:8px 0;border-radius:4px">
+    <div data-type="template" style="display:flex;gap:12px;align-items:center;padding:8px 0;border-radius:4px">
       <div onclick="openListingDetail(${i})" style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;cursor:pointer">
         <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
       </div>
@@ -6431,6 +6477,35 @@ function closeStep2() {
     step2.style.transform = '';
     step2.style.transition = '';
   }, 420);
+}
+
+function showStep2Loader() {
+  const loader = document.getElementById('step2Loader');
+  const content = document.getElementById('step2Content');
+  const footer = document.getElementById('step2Footer');
+
+  content.style.transition = 'opacity 0.3s ease';
+  content.style.opacity = '0';
+  footer.style.transition = 'opacity 0.3s ease';
+  footer.style.opacity = '0';
+
+  setTimeout(() => {
+    loader.style.display = 'flex';
+    loader.style.opacity = '0';
+    loader.style.transition = 'opacity 0.3s ease';
+    requestAnimationFrame(() => { loader.style.opacity = '1'; });
+  }, 250);
+
+  setTimeout(() => {
+    loader.style.display = 'none';
+    loader.style.opacity = '';
+    loader.style.transition = '';
+    content.style.opacity = '';
+    content.style.transition = '';
+    footer.style.opacity = '';
+    footer.style.transition = '';
+    openOnboardingStep3();
+  }, 2200);
 }
 
 function openOnboardingStep3() {
@@ -6817,13 +6892,24 @@ function shopListingOptionSelectOption() {
 }
 
 function shopListingOptionEdit() {
+  const idx = shopListingOptionsIndex;
+  const list = document.getElementById('shopProductList');
+  const row = list && list.children[idx];
+  const isListing = row && row.dataset.type === 'listing';
   closeShopListingOptions();
-  setTimeout(() => {
-    closeShopSheet();
+  if (isListing) {
+    const title = row.dataset.title || '';
     setTimeout(() => {
-      openEditFromShop(shopListingOptionsIndex);
+      openShopListing(title);
     }, 450);
-  }, 450);
+  } else {
+    setTimeout(() => {
+      closeShopSheet();
+      setTimeout(() => {
+        openEditFromShop(idx);
+      }, 450);
+    }, 450);
+  }
 }
 
 function shopListingOptionClone() {
@@ -7336,13 +7422,17 @@ function confirmImport() {
       const attrText = item.type === 'template'
         ? 'Template · Multiple Options'
         : (item.attr ? item.attr + (item.attrExtra ? ' · ' + item.attrExtra : '') : 'Listing · Single Product');
+      const tapAction = item.type === 'template'
+        ? `openListingDetail(${count})`
+        : `openShopListing('${item.title.replace(/'/g, "\\'")}')`;
+      const safeImportTitle = item.title.replace(/'/g, "\\'");
       const listingHtml = `
-        <div style="display:flex;gap:12px;align-items:center;padding:8px 0;border-radius:4px">
-          <div onclick="openListingDetail(${count})" style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;cursor:pointer${item.hasBorder ? ';border:1px solid #d2d2d2' : ''}">
+        <div data-type="${item.type}" ${item.type !== 'template' ? `data-title="${safeImportTitle}" onclick="openShopListing('${safeImportTitle}')"` : ''} style="display:flex;gap:12px;align-items:center;padding:8px 0;border-radius:4px${item.type !== 'template' ? ';cursor:pointer' : ''}">
+          <div ${item.type === 'template' ? `onclick="${tapAction}"` : ''} style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;${item.type === 'template' ? 'cursor:pointer;' : ''}${item.hasBorder ? 'border:1px solid #d2d2d2' : ''}">
             <img src="${item.img}" style="width:100%;height:100%;object-fit:cover" alt="">
           </div>
           <div style="flex:1;display:flex;flex-direction:column;gap:12px;min-width:0">
-            <div style="display:flex;flex-direction:column;gap:4px;cursor:pointer">
+            <div ${item.type === 'template' ? `onclick="${tapAction}"` : ''} style="display:flex;flex-direction:column;gap:4px;${item.type === 'template' ? 'cursor:pointer' : ''}">
               <div style="display:flex;flex-direction:column;gap:2px">
                 <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">${item.title}</div>
                 <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#7f7f7f">${attrText}</div>
