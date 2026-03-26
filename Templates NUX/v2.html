@@ -1992,15 +1992,15 @@
 </div>
 <div style="display:flex;flex-direction:column;align-items:center">
 <div class="scene-switcher">
-  <button class="scene-tab active" onclick="switchScene('existing')">Existing Users</button>
-  <button class="scene-tab" onclick="switchScene('new-sellers')">New Sellers</button>
+  <button class="scene-tab active" onclick="switchScene('new-sellers')">New Sellers</button>
+  <button class="scene-tab" onclick="switchScene('existing')">Existing Users</button>
 </div>
 <div class="phone-frame">
   <div class="phone-bezel"></div>
   <div class="device">
 
   <!-- Global Status Bar -->
-  <div class="global-status-bar">
+  <div class="global-status-bar" style="display:none">
     <div class="status-bar">
       <div class="status-bar-time"><span>9:41</span></div>
       <div class="status-bar-levels">
@@ -2014,7 +2014,7 @@
   </div>
 
   <!-- ═══ SHOW LOBBY PAGE (New Sellers) ═══ -->
-  <div id="showLobbyScene" style="display:none;position:absolute;inset:0;z-index:1">
+  <div id="showLobbyScene" style="display:flex;flex-direction:column;position:absolute;inset:0;z-index:1">
     <div style="position:absolute;inset:0;background:#000;overflow:hidden">
       <img src="icons/media-product.jpg" style="width:100%;height:100%;object-fit:cover;opacity:0.6" alt="">
     </div>
@@ -2147,6 +2147,19 @@
       </div>
     </div>
 
+    <!-- Review Templates Tooltip -->
+    <div id="reviewTemplatesTooltip" style="display:none;position:absolute;bottom:172px;right:10px;z-index:10;width:fit-content;max-width:250px;flex-direction:column;align-items:flex-end;opacity:0;transition:opacity 0.3s ease">
+      <div style="background:white;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 16px rgba(0,0,0,0.1)">
+        <span style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c">Let's now finalize the rest of your templates</span>
+        <div onclick="dismissReviewTemplatesTooltip()" style="width:16px;height:16px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;padding-right:16px;margin-top:-1px">
+        <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid white"></div>
+      </div>
+    </div>
+
     <!-- Pinned Product (hidden by default) -->
     <div id="lobbyPinnedProduct" style="display:none;position:absolute;bottom:32px;left:0;right:0;z-index:10;padding:0 16px;flex-direction:column;gap:16px">
       <!-- Pinned Product Tooltip -->
@@ -2204,7 +2217,7 @@
     </div>
     <!-- Content -->
     <div style="flex:1;display:flex;flex-direction:column;padding:8px 16px 12px;gap:0;overflow-y:auto">
-      <div style="flex:1;display:flex;flex-direction:column;gap:16px;align-items:center">
+      <div style="flex:1;display:flex;flex-direction:column;gap:24px;align-items:center;justify-content:center">
         <!-- Illustration -->
         <div style="height:148px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center">
           <div style="position:relative;width:343px;height:144px">
@@ -2233,8 +2246,8 @@
           <button id="onboardOptA" onclick="selectSellerType('unique')" style="display:flex;gap:12px;align-items:center;width:100%;padding:16px;background:white;border:2px solid #e0e0e0;border-radius:12px;cursor:pointer;text-align:left;font-family:var(--font);transition:border-color 0.15s,background 0.15s">
             <div style="width:44px;height:44px;border-radius:10px;background:#fef9e7;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:24px">👗</div>
             <div style="flex:1;display:flex;flex-direction:column;gap:2px">
-              <div style="font-size:15px;font-weight:600;line-height:20px;color:#161616">Unique or high-value pieces</div>
-              <div style="font-size:13px;font-weight:400;line-height:18px;color:#6a6a6a">Designer items, vintage finds, rare pieces worth showcasing individually</div>
+              <div style="font-size:15px;font-weight:600;line-height:20px;color:#161616">Each item is specific</div>
+              <div style="font-size:13px;font-weight:400;line-height:18px;color:#6a6a6a">Best for high-value items or pieces that need extra detail to give buyers confidence in their purchase.</div>
             </div>
           </button>
           <!-- Option B: Lots of similar items -->
@@ -2243,14 +2256,6 @@
             <div style="flex:1;display:flex;flex-direction:column;gap:2px">
               <div style="font-size:15px;font-weight:600;line-height:20px;color:#161616">Lots of similar items</div>
               <div style="font-size:13px;font-weight:400;line-height:18px;color:#6a6a6a">Tops, bottoms, dresses in various sizes and brands — fast-paced selling</div>
-            </div>
-          </button>
-          <!-- Option C: Mix of both -->
-          <button id="onboardOptC" onclick="selectSellerType('mix')" style="display:flex;gap:12px;align-items:center;width:100%;padding:16px;background:white;border:2px solid #e0e0e0;border-radius:12px;cursor:pointer;text-align:left;font-family:var(--font);transition:border-color 0.15s,background 0.15s">
-            <div style="width:44px;height:44px;border-radius:10px;background:#f3f0ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:24px">✨</div>
-            <div style="flex:1;display:flex;flex-direction:column;gap:2px">
-              <div style="font-size:15px;font-weight:600;line-height:20px;color:#161616">A mix of both</div>
-              <div style="font-size:13px;font-weight:400;line-height:18px;color:#6a6a6a">Some standout pieces and some everyday fashion you want to move quickly</div>
             </div>
           </button>
         </div>
@@ -2384,9 +2389,9 @@
         <div style="display:flex;flex-direction:column;gap:8px">
           <div style="display:flex;flex-direction:column;gap:4px">
             <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#6a6a6a">Shipping Weight</div>
-            <div style="font-size:24px;font-weight:600;line-height:30px;letter-spacing:0.07px;color:#161616">Set the right weight so buyers see accurate shipping costs</div>
+            <div style="font-size:24px;font-weight:600;line-height:30px;letter-spacing:0.07px;color:#161616">Accurate weights help buyers pay the right shipping cost</div>
           </div>
-          <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#393939">Buyers see shipping fees based on their location. Accurate weights keep costs fair and reduce post-sale issues. As a seller, you're responsible for setting the correct weight — inaccurate weights can lead to unexpected fees or delivery problems.</div>
+          <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#393939">As a seller, you're responsible for setting the correct weight on each listing. Inaccurate weights can result in unexpected shipping charges or delivery issues.</div>
         </div>
       </div>
       <div style="background:#f3f3f3;border-radius:8px;padding:12px;display:flex;gap:8px;align-items:center;width:100%">
@@ -2515,7 +2520,7 @@
     </div>
   </div>
 
-  <div class="page">
+  <div class="page" style="visibility:hidden">
 
     <div style="height:54px;flex-shrink:0"></div>
 
@@ -2872,14 +2877,14 @@
     </div>
     <!-- Draft List -->
     <!-- Inventory tooltip (overlays above first template item) -->
-    <div id="invTemplateTip" style="display:none;position:absolute;left:16px;right:16px;z-index:20;pointer-events:auto">
+    <div id="invTemplateTip" style="display:none;position:absolute;left:50%;transform:translateX(-50%);z-index:20;pointer-events:auto;white-space:nowrap">
       <div style="background:#2d2d2d;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 16px rgba(0,0,0,0.1)">
-        <span style="flex:1;font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:white">Just edit, assign to show, and publish</span>
+        <span style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:white">Just edit, assign to show, and publish</span>
         <div onclick="dismissInvTemplateTip()" style="width:16px;height:16px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center">
           <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
         </div>
       </div>
-      <div style="display:flex;padding-left:24px"><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #2d2d2d"></div></div>
+      <div style="display:flex;justify-content:center"><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #2d2d2d"></div></div>
     </div>
     <div id="invDraftList" style="flex:1;overflow-y:auto;padding:0 16px 100px;display:block">
       <div style="display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start" onclick="openEditPage(0,'inventory')" data-type="template">
@@ -3259,7 +3264,7 @@
       </div>
 
       <!-- Featured In -->
-      <div class="edit-field">
+      <div class="edit-field" id="priceFeaturedIn">
         <div class="edit-field-label">Featured In <span class="required">*</span></div>
         <div class="edit-field-value"><span>All Shows</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
       </div>
@@ -3548,7 +3553,7 @@
         <div class="nux-body" style="gap:32px">
           <div class="nux-templates-copy">
             <h2>Your custom templates</h2>
-            <p>We created 3 templates based on your recent shows. Just edit the details, assign to a show, and publish. Templates never run out of quantity and stay live as long as they're assigned to a show.</p>
+            <p>We made 3 templates based on your past shows. Edit, assign to a show, and publish — they never run out of quantity.</p>
           </div>
           <div class="nux-templates-list">
             <div class="tpl-card">
@@ -3878,7 +3883,7 @@
 
       <!-- Quick Selection: Brand + Size -->
       <div id="liveSelectionUI" style="display:flex;flex-direction:column;gap:0">
-        <div style="background:#1c1c1c;border:1px solid #545454;border-radius:8px 8px 0 0;border-bottom:none;padding:12px 16px;display:flex;flex-direction:column;gap:8px">
+        <div id="liveBrandSection" style="background:#1c1c1c;border:1px solid #545454;border-radius:8px 8px 0 0;border-bottom:none;padding:12px 16px;display:flex;flex-direction:column;gap:8px">
           <div style="position:relative;display:flex;align-items:center;gap:2px">
             <span style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:white">Brand</span>
             <span style="font-size:12px;font-weight:600;line-height:16px;color:#de665b">*</span>
@@ -3895,7 +3900,7 @@
           </div>
           <div id="liveBrandChips" style="display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch"></div>
         </div>
-        <div style="background:#1c1c1c;border:1px solid #545454;border-radius:0 0 8px 8px;padding:12px 16px;display:flex;flex-direction:column;gap:8px">
+        <div id="liveSizeSection" style="background:#1c1c1c;border:1px solid #545454;border-radius:0 0 8px 8px;padding:12px 16px;display:flex;flex-direction:column;gap:8px">
           <div style="position:relative;display:flex;align-items:center;gap:2px">
             <span style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:white">Size</span>
             <span style="font-size:12px;font-weight:600;line-height:16px;color:#de665b">*</span>
@@ -4297,7 +4302,7 @@ function configureNuxSlide4() {
   } else {
     if (loaderText) loaderText.textContent = 'Creating your templates…';
     copyEl.querySelector('h2').textContent = 'Your custom templates';
-    copyEl.querySelector('p').textContent = 'We created 3 templates based on your recent shows. Just edit the details, assign to a show, and publish. Templates never run out of quantity and stay live as long as they\u2019re assigned to a show.';
+    copyEl.querySelector('p').textContent = 'We made 3 templates based on your past shows. Edit, assign to a show, and publish \u2014 they never run out of quantity.';
     listEl.innerHTML = `
       <div class="tpl-card">
         <div class="tpl-thumb"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
@@ -4486,7 +4491,7 @@ function importToShopFromNux() {
     nux.style.display = 'none';
     resetNux();
     inner.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
-    if (!shopSelectOptionTipShown) setTimeout(() => showShopSelectOptionTip(), 600);
+    if (!shopMoreTipShown) setTimeout(() => showShopMoreTip(), 600);
   }, 500);
 }
 
@@ -4497,9 +4502,9 @@ let editSourceElement = null;
 let editVertical = false;
 
 const templateData = [
-  { type: 'Tops', brands: 'Lululemon, Alo, Vuori, Commense' },
-  { type: 'Bottoms', brands: 'Lululemon, Alo, Vuori, Commense' },
-  { type: 'Dresses', brands: 'Lululemon, Alo, Vuori, Commense' }
+  { type: 'Tops', brands: 'Lulu Lemon, Alo, Vuori, Commense' },
+  { type: 'Bottoms', brands: 'Lululemon, Alo, Gymshark' },
+  { type: 'Dresses', brands: 'Reformation, Free People, Zara' }
 ];
 
 function openEditPage(templateIndex, returnTo) {
@@ -4509,7 +4514,20 @@ function openEditPage(templateIndex, returnTo) {
   if (templateIndex !== -1 && returnTo !== 'shop') editVertical = false;
 
   const isNull = templateIndex === -1;
-  const tpl = isNull ? { type: '', brands: '' } : (templateData[templateIndex] || templateData[0]);
+  let tpl;
+  if (isNull) {
+    tpl = { type: '', brands: '' };
+  } else if (returnTo === 'shop') {
+    const selected = fashionTypes.filter(t => selectedTypes.has(t.id));
+    const ft = selected[templateIndex];
+    const edits = templateEdits[templateIndex];
+    tpl = {
+      type: ft ? ft.label : '',
+      brands: (edits && edits.brands) ? edits.brands.join(', ') : '',
+    };
+  } else {
+    tpl = templateData[templateIndex] || templateData[0];
+  }
 
   // Set Category and rebuild chips first
   document.getElementById('editCategory').textContent = "Women's Contemporary";
@@ -4528,9 +4546,12 @@ function openEditPage(templateIndex, returnTo) {
   });
 
   // Set Brands (after applyCategoryConfig cleared them)
+  // Existing users have brand data; new sellers start with none
   const brandsSpan = document.getElementById('editBrands');
   const brandsLabel = document.getElementById('brandsLabel');
-  if (isNull) {
+  selectedBrands.clear();
+  const hasBrands = !isNull && tpl.brands && nuxOrigin !== 'new-seller';
+  if (!hasBrands) {
     brandsSpan.textContent = 'Brand(s)';
     brandsSpan.style.color = '#545454';
     brandsSpan.style.fontWeight = '400';
@@ -4540,11 +4561,16 @@ function openEditPage(templateIndex, returnTo) {
     brandsSpan.style.color = '';
     brandsSpan.style.fontWeight = '';
     brandsLabel.style.display = '';
+    tpl.brands.split(', ').forEach(b => {
+      const match = womensFashionBrands.find(wb => wb.toLowerCase() === b.trim().toLowerCase());
+      if (match) selectedBrands.add(match);
+    });
   }
 
-  // Title field: null = just placeholder, filled = value
+  // Title field
   const titleLabel = document.getElementById('titleLabel');
   const titleInput = document.getElementById('editTitleInput');
+  const editsForTitle = templateEdits[templateIndex];
   if (isNull) {
     titleLabel.style.display = 'none';
     titleInput.value = '';
@@ -4555,6 +4581,9 @@ function openEditPage(templateIndex, returnTo) {
     titleLabel.style.display = '';
     titleInput.style.fontWeight = '600';
     titleInput.style.color = '#1c1c1c';
+    if (returnTo === 'shop' && editsForTitle && editsForTitle.title) {
+      titleInput.value = editsForTitle.title;
+    }
   }
 
   // Weight field
@@ -4609,10 +4638,12 @@ function openEditPage(templateIndex, returnTo) {
       c.classList.add('edit-chip-off');
     });
   } else {
-    // Set size mode based on type
     currentSizeMode = tpl.type === 'Shoes' ? 'shoes' : 'clothing';
     selectedSizes.clear();
-    if (currentSizeMode === 'shoes') {
+    const editsForSizes = templateEdits[templateIndex];
+    if (returnTo === 'shop' && editsForSizes && editsForSizes.sizes) {
+      editsForSizes.sizes.forEach(s => selectedSizes.add(s));
+    } else if (currentSizeMode === 'shoes') {
       ['7W', '7.5W', '8W', '8.5W', '9W'].forEach(s => selectedSizes.add(s));
     } else {
       ['XS', 'S', 'M', 'L', 'XL'].forEach(s => selectedSizes.add(s));
@@ -4771,11 +4802,24 @@ function closeEditPageDirect() {
     const nuxSlider = document.querySelector('.nux-slider');
     const invPage = document.getElementById('inventoryPage');
     if (editReturnTo === 'shop') {
+      saveTemplateEdits(currentTemplateIndex);
+      const shopSheet = document.getElementById('shopSheet');
       const shopInner = document.getElementById('shopSheetInner');
+      shopSheet.style.display = 'block';
+      shopSheet.style.pointerEvents = '';
       if (shopInner) {
-        shopInner.style.transform = '';
+        shopInner.style.transition = 'none';
+        shopInner.style.transform = 'translateY(0)';
         shopInner.style.opacity = '';
-        setTimeout(() => { shopInner.style.transition = ''; }, 400);
+        requestAnimationFrame(() => { shopInner.style.transition = ''; });
+      }
+      const circle = document.getElementById('shopCircle');
+      if (circle) circle.style.borderColor = 'white';
+      if (!hasEditedFromShop) {
+        hasEditedFromShop = true;
+        if (!shopSelectOptionTipShown) {
+          setTimeout(() => showShopSelectOptionTip(), 800);
+        }
       }
     } else if (editReturnTo === 'nux' && nuxSlider) {
       nuxSlider.style.transform = '';
@@ -4944,6 +4988,7 @@ function productNext() {
 
   const isCreating = productVertical;
   setPriceFooterMode(isCreating);
+  document.getElementById('priceFeaturedIn').style.display = productReturnTo === 'shop' ? 'none' : '';
 
   pricePage.style.display = 'flex';
   pricePage.style.transition = 'none';
@@ -5142,7 +5187,8 @@ function updateGeneratedTitle() {
   const typeChips = document.getElementById('typeChips');
   const activeType = typeChips ? typeChips.querySelector('.edit-chip-on') : null;
   const typeName = activeType ? activeType.textContent : '';
-  const brands = document.getElementById('editBrands').textContent;
+  const brandsRaw = document.getElementById('editBrands').textContent;
+  const brands = (brandsRaw && brandsRaw !== 'Brand(s)') ? brandsRaw : '';
 
   let title = '';
   if (typeName && brands) {
@@ -5153,7 +5199,7 @@ function updateGeneratedTitle() {
       title = typeName + ': ' + brandList.join(', ');
     }
   } else if (typeName) {
-    title = typeName;
+    title = 'Assorted ' + typeName;
   }
 
   const titleInput = document.getElementById('editTitleInput');
@@ -5406,7 +5452,9 @@ function publishTemplate() {
   const pricePage = document.getElementById('pricePage');
   const editPage = document.getElementById('editPage');
 
-  setPriceFooterMode(currentTemplateIndex === -1);
+  const isCreating = editReturnTo !== 'shop';
+  setPriceFooterMode(isCreating);
+  document.getElementById('priceFeaturedIn').style.display = editReturnTo === 'shop' ? 'none' : '';
 
   pricePage.style.display = 'flex';
   pricePage.style.transition = 'none';
@@ -5502,6 +5550,7 @@ function publishListing() {
   loader.classList.add('visible');
 
   if (editReturnTo === 'shop') {
+    saveTemplateEdits(currentTemplateIndex);
     setTimeout(() => {
       const pricePage = document.getElementById('pricePage');
       const editPage = document.getElementById('editPage');
@@ -5515,6 +5564,24 @@ function publishListing() {
       editPage.style.opacity = '';
       requestAnimationFrame(() => { editPage.style.transition = ''; });
       editVertical = false;
+      const shopSheet = document.getElementById('shopSheet');
+      const shopInner = document.getElementById('shopSheetInner');
+      shopSheet.style.display = 'block';
+      shopSheet.style.pointerEvents = '';
+      if (shopInner) {
+        shopInner.style.transition = 'none';
+        shopInner.style.transform = 'translateY(0)';
+        shopInner.style.opacity = '';
+        requestAnimationFrame(() => { shopInner.style.transition = ''; });
+      }
+      const circle = document.getElementById('shopCircle');
+      if (circle) circle.style.borderColor = 'white';
+      if (!hasEditedFromShop) {
+        hasEditedFromShop = true;
+        if (!shopSelectOptionTipShown) {
+          setTimeout(() => showShopSelectOptionTip(), 800);
+        }
+      }
       loader.classList.remove('visible');
       showToastMessage('Template published');
     }, 1800);
@@ -5711,15 +5778,14 @@ function selectSellerType(type) {
   sellerType = type;
   const optA = document.getElementById('onboardOptA');
   const optB = document.getElementById('onboardOptB');
-  const optC = document.getElementById('onboardOptC');
   const cta = document.getElementById('onboardStep1Cta');
 
-  [optA, optB, optC].forEach(btn => {
+  [optA, optB].forEach(btn => {
     btn.style.borderColor = '#e0e0e0';
     btn.style.background = 'white';
   });
 
-  const selected = type === 'unique' ? optA : type === 'bulk' ? optB : optC;
+  const selected = type === 'unique' ? optA : optB;
   selected.style.borderColor = '#161616';
   selected.style.background = '#fafafa';
 
@@ -5813,7 +5879,7 @@ function configureStep3() {
       </div>
       <div class="tpl-info">
         <div class="tpl-details">
-          <div class="tpl-title">${t.label}: ${brandMap[t.id] || 'Various brands'}</div>
+          <div class="tpl-title">${t.label}</div>
           <div class="tpl-attr">Template · Multiple Options</div>
           <div class="tpl-price">$1</div>
         </div>
@@ -5841,7 +5907,7 @@ function openOnboardingStep1() {
     cta.style.color = '#999';
     cta.style.cursor = 'not-allowed';
   }
-  ['onboardOptA', 'onboardOptB', 'onboardOptC'].forEach(id => {
+  ['onboardOptA', 'onboardOptB'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.style.borderColor = '#e0e0e0'; el.style.background = 'white'; }
   });
@@ -5886,6 +5952,7 @@ function closeOnboarding() {
 }
 
 function openShopSheet() {
+  dismissReviewTemplatesTooltip();
   const sheet = document.getElementById('shopSheet');
   const inner = document.getElementById('shopSheetInner');
   const circle = document.getElementById('shopCircle');
@@ -5899,11 +5966,11 @@ function openShopSheet() {
       inner.style.transform = 'translateY(0)';
     });
   });
-  if (!shopSelectOptionTipShown && document.getElementById('shopProductList').style.display === 'block') {
-    setTimeout(() => showShopSelectOptionTip(), 800);
-  }
-  if (hasEverPinned && !shopMoreTipShown && document.getElementById('shopProductList').style.display === 'block') {
+  const hasProducts = document.getElementById('shopProductList').style.display === 'block';
+  if (hasProducts && !shopMoreTipShown) {
     setTimeout(() => showShopMoreTip(), 800);
+  } else if (hasProducts && hasEditedFromShop && !shopSelectOptionTipShown) {
+    setTimeout(() => showShopSelectOptionTip(), 800);
   }
 }
 
@@ -5926,6 +5993,8 @@ function closeShopSheet() {
   }, 420);
 }
 
+let reviewTooltipShown = false;
+
 function markChecklistStep2Complete() {
   const step2Icon = document.getElementById('checklistStep2Icon');
   const step2 = document.getElementById('checklistStep2');
@@ -5943,6 +6012,31 @@ function markChecklistStep2Complete() {
   step3.style.cursor = 'pointer';
   step3Icon.innerHTML = '';
   step3Icon.style.border = '2px solid #6f6f6f';
+
+  const lobbyTip = document.getElementById('lobbyTooltip');
+  if (lobbyTip) lobbyTip.style.display = 'none';
+
+  if (!reviewTooltipShown) {
+    reviewTooltipShown = true;
+    setTimeout(() => showReviewTemplatesTooltip(), 600);
+  }
+}
+
+function showReviewTemplatesTooltip() {
+  const tip = document.getElementById('reviewTemplatesTooltip');
+  if (!tip) return;
+  const sideMenu = document.getElementById('lobbySideMenu');
+  const menuBottom = parseInt(sideMenu.style.bottom) || 104;
+  tip.style.bottom = (menuBottom + 68) + 'px';
+  tip.style.display = 'flex';
+  requestAnimationFrame(() => { tip.style.opacity = '1'; });
+}
+
+function dismissReviewTemplatesTooltip() {
+  const tip = document.getElementById('reviewTemplatesTooltip');
+  if (!tip) return;
+  tip.style.opacity = '0';
+  setTimeout(() => { tip.style.display = 'none'; }, 300);
 }
 
 function openShopGenerate() {
@@ -5996,7 +6090,7 @@ function openEditFromShop(idx) {
 function backToShopFromGen() {
   populateShopWithTemplates();
   closeShopGenerate();
-  if (!shopSelectOptionTipShown) setTimeout(() => showShopSelectOptionTip(), 800);
+  if (!shopMoreTipShown) setTimeout(() => showShopMoreTip(), 800);
 }
 
 function openShopLearnMore() {
@@ -6033,6 +6127,16 @@ function populateShopWithTemplates() {
   const selected = fashionTypes.filter(t => selectedTypes.has(t.id));
   if (selected.length === 0) return;
 
+  selected.forEach((t, i) => {
+    if (!templateEdits[i]) {
+      templateEdits[i] = {
+        title: 'Assorted ' + t.label,
+        brands: null,
+        sizes: templateSizes[t.id] || null,
+      };
+    }
+  });
+
   list.innerHTML = selected.map((t, i) => `
     <div style="display:flex;gap:12px;align-items:center;padding:8px 0;border-radius:4px">
       <div onclick="openListingDetail(${i})" style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;cursor:pointer">
@@ -6041,7 +6145,7 @@ function populateShopWithTemplates() {
       <div style="flex:1;display:flex;flex-direction:column;gap:12px;min-width:0">
         <div onclick="openListingDetail(${i})" style="display:flex;flex-direction:column;gap:4px;cursor:pointer">
           <div style="display:flex;flex-direction:column;gap:2px">
-            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">${t.label}: ${brandMap[t.id]}</div>
+            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">${templateEdits[i] && templateEdits[i].brands ? t.label + ': ' + templateEdits[i].brands.join(', ') + ', and more' : 'Assorted ' + t.label}</div>
             <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#7f7f7f">Template · Multiple Options</div>
           </div>
           <div style="font-size:13px;font-weight:600;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c">$1</div>
@@ -6049,7 +6153,7 @@ function populateShopWithTemplates() {
         <div style="position:relative;display:flex;gap:8px;align-items:center;height:32px">
           ${i === 0 ? `<div id="shopSelectOptionTip" style="display:none;position:absolute;bottom:calc(100% + 4px);left:0;right:0;z-index:10">
             <div style="background:#2d2d2d;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 16px rgba(0,0,0,0.1)">
-              <span style="flex:1;font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:white">Don't worry you're not live yet. Let's try to run this template!</span>
+              <span style="flex:1;font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:white">Let's now try to run this template! Don't worry you're not live yet.</span>
               <div onclick="event.stopPropagation();dismissShopSelectOptionTip()" style="width:16px;height:16px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center">
                 <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
               </div>
@@ -6060,7 +6164,7 @@ function populateShopWithTemplates() {
           <div style="position:relative;flex-shrink:0">
             ${i === 0 ? `<div id="shopMoreTip" style="display:none;position:absolute;bottom:calc(100% + 4px);right:0;z-index:10;width:fit-content;white-space:nowrap">
               <div style="background:#2d2d2d;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 16px rgba(0,0,0,0.1)">
-                <span style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:white">You can edit, clone, or remove from show at anytime.</span>
+                <span style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:white">Let's now edit and finalize your templates.</span>
                 <div onclick="event.stopPropagation();dismissShopMoreTip()" style="width:16px;height:16px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center">
                   <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
                 </div>
@@ -6215,6 +6319,7 @@ let liveTipActive = 0;
 let shopSelectOptionTipShown = false;
 let pinnedProductTipShown = false;
 let hasEverPinned = false;
+let hasEditedFromShop = false;
 let pinnedShopIndex = -1;
 
 function updateShopListingPinState(idx, pinned) {
@@ -6308,6 +6413,10 @@ function dismissPinnedProductTip() {
   if (!tip || tip.style.display === 'none') return;
   tip.style.opacity = '0';
   setTimeout(() => { tip.style.display = 'none'; }, 300);
+  const templateCount = fashionTypes.filter(t => selectedTypes.has(t.id)).length;
+  if (templateCount > 1) {
+    setTimeout(() => showReviewTemplatesTooltip(), 400);
+  }
 }
 
 function showShopSelectOptionTip() {
@@ -6363,7 +6472,7 @@ function openShopListingOptions(idx) {
   shopListingOptionsIndex = idx;
   const selectOpt = document.getElementById('shopOptionSelectOption');
   const selectOptDiv = document.getElementById('shopOptionSelectOptionDivider');
-  if (idx !== pinnedShopIndex) {
+  if (idx === pinnedShopIndex) {
     selectOpt.style.display = 'flex';
     selectOptDiv.style.display = 'block';
   } else {
@@ -6432,7 +6541,7 @@ function shopListingOptionClone() {
         <div style="flex:1;display:flex;flex-direction:column;gap:12px;min-width:0">
           <div style="display:flex;flex-direction:column;gap:4px">
             <div style="display:flex;flex-direction:column;gap:2px">
-              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">${tpl.label}: ${brandMap[tpl.id] || 'Various'} (Copy)</div>
+              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">${tpl.label} (Copy)</div>
               <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#7f7f7f">Multiple Options</div>
             </div>
             <div style="font-size:13px;font-weight:600;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c">$1</div>
@@ -6499,6 +6608,37 @@ const templateSizes = {
 };
 
 let currentLiveShopIndex = -1;
+let templateEdits = {};
+
+function saveTemplateEdits(templateIndex) {
+  const titleInput = document.getElementById('editTitleInput');
+  const brandsText = document.getElementById('editBrands').textContent;
+  const sizeChips = [...document.querySelectorAll('#sizeChipsField .edit-chip-on')].map(c => c.textContent);
+
+  let brands = [];
+  if (brandsText && brandsText !== 'Brand(s)') {
+    brands = brandsText.split(',').map(b => b.trim()).filter(b => b && b !== 'and more');
+  }
+
+  templateEdits[templateIndex] = {
+    title: titleInput ? titleInput.value : '',
+    brands: brands.length > 0 ? brands : null,
+    sizes: sizeChips.length > 0 ? sizeChips : null,
+  };
+
+  updateShopListingTitle(templateIndex);
+}
+
+function updateShopListingTitle(templateIndex) {
+  const edits = templateEdits[templateIndex];
+  if (!edits || !edits.title) return;
+  const list = document.getElementById('shopProductList');
+  if (!list) return;
+  const rows = list.children;
+  if (templateIndex < 0 || templateIndex >= rows.length) return;
+  const titleEl = rows[templateIndex].querySelector('[style*="font-size:14px"][style*="font-weight:600"]');
+  if (titleEl) titleEl.textContent = edits.title;
+}
 
 function openLiveShow(templateIndex) {
   currentLiveShopIndex = templateIndex;
@@ -6508,30 +6648,44 @@ function openLiveShow(templateIndex) {
   selectedBrand = null;
   selectedSize = null;
 
-  const brandMap = {
-    tops: 'Lululemon, Alo, Vuori, and more',
-    leggings: 'Lululemon, Alo, Gymshark, and more',
-    pants: 'Lululemon, Aritzia, Zara, and more',
-    shorts: 'Lululemon, Nike, Vuori, and more',
-    skirts: 'Zara, Reformation, H&M, and more',
-    outerwear: 'The North Face, Patagonia, Aritzia, and more',
-    sets: 'Skims, Alo, Free People, and more',
-    sportsbras: 'Nike, Lululemon, Gymshark, and more',
-    accessories: 'Mejuri, BaubleBar, Kendra Scott, and more',
-  };
+  const edits = templateEdits[templateIndex];
+  let brands, hasBrands;
+  if (edits) {
+    hasBrands = !!(edits.brands && edits.brands.length > 0);
+    brands = hasBrands ? [...edits.brands, 'Other'] : [];
+  } else {
+    brands = templateBrands[tpl.id] || [];
+    hasBrands = brands.length > 0;
+  }
+  const sizes = edits ? (edits.sizes || templateSizes[tpl.id] || ['One Size']) : (templateSizes[tpl.id] || ['One Size']);
 
-  const brands = templateBrands[tpl.id] || ['Other'];
-  const sizes = templateSizes[tpl.id] || ['One Size'];
+  let title;
+  if (edits && edits.title) {
+    title = edits.title;
+  } else if (hasBrands) {
+    title = tpl.label + ': ' + brands[0] + ' - Women\'s Contemporary';
+  } else {
+    title = tpl.label + ' - Women\'s Contemporary';
+  }
 
-  document.getElementById('liveProductTitle').textContent = tpl.label + ': ' + brands[0] + ' - Women\'s Contemporary';
+  document.getElementById('liveProductTitle').textContent = title;
   document.getElementById('liveProductAttrs').textContent = sizes[0] + ' • New w Tag';
 
-  selectedBrand = brands[0];
+  selectedBrand = hasBrands ? brands[0] : null;
   selectedSize = sizes[0];
 
-  document.getElementById('liveBrandChips').innerHTML = brands.map((b, idx) =>
-    `<div onclick="selectLiveBrand(this,'${b}')" style="padding:8px 12px;border-radius:8px;background:${idx === 0 ? '#f3f3f3' : 'rgba(255,255,255,0.1)'};backdrop-filter:blur(32px);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:${idx === 0 ? '#1c1c1c' : 'white'};cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background 0.15s,color 0.15s">${b}</div>`
-  ).join('') + `<div style="padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.1);backdrop-filter:blur(32px);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer"><svg width="16" height="16" viewBox="0 0 16 16" fill="white"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg></div>`;
+  const brandSection = document.getElementById('liveBrandSection');
+  const sizeSection = document.getElementById('liveSizeSection');
+  if (hasBrands) {
+    brandSection.style.display = '';
+    sizeSection.style.borderRadius = '0 0 8px 8px';
+    document.getElementById('liveBrandChips').innerHTML = brands.map((b, idx) =>
+      `<div onclick="selectLiveBrand(this,'${b}')" style="padding:8px 12px;border-radius:8px;background:${idx === 0 ? '#f3f3f3' : 'rgba(255,255,255,0.1)'};backdrop-filter:blur(32px);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:${idx === 0 ? '#1c1c1c' : 'white'};cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background 0.15s,color 0.15s">${b}</div>`
+    ).join('') + `<div style="padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.1);backdrop-filter:blur(32px);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer"><svg width="16" height="16" viewBox="0 0 16 16" fill="white"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg></div>`;
+  } else {
+    brandSection.style.display = 'none';
+    sizeSection.style.borderRadius = '8px';
+  }
 
   document.getElementById('liveSizeChips').innerHTML = sizes.map((s, idx) =>
     `<div onclick="selectLiveSize(this,'${s}')" style="padding:8px 12px;border-radius:8px;background:${idx === 0 ? '#f3f3f3' : 'rgba(255,255,255,0.1)'};backdrop-filter:blur(32px);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:${idx === 0 ? '#1c1c1c' : 'white'};cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background 0.15s,color 0.15s">${s}</div>`
@@ -6589,8 +6743,14 @@ function updateLiveAttrs() {
   if (selectedSize) parts.push(selectedSize);
   parts.push('New w Tag');
   document.getElementById('liveProductAttrs').textContent = parts.join(' • ');
-  if (selectedBrand && currentLiveTemplate) {
-    document.getElementById('liveProductTitle').textContent = currentLiveTemplate.label + ': ' + selectedBrand + ' - Women\'s Contemporary';
+  if (currentLiveTemplate) {
+    const edits = templateEdits[currentLiveShopIndex];
+    const baseTitle = (edits && edits.title) ? edits.title.replace(/:\s.*$/, '') : currentLiveTemplate.label;
+    if (selectedBrand) {
+      document.getElementById('liveProductTitle').textContent = baseTitle + ': ' + selectedBrand + ' - Women\'s Contemporary';
+    } else {
+      document.getElementById('liveProductTitle').textContent = baseTitle + ' - Women\'s Contemporary';
+    }
   }
 }
 
@@ -6662,19 +6822,10 @@ function openListingDetail(idx) {
   detailTemplateIndex = idx;
   const selected = fashionTypes.filter(t => selectedTypes.has(t.id));
   const tpl = selected[idx] || selected[0];
-  const brandMap = {
-    tops: 'Lululemon, Alo, Vuori',
-    leggings: 'Lululemon, Alo, Gymshark',
-    pants: 'Lululemon, Aritzia, Zara',
-    shorts: 'Lululemon, Nike, Vuori',
-    skirts: 'Zara, Reformation, H&M',
-    outerwear: 'The North Face, Patagonia, Aritzia',
-    sets: 'Skims, Alo, Free People',
-    sportsbras: 'Nike, Lululemon, Gymshark',
-    accessories: 'Mejuri, BaubleBar, Kendra Scott',
-  };
+  const edits = templateEdits[idx];
+  const detailTitle = (edits && edits.title) ? edits.title : tpl.label;
 
-  document.getElementById('detailTitle').textContent = tpl.label + ': ' + (brandMap[tpl.id] || 'Various');
+  document.getElementById('detailTitle').textContent = detailTitle;
   document.getElementById('detailSubtitle').textContent = '1 Available • Multiple Options';
   document.getElementById('detailPrice').textContent = '$1';
 
@@ -6905,9 +7056,27 @@ function confirmImport() {
   }, 450);
 }
 
+function resetTooltipState() {
+  shopMoreTipShown = false;
+  shopSelectOptionTipShown = false;
+  pinnedProductTipShown = false;
+  invTemplateTipShown = false;
+  reviewTooltipShown = false;
+  hasEverPinned = false;
+  hasEditedFromShop = false;
+  liveShowFirstTime = true;
+  pinnedShopIndex = -1;
+
+  ['shopMoreTip', 'shopSelectOptionTip', 'pinnedProductTip', 'invTemplateTip', 'reviewTemplatesTooltip', 'lobbyTooltip'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.style.display = 'none'; el.style.opacity = ''; }
+  });
+}
+
 function switchScene(scene) {
   document.querySelectorAll('.scene-tab').forEach(t => t.classList.remove('active'));
   event.target.classList.add('active');
+  resetTooltipState();
 
   const existingElements = [
     document.querySelector('.page'),
