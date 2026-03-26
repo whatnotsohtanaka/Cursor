@@ -51,7 +51,11 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 32px;
-      z-index: 10000;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .proto-header > * {
+      pointer-events: auto;
     }
     .proto-breadcrumb {
       display: flex;
@@ -84,6 +88,8 @@
       padding: 4px;
       gap: 2px;
       margin-bottom: 32px;
+      position: relative;
+      z-index: 2;
     }
     .scene-tab {
       padding: 8px 20px;
