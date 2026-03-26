@@ -254,6 +254,124 @@
     }
     .menu-toggle-track.on .menu-toggle-thumb { transform: translateX(20px); }
 
+    /* ═══ IMPORT TO SHOW ═══ */
+    .import-tab {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: 35px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .import-tab span {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 21px;
+      letter-spacing: -0.31px;
+      color: #7f7f7f;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+    .import-tab.active span { color: #1c1c1c; }
+    .import-tab-bar {
+      height: 3px;
+      border-radius: 2px 2px 0 0;
+      background: transparent;
+      transition: background 0.2s;
+    }
+    .import-tab.active .import-tab-bar { background: #1c1c1c; }
+    .import-checkbox {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      border: 1px solid #aaa;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .import-checkbox.checked {
+      background: #2d2d2d;
+      border-color: #1c1c1c;
+    }
+    .import-list-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+      cursor: pointer;
+    }
+    .import-list-row:active { opacity: 0.7; }
+    .import-list-item {
+      display: flex;
+      gap: 12px;
+      flex: 1;
+      align-items: flex-start;
+      padding: 8px 0;
+      min-width: 0;
+    }
+    .import-item-img {
+      width: 84px;
+      height: 84px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .import-item-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .import-item-img.has-border {
+      border: 1px solid #d2d2d2;
+    }
+    .import-item-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      justify-content: center;
+      min-height: 84px;
+      min-width: 0;
+    }
+    .import-item-schedule {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 4px;
+      border-radius: 2px;
+      background: rgba(0,158,82,0.1);
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 10px;
+      letter-spacing: 0.12px;
+      color: #009e52;
+      width: fit-content;
+    }
+    .import-item-title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #161616;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .import-item-attr {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      color: #7f7f7f;
+    }
+    .import-item-attr .dot { color: #ccc; }
+    .import-item-price {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+      color: #1c1c1c;
+    }
+
     /* ═══ STATUS BAR ═══ */
     .global-status-bar {
       position: absolute;
@@ -1976,32 +2094,32 @@
     </div>
 
     <!-- Side Menu (right edge) -->
-    <div id="lobbySideMenu" style="position:absolute;bottom:104px;right:8px;z-index:10;width:48px;display:flex;flex-direction:column;align-items:center;gap:12px">
-      <!-- More -->
-      <div style="display:flex;flex-direction:column;align-items:center;gap:0;width:48px">
-        <div style="height:32px;display:flex;align-items:center;justify-content:center;padding:4px">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+    <div id="lobbySideMenu" style="position:absolute;bottom:104px;right:8px;z-index:10;width:48px;display:flex;flex-direction:column;align-items:center;gap:20px">
+      <!-- Tools group (More + Share) -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+        <!-- More -->
+        <div style="display:flex;flex-direction:column;align-items:center;width:48px;filter:drop-shadow(0px 1px 2px rgba(0,0,0,0.25))">
+          <div style="height:32px;display:flex;align-items:center;justify-content:center;padding:4px">
+            <svg width="20" height="4" viewBox="0 0 20 4" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M2 4C3.10457 4 4 3.10457 4 2C4 0.89543 3.10457 0 2 0C0.89543 0 0 0.89543 0 2C0 3.10457 0.89543 4 2 4Z"/><path d="M12 2C12 3.10457 11.1046 4 10 4C8.89543 4 8 3.10457 8 2C8 0.89543 8.89543 0 10 0C11.1046 0 12 0.89543 12 2Z"/><path d="M20 2C20 3.10457 19.1046 4 18 4C16.8954 4 16 3.10457 16 2C16 0.89543 16.8954 0 18 0C19.1046 0 20 0.89543 20 2Z"/></svg>
+          </div>
+          <span style="font-size:10px;font-weight:400;color:white;text-align:center;letter-spacing:0.12px;line-height:12px">More</span>
         </div>
-        <span style="font-size:10px;font-weight:400;color:white;text-align:center;letter-spacing:0.12px">More</span>
-      </div>
-      <!-- Share -->
-      <div style="display:flex;flex-direction:column;align-items:center;gap:0;width:48px">
-        <div style="height:32px;display:flex;align-items:center;justify-content:center;padding:4px">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+        <!-- Share -->
+        <div style="display:flex;flex-direction:column;align-items:center;width:48px;filter:drop-shadow(0px 1px 2px rgba(0,0,0,0.25))">
+          <div style="height:32px;display:flex;align-items:center;justify-content:center;padding:4px">
+            <svg width="22" height="22" viewBox="0 0 22 21.9952" fill="white" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.29289 6.29294C4.90237 5.90241 4.90237 5.26924 5.29289 4.87871L9.58579 0.58579C10.3668 -0.195265 11.6332 -0.195262 12.4142 0.585791L16.7071 4.87871C17.0976 5.26924 17.0976 5.90241 16.7071 6.29294C16.3166 6.68346 15.6834 6.68346 15.2929 6.29294L12 3.00002V14.996C12 15.5483 11.5523 15.9961 11 15.9961C10.4477 15.9961 10 15.5483 10 14.996V3.00002L6.70711 6.29294C6.31658 6.68346 5.68342 6.68346 5.29289 6.29294ZM5 19.9952C3.34315 19.9952 2 18.652 2 16.9952L2 11.9951C2 11.4429 1.55228 10.9951 1 10.9951C0.447715 10.9951 0 11.4429 0 11.9951V16.9952C0 19.7566 2.23858 21.9952 5 21.9952H17C19.7614 21.9952 22 19.7566 22 16.9952V11.9951C22 11.4429 21.5523 10.9951 21 10.9951C20.4477 10.9951 20 11.4429 20 11.9951V16.9952C20 18.652 18.6569 19.9952 17 19.9952H5Z"/></svg>
+          </div>
+          <span style="font-size:10px;font-weight:400;color:white;text-align:center;letter-spacing:0.12px;line-height:12px">Share</span>
         </div>
-        <span style="font-size:10px;font-weight:400;color:white;text-align:center;letter-spacing:0.12px">Share</span>
       </div>
       <!-- Shop -->
       <div onclick="openShopSheet()" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer">
-        <div style="width:48px;height:48px;border-radius:100px;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);position:relative;overflow:hidden;box-shadow:0px 5px 10px rgba(0,0,0,0.1)">
-          <div style="position:absolute;inset:0;background:linear-gradient(135deg,#ffe414,#ff9500);opacity:0.9"></div>
-          <div style="position:absolute;inset:25%;display:flex;align-items:center;justify-content:center">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1c1c1c" stroke-width="1.8" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-          </div>
+        <div id="shopCircle" style="width:48px;height:48px;border-radius:100px;border:2px solid #ffe414;background:transparent;position:relative;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s ease">
+          <svg width="22" height="21" viewBox="0 0 23.9995 21" fill="white" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.91907 0C3.77715 0 2.70702 0.55707 2.05204 1.49248L0.841709 3.22101C-0.631949 5.32562 -0.120469 8.22637 1.98413 9.70003C1.98798 9.70272 1.99184 9.70541 1.99569 9.70809V16C1.99569 18.7614 4.23427 21 6.99569 21H16.9957C19.7571 21 21.9957 18.7614 21.9957 16V9.72175C22.0022 9.71721 22.0088 9.71266 22.0153 9.70808C24.1199 8.23442 24.6314 5.33367 23.1577 3.22907L21.9418 1.49248C21.2868 0.557072 20.2167 0 19.0747 0H4.91907ZM3.69034 2.63963C3.97105 2.23874 4.42968 2 4.91907 2H19.0747C19.5641 2 20.0228 2.23874 20.3035 2.63964L21.5194 4.37622C22.3595 5.57601 22.068 7.22968 20.8682 8.06978C19.6684 8.90988 18.0147 8.61829 17.1746 7.4185L16.3489 6.2392C16.1253 5.9199 15.7365 5.75961 15.3529 5.82854C14.9692 5.89747 14.6606 6.18306 14.5621 6.56022C14.2646 7.69991 13.2271 8.53984 11.9958 8.53984C10.7652 8.53984 9.72801 7.70071 9.42996 6.56184C9.3313 6.18485 9.02263 5.89951 8.63906 5.83072C8.2555 5.76193 7.86691 5.92222 7.64339 6.24144L6.82484 7.41045C5.98474 8.61024 4.33108 8.90182 3.13129 8.06172C1.93149 7.22162 1.63991 5.56796 2.48001 4.36817L3.69034 2.63963ZM19.9957 10.5049C18.388 10.73 16.7172 10.1028 15.6677 8.74421C14.8167 9.8368 13.489 10.5398 11.9958 10.5398C10.5031 10.5398 9.17574 9.83723 8.32478 8.74521C7.2731 10.0998 5.60233 10.7235 3.99569 10.4958V16C3.99569 17.6569 5.33884 19 6.99569 19H9.99569V15C9.99569 13.9 10.8957 13 11.9957 13C13.0957 13 13.9957 13.9 13.9957 15V19H16.9957C18.6525 19 19.9957 17.6569 19.9957 16V10.5049Z"/></svg>
         </div>
-        <span style="font-size:10px;font-weight:400;color:white;text-align:center;letter-spacing:0.12px;text-shadow:0 0 1px rgba(0,0,0,0.25)">Shop</span>
-        <div style="position:absolute;top:-4px;right:0;min-width:12px;height:12px;border-radius:38px;background:#ce291a;display:flex;align-items:center;justify-content:center;padding:2px">
-          <span style="font-size:9px;font-weight:600;color:white;text-align:center;letter-spacing:0.12px;line-height:1">0</span>
+        <span style="font-size:10px;font-weight:400;color:white;text-align:center;letter-spacing:0.12px;line-height:12px;text-shadow:0 0 1px rgba(0,0,0,0.25)">Shop</span>
+        <div class="shop-badge" style="position:absolute;top:-2px;right:0;min-width:14px;height:14px;border-radius:38px;background:#ce291a;display:flex;align-items:center;justify-content:center;padding:0 3px">
+          <span class="shop-badge-text" style="font-size:8px;font-weight:600;color:white;text-align:center;letter-spacing:0.12px;line-height:1">0</span>
         </div>
       </div>
     </div>
@@ -2349,7 +2467,7 @@
       <div id="shopProductList" style="display:none;flex:1;overflow-y:auto;padding:24px 16px;display:flex;flex-direction:column;gap:8px">
       </div>
       <!-- FAB -->
-      <div style="position:absolute;bottom:40px;right:16px;z-index:4">
+      <div onclick="openLiveCreateSheet()" style="position:absolute;bottom:40px;right:16px;z-index:4">
         <div style="width:56px;height:56px;border-radius:50%;background:#ffe414;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.15);cursor:pointer">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1c1c1c" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
         </div>
@@ -3147,7 +3265,11 @@
       </div>
     </div>
     <div class="edit-footer">
-      <button id="pricePageCta" class="edit-btn-publish" onclick="pricePageAction()" style="flex:1">Publish</button>
+      <div id="priceFooterCreate" style="display:flex;gap:8px;flex:1">
+        <button class="edit-btn-draft" onclick="pricePageSaveDraft()">Save as Draft</button>
+        <button class="edit-btn-publish" onclick="pricePagePublish()">Publish</button>
+      </div>
+      <button id="priceFooterEdit" class="edit-btn-publish" onclick="pricePageSave()" style="display:none;flex:1">Save</button>
     </div>
   </div>
 
@@ -3307,8 +3429,8 @@
       <div style="height:24px"></div>
     </div>
     <div class="edit-footer">
-      <button class="edit-btn-draft">Save Draft</button>
-      <button class="edit-btn-next" onclick="closeProductPageDirect()">Next</button>
+      <button class="edit-btn-draft" onclick="productSaveDraft()">Save Draft</button>
+      <button class="edit-btn-next" onclick="productNext()">Next</button>
     </div>
   </div>
 
@@ -3552,18 +3674,18 @@
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px 0">
         <!-- Create New Listing -->
-        <div onclick="createNewListing()" style="background:#f3f3f3;border-radius:12px;padding:16px;position:relative;overflow:hidden;min-height:87px;cursor:pointer">
-          <div style="position:relative;z-index:2">
+        <div onclick="closeCreateSheet();createNewListing()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
+          <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
             <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454;margin-top:4px">Create new listings or templates.</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create new listings or templates.</div>
           </div>
           <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
         </div>
         <!-- Create New Template -->
-        <div onclick="createNewTemplate()" style="background:#f3f3f3;border-radius:12px;padding:16px;position:relative;overflow:hidden;min-height:87px;cursor:pointer">
-          <div style="position:relative;z-index:2">
+        <div onclick="closeCreateSheet();createNewTemplate()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
+          <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
             <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454;margin-top:4px">Create new listings or templates.</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create reusable templates.</div>
           </div>
           <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
         </div>
@@ -3876,6 +3998,110 @@
     </div>
   </div>
 
+  <!-- ═══ LIVE CREATE SHEET ═══ -->
+  <div id="liveCreateSheet" onclick="closeLiveCreateSheet()" style="display:none;position:absolute;inset:0;z-index:45;background:rgba(0,0,0,0.7);border-radius:24px;opacity:0;transition:opacity 0.3s ease">
+    <div id="liveCreateSheetInner" onclick="event.stopPropagation()" style="position:absolute;bottom:0;left:0;right:0;background:white;border-radius:24px 24px 0 0;display:flex;flex-direction:column;align-items:center;gap:12px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)">
+      <!-- Handle -->
+      <div style="display:flex;flex-direction:column;align-items:center;width:100%;padding:8px 50px 0">
+        <div style="width:40px;height:3px;border-radius:30px;background:#e0e0e0"></div>
+      </div>
+      <!-- Title -->
+      <div style="height:48px;display:flex;align-items:center;justify-content:center;width:100%">
+        <span style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:black">Create</span>
+      </div>
+      <!-- Cards -->
+      <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px;width:100%">
+        <!-- Create New Listing -->
+        <div onclick="createNewListingFromShop()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
+          <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create new listings or templates.</div>
+          </div>
+          <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
+        </div>
+        <!-- Create New Template -->
+        <div onclick="createNewTemplateFromShop()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
+          <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create reusable templates.</div>
+          </div>
+          <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
+        </div>
+        <!-- Import Templates and Listings -->
+        <div onclick="openImportSheet()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
+          <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Import Templates and Listings</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Import existing templates or listings to your show.</div>
+          </div>
+          <img src="icons/create-import.png" style="position:absolute;bottom:-13px;right:19px;width:98px;height:98px;object-fit:cover;z-index:1" alt="">
+        </div>
+      </div>
+      <!-- Footer / Home Indicator -->
+      <div style="height:32px;width:100%;position:relative;flex-shrink:0">
+        <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:135px;height:5px;background:#222;border-radius:100px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ IMPORT TO SHOW OVERLAY ═══ -->
+  <div id="importSheet" style="display:none;position:absolute;inset:0;z-index:50;background:white;border-radius:24px;overflow:hidden">
+    <div id="importSheetInner" style="display:flex;flex-direction:column;height:100%;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)">
+      <!-- Status Bar Spacer -->
+      <div style="height:54px;flex-shrink:0"></div>
+      <!-- Nav Bar -->
+      <div style="height:48px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
+        <span style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#000">Import to Show</span>
+        <button onclick="closeImportSheet()" style="position:absolute;right:8px;width:32px;height:32px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:999px">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5.83 5.83l8.34 8.34M14.17 5.83l-8.34 8.34" stroke="#1c1c1c" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <!-- Tabs -->
+      <div style="display:flex;padding-left:16px;gap:16px;border-bottom:1px solid rgba(0,0,0,0.05);flex-shrink:0;padding-top:16px">
+        <div class="import-tab active" onclick="switchImportTab('active',this)">
+          <span>Active</span>
+          <div class="import-tab-bar"></div>
+        </div>
+        <div class="import-tab" onclick="switchImportTab('draft',this)">
+          <span>Draft</span>
+          <div class="import-tab-bar"></div>
+        </div>
+        <div class="import-tab" onclick="switchImportTab('inactive',this)">
+          <span>Inactive</span>
+          <div class="import-tab-bar"></div>
+        </div>
+      </div>
+      <!-- Search + Filters -->
+      <div style="display:flex;flex-direction:column;flex-shrink:0;padding-top:8px">
+        <div style="padding:0 16px 0 16px;height:48px;display:flex;align-items:center">
+          <div style="flex:1;height:44px;border:1px solid rgba(0,0,0,0.2);border-radius:100px;display:flex;align-items:center;gap:8px;padding:0 16px">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6" stroke="#8d8d8d" stroke-width="1.5"/><path d="M16 16l4 4" stroke="#8d8d8d" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#8d8d8d">Search products...</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;padding:16px">
+          <div style="display:flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:8px;background:rgba(0,0,0,0.1)">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M4 8h8M6 12h4" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div style="display:flex;align-items:center;padding:8px 12px;border-radius:8px;background:rgba(0,0,0,0.1)">
+            <span style="font-size:14px;font-weight:600;line-height:16px;letter-spacing:-0.2px;color:#1c1c1c">Templates</span>
+          </div>
+        </div>
+      </div>
+      <!-- Selected Count -->
+      <div style="padding:0 16px 8px;flex-shrink:0">
+        <span id="importSelectedCount" style="font-size:18px;font-weight:600;line-height:23px;letter-spacing:-0.44px;color:#1c1c1c">0 Selected</span>
+      </div>
+      <!-- Scrollable Item List -->
+      <div id="importItemList" style="flex:1;overflow-y:auto;padding:0 16px 120px;-webkit-overflow-scrolling:touch">
+      </div>
+      <!-- Bottom Button Bar -->
+      <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-top:1px solid #f3f3f3;padding:16px 16px 34px;display:flex;gap:12px;z-index:2">
+        <button onclick="closeImportSheet()" style="flex:1;height:44px;border:none;border-radius:999px;background:rgba(0,0,0,0.1);font-family:var(--font);font-size:16px;font-weight:600;line-height:20px;letter-spacing:-0.41px;color:#1c1c1c;cursor:pointer;backdrop-filter:blur(32px)">Cancel</button>
+        <button id="importConfirmBtn" onclick="confirmImport()" style="flex:1;height:44px;border:none;border-radius:999px;background:#ffe414;font-family:var(--font);font-size:16px;font-weight:600;line-height:20px;letter-spacing:-0.41px;color:#1c1c1c;cursor:pointer">Import</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 </div>
 </div>
@@ -3940,6 +4166,26 @@ function closeCreateSheet() {
   const sheet = document.getElementById('createSheet');
   sheet.classList.remove('open');
   setTimeout(() => { sheet.style.display = 'none'; }, 350);
+}
+
+function openLiveCreateSheet() {
+  const overlay = document.getElementById('liveCreateSheet');
+  const inner = document.getElementById('liveCreateSheetInner');
+  overlay.style.display = 'block';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      overlay.style.opacity = '1';
+      inner.style.transform = 'translateY(0)';
+    });
+  });
+}
+
+function closeLiveCreateSheet() {
+  const overlay = document.getElementById('liveCreateSheet');
+  const inner = document.getElementById('liveCreateSheetInner');
+  overlay.style.opacity = '0';
+  inner.style.transform = 'translateY(100%)';
+  setTimeout(() => { overlay.style.display = 'none'; }, 400);
 }
 
 function createNewTemplate() {
@@ -4239,7 +4485,7 @@ function importToShopFromNux() {
     nux.classList.remove('dismissing');
     nux.style.display = 'none';
     resetNux();
-    inner.style.transition = '';
+    inner.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
     if (!shopSelectOptionTipShown) setTimeout(() => showShopSelectOptionTip(), 600);
   }, 500);
 }
@@ -4393,6 +4639,7 @@ function openEditPage(templateIndex, returnTo) {
   editSnapshot = getFormSnapshot();
 
   const editPage = document.getElementById('editPage');
+  editPage.style.visibility = '';
 
   if (editVertical) {
     editPage.style.transition = 'none';
@@ -4545,6 +4792,8 @@ function closeEditPageDirect() {
 // ═══ PRODUCT PAGE ═══
 let productQty = 1;
 let productVertical = false;
+let productReturnTo = 'inventory';
+let pricePageSource = 'edit';
 
 function openProductPage(title, attrs, isNew) {
   const page = document.getElementById('productPage');
@@ -4581,6 +4830,8 @@ function openProductPage(title, attrs, isNew) {
     productQty = 1;
   }
   document.getElementById('productQty').textContent = productQty;
+
+  page.style.visibility = '';
 
   if (productVertical) {
     page.style.transition = 'none';
@@ -4664,9 +4915,118 @@ function openProductFromRow(el) {
 
 function createNewListing() {
   closeCreateSheet();
+  productReturnTo = 'inventory';
   setTimeout(() => {
     openProductPage('', '', true);
   }, 350);
+}
+
+function createNewListingFromShop() {
+  closeLiveCreateSheet();
+  productReturnTo = 'shop';
+  setTimeout(() => {
+    openProductPage('', '', true);
+  }, 350);
+}
+
+function createNewTemplateFromShop() {
+  closeLiveCreateSheet();
+  editVertical = true;
+  setTimeout(() => {
+    openEditPage(-1, 'shop');
+  }, 350);
+}
+
+function productNext() {
+  pricePageSource = 'product';
+  const pricePage = document.getElementById('pricePage');
+  const productPage = document.getElementById('productPage');
+
+  const isCreating = productVertical;
+  setPriceFooterMode(isCreating);
+
+  pricePage.style.display = 'flex';
+  pricePage.style.transition = 'none';
+  pricePage.style.transform = 'translateX(100%)';
+  pricePage.style.pointerEvents = 'auto';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      pricePage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+      pricePage.style.transform = 'translateX(0)';
+      productPage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
+      productPage.style.transform = 'translateX(-30%)';
+      productPage.style.opacity = '0.3';
+    });
+  });
+}
+
+function productSaveDraft() {
+  closeProductPageDirect();
+  setTimeout(() => { showToastMessage('Draft saved'); }, 450);
+}
+
+function publishProduct() {
+  const pricePage = document.getElementById('pricePage');
+  const productPage = document.getElementById('productPage');
+  const titleInput = document.getElementById('productTitleInput');
+  const title = titleInput && titleInput.value ? titleInput.value : 'New Listing';
+
+  const loader = document.getElementById('publishLoader');
+  loader.querySelector('p').textContent = 'Publishing listing…';
+  loader.classList.add('visible');
+
+  setTimeout(() => {
+    pricePage.style.display = 'none';
+    pricePage.style.transition = '';
+    pricePage.style.transform = 'translateX(100%)';
+    pricePage.style.pointerEvents = 'none';
+
+    productPage.style.transition = 'none';
+    productPage.classList.remove('active');
+    productPage.style.transform = '';
+    productPage.style.opacity = '';
+    requestAnimationFrame(() => { productPage.style.transition = ''; });
+    productVertical = false;
+
+    if (productReturnTo === 'shop') {
+      addListingToShop(title);
+    }
+
+    loader.classList.remove('visible');
+    loader.querySelector('p').textContent = 'Publishing template…';
+    showToastMessage(productReturnTo === 'shop' ? 'Listing added to shop' : 'Listing published');
+  }, 1800);
+}
+
+function addListingToShop(title) {
+  const list = document.getElementById('shopProductList');
+  const count = list.children.length;
+  const listingHtml = `
+    <div style="display:flex;gap:12px;align-items:center;padding:8px 0;border-radius:4px">
+      <div style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;background:#f3f3f3;display:flex;align-items:center;justify-content:center">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:12px;min-width:0">
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">${title}</div>
+            <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#7f7f7f">Listing · Single Product</div>
+          </div>
+          <div style="font-size:13px;font-weight:600;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c">$1</div>
+        </div>
+        <div style="position:relative;display:flex;gap:8px;align-items:center;height:32px">
+          <button onclick="event.stopPropagation();openLiveShow(${count})" style="flex:1;height:32px;border:none;border-radius:999px;background:rgba(0,0,0,0.1);font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.2px;color:#1c1c1c;cursor:pointer;line-height:16px">Select Option</button>
+          <div style="position:relative;flex-shrink:0">
+            <button onclick="event.stopPropagation();openShopListingOptions(${count})" style="width:32px;height:32px;border:none;border-radius:999px;background:rgba(0,0,0,0.1);cursor:pointer;display:flex;align-items:center;justify-content:center">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="#1c1c1c"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  list.insertAdjacentHTML('beforeend', listingHtml);
+  document.getElementById('shopEmptyState').style.display = 'none';
+  list.style.display = 'block';
 }
 
 let clothingSizes = ['OS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
@@ -5042,15 +5402,11 @@ function selectCategory(cat) {
 
 // Step 2: Price & Format page
 function publishTemplate() {
+  pricePageSource = 'edit';
   const pricePage = document.getElementById('pricePage');
   const editPage = document.getElementById('editPage');
 
-  const cta = document.getElementById('pricePageCta');
-  if (editReturnTo === 'shop') {
-    cta.textContent = 'Save';
-  } else {
-    cta.textContent = 'Publish';
-  }
+  setPriceFooterMode(currentTemplateIndex === -1);
 
   pricePage.style.display = 'flex';
   pricePage.style.transition = 'none';
@@ -5067,12 +5423,48 @@ function publishTemplate() {
   });
 }
 
-function pricePageAction() {
-  if (editReturnTo === 'shop') {
-    savePriceAndReturn();
+function setPriceFooterMode(isCreating) {
+  const createFooter = document.getElementById('priceFooterCreate');
+  const editFooter = document.getElementById('priceFooterEdit');
+  if (isCreating) {
+    createFooter.style.display = 'flex';
+    editFooter.style.display = 'none';
+  } else {
+    createFooter.style.display = 'none';
+    editFooter.style.display = '';
+  }
+}
+
+function pricePagePublish() {
+  if (pricePageSource === 'product') {
+    publishProduct();
   } else {
     publishListing();
   }
+}
+
+function pricePageSave() {
+  if (pricePageSource === 'product') {
+    closePricePage();
+    setTimeout(() => {
+      closeProductPageDirect();
+      showToastMessage('Changes saved');
+    }, 450);
+  } else {
+    savePriceAndReturn();
+  }
+}
+
+function pricePageSaveDraft() {
+  closePricePage();
+  setTimeout(() => {
+    if (pricePageSource === 'product') {
+      closeProductPageDirect();
+    } else {
+      closeEditPageDirect();
+    }
+    showToastMessage('Saved as draft');
+  }, 450);
 }
 
 function savePriceAndReturn() {
@@ -5085,12 +5477,14 @@ function savePriceAndReturn() {
 
 function closePricePage() {
   const pricePage = document.getElementById('pricePage');
-  const editPage = document.getElementById('editPage');
+  const sourcePage = pricePageSource === 'product'
+    ? document.getElementById('productPage')
+    : document.getElementById('editPage');
   pricePage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
   pricePage.style.transform = 'translateX(100%)';
-  editPage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
-  editPage.style.transform = 'translateX(0)';
-  editPage.style.opacity = '1';
+  sourcePage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
+  sourcePage.style.transform = 'translateX(0)';
+  sourcePage.style.opacity = '1';
   setTimeout(() => {
     pricePage.style.display = 'none';
     pricePage.style.transition = '';
@@ -5106,6 +5500,26 @@ function publishListing() {
 
   const loader = document.getElementById('publishLoader');
   loader.classList.add('visible');
+
+  if (editReturnTo === 'shop') {
+    setTimeout(() => {
+      const pricePage = document.getElementById('pricePage');
+      const editPage = document.getElementById('editPage');
+      pricePage.style.display = 'none';
+      pricePage.style.transition = '';
+      pricePage.style.transform = 'translateX(100%)';
+      pricePage.style.pointerEvents = 'none';
+      editPage.style.transition = 'none';
+      editPage.classList.remove('active', 'parallax-behind');
+      editPage.style.transform = '';
+      editPage.style.opacity = '';
+      requestAnimationFrame(() => { editPage.style.transition = ''; });
+      editVertical = false;
+      loader.classList.remove('visible');
+      showToastMessage('Template published');
+    }, 1800);
+    return;
+  }
 
   setTimeout(() => {
     const pricePage = document.getElementById('pricePage');
@@ -5474,7 +5888,11 @@ function closeOnboarding() {
 function openShopSheet() {
   const sheet = document.getElementById('shopSheet');
   const inner = document.getElementById('shopSheetInner');
+  const circle = document.getElementById('shopCircle');
   sheet.style.display = 'block';
+  sheet.style.pointerEvents = '';
+  if (circle) circle.style.borderColor = 'white';
+  inner.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
   inner.style.transform = 'translateY(100%)';
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
@@ -5490,14 +5908,19 @@ function openShopSheet() {
 }
 
 function closeShopSheet() {
+  const sheet = document.getElementById('shopSheet');
   const inner = document.getElementById('shopSheetInner');
+  const circle = document.getElementById('shopCircle');
+  sheet.style.pointerEvents = 'none';
+  if (circle) circle.style.borderColor = '#ffe414';
   inner.style.transform = 'translateY(100%)';
 
   const hasProducts = document.getElementById('shopProductList').style.display === 'block';
   if (hasProducts) markChecklistStep2Complete();
 
   setTimeout(() => {
-    document.getElementById('shopSheet').style.display = 'none';
+    sheet.style.display = 'none';
+    sheet.style.pointerEvents = '';
     const genOverlay = document.getElementById('shopGenerateOverlay');
     if (genOverlay) { genOverlay.style.display = 'none'; genOverlay.style.transform = ''; }
   }, 420);
@@ -5821,7 +6244,7 @@ function unpinProduct(idx) {
   updateShopListingPinState(idx, false);
   document.getElementById('lobbyPinnedProduct').style.display = 'none';
   document.getElementById('lobbyDefaultCta').style.display = 'block';
-  document.getElementById('lobbySideMenu').style.bottom = '';
+  document.getElementById('lobbySideMenu').style.bottom = '104px';
 }
 let invTemplateTipShown = false;
 let shopMoreTipShown = false;
@@ -6212,8 +6635,8 @@ function pinProduct() {
       document.getElementById('lobbySideMenu').style.bottom = '188px';
 
       // Update shop badge count
-      const badge = document.querySelector('#lobbySideMenu .shop-badge');
-      if (badge) badge.textContent = selectedTypes.size;
+      const badgeText = document.querySelector('#lobbySideMenu .shop-badge-text');
+      if (badgeText) badgeText.textContent = selectedTypes.size;
 
       setTimeout(() => showPinnedProductTip(), 600);
     }, 300);
@@ -6300,6 +6723,186 @@ function reopenLiveShowFromLobby() {
       overlay.style.opacity = '1';
     });
   });
+}
+
+// ═══ IMPORT TO SHOW ═══
+const importableItems = {
+  active: [
+    { title: 'Tops: Lulu Lemon, Commense, Alo, and more', attr: 'Template', attrExtra: 'Multiple Options', price: '$1', img: 'icons/whatnot-logo.png', type: 'template', hasBorder: false },
+    { title: 'Floral Top', attr: null, attrExtra: null, price: '$1', img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&q=80', type: 'listing', hasBorder: true, schedule: '4/30/26 · 3:00PM' },
+    { title: 'Commense Matching Dress', attr: null, attrExtra: null, price: '$1', img: 'https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=200&q=80', type: 'listing', hasBorder: true, schedule: '4/30/26 · 3:00PM' },
+    { title: 'Commense White Summer Dress XS', attr: null, attrExtra: null, price: '$1', img: 'https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=200&q=80', type: 'listing', hasBorder: true, schedule: '4/30/26 · 3:00PM' },
+    { title: 'Stussy Pancho XL', attr: null, attrExtra: null, price: '$1', img: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=200&q=80', type: 'listing', hasBorder: true, schedule: '4/30/26 · 3:00PM' },
+    { title: 'ATHMILE Womens Short Sleeve V-Neck Shirts', attr: null, attrExtra: null, price: '$1', img: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=200&q=80', type: 'listing', hasBorder: true, schedule: null, status: 'Active' },
+  ],
+  draft: [
+    { title: 'Tops: Lululemon, Alo, Vuori, and more', attr: 'Template', attrExtra: 'Multiple Options', price: '$1', img: 'icons/whatnot-logo.png', type: 'template', hasBorder: false },
+    { title: 'Bottoms: Lululemon, Alo, Vuori, and more', attr: 'Template', attrExtra: 'Multiple Options', price: '$1', img: 'icons/whatnot-logo.png', type: 'template', hasBorder: false },
+    { title: 'Dresses: Lululemon, Alo, Vuori, and more', attr: 'Template', attrExtra: 'Multiple Options', price: '$1', img: 'icons/whatnot-logo.png', type: 'template', hasBorder: false },
+    { title: 'Zara Satin Slip Skirt', attr: 'Auction', attrExtra: 'Size XS', price: '$22', img: 'https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=200&q=80', type: 'listing', hasBorder: true },
+    { title: 'Oversized Band Tee Vintage Wash', attr: 'Auction', attrExtra: 'Size M', price: '$15', img: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=200&q=80', type: 'listing', hasBorder: true },
+  ],
+  inactive: [
+    { title: 'Floral Ruffle Blouse NWT', attr: 'Auction', attrExtra: 'Size S', price: '$18', img: 'https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=200&q=80', type: 'listing', hasBorder: true },
+    { title: 'Commense Matching Dress', attr: 'Buy Now', attrExtra: 'Size M', price: '$42', img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&q=80', type: 'listing', hasBorder: true },
+    { title: 'Vintage Levi\'s Denim Jacket', attr: 'Auction', attrExtra: 'Size M', price: '$55', img: 'https://images.unsplash.com/photo-1551537482-f2075a1d41f2?w=200&q=80', type: 'listing', hasBorder: true },
+  ]
+};
+
+let importSelectedSet = new Set();
+let currentImportTab = 'active';
+
+function openImportSheet() {
+  closeLiveCreateSheet();
+  importSelectedSet.clear();
+  currentImportTab = 'active';
+
+  setTimeout(() => {
+    const sheet = document.getElementById('importSheet');
+    const inner = document.getElementById('importSheetInner');
+    sheet.style.display = 'block';
+    inner.style.transition = 'none';
+    inner.style.transform = 'translateY(100%)';
+
+    document.querySelectorAll('.import-tab').forEach((t, i) => {
+      t.classList.toggle('active', i === 0);
+    });
+
+    renderImportList();
+    updateImportCount();
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        inner.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+        inner.style.transform = 'translateY(0)';
+      });
+    });
+  }, 400);
+}
+
+function closeImportSheet() {
+  const inner = document.getElementById('importSheetInner');
+  inner.style.transform = 'translateY(100%)';
+  setTimeout(() => {
+    document.getElementById('importSheet').style.display = 'none';
+  }, 420);
+}
+
+function switchImportTab(tab, el) {
+  currentImportTab = tab;
+  document.querySelectorAll('.import-tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderImportList();
+}
+
+function renderImportList() {
+  const list = document.getElementById('importItemList');
+  const items = importableItems[currentImportTab] || [];
+  list.innerHTML = items.map((item, idx) => {
+    const key = currentImportTab + '_' + idx;
+    const isChecked = importSelectedSet.has(key);
+    let statusHtml = '';
+    if (item.schedule) {
+      statusHtml = `<div class="import-item-schedule">${item.schedule}</div>`;
+    } else if (item.status) {
+      statusHtml = `<div class="import-item-schedule">${item.status}</div>`;
+    }
+    let attrHtml = '';
+    if (item.attr) {
+      attrHtml = `<div class="import-item-attr">${item.attr}${item.attrExtra ? ' <span class="dot">·</span> ' + item.attrExtra : ''}</div>`;
+    }
+    return `
+      <div class="import-list-row" onclick="toggleImportItem('${key}')">
+        <div class="import-checkbox${isChecked ? ' checked' : ''}">
+          ${isChecked ? '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7l3 3 6-6"/></svg>' : ''}
+        </div>
+        <div class="import-list-item">
+          <div class="import-item-img${item.hasBorder ? ' has-border' : ''}">
+            <img src="${item.img}" alt="">
+          </div>
+          <div class="import-item-info">
+            ${statusHtml}
+            <div style="display:flex;flex-direction:column;gap:2px">
+              <div class="import-item-title">${item.title}</div>
+              ${attrHtml}
+              <div class="import-item-price">${item.price}</div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleImportItem(key) {
+  if (importSelectedSet.has(key)) {
+    importSelectedSet.delete(key);
+  } else {
+    importSelectedSet.add(key);
+  }
+  renderImportList();
+  updateImportCount();
+}
+
+function updateImportCount() {
+  const count = importSelectedSet.size;
+  document.getElementById('importSelectedCount').textContent = count + ' Selected';
+  const btn = document.getElementById('importConfirmBtn');
+  btn.textContent = count > 0 ? 'Import (' + count + ')' : 'Import';
+}
+
+function confirmImport() {
+  if (importSelectedSet.size === 0) {
+    closeImportSheet();
+    return;
+  }
+
+  const selectedItems = [];
+  importSelectedSet.forEach(key => {
+    const [tab, idxStr] = key.split('_');
+    const idx = parseInt(idxStr);
+    const items = importableItems[tab];
+    if (items && items[idx]) selectedItems.push(items[idx]);
+  });
+
+  closeImportSheet();
+
+  setTimeout(() => {
+    const list = document.getElementById('shopProductList');
+    selectedItems.forEach(item => {
+      const count = list.children.length;
+      const attrText = item.type === 'template'
+        ? 'Template · Multiple Options'
+        : (item.attr ? item.attr + (item.attrExtra ? ' · ' + item.attrExtra : '') : 'Listing · Single Product');
+      const listingHtml = `
+        <div style="display:flex;gap:12px;align-items:center;padding:8px 0;border-radius:4px">
+          <div onclick="openListingDetail(${count})" style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;cursor:pointer${item.hasBorder ? ';border:1px solid #d2d2d2' : ''}">
+            <img src="${item.img}" style="width:100%;height:100%;object-fit:cover" alt="">
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:12px;min-width:0">
+            <div style="display:flex;flex-direction:column;gap:4px;cursor:pointer">
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">${item.title}</div>
+                <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#7f7f7f">${attrText}</div>
+              </div>
+              <div style="font-size:13px;font-weight:600;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c">${item.price}</div>
+            </div>
+            <div style="position:relative;display:flex;gap:8px;align-items:center;height:32px">
+              <button onclick="event.stopPropagation();openLiveShow(${count})" style="flex:1;height:32px;border:none;border-radius:999px;background:rgba(0,0,0,0.1);font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.2px;color:#1c1c1c;cursor:pointer;line-height:16px">Select Option</button>
+              <div style="position:relative;flex-shrink:0">
+                <button onclick="event.stopPropagation();openShopListingOptions(${count})" style="width:32px;height:32px;border:none;border-radius:999px;background:rgba(0,0,0,0.1);cursor:pointer;display:flex;align-items:center;justify-content:center">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="#1c1c1c"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      list.insertAdjacentHTML('beforeend', listingHtml);
+    });
+
+    document.getElementById('shopEmptyState').style.display = 'none';
+    list.style.display = 'block';
+    showToastMessage(selectedItems.length + ' listing' + (selectedItems.length > 1 ? 's' : '') + ' imported to show');
+  }, 450);
 }
 
 function switchScene(scene) {
