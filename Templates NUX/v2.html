@@ -5136,7 +5136,7 @@ function productNext() {
 
   const isCreating = productVertical;
   setPriceFooterMode(isCreating);
-  document.getElementById('priceFeaturedIn').style.display = productReturnTo === 'shop' ? 'none' : '';
+  document.getElementById('priceFeaturedIn').style.display = (productReturnTo === 'shop' || productReturnTo === 'edu') ? 'none' : '';
   document.getElementById('priceCloseBtn').style.display = (productReturnTo === 'edu') ? 'flex' : 'none';
 
   pricePage.style.display = 'flex';
@@ -5184,11 +5184,16 @@ function publishProduct() {
 
     if (productReturnTo === 'shop') {
       addListingToShop(title);
+    } else if (productReturnTo === 'edu') {
+      closeOnboarding();
+      addListingToShop(title);
+      markChecklistStep2Complete();
+      setTimeout(() => openShopSheet(), 100);
     }
 
     loader.classList.remove('visible');
     loader.querySelector('p').textContent = 'Publishing template…';
-    showToastMessage(productReturnTo === 'shop' ? 'Listing added to shop' : 'Listing published');
+    showToastMessage('Listing published');
   }, 1800);
 }
 
@@ -7345,7 +7350,7 @@ function confirmImport() {
               <div style="font-size:13px;font-weight:600;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c">${item.price}</div>
             </div>
             <div style="position:relative;display:flex;gap:8px;align-items:center;height:32px">
-              <button onclick="event.stopPropagation();openLiveShow(${count})" style="flex:1;height:32px;border:none;border-radius:999px;background:rgba(0,0,0,0.1);font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.2px;color:#1c1c1c;cursor:pointer;line-height:16px">Select Option</button>
+              <button onclick="event.stopPropagation();openLiveShow(${count})" style="flex:1;height:32px;border:none;border-radius:999px;background:rgba(0,0,0,0.1);font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.2px;color:#1c1c1c;cursor:pointer;line-height:16px">${item.type === 'template' ? 'Select Option' : 'Pin Product'}</button>
               <div style="position:relative;flex-shrink:0">
                 <button onclick="event.stopPropagation();openShopListingOptions(${count})" style="width:32px;height:32px;border:none;border-radius:999px;background:rgba(0,0,0,0.1);cursor:pointer;display:flex;align-items:center;justify-content:center">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="#1c1c1c"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
