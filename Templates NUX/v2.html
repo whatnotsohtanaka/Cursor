@@ -1314,6 +1314,7 @@
       letter-spacing: 0.07px;
       color: #161616;
       margin-bottom: 8px;
+      text-wrap: balance;
     }
     .nux-copy p {
       font-size: 14px;
@@ -3373,6 +3374,7 @@
     <div class="edit-nav">
       <button class="edit-nav-back" onclick="closePricePage()"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></button>
       <span class="edit-nav-title">Templates</span>
+      <button id="priceCloseBtn" onclick="closePricePageToShop()" style="position:absolute;right:16px;width:32px;height:32px;border:none;background:none;cursor:pointer;display:none;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
     </div>
     <div class="edit-scroll">
       <!-- Buy Format Chips -->
@@ -3609,7 +3611,7 @@
         </div>
       </div>
 
-      <!-- Slide 1: Get the right buyers into your show -->
+      <!-- Slide 1: Attract the right buyers to your show -->
       <div class="nux-slide">
         <div class="nux-nav">
           <button class="nux-close" onclick="closeNux()">
@@ -3649,7 +3651,7 @@
             </div>
           </div>
           <div class="nux-copy">
-            <h2>Get the right buyers into your show</h2>
+            <h2>Attract the right buyers to your show</h2>
             <p>Templates tag your shows with attributes like type, brand, and size so the right buyers find you.</p>
           </div>
         </div>
@@ -5135,6 +5137,7 @@ function productNext() {
   const isCreating = productVertical;
   setPriceFooterMode(isCreating);
   document.getElementById('priceFeaturedIn').style.display = productReturnTo === 'shop' ? 'none' : '';
+  document.getElementById('priceCloseBtn').style.display = (productReturnTo === 'edu') ? 'flex' : 'none';
 
   pricePage.style.display = 'flex';
   pricePage.style.transition = 'none';
@@ -5684,6 +5687,25 @@ function closePricePage() {
     pricePage.style.transition = '';
     pricePage.style.transform = 'translateX(100%)';
     pricePage.style.pointerEvents = 'none';
+  }, 420);
+}
+
+function closePricePageToShop() {
+  const pricePage = document.getElementById('pricePage');
+  pricePage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+  pricePage.style.transform = 'translateY(100%)';
+  setTimeout(() => {
+    pricePage.style.display = 'none';
+    pricePage.style.transition = '';
+    pricePage.style.transform = 'translateX(100%)';
+    pricePage.style.pointerEvents = 'none';
+    const productPage = document.getElementById('productPage');
+    productPage.classList.remove('active');
+    productPage.style.transform = '';
+    productPage.style.opacity = '';
+    productPage.style.transition = '';
+    productVertical = false;
+    closeOnboarding();
   }, 420);
 }
 
