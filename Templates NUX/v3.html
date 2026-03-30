@@ -2118,14 +2118,14 @@
           <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><rect x="1" y="4" width="4" height="8" rx="1"/><rect x="6" y="2" width="4" height="12" rx="1"/><rect x="11" y="5" width="4" height="6" rx="1"/></svg>
           <span style="font-size:12px;font-weight:600;color:white">1</span>
         </div>
-        <div style="width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center">
+        <div onclick="closeLobbyToSellerHub()" style="width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;cursor:pointer">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M3 3l8 8M11 3l-8 8"/></svg>
         </div>
       </div>
     </div>
 
-    <!-- Onboarding Card -->
-    <div style="position:absolute;top:112px;left:16px;right:16px;z-index:10;background:#2e2e2e;border:1px solid rgba(255,255,255,0.2);border-radius:12px;padding:20px 12px 12px 20px">
+    <!-- Onboarding Card (new seller checklist) -->
+    <div id="lobbyOnboardingCard" style="position:absolute;top:112px;left:16px;right:16px;z-index:10;background:#2e2e2e;border:1px solid rgba(255,255,255,0.2);border-radius:12px;padding:20px 12px 12px 20px">
       <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:16px">
         <div style="display:flex;align-items:center;justify-content:center;width:100%">
           <span style="font-size:12px;font-weight:600;line-height:16px;color:rgba(255,255,255,0.7);text-align:center">Show Starts at 1:00PM</span>
@@ -2165,6 +2165,52 @@
           </div>
           <span style="flex:1;font-size:14px;font-weight:600;line-height:18px;letter-spacing:-0.11px;color:white">Go live!</span>
           <div style="padding:2px"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Show Widget (active seller) -->
+    <div id="lobbyUpcomingWidget" style="display:none;position:absolute;top:112px;left:16px;right:16px;z-index:10;backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);background:rgba(0,0,0,0.7);border-radius:12px;padding:16px;overflow:hidden">
+      <div style="display:flex;flex-direction:column;gap:12px;align-items:stretch">
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:center">
+          <span style="font-size:12px;font-weight:590;line-height:16px;color:rgba(255,255,255,0.7);text-align:center">Show Starts at 1:00PM</span>
+          <span id="lobbyCountdown" style="font-size:36px;font-weight:590;line-height:43px;letter-spacing:0.37px;color:white;text-align:center;width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">59m 39s</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button style="width:100%;height:32px;border:none;border-radius:999px;background:#ffe414;font-family:var(--font);font-size:14px;font-weight:590;letter-spacing:-0.2px;color:#1c1c1c;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v4a2 2 0 002 2h8a2 2 0 002-2v-4M10 3v10M7 6l3-3 3 3"/></svg>
+            Share Show
+          </button>
+          <button style="width:100%;height:32px;border:none;border-radius:999px;background:white;font-family:var(--font);font-size:14px;font-weight:590;letter-spacing:-0.2px;color:#1c1c1c;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="14" rx="2"/><path d="M3 8h14M7 2v4M13 2v4"/></svg>
+            Add to Calendar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Area (active seller) -->
+    <div id="lobbyChatArea" style="display:none;position:absolute;bottom:96px;left:0;right:64px;z-index:10;flex-direction:column;gap:12px;padding:0 8px">
+      <div style="display:flex;align-items:center;padding:0 8px">
+        <div style="width:32px;height:32px;border-radius:999px;background:rgba(255,255,255,0.2);backdrop-filter:blur(32px);display:flex;align-items:center;justify-content:center;cursor:pointer">
+          <svg width="12" height="7" viewBox="0 0 12 7" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6l5-5 5 5"/></svg>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;padding:0 8px">
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <img src="icons/profile-female.png" style="width:32px;height:32px;border-radius:50%;flex-shrink:0;margin-top:2px" alt="">
+          <div style="display:flex;flex-direction:column">
+            <span style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#d2d2d2;text-shadow:0 1px 1px rgba(0,0,0,0.25)">sneakerfreaker</span>
+            <span style="font-size:13px;font-weight:590;line-height:18px;letter-spacing:-0.08px;color:white;text-shadow:0 1px 1px rgba(0,0,0,0.25)">Joined</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;padding:0 8px">
+        <div style="width:36px;height:36px;border-radius:999px;border:1px solid rgba(255,255,255,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round"><path d="M12 4L8 16"/></svg>
+        </div>
+        <div style="flex:1;height:36px;border-radius:48px;border:1px solid rgba(255,255,255,0.4);display:flex;align-items:center;padding:0 12px">
+          <span style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:rgba(255,255,255,0.7)">Say something...</span>
         </div>
       </div>
     </div>
@@ -2248,9 +2294,14 @@
       </div>
     </div>
 
-    <!-- Start Show Button (default, no pinned product) -->
+    <!-- Start Show Button (default, disabled — new seller) -->
     <div id="lobbyDefaultCta" style="position:absolute;left:0;right:0;top:761px;z-index:10;padding:0 16px">
       <button style="width:100%;height:44px;border-radius:999px;background:#fff7b9;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:rgba(0,0,0,0.4);cursor:default">Start Show</button>
+    </div>
+
+    <!-- Start Show Button (active — existing seller) -->
+    <div id="lobbyActiveCta" style="display:none;position:absolute;left:0;right:0;bottom:34px;z-index:10;padding:0 16px">
+      <button style="width:100%;height:44px;border-radius:999px;background:#ffe414;border:none;font-family:var(--font);font-size:16px;font-weight:590;letter-spacing:-0.41px;color:#1c1c1c;cursor:pointer">Start Show</button>
     </div>
 
     <!-- Home Indicator -->
@@ -2736,7 +2787,7 @@
       <!-- Buttons -->
       <div class="sh-buttons">
         <button class="sh-btn">Schedule Show</button>
-        <button class="sh-btn" onclick="openCreateSheet()">Create</button>
+        <button class="sh-btn" id="sellerHubCreateBtn" onclick="openCreateSheet()">Create</button>
       </div>
 
       <!-- Today's Tasks -->
@@ -2823,7 +2874,7 @@
         </div>
         <div class="shows-list">
           <!-- Show 1 -->
-          <div class="show-row">
+          <div class="show-row" onclick="openShowFromList('FRESHLY THRIFTED GOODS!','Tomorrow at 9AM')" style="cursor:pointer">
             <div class="show-leading">
               <div style="width:100%;height:100%;background:linear-gradient(135deg,#e74c3c,#f39c12)"></div>
               <div class="show-leading-overlay"></div>
@@ -2836,7 +2887,7 @@
               <div class="show-title">FRESHLY THRIFTED GOODS! 🍓❤️‍🔥🍒🪩</div>
               <div class="show-meta">Tomorrow at 9AM</div>
             </div>
-            <div class="show-actions">
+            <div class="show-actions" onclick="event.stopPropagation()">
               <div class="show-action">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 6v8M6 10h8"/></svg>
                 <span>Add</span>
@@ -2848,7 +2899,7 @@
             </div>
           </div>
           <!-- Show 2 -->
-          <div class="show-row">
+          <div class="show-row" onclick="openShowFromList('WEDNESDAY VINTAGE JEWELRY!','Wed at 9AM')" style="cursor:pointer">
             <div class="show-leading">
               <div style="width:100%;height:100%;background:linear-gradient(135deg,#9b59b6,#3498db)"></div>
               <div class="show-leading-overlay"></div>
@@ -2861,7 +2912,7 @@
               <div class="show-title">WEDNESDAY VINTAGE JEWELRY! 💖</div>
               <div class="show-meta">Wed at 9AM</div>
             </div>
-            <div class="show-actions">
+            <div class="show-actions" onclick="event.stopPropagation()">
               <div class="show-action">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 6v8M6 10h8"/></svg>
                 <span>Add</span>
@@ -3453,7 +3504,7 @@
       <div style="height:24px"></div>
     </div>
     <div class="edit-footer" id="editPageFooter">
-      <button class="edit-btn-draft" id="editDraftBtn" onclick="saveDraft()">Save Draft</button>
+      <button class="edit-btn-draft" id="editDraftBtn" onclick="saveDraft()">Save as Draft</button>
       <button class="edit-btn-next" id="editNextBtn" onclick="publishTemplate()">Next</button>
     </div>
   </div>
@@ -3503,7 +3554,7 @@
     </div>
     <div class="edit-footer">
       <div id="priceFooterCreate" style="display:flex;gap:8px;flex:1">
-        <button class="edit-btn-draft" onclick="pricePageSaveDraft()">Save as Draft</button>
+        <button class="edit-btn-draft" id="priceDraftBtn" onclick="pricePageSaveDraft()">Save as Draft</button>
         <button class="edit-btn-publish" onclick="pricePagePublish()">Publish</button>
       </div>
       <button id="priceFooterEdit" class="edit-btn-publish" onclick="pricePageSave()" style="display:none;flex:1">Save</button>
@@ -3666,7 +3717,7 @@
       <div style="height:24px"></div>
     </div>
     <div class="edit-footer" id="productPageFooter">
-      <button class="edit-btn-draft" id="productDraftBtn" onclick="productSaveDraft()">Save Draft</button>
+      <button class="edit-btn-draft" id="productDraftBtn" onclick="productSaveDraft()">Save as Draft</button>
       <button class="edit-btn-next" id="productNextBtn" onclick="productNext()">Next</button>
     </div>
   </div>
@@ -4270,6 +4321,14 @@
       </div>
       <!-- Cards -->
       <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px;width:100%">
+        <!-- Import Templates and Listings -->
+        <div onclick="openImportSheet()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
+          <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Import Templates and Listings</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Import existing templates or listings to your show.</div>
+          </div>
+          <img src="icons/create-import.png" style="position:absolute;bottom:-13px;right:19px;width:98px;height:98px;object-fit:cover;z-index:1" alt="">
+        </div>
         <!-- Create New Listing -->
         <div onclick="createNewListingFromShop()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
           <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
@@ -4285,14 +4344,6 @@
             <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create reusable templates.</div>
           </div>
           <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
-        </div>
-        <!-- Import Templates and Listings -->
-        <div onclick="openImportSheet()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
-          <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
-            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Import Templates and Listings</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Import existing templates or listings to your show.</div>
-          </div>
-          <img src="icons/create-import.png" style="position:absolute;bottom:-13px;right:19px;width:98px;height:98px;object-fit:cover;z-index:1" alt="">
         </div>
       </div>
       <!-- Footer / Home Indicator -->
@@ -4459,7 +4510,7 @@ function createNewTemplate() {
   }, 350);
 }
 
-let nuxFirstTime = true;
+let nuxFirstTime = false;
 let skipAllTooltips = false;
 
 function showTooltip(id) {
@@ -4529,6 +4580,7 @@ let nuxOrigin = 'existing'; // 'existing' or 'new-seller'
 
 function openNux() {
   nuxOrigin = 'existing';
+  nuxFirstTime = true;
   configureNuxSlide4();
   configureNuxTypeGrid();
   const ctaBtn = document.getElementById('nuxSlide2Cta');
@@ -4577,7 +4629,7 @@ function configureNuxSlide4() {
           <div class="tpl-price">$1</div>
         </div></div>
       </div>`).join('');
-    ctaBtn.textContent = 'Go to Inventory';
+    ctaBtn.textContent = currentTemplateMode === 'l1' ? 'Go to Templates' : 'Go to Inventory';
   }
 }
 
@@ -4776,20 +4828,33 @@ function goHome() {
 }
 
 function goToInventory() {
-  document.getElementById('inventoryPage').style.display = 'flex';
   populateInventoryDraftTemplates();
   populateTemplatesL1List();
-  switchInvTab('draft');
 
   const nux = document.getElementById('nuxOverlay');
   nux.classList.remove('open');
   nux.classList.add('dismissing');
-  setTimeout(() => {
-    nux.classList.remove('dismissing');
-    nux.style.display = 'none';
-    resetNux();
-    setTimeout(() => showInvTemplateTip(), 600);
-  }, 500);
+
+  if (currentTemplateMode === 'l1') {
+    const tplPage = document.getElementById('templatesL1Page');
+    tplPage.style.display = 'flex';
+    tplPage.style.flexDirection = 'column';
+    tplPage.style.transform = '';
+    setTimeout(() => {
+      nux.classList.remove('dismissing');
+      nux.style.display = 'none';
+      resetNux();
+    }, 500);
+  } else {
+    document.getElementById('inventoryPage').style.display = 'flex';
+    switchInvTab('draft');
+    setTimeout(() => {
+      nux.classList.remove('dismissing');
+      nux.style.display = 'none';
+      resetNux();
+      setTimeout(() => showInvTemplateTip(), 600);
+    }, 500);
+  }
 }
 
 function populateInventoryDraftTemplates() {
@@ -4798,12 +4863,13 @@ function populateInventoryDraftTemplates() {
 
   const selected = fashionTypes.filter(t => selectedTypes.has(t.id));
   selected.reverse().forEach((t, i) => {
-    const rec = createListingRecord({ title: 'Assorted ' + t.label, type: 'template', status: 'draft' });
+    const rec = createListingRecord({ title: 'Assorted ' + t.label, type: 'template', status: 'draft', typeLabel: t.label });
+    const lid = rec.id;
     const row = document.createElement('div');
     row.style.cssText = 'display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start';
     row.setAttribute('data-type', 'template');
     row.setAttribute('data-listing-id', rec.id);
-    row.onclick = function() { openEditPage(i, 'inventory'); };
+    row.onclick = function() { openEditById(lid, 'inventory'); };
     row.innerHTML = `
       <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
       <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Assorted ${t.label}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>`;
@@ -4868,34 +4934,58 @@ const templateData = [
   { type: 'Dresses', brands: '' }
 ];
 
+function openEditById(listingId, returnTo) {
+  currentEditingListingId = listingId;
+  openEditPage(0, returnTo || 'templatesl1');
+}
+
 function openEditPage(templateIndex, returnTo) {
   dismissInvTemplateTip();
   editReturnTo = returnTo || 'nux';
   currentTemplateIndex = templateIndex;
   if (templateIndex !== -1 && returnTo !== 'shop') editVertical = false;
 
-  // Resolve the listing store record for this template
-  if (returnTo === 'shop' && templateIndex >= 0) {
-    const shopRow = document.querySelectorAll('#shopProductList [data-listing-id]')[templateIndex];
-    currentEditingListingId = shopRow ? parseInt(shopRow.dataset.listingId) : null;
-  } else if (templateIndex === -1) {
-    currentEditingListingId = null;
+  // Resolve the listing store record (skip if already set by openEditById)
+  if (!currentEditingListingId) {
+    if (templateIndex === -1) {
+      currentEditingListingId = null;
+    } else if (returnTo === 'shop') {
+      const shopRow = document.querySelectorAll('#shopProductList [data-listing-id]')[templateIndex];
+      currentEditingListingId = shopRow ? parseInt(shopRow.dataset.listingId) : null;
+    } else if (returnTo === 'templatesl1') {
+      const l1Rows = document.querySelectorAll('#templatesL1List [data-listing-id]');
+      currentEditingListingId = l1Rows[templateIndex] ? parseInt(l1Rows[templateIndex].dataset.listingId) : null;
+    } else if (returnTo === 'inventory') {
+      const draftRows = document.querySelectorAll('#invDraftList [data-type="template"][data-listing-id]');
+      currentEditingListingId = draftRows[templateIndex] ? parseInt(draftRows[templateIndex].dataset.listingId) : null;
+    }
   }
 
   const isNull = templateIndex === -1;
   let tpl;
-  if (isNull) {
-    tpl = { type: '', brands: '' };
-  } else if (returnTo === 'shop') {
-    const selected = fashionTypes.filter(t => selectedTypes.has(t.id));
-    const ft = selected[templateIndex];
-    const edits = templateEdits[templateIndex];
-    tpl = {
-      type: ft ? ft.label : '',
-      brands: (edits && edits.brands) ? edits.brands.join(', ') : '',
-    };
-  } else {
-    tpl = templateData[templateIndex] || templateData[0];
+
+  // Try loading from listing store first
+  if (!isNull && currentEditingListingId) {
+    const rec = findListing(currentEditingListingId);
+    if (rec && rec.typeLabel) {
+      tpl = { type: rec.typeLabel, brands: rec.brands || '' };
+    }
+  }
+
+  if (!tpl) {
+    if (isNull) {
+      tpl = { type: '', brands: '' };
+    } else if (returnTo === 'shop') {
+      const selected = fashionTypes.filter(t => selectedTypes.has(t.id));
+      const ft = selected[templateIndex];
+      const edits = templateEdits[templateIndex];
+      tpl = {
+        type: ft ? ft.label : '',
+        brands: (edits && edits.brands) ? edits.brands.join(', ') : '',
+      };
+    } else {
+      tpl = templateData[templateIndex] || templateData[0];
+    }
   }
 
   // Set Category and rebuild chips first
@@ -4950,7 +5040,10 @@ function openEditPage(templateIndex, returnTo) {
     titleLabel.style.display = '';
     titleInput.style.fontWeight = '600';
     titleInput.style.color = '#1c1c1c';
-    if (returnTo === 'shop' && editsForTitle && editsForTitle.title) {
+    if (currentEditingListingId) {
+      const rec = findListing(currentEditingListingId);
+      if (rec) titleInput.value = rec.title;
+    } else if (returnTo === 'shop' && editsForTitle && editsForTitle.title) {
       titleInput.value = editsForTitle.title;
     }
   }
@@ -5041,12 +5134,17 @@ function openEditPage(templateIndex, returnTo) {
   const editPage = document.getElementById('editPage');
   editPage.style.visibility = '';
 
-  // Always show Next → Price page (Save vs Publish determined on step 2)
   const editDraftBtn = document.getElementById('editDraftBtn');
   const editNextBtn = document.getElementById('editNextBtn');
-  editDraftBtn.style.display = '';
+  if (currentTemplateMode === 'l1' && (returnTo === 'templatesl1' || returnTo === 'inventory')) {
+    editDraftBtn.style.display = 'none';
+    editNextBtn.style.flex = '1';
+  } else {
+    editDraftBtn.style.display = '';
+    editDraftBtn.textContent = (currentEditingListingId && !isUnpublished()) ? 'Save' : 'Save as Draft';
+    editNextBtn.style.flex = '';
+  }
   editNextBtn.textContent = 'Next';
-  editNextBtn.style.flex = '';
   editNextBtn.setAttribute('onclick', 'publishTemplate()');
 
   if (editVertical) {
@@ -5074,6 +5172,13 @@ function openEditPage(templateIndex, returnTo) {
       nuxSlider.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
       nuxSlider.style.transform = 'translateX(-30%)';
       nuxSlider.style.opacity = '0.3';
+    } else if (editReturnTo === 'templatesl1') {
+      const l1Page = document.getElementById('templatesL1Page');
+      if (l1Page && l1Page.style.display !== 'none') {
+        l1Page.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
+        l1Page.style.transform = 'translateX(-30%)';
+        l1Page.style.opacity = '0.3';
+      }
     } else if (invPage && invPage.style.display === 'flex') {
       invPage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
       invPage.style.transform = 'translateX(-30%)';
@@ -5135,14 +5240,89 @@ function saveExistingTemplate() {
     saveTemplateEdits(currentTemplateIndex);
   }
   syncTitleToList();
+  if (currentEditingListingId) {
+    const titleInput = document.getElementById('editTitleInput');
+    const title = titleInput ? titleInput.value : 'Template';
+    const meta = getEditFormMeta();
+    updateListing(currentEditingListingId, { title: title, typeLabel: meta.typeLabel, brands: meta.brands });
+  }
   currentEditingListingId = null;
   closeEditPageDirect();
   setTimeout(() => { showToastMessage('Changes saved'); }, 450);
 }
 
+function getEditFormMeta() {
+  let typeLabel = '';
+  const typeChips = document.getElementById('typeChips');
+  if (typeChips) { const a = typeChips.querySelector('.edit-chip-on'); if (a) typeLabel = a.textContent; }
+  const brandsEl = document.getElementById('editBrands');
+  const brandsText = brandsEl ? brandsEl.textContent : '';
+  const brands = (brandsText && brandsText !== 'Brand(s)') ? brandsText : '';
+  return { typeLabel, brands };
+}
+
 function saveDraft() {
   syncTitleToList();
-  closeEditPageDirect();
+  const titleInput = document.getElementById('editTitleInput');
+  const title = titleInput ? titleInput.value : 'Template';
+  const meta = getEditFormMeta();
+
+  if (currentEditingListingId) {
+    updateListing(currentEditingListingId, { title: title, typeLabel: meta.typeLabel, brands: meta.brands });
+    currentEditingListingId = null;
+    closeEditPageDirect();
+    setTimeout(() => { showToastMessage('Changes saved'); }, 450);
+  } else {
+    const loader = document.getElementById('publishLoader');
+    loader.querySelector('p').textContent = 'Saving draft…';
+    loader.classList.add('visible');
+
+    const rec = createListingRecord({ title: title, type: 'template', status: 'draft', typeLabel: meta.typeLabel, brands: meta.brands });
+    addTemplateToDraftTab(title, rec.id);
+    currentEditingListingId = null;
+
+    setTimeout(() => {
+      const pricePage = document.getElementById('pricePage');
+      const editPage = document.getElementById('editPage');
+      pricePage.style.display = 'none';
+      pricePage.style.transition = '';
+      pricePage.style.transform = 'translateX(100%)';
+      pricePage.style.pointerEvents = 'none';
+      editPage.style.transition = 'none';
+      editPage.classList.remove('active', 'parallax-behind');
+      editPage.style.transform = '';
+      editPage.style.opacity = '';
+      requestAnimationFrame(() => { editPage.style.transition = ''; });
+      editVertical = false;
+
+      const invPage = document.getElementById('inventoryPage');
+      invPage.style.display = 'flex';
+      invPage.style.flexDirection = 'column';
+      invPage.style.transform = '';
+      invPage.style.opacity = '';
+      invPage.style.transition = '';
+      switchInvTab('draft');
+
+      loader.classList.remove('visible');
+      showToastMessage('Draft saved');
+    }, 1800);
+  }
+}
+
+function addTemplateToDraftTab(title, listingId) {
+  const draftList = document.getElementById('invDraftList');
+  if (!draftList) return;
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start';
+  row.setAttribute('data-type', 'template');
+  row.setAttribute('data-listing-id', listingId);
+  const lid = listingId;
+  row.onclick = function() { openEditById(lid, 'inventory'); };
+  row.innerHTML = `
+    <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${title}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>`;
+  if (currentTemplateMode === 'l1') row.style.display = 'none';
+  draftList.insertBefore(row, draftList.firstChild);
 }
 
 function showSaveConfirm() {
@@ -5213,6 +5393,13 @@ function closeEditPageDirect() {
       nuxSlider.style.transform = '';
       nuxSlider.style.opacity = '';
       setTimeout(() => { nuxSlider.style.transition = ''; }, 400);
+    } else if (editReturnTo === 'templatesl1') {
+      const l1Page = document.getElementById('templatesL1Page');
+      if (l1Page) {
+        l1Page.style.transform = '';
+        l1Page.style.opacity = '';
+        setTimeout(() => { l1Page.style.transition = ''; }, 400);
+      }
     } else if (invPage) {
       invPage.style.transform = '';
       invPage.style.opacity = '';
@@ -5264,10 +5451,10 @@ function openProductPage(title, attrs, isNew) {
   }
   document.getElementById('productQty').textContent = productQty;
 
-  // Always show Next → Price page (Save vs Publish determined on step 2)
   const productDraftBtn = document.getElementById('productDraftBtn');
   const productNextBtn = document.getElementById('productNextBtn');
   productDraftBtn.style.display = '';
+  productDraftBtn.textContent = (currentEditingListingId && !isUnpublished()) ? 'Save' : 'Save as Draft';
   productNextBtn.textContent = 'Next';
   productNextBtn.style.flex = '';
   productNextBtn.setAttribute('onclick', 'productNext()');
@@ -5357,6 +5544,13 @@ function selectProductType(type) {
 function openProductFromRow(el) {
   const titleEl = el.querySelector('[style*="font-size:14px"]');
   const title = titleEl ? titleEl.textContent : '';
+  const listingId = el.dataset.listingId ? parseInt(el.dataset.listingId) : null;
+  if (listingId) {
+    currentEditingListingId = listingId;
+  } else {
+    currentEditingListingId = createListingRecord({ title: title, type: 'listing', status: 'active' }).id;
+    el.setAttribute('data-listing-id', currentEditingListingId);
+  }
   openProductPage(title, '', false);
 }
 
@@ -5389,8 +5583,7 @@ function productNext() {
   const pricePage = document.getElementById('pricePage');
   const productPage = document.getElementById('productPage');
 
-  const isCreating = !currentEditingListingId;
-  setPriceFooterMode(isCreating);
+  setPriceFooterMode(isUnpublished());
   document.getElementById('priceFeaturedIn').style.display = (productReturnTo === 'shop' || productReturnTo === 'edu') ? 'none' : '';
   document.getElementById('priceCloseBtn').style.display = (productReturnTo === 'edu') ? 'flex' : 'none';
 
@@ -5421,8 +5614,63 @@ function saveExistingProduct() {
 }
 
 function productSaveDraft() {
-  closeProductPageDirect();
-  setTimeout(() => { showToastMessage('Draft saved'); }, 450);
+  const titleInput = document.getElementById('productTitleInput');
+  const title = titleInput && titleInput.value ? titleInput.value : 'Listing';
+
+  if (currentEditingListingId) {
+    updateListing(currentEditingListingId, { title: title });
+    currentEditingListingId = null;
+    closeProductPageDirect();
+    setTimeout(() => { showToastMessage('Changes saved'); }, 450);
+  } else {
+    const loader = document.getElementById('publishLoader');
+    loader.querySelector('p').textContent = 'Saving draft…';
+    loader.classList.add('visible');
+
+    const rec = createListingRecord({ title: title, type: 'listing', status: 'draft' });
+    addProductToDraftTab(title, rec.id);
+    currentEditingListingId = null;
+
+    setTimeout(() => {
+      const pricePage = document.getElementById('pricePage');
+      const productPage = document.getElementById('productPage');
+      pricePage.style.display = 'none';
+      pricePage.style.transition = '';
+      pricePage.style.transform = 'translateX(100%)';
+      pricePage.style.pointerEvents = 'none';
+      productPage.style.transition = 'none';
+      productPage.classList.remove('active');
+      productPage.style.transform = '';
+      productPage.style.opacity = '';
+      requestAnimationFrame(() => { productPage.style.transition = ''; });
+      productVertical = false;
+
+      const invPage = document.getElementById('inventoryPage');
+      invPage.style.display = 'flex';
+      invPage.style.flexDirection = 'column';
+      invPage.style.transform = '';
+      invPage.style.opacity = '';
+      invPage.style.transition = '';
+      switchInvTab('draft');
+
+      loader.classList.remove('visible');
+      showToastMessage('Draft saved');
+    }, 1800);
+  }
+}
+
+function addProductToDraftTab(title, listingId) {
+  const draftList = document.getElementById('invDraftList');
+  if (!draftList) return;
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start';
+  row.setAttribute('data-type', 'product');
+  row.setAttribute('data-listing-id', listingId);
+  row.setAttribute('onclick', 'openProductFromRow(this)');
+  row.innerHTML = `
+    <div style="width:84px;height:84px;border-radius:8px;border:1px solid #d2d2d2;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${title}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Listing <span style="color:#ccc">•</span> Single Product</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>`;
+  draftList.insertBefore(row, draftList.firstChild);
 }
 
 function publishProduct() {
@@ -5495,6 +5743,7 @@ function addItemToInventoryActive(title) {
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
     </div>
     <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px">
+      <span class="inv-date-label">${nextShowLabel()}</span>
       <div class="listing-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${title}</div>
       <div class="listing-subtitle" style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Listing <span style="color:#ccc">•</span> Single Product</div>
       <div class="listing-price" style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div>
@@ -6010,8 +6259,7 @@ function publishTemplate() {
   const pricePage = document.getElementById('pricePage');
   const editPage = document.getElementById('editPage');
 
-  const isCreating = !currentEditingListingId;
-  setPriceFooterMode(isCreating);
+  setPriceFooterMode(isUnpublished());
   document.getElementById('priceFeaturedIn').style.display = editReturnTo === 'shop' ? 'none' : '';
 
   pricePage.style.display = 'flex';
@@ -6032,9 +6280,12 @@ function publishTemplate() {
 function setPriceFooterMode(isCreating) {
   const createFooter = document.getElementById('priceFooterCreate');
   const editFooter = document.getElementById('priceFooterEdit');
+  const priceDraftBtn = document.getElementById('priceDraftBtn');
   if (isCreating) {
     createFooter.style.display = 'flex';
     editFooter.style.display = 'none';
+    const hideDraft = currentTemplateMode === 'l1' && pricePageSource === 'edit';
+    priceDraftBtn.style.display = hideDraft ? 'none' : '';
   } else {
     createFooter.style.display = 'none';
     editFooter.style.display = '';
@@ -6043,6 +6294,12 @@ function setPriceFooterMode(isCreating) {
 
 function isNewListing() {
   return !currentEditingListingId;
+}
+
+function isUnpublished() {
+  if (!currentEditingListingId) return true;
+  const rec = findListing(currentEditingListingId);
+  return !rec || rec.status === 'draft';
 }
 
 function pricePagePublish() {
@@ -6070,22 +6327,74 @@ function pricePageSave() {
     if (currentEditingListingId) {
       const titleInput = document.getElementById('editTitleInput');
       const title = titleInput ? titleInput.value : 'Template';
-      updateListing(currentEditingListingId, { title: title });
+      const meta = getEditFormMeta();
+      updateListing(currentEditingListingId, { title: title, typeLabel: meta.typeLabel, brands: meta.brands });
+
+      // Update row title on L1 templates page
+      const l1Row = document.querySelector('#templatesL1List [data-listing-id="' + currentEditingListingId + '"]');
+      if (l1Row) {
+        const titleEl = l1Row.querySelector('[style*="font-size:14px"]');
+        if (titleEl) titleEl.textContent = title;
+      }
+      // Update row title on inventory draft list
+      const invRow = document.querySelector('#invDraftList [data-listing-id="' + currentEditingListingId + '"]');
+      if (invRow) {
+        const titleEl = invRow.querySelector('.inv-item-title');
+        if (titleEl) titleEl.textContent = title;
+      }
     }
     savePriceAndReturn();
   }
 }
 
 function pricePageSaveDraft() {
-  closePricePage();
+  const loader = document.getElementById('publishLoader');
+  loader.querySelector('p').textContent = 'Saving draft…';
+  loader.classList.add('visible');
+
+  if (pricePageSource === 'product') {
+    const titleInput = document.getElementById('productTitleInput');
+    const title = titleInput && titleInput.value ? titleInput.value : 'Listing';
+    const rec = createListingRecord({ title: title, type: 'listing', status: 'draft' });
+    addProductToDraftTab(title, rec.id);
+  } else {
+    const titleInput = document.getElementById('editTitleInput');
+    const title = titleInput ? titleInput.value : 'Template';
+    const meta = getEditFormMeta();
+    const rec = createListingRecord({ title: title, type: 'template', status: 'draft', typeLabel: meta.typeLabel, brands: meta.brands });
+    addTemplateToDraftTab(title, rec.id);
+  }
+  currentEditingListingId = null;
+
   setTimeout(() => {
-    if (pricePageSource === 'product') {
-      closeProductPageDirect();
-    } else {
-      closeEditPageDirect();
-    }
-    showToastMessage('Saved as draft');
-  }, 450);
+    const pricePage = document.getElementById('pricePage');
+    const sourcePage = pricePageSource === 'product'
+      ? document.getElementById('productPage')
+      : document.getElementById('editPage');
+
+    pricePage.style.display = 'none';
+    pricePage.style.transition = '';
+    pricePage.style.transform = 'translateX(100%)';
+    pricePage.style.pointerEvents = 'none';
+    sourcePage.style.transition = 'none';
+    sourcePage.classList.remove('active', 'parallax-behind');
+    sourcePage.style.transform = '';
+    sourcePage.style.opacity = '';
+    requestAnimationFrame(() => { sourcePage.style.transition = ''; });
+    editVertical = false;
+    productVertical = false;
+
+    const invPage = document.getElementById('inventoryPage');
+    invPage.style.display = 'flex';
+    invPage.style.flexDirection = 'column';
+    invPage.style.transform = '';
+    invPage.style.opacity = '';
+    invPage.style.transition = '';
+    switchInvTab('draft');
+
+    loader.classList.remove('visible');
+    showToastMessage('Draft saved');
+  }, 1800);
 }
 
 function savePriceAndReturn() {
@@ -6138,13 +6447,24 @@ function publishListing() {
   const titleInput = document.getElementById('editTitleInput');
   const publishedTitle = titleInput ? titleInput.value : 'Template';
   const isEditing = !!currentEditingListingId;
+  const wasDraft = isEditing && (() => { const r = findListing(currentEditingListingId); return r && r.status === 'draft'; })();
 
   const loader = document.getElementById('publishLoader');
-  loader.querySelector('p').textContent = isEditing ? 'Saving changes…' : 'Publishing template…';
+  loader.querySelector('p').textContent = (isEditing && !wasDraft) ? 'Saving changes…' : 'Publishing template…';
   loader.classList.add('visible');
 
+  // Resolve selected type label from chips
+  let selectedTypeLabel = '';
+  const typeChips = document.getElementById('typeChips');
+  if (typeChips) {
+    const activeChip = typeChips.querySelector('.edit-chip-on');
+    if (activeChip) selectedTypeLabel = activeChip.textContent;
+  }
+  const brandsText = document.getElementById('editBrands').textContent;
+  const brandsVal = (brandsText && brandsText !== 'Brand(s)') ? brandsText : '';
+
   if (isEditing && currentEditingListingId) {
-    updateListing(currentEditingListingId, { title: publishedTitle, status: 'active' });
+    updateListing(currentEditingListingId, { title: publishedTitle, status: 'active', typeLabel: selectedTypeLabel, brands: brandsVal });
   }
 
   if (editReturnTo === 'shop') {
@@ -6189,7 +6509,7 @@ function publishListing() {
         }
       }
       loader.classList.remove('visible');
-      showToastMessage(isEditing ? 'Changes saved' : 'Template published');
+      showToastMessage((isEditing && !wasDraft) ? 'Changes saved' : 'Template published');
       currentEditingListingId = null;
     }, 1800);
     return;
@@ -6210,9 +6530,17 @@ function publishListing() {
       requestAnimationFrame(() => { editPage.style.transition = ''; });
       editVertical = false;
 
-      addTemplateToL1Page(publishedTitle);
+      if (isEditing) {
+        const existingRow = document.querySelector('#templatesL1List [data-listing-id="' + currentEditingListingId + '"]');
+        if (existingRow) {
+          const titleEl = existingRow.querySelector('[style*="font-size:14px"]');
+          if (titleEl) titleEl.textContent = publishedTitle;
+        }
+      } else {
+        addTemplateToL1Page(publishedTitle, selectedTypeLabel, brandsVal);
+      }
       loader.classList.remove('visible');
-      showToastMessage(isEditing ? 'Changes saved' : 'Template published');
+      showToastMessage((isEditing && !wasDraft) ? 'Changes saved' : 'Template published');
       currentEditingListingId = null;
     }, 1800);
     return;
@@ -6288,6 +6616,30 @@ function showToastMessage(msg) {
   });
 }
 
+function nextShowLabel() {
+  const d = new Date();
+  d.setDate(d.getDate() + Math.floor(Math.random() * 5) + 1);
+  const hours = [12, 15, 17, 19];
+  d.setHours(hours[Math.floor(Math.random() * hours.length)], 0, 0, 0);
+  const m = d.getMonth() + 1;
+  const day = d.getDate();
+  const yr = String(d.getFullYear()).slice(2);
+  const h = d.getHours();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12 = h > 12 ? h - 12 : h === 0 ? 12 : h;
+  return `${m}/${day}/${yr} · ${h12}:00${ampm}`;
+}
+
+function ensureShowLabel(item) {
+  const infoDiv = item.querySelector('div[style*="flex:1"]');
+  if (!infoDiv) return;
+  if (infoDiv.querySelector('.inv-date-label')) return;
+  const label = document.createElement('span');
+  label.className = 'inv-date-label';
+  label.textContent = nextShowLabel();
+  infoDiv.insertBefore(label, infoDiv.firstChild);
+}
+
 function moveItemToActive(title) {
   const activeList = document.getElementById('invActiveList');
   const inactiveList = document.getElementById('invInactiveList');
@@ -6315,6 +6667,7 @@ function moveItemToActive(title) {
     newItem.innerHTML = `
       <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
       <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px">
+        <span class="inv-date-label">${nextShowLabel()}</span>
         <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${title}</div>
         <div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div>
         <div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div>
@@ -6328,6 +6681,8 @@ function moveItemToActive(title) {
   // Remove "NEW" label when moving to active
   const newLabel = movedItem.querySelector('.new-label');
   if (newLabel) newLabel.remove();
+
+  ensureShowLabel(movedItem);
 
   activeList.insertBefore(movedItem, activeList.firstChild);
   if (currentTemplateMode === 'l1' && movedItem.getAttribute('data-type') === 'template') {
@@ -6352,13 +6707,38 @@ function toggleTemplatesFilter() {
   applyTemplatesFilter();
 }
 
+function updateTemplatesChipVisibility() {
+  if (currentTemplateMode === 'l1') return;
+  const chip = document.getElementById('templatesFilterChip');
+  if (!chip) return;
+  const lists = ['invActiveList', 'invDraftList', 'invInactiveList'];
+  let visibleList = null;
+  lists.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.style.display !== 'none') visibleList = el;
+  });
+  if (!visibleList) { chip.style.display = 'none'; return; }
+  const hasTemplates = visibleList.querySelector('[data-type="template"]') !== null;
+  chip.style.display = hasTemplates ? '' : 'none';
+  if (!hasTemplates && templatesFilterOn) {
+    templatesFilterOn = false;
+    chip.style.background = 'rgba(0,0,0,0.1)';
+    chip.querySelector('span').style.color = '#1c1c1c';
+    applyTemplatesFilter();
+  }
+}
+
 function applyTemplatesFilter() {
   const lists = ['invActiveList', 'invInactiveList', 'invDraftList'];
+  const isL1 = currentTemplateMode === 'l1';
   lists.forEach(listId => {
     const list = document.getElementById(listId);
     if (!list) return;
     list.querySelectorAll('[data-type]').forEach(item => {
-      if (templatesFilterOn && item.dataset.type !== 'template') {
+      const isTemplate = item.dataset.type === 'template';
+      if (isL1 && isTemplate) {
+        item.style.display = 'none';
+      } else if (templatesFilterOn && !isTemplate) {
         item.style.display = 'none';
       } else {
         item.style.display = 'flex';
@@ -6407,6 +6787,7 @@ function switchInvTab(tab) {
     hideInventoryTemplates(true);
   }
   applyTemplatesFilter();
+  updateTemplatesChipVisibility();
 }
 
 let sellerType = null; // 'unique', 'bulk', or 'mix'
@@ -6726,6 +7107,7 @@ function openShopLearnMore() {
     nux.style.visibility = '';
     homePage.style.visibility = '';
     nuxOrigin = 'new-seller';
+    nuxFirstTime = true;
     configureNuxSlide4();
     const ctaBtn = document.getElementById('nuxSlide2Cta');
     if (ctaBtn) ctaBtn.textContent = 'Try It Out';
@@ -8045,6 +8427,7 @@ function resetTooltipState() {
   hasEverPinned = false;
   hasEditedFromShop = false;
   liveShowFirstTime = true;
+  nuxFirstTime = false;
   pinnedShopIndex = -1;
   eduTipStep = 0;
 
@@ -8096,6 +8479,74 @@ function skipToLobby() {
 
   const shopCircle = document.getElementById('shopCircle');
   if (shopCircle) shopCircle.style.borderColor = 'white';
+}
+
+// ═══ LOBBY STATE MACHINE ═══
+let lobbyState = 'new-seller'; // 'new-seller' | 'active-seller'
+
+function setLobbyState(state) {
+  lobbyState = state;
+  const onboardingCard = document.getElementById('lobbyOnboardingCard');
+  const upcomingWidget = document.getElementById('lobbyUpcomingWidget');
+  const chatArea = document.getElementById('lobbyChatArea');
+  const defaultCta = document.getElementById('lobbyDefaultCta');
+  const activeCta = document.getElementById('lobbyActiveCta');
+  const pinnedProduct = document.getElementById('lobbyPinnedProduct');
+  const sideMenu = document.getElementById('lobbySideMenu');
+
+  if (state === 'active-seller') {
+    if (onboardingCard) onboardingCard.style.display = 'none';
+    if (upcomingWidget) upcomingWidget.style.display = 'block';
+    if (chatArea) chatArea.style.display = 'flex';
+    if (defaultCta) defaultCta.style.display = 'none';
+    if (pinnedProduct) pinnedProduct.style.display = 'none';
+    if (activeCta) activeCta.style.display = 'block';
+    if (sideMenu) sideMenu.style.bottom = '140px';
+  } else {
+    if (onboardingCard) onboardingCard.style.display = 'block';
+    if (upcomingWidget) upcomingWidget.style.display = 'none';
+    if (chatArea) chatArea.style.display = 'none';
+    if (activeCta) activeCta.style.display = 'none';
+    if (defaultCta) defaultCta.style.display = 'block';
+    if (sideMenu) sideMenu.style.bottom = '104px';
+  }
+}
+
+function openShowFromList(showTitle, showTime) {
+  // Navigate to lobby in active-seller state
+  const homePage = document.querySelector('.page');
+  const lobbyScene = document.getElementById('showLobbyScene');
+  if (!lobbyScene) return;
+
+  setLobbyState('active-seller');
+
+  // Show the lobby scene (it's inside the device frame, just make sure it's visible)
+  lobbyScene.style.display = 'flex';
+
+  // Hide seller hub content and show lobby
+  if (homePage) {
+    homePage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
+    homePage.style.transform = 'translateX(-30%)';
+    homePage.style.opacity = '0.3';
+  }
+
+  // Update the menu page to be hidden
+  const menuPage = document.getElementById('sellerHubMenu');
+  if (menuPage) menuPage.style.display = 'none';
+
+  const invPage = document.getElementById('inventoryPage');
+  if (invPage) invPage.style.display = 'none';
+}
+
+function closeLobbyToSellerHub() {
+  if (lobbyState !== 'active-seller') return;
+  const homePage = document.querySelector('.page');
+  if (homePage) {
+    homePage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
+    homePage.style.transform = '';
+    homePage.style.opacity = '';
+  }
+  setLobbyState('new-seller');
 }
 
 function resetNewSellerScene() {
@@ -8170,19 +8621,26 @@ function switchStartingPage() {
   menuPage.classList.remove('active');
   menuPage.style.transform = '';
   menuPage.style.opacity = '';
+  menuPage.style.transition = '';
   invPage.style.display = 'none';
   invPage.style.transform = '';
+  invPage.style.transition = '';
   if (tplPage) { tplPage.style.display = 'none'; tplPage.style.transform = ''; }
-  if (homePage) { homePage.style.visibility = ''; homePage.style.pointerEvents = ''; }
   globalStatusBar.style.display = '';
 
+  if (homePage) {
+    homePage.style.visibility = '';
+    homePage.style.pointerEvents = '';
+    homePage.style.transform = '';
+    homePage.style.opacity = '';
+    homePage.style.transition = '';
+  }
+
   if (page === 'sellerhub') {
-    // Default
+    // Default — Seller Hub visible, nothing layered on top
   } else if (page === 'menu') {
-    if (homePage) { homePage.style.visibility = 'hidden'; homePage.style.pointerEvents = 'none'; }
     menuPage.classList.add('active');
   } else if (page === 'inventory') {
-    if (homePage) { homePage.style.visibility = 'hidden'; homePage.style.pointerEvents = 'none'; }
     invPage.style.display = 'flex';
     invPage.style.flexDirection = 'column';
     invPage.style.visibility = '';
@@ -8202,6 +8660,7 @@ function switchScene(scene) {
   }
 
   resetTooltipState();
+  setLobbyState('new-seller');
 
   const existingElements = [
     document.querySelector('.page'),
@@ -8237,7 +8696,15 @@ function switchScene(scene) {
     if (shopSheet) shopSheet.style.display = 'none';
     showLobby.style.display = 'none';
     globalStatusBar.style.display = '';
-    existingElements.forEach(el => { if (el) { el.style.visibility = ''; el.style.pointerEvents = ''; } });
+
+    const homePage = document.querySelector('.page');
+    if (homePage) { homePage.style.visibility = ''; homePage.style.pointerEvents = ''; homePage.style.transform = ''; homePage.style.opacity = ''; homePage.style.transition = ''; }
+
+    ['inventoryPage', 'templatesL1Page', 'menuPage', 'editPage', 'productPage', 'nuxOverlay'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.style.visibility = ''; el.style.pointerEvents = ''; }
+    });
+
     document.getElementById('onboardStep1').style.display = 'none';
     document.getElementById('onboardStep2').style.display = 'none';
     document.getElementById('onboardStep3').style.display = 'none';
@@ -8248,7 +8715,9 @@ function switchScene(scene) {
     ctrlExisting.style.display = 'flex';
 
     // Clear generated templates so NUX can regenerate fresh
-    document.getElementById('invDraftList').querySelectorAll('[data-type="template"]').forEach(el => el.remove());
+    ['invActiveList', 'invDraftList', 'invInactiveList'].forEach(id => {
+      document.getElementById(id).querySelectorAll('[data-type="template"]').forEach(el => el.remove());
+    });
     document.getElementById('templatesL1List').innerHTML = '';
     updateL1TemplateCount();
 
@@ -8350,16 +8819,19 @@ function applyTemplateMode() {
   const menuRow = document.getElementById('menuTemplatesRow');
   const filterChip = document.getElementById('templatesFilterChip');
   const createTemplateCard = document.getElementById('createTemplateCard');
+  const shCreateBtn = document.getElementById('sellerHubCreateBtn');
 
   if (currentTemplateMode === 'l1') {
     menuRow.style.display = '';
     if (filterChip) filterChip.style.display = 'none';
     if (createTemplateCard) createTemplateCard.style.display = 'none';
+    if (shCreateBtn) shCreateBtn.textContent = 'Create Listing';
     hideInventoryTemplates(true);
   } else {
     menuRow.style.display = 'none';
     if (filterChip) filterChip.style.display = '';
     if (createTemplateCard) createTemplateCard.style.display = '';
+    if (shCreateBtn) shCreateBtn.textContent = 'Create';
     hideInventoryTemplates(false);
     const tplPage = document.getElementById('templatesL1Page');
     if (tplPage) tplPage.style.display = 'none';
@@ -8416,6 +8888,7 @@ function closeTemplatesL1() {
 
 function createTemplateFromL1() {
   editVertical = true;
+  currentEditingListingId = null;
   openEditPage(-1, 'templatesl1');
 }
 
@@ -8426,12 +8899,13 @@ function populateTemplatesL1List() {
 
   const selected = fashionTypes.filter(t => selectedTypes.has(t.id));
   selected.forEach((t, i) => {
-    const rec = createListingRecord({ title: 'Assorted ' + t.label, type: 'template', status: 'draft' });
+    const rec = createListingRecord({ title: 'Assorted ' + t.label, type: 'template', status: 'draft', typeLabel: t.label });
     const row = document.createElement('div');
     row.style.cssText = 'display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start';
     row.setAttribute('data-type', 'template');
     row.setAttribute('data-listing-id', rec.id);
-    row.onclick = function() { openEditPage(i, 'inventory'); };
+    const lid = rec.id;
+    row.onclick = function() { openEditById(lid, 'templatesl1'); };
     row.innerHTML = `
       <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
       <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Assorted ${t.label}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>`;
@@ -8440,19 +8914,21 @@ function populateTemplatesL1List() {
   updateL1TemplateCount();
 }
 
-function addTemplateToL1Page(title) {
+function addTemplateToL1Page(title, typeLabel, brands) {
   const list = document.getElementById('templatesL1List');
   if (!list) return;
-  const rec = createListingRecord({ title: title, type: 'template', status: 'active', _shopActive: false });
-  const safeTitle = title.replace(/'/g, "\\'");
+  const safeTitle = title || ('Assorted ' + (typeLabel || 'Template'));
+  const tl = typeLabel || safeTitle.replace(/^Assorted\s*/i, '');
+  const rec = createListingRecord({ title: safeTitle, type: 'template', status: 'active', _shopActive: false, typeLabel: tl, brands: brands || '' });
+  const lid = rec.id;
   const row = document.createElement('div');
   row.setAttribute('data-type', 'template');
   row.setAttribute('data-listing-id', rec.id);
   row.style.cssText = 'display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start';
-  row.onclick = function() { openEditPage(-1, 'templatesl1'); };
+  row.onclick = function() { openEditById(lid, 'templatesl1'); };
   row.innerHTML = `
     <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
-    <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${title}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${safeTitle}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>
   `;
   list.insertBefore(row, list.firstChild);
   updateL1TemplateCount();
