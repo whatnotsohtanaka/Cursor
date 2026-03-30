@@ -2036,6 +2036,20 @@
 
     <!-- Existing Sellers options -->
     <div id="ctrlExistingSellers" style="display:none;flex-direction:column;gap:10px">
+      <!-- Template mode radio -->
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span style="font-size:10px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;color:rgba(255,255,255,0.3)">Template Mode</span>
+        <label onclick="setTemplateMode('inventory')" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 0">
+          <span id="radioTplInventory" style="width:16px;height:16px;border-radius:50%;border:2px solid #f9dc00;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box"><span style="width:8px;height:8px;border-radius:50%;background:#f9dc00"></span></span>
+          <span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.8)">Templates = Inventory</span>
+        </label>
+        <label onclick="setTemplateMode('l1')" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 0">
+          <span id="radioTplL1" style="width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box"><span style="width:8px;height:8px;border-radius:50%;background:transparent"></span></span>
+          <span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.55)">Templates = L1</span>
+        </label>
+      </div>
+      <!-- Divider -->
+      <div style="height:1px;background:rgba(255,255,255,0.06)"></div>
       <!-- Starting Page (radio) -->
       <div style="display:flex;flex-direction:column;gap:6px">
         <span style="font-size:10px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;color:rgba(255,255,255,0.3)">Starting Page</span>
@@ -2050,20 +2064,6 @@
         <label onclick="setStartingPage('inventory')" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 0">
           <span id="radioInventory" style="width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box"><span style="width:8px;height:8px;border-radius:50%;background:transparent"></span></span>
           <span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.55)">Inventory</span>
-        </label>
-      </div>
-      <!-- Divider -->
-      <div style="height:1px;background:rgba(255,255,255,0.06)"></div>
-      <!-- Template mode radio -->
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <span style="font-size:10px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;color:rgba(255,255,255,0.3)">Template Mode</span>
-        <label onclick="setTemplateMode('inventory')" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 0">
-          <span id="radioTplInventory" style="width:16px;height:16px;border-radius:50%;border:2px solid #f9dc00;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box"><span style="width:8px;height:8px;border-radius:50%;background:#f9dc00"></span></span>
-          <span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.8)">Templates = Inventory</span>
-        </label>
-        <label onclick="setTemplateMode('l1')" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 0">
-          <span id="radioTplL1" style="width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box"><span style="width:8px;height:8px;border-radius:50%;background:transparent"></span></span>
-          <span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.55)">Templates = L1</span>
         </label>
       </div>
     </div>
@@ -3982,8 +3982,9 @@
       <div style="height:48px;display:flex;align-items:center;justify-content:center">
         <span style="font-size:16px;font-weight:600;letter-spacing:-0.31px;color:#000">Create</span>
       </div>
-      <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px 0">
-        <!-- Create New Listing -->
+
+      <!-- Default content (Templates = Inventory) -->
+      <div id="createSheetDefault" style="display:flex;flex-direction:column;gap:8px;padding:0 16px 0">
         <div onclick="closeCreateSheet();createNewListing()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
           <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
             <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
@@ -3991,7 +3992,6 @@
           </div>
           <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
         </div>
-        <!-- Create New Template -->
         <div id="createTemplateCard" onclick="closeCreateSheet();createNewTemplate()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
           <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
             <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
@@ -4000,6 +4000,50 @@
           <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
         </div>
       </div>
+
+      <!-- Tabbed content (Templates = L1) -->
+      <div id="createSheetTabbed" style="display:none;flex-direction:column;gap:0;padding:0 16px 0">
+        <!-- Tabs -->
+        <div style="display:flex;gap:0;margin-bottom:12px;border-bottom:1px solid #e5e5e5">
+          <button id="createTabProducts" onclick="switchCreateTab('products')" style="flex:1;height:40px;border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.15px;color:#1c1c1c;cursor:pointer;border-bottom:2px solid #1c1c1c;padding:0">Listings</button>
+          <button id="createTabTemplates" onclick="switchCreateTab('templates')" style="flex:1;height:40px;border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.15px;color:#999;cursor:pointer;border-bottom:2px solid transparent;padding:0">Templates</button>
+        </div>
+        <!-- Products panel -->
+        <div id="createPanelProducts" style="display:flex;flex-direction:column;gap:8px">
+          <div onclick="closeCreateSheet();openImportSheet()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
+            <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Import Listings</div>
+              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Import existing listings to your show.</div>
+            </div>
+            <img src="icons/create-import.png" style="position:absolute;bottom:-13px;right:19px;width:98px;height:98px;object-fit:cover;z-index:1" alt="">
+          </div>
+          <div onclick="closeCreateSheet();createNewListing()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
+            <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
+              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create a new product listing.</div>
+            </div>
+            <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
+          </div>
+        </div>
+        <!-- Templates panel -->
+        <div id="createPanelTemplates" style="display:none;flex-direction:column;gap:8px">
+          <div onclick="closeCreateSheet();openImportSheet()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
+            <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Import Templates</div>
+              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Import existing templates to your inventory.</div>
+            </div>
+            <img src="icons/create-import.png" style="position:absolute;bottom:-13px;right:19px;width:98px;height:98px;object-fit:cover;z-index:1" alt="">
+          </div>
+          <div onclick="closeCreateSheet();createNewTemplate()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
+            <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
+              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create a reusable template.</div>
+            </div>
+            <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
+          </div>
+        </div>
+      </div>
+
       <div style="height:40px;position:relative">
         <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:135px;height:5px;background:#222;border-radius:100px"></div>
       </div>
@@ -4319,9 +4363,8 @@
       <div style="height:48px;display:flex;align-items:center;justify-content:center;width:100%">
         <span style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:black">Create</span>
       </div>
-      <!-- Cards -->
-      <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px;width:100%">
-        <!-- Import Templates and Listings -->
+      <!-- Default cards (Templates = Inventory) -->
+      <div id="liveCreateDefault" style="display:flex;flex-direction:column;gap:8px;padding:0 16px;width:100%">
         <div onclick="openImportSheet()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
           <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
             <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Import Templates and Listings</div>
@@ -4329,7 +4372,6 @@
           </div>
           <img src="icons/create-import.png" style="position:absolute;bottom:-13px;right:19px;width:98px;height:98px;object-fit:cover;z-index:1" alt="">
         </div>
-        <!-- Create New Listing -->
         <div onclick="createNewListingFromShop()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
           <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
             <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
@@ -4337,7 +4379,6 @@
           </div>
           <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
         </div>
-        <!-- Create New Template -->
         <div onclick="createNewTemplateFromShop()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
           <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
             <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
@@ -4346,6 +4387,50 @@
           <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
         </div>
       </div>
+
+      <!-- Tabbed cards (Templates = L1) -->
+      <div id="liveCreateTabbed" style="display:none;flex-direction:column;gap:0;padding:0 16px;width:100%">
+        <!-- Tabs -->
+        <div style="display:flex;gap:0;margin-bottom:12px;border-bottom:1px solid #e5e5e5">
+          <button id="liveCreateTabProducts" onclick="switchLiveCreateTab('products')" style="flex:1;height:40px;border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.15px;color:#1c1c1c;cursor:pointer;border-bottom:2px solid #1c1c1c;padding:0">Listings</button>
+          <button id="liveCreateTabTemplates" onclick="switchLiveCreateTab('templates')" style="flex:1;height:40px;border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.15px;color:#999;cursor:pointer;border-bottom:2px solid transparent;padding:0">Templates</button>
+        </div>
+        <!-- Products panel -->
+        <div id="liveCreatePanelProducts" style="display:flex;flex-direction:column;gap:8px">
+          <div onclick="openImportSheet()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
+            <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Import Listings</div>
+              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Import existing listings to your show.</div>
+            </div>
+            <img src="icons/create-import.png" style="position:absolute;bottom:-13px;right:19px;width:98px;height:98px;object-fit:cover;z-index:1" alt="">
+          </div>
+          <div onclick="createNewListingFromShop()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
+            <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
+              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create a new product listing.</div>
+            </div>
+            <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
+          </div>
+        </div>
+        <!-- Templates panel -->
+        <div id="liveCreatePanelTemplates" style="display:none;flex-direction:column;gap:8px">
+          <div onclick="openImportSheet()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
+            <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Import Templates</div>
+              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Import existing templates to your inventory.</div>
+            </div>
+            <img src="icons/create-import.png" style="position:absolute;bottom:-13px;right:19px;width:98px;height:98px;object-fit:cover;z-index:1" alt="">
+          </div>
+          <div onclick="createNewTemplateFromShop()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
+            <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
+              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create a reusable template.</div>
+            </div>
+            <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
+          </div>
+        </div>
+      </div>
+
       <!-- Footer / Home Indicator -->
       <div style="height:32px;width:100%;position:relative;flex-shrink:0">
         <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:135px;height:5px;background:#222;border-radius:100px"></div>
@@ -4463,10 +4548,11 @@ function cloneTemplate() {
 }
 
 function openCreateSheet() {
-  if (currentTemplateMode === 'l1') {
-    createNewListing();
-    return;
-  }
+  const isL1 = currentTemplateMode === 'l1';
+  document.getElementById('createSheetDefault').style.display = isL1 ? 'none' : 'flex';
+  document.getElementById('createSheetTabbed').style.display = isL1 ? 'flex' : 'none';
+  if (isL1) switchCreateTab('products');
+
   const sheet = document.getElementById('createSheet');
   sheet.style.display = 'block';
   requestAnimationFrame(() => {
@@ -4476,6 +4562,21 @@ function openCreateSheet() {
   });
 }
 
+function switchCreateTab(tab) {
+  const prodTab = document.getElementById('createTabProducts');
+  const tmplTab = document.getElementById('createTabTemplates');
+  const prodPanel = document.getElementById('createPanelProducts');
+  const tmplPanel = document.getElementById('createPanelTemplates');
+
+  const isProducts = tab === 'products';
+  prodTab.style.color = isProducts ? '#1c1c1c' : '#999';
+  prodTab.style.borderBottomColor = isProducts ? '#1c1c1c' : 'transparent';
+  tmplTab.style.color = isProducts ? '#999' : '#1c1c1c';
+  tmplTab.style.borderBottomColor = isProducts ? 'transparent' : '#1c1c1c';
+  prodPanel.style.display = isProducts ? 'flex' : 'none';
+  tmplPanel.style.display = isProducts ? 'none' : 'flex';
+}
+
 function closeCreateSheet() {
   const sheet = document.getElementById('createSheet');
   sheet.classList.remove('open');
@@ -4483,6 +4584,11 @@ function closeCreateSheet() {
 }
 
 function openLiveCreateSheet() {
+  const isL1 = currentTemplateMode === 'l1';
+  document.getElementById('liveCreateDefault').style.display = isL1 ? 'none' : 'flex';
+  document.getElementById('liveCreateTabbed').style.display = isL1 ? 'flex' : 'none';
+  if (isL1) switchLiveCreateTab('products');
+
   const overlay = document.getElementById('liveCreateSheet');
   const inner = document.getElementById('liveCreateSheetInner');
   overlay.style.display = 'block';
@@ -4492,6 +4598,21 @@ function openLiveCreateSheet() {
       inner.style.transform = 'translateY(0)';
     });
   });
+}
+
+function switchLiveCreateTab(tab) {
+  const prodTab = document.getElementById('liveCreateTabProducts');
+  const tmplTab = document.getElementById('liveCreateTabTemplates');
+  const prodPanel = document.getElementById('liveCreatePanelProducts');
+  const tmplPanel = document.getElementById('liveCreatePanelTemplates');
+
+  const isProducts = tab === 'products';
+  prodTab.style.color = isProducts ? '#1c1c1c' : '#999';
+  prodTab.style.borderBottomColor = isProducts ? '#1c1c1c' : 'transparent';
+  tmplTab.style.color = isProducts ? '#999' : '#1c1c1c';
+  tmplTab.style.borderBottomColor = isProducts ? 'transparent' : '#1c1c1c';
+  prodPanel.style.display = isProducts ? 'flex' : 'none';
+  tmplPanel.style.display = isProducts ? 'none' : 'flex';
 }
 
 function closeLiveCreateSheet() {
@@ -7153,7 +7274,7 @@ function populateShopWithTemplates() {
         sizes: templateEdits[i].sizes || templateSizes[t.id] || null,
         typeId: t.id,
         origin: 'shop',
-        status: 'draft',
+        status: 'active',
         _shopActive: true,
         _shopIndex: i,
       });
@@ -7963,7 +8084,9 @@ function openLiveShow(templateIndex) {
   let brands, hasBrands;
   if (storeRec && storeRec.brands && storeRec.brands.length > 0) {
     hasBrands = true;
-    brands = [...storeRec.brands, 'Other'];
+    const raw = storeRec.brands;
+    const arr = Array.isArray(raw) ? raw : raw.split(',').map(b => b.trim()).filter(Boolean);
+    brands = [...arr, 'Other'];
   } else if (edits) {
     hasBrands = !!(edits.brands && edits.brands.length > 0);
     brands = hasBrands ? [...edits.brands, 'Other'] : [];
@@ -8513,40 +8636,42 @@ function setLobbyState(state) {
 }
 
 function openShowFromList(showTitle, showTime) {
-  // Navigate to lobby in active-seller state
-  const homePage = document.querySelector('.page');
   const lobbyScene = document.getElementById('showLobbyScene');
   if (!lobbyScene) return;
 
   setLobbyState('active-seller');
 
-  // Show the lobby scene (it's inside the device frame, just make sure it's visible)
   lobbyScene.style.display = 'flex';
+  lobbyScene.style.zIndex = '20';
+  lobbyScene.style.transition = 'none';
+  lobbyScene.style.transform = 'translateY(100%)';
+  lobbyScene.style.borderRadius = '24px 24px 0 0';
+  lobbyScene.style.overflow = 'hidden';
 
-  // Hide seller hub content and show lobby
-  if (homePage) {
-    homePage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
-    homePage.style.transform = 'translateX(-30%)';
-    homePage.style.opacity = '0.3';
-  }
-
-  // Update the menu page to be hidden
-  const menuPage = document.getElementById('sellerHubMenu');
-  if (menuPage) menuPage.style.display = 'none';
-
-  const invPage = document.getElementById('inventoryPage');
-  if (invPage) invPage.style.display = 'none';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      lobbyScene.style.transition = 'transform 0.45s cubic-bezier(0.32, 0.72, 0, 1)';
+      lobbyScene.style.transform = 'translateY(0)';
+    });
+  });
 }
 
 function closeLobbyToSellerHub() {
   if (lobbyState !== 'active-seller') return;
-  const homePage = document.querySelector('.page');
-  if (homePage) {
-    homePage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
-    homePage.style.transform = '';
-    homePage.style.opacity = '';
-  }
-  setLobbyState('new-seller');
+  const lobbyScene = document.getElementById('showLobbyScene');
+  if (!lobbyScene) return;
+
+  lobbyScene.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
+  lobbyScene.style.transform = 'translateY(100%)';
+
+  setTimeout(() => {
+    lobbyScene.style.zIndex = '1';
+    lobbyScene.style.transform = '';
+    lobbyScene.style.transition = '';
+    lobbyScene.style.borderRadius = '';
+    lobbyScene.style.overflow = '';
+    setLobbyState('new-seller');
+  }, 420);
 }
 
 function resetNewSellerScene() {
