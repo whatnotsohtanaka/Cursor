@@ -4001,7 +4001,25 @@
         </div>
       </div>
 
-      <!-- Tabbed content (Templates = L1) -->
+      <!-- Simple L1 content (Seller Hub — no tabs, no import) -->
+      <div id="createSheetL1Simple" style="display:none;flex-direction:column;gap:8px;padding:0 16px 0">
+        <div onclick="closeCreateSheet();createNewListing()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
+          <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create a new product listing.</div>
+          </div>
+          <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
+        </div>
+        <div onclick="closeCreateSheet();createNewTemplate()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
+          <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create a reusable template.</div>
+          </div>
+          <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
+        </div>
+      </div>
+
+      <!-- Tabbed content (Templates = L1, inside a show) -->
       <div id="createSheetTabbed" style="display:none;flex-direction:column;gap:0;padding:0 16px 0">
         <!-- Tabs -->
         <div style="display:flex;gap:0;margin-bottom:12px;border-bottom:1px solid #e5e5e5">
@@ -4550,8 +4568,8 @@ function cloneTemplate() {
 function openCreateSheet() {
   const isL1 = currentTemplateMode === 'l1';
   document.getElementById('createSheetDefault').style.display = isL1 ? 'none' : 'flex';
-  document.getElementById('createSheetTabbed').style.display = isL1 ? 'flex' : 'none';
-  if (isL1) switchCreateTab('products');
+  document.getElementById('createSheetL1Simple').style.display = isL1 ? 'flex' : 'none';
+  document.getElementById('createSheetTabbed').style.display = 'none';
 
   const sheet = document.getElementById('createSheet');
   sheet.style.display = 'block';
@@ -6656,6 +6674,13 @@ function publishListing() {
         if (existingRow) {
           const titleEl = existingRow.querySelector('[style*="font-size:14px"]');
           if (titleEl) titleEl.textContent = publishedTitle;
+          const infoDiv = existingRow.querySelector('[style*="flex:1"]');
+          if (infoDiv && !infoDiv.querySelector('.inv-date-label')) {
+            const lbl = document.createElement('span');
+            lbl.className = 'inv-date-label';
+            lbl.textContent = nextShowLabel();
+            infoDiv.insertBefore(lbl, infoDiv.firstChild);
+          }
         }
       } else {
         addTemplateToL1Page(publishedTitle, selectedTypeLabel, brandsVal);
@@ -8774,6 +8799,20 @@ function switchStartingPage() {
   }
 }
 
+function resetAllData() {
+  listingStore.length = 0;
+  listingIdCounter = 0;
+  selectedTypes.clear();
+  selectedBrands.clear();
+  templateEdits = {};
+  currentEditingListingId = null;
+  currentLiveTemplate = null;
+  currentLiveShopIndex = -1;
+
+  const shopList = document.getElementById('shopProductList');
+  if (shopList) shopList.innerHTML = '';
+}
+
 function switchScene(scene) {
   const tabs = document.querySelectorAll('#controlPanel .scene-tab');
   tabs.forEach(t => t.classList.remove('active'));
@@ -8784,6 +8823,7 @@ function switchScene(scene) {
     if (tabs[idx]) tabs[idx].classList.add('active');
   }
 
+  resetAllData();
   resetTooltipState();
   setLobbyState('new-seller');
 
@@ -8950,7 +8990,7 @@ function applyTemplateMode() {
     menuRow.style.display = '';
     if (filterChip) filterChip.style.display = 'none';
     if (createTemplateCard) createTemplateCard.style.display = 'none';
-    if (shCreateBtn) shCreateBtn.textContent = 'Create Listing';
+    if (shCreateBtn) shCreateBtn.textContent = 'Create';
     hideInventoryTemplates(true);
   } else {
     menuRow.style.display = 'none';
@@ -9051,9 +9091,10 @@ function addTemplateToL1Page(title, typeLabel, brands) {
   row.setAttribute('data-listing-id', rec.id);
   row.style.cssText = 'display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start';
   row.onclick = function() { openEditById(lid, 'templatesl1'); };
+  const showDate = nextShowLabel();
   row.innerHTML = `
     <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
-    <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${safeTitle}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><span class="inv-date-label">${showDate}</span><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${safeTitle}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>
   `;
   list.insertBefore(row, list.firstChild);
   updateL1TemplateCount();
