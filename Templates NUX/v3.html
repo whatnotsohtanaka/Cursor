@@ -5029,6 +5029,7 @@ function nuxSlide4Action() {
 }
 
 function importToShopFromNux() {
+  nuxFirstTime = true;
   populateShopWithTemplates();
   markChecklistStep2Complete();
 
@@ -7108,6 +7109,15 @@ function closeOnboarding() {
 
 function openShopSheet() {
   dismissReviewTemplatesTooltip();
+
+  // Populate shop with templates if types are selected but shop is empty
+  const shopList = document.getElementById('shopProductList');
+  if (selectedTypes.size > 0 && shopList.children.length === 0) {
+    populateShopWithTemplates();
+    nuxFirstTime = true;
+    liveShowFirstTime = true;
+  }
+
   const sheet = document.getElementById('shopSheet');
   const inner = document.getElementById('shopSheetInner');
   const circle = document.getElementById('shopCircle');
@@ -7168,14 +7178,12 @@ function markChecklistStep2Complete() {
   step3Icon.innerHTML = '';
   step3Icon.style.border = '2px solid #6f6f6f';
 
-  if (!reviewTooltipShown) {
-    reviewTooltipShown = true;
-    setTimeout(() => showReviewTemplatesTooltip(), 600);
-  }
 }
 
 function showReviewTemplatesTooltip() {
   if (skipAllTooltips) return;
+  const pinnedTip = document.getElementById('pinnedProductTip');
+  if (pinnedTip && pinnedTip.style.display !== 'none') return;
   const tip = document.getElementById('reviewTemplatesTooltip');
   if (!tip) return;
   const sideMenu = document.getElementById('lobbySideMenu');
@@ -7359,6 +7367,7 @@ function populateShopWithTemplates() {
 }
 
 function goToShop() {
+  nuxFirstTime = true;
   populateShopWithTemplates();
   markChecklistStep2Complete();
 
@@ -7751,10 +7760,7 @@ function dismissPinnedProductTip() {
   if (!tip || tip.style.display === 'none') return;
   tip.style.opacity = '0';
   setTimeout(() => { tip.style.display = 'none'; }, 300);
-  const templateCount = fashionTypes.filter(t => selectedTypes.has(t.id)).length;
-  if (templateCount > 1) {
-    setTimeout(() => showReviewTemplatesTooltip(), 400);
-  }
+  setTimeout(() => showReviewTemplatesTooltip(), 400);
 }
 
 function showShopSelectOptionTip() {
@@ -8282,9 +8288,17 @@ function pinProduct() {
       // Show pinned product in lobby, hide default CTA
       document.getElementById('lobbyPinnedProduct').style.display = 'flex';
       document.getElementById('lobbyDefaultCta').style.display = 'none';
+      if (document.getElementById('lobbyActiveCta')) document.getElementById('lobbyActiveCta').style.display = 'none';
 
-      // Move side menu above the pinned product (16px gap)
+      // Move side menu above the pinned product
       document.getElementById('lobbySideMenu').style.bottom = '188px';
+
+      // Position chat 16px above pinned product
+      const chatArea = document.getElementById('lobbyChatArea');
+      const pinnedEl = document.getElementById('lobbyPinnedProduct');
+      if (chatArea && chatArea.style.display !== 'none' && pinnedEl) {
+        chatArea.style.bottom = (pinnedEl.offsetHeight + 32 + 16) + 'px';
+      }
 
       // Update shop badge count
       const badgeText = document.querySelector('#lobbySideMenu .shop-badge-text');
@@ -8646,7 +8660,7 @@ function setLobbyState(state) {
   if (state === 'active-seller') {
     if (onboardingCard) onboardingCard.style.display = 'none';
     if (upcomingWidget) upcomingWidget.style.display = 'block';
-    if (chatArea) chatArea.style.display = 'flex';
+    if (chatArea) { chatArea.style.display = 'flex'; chatArea.style.bottom = '96px'; }
     if (defaultCta) defaultCta.style.display = 'none';
     if (pinnedProduct) pinnedProduct.style.display = 'none';
     if (activeCta) activeCta.style.display = 'block';
@@ -8654,7 +8668,7 @@ function setLobbyState(state) {
   } else {
     if (onboardingCard) onboardingCard.style.display = 'block';
     if (upcomingWidget) upcomingWidget.style.display = 'none';
-    if (chatArea) chatArea.style.display = 'none';
+    if (chatArea) { chatArea.style.display = 'none'; chatArea.style.bottom = '96px'; }
     if (activeCta) activeCta.style.display = 'none';
     if (defaultCta) defaultCta.style.display = 'block';
     if (sideMenu) sideMenu.style.bottom = '104px';
@@ -8811,7 +8825,9 @@ function resetAllData() {
   currentLiveShopIndex = -1;
 
   const shopList = document.getElementById('shopProductList');
-  if (shopList) shopList.innerHTML = '';
+  if (shopList) { shopList.innerHTML = ''; shopList.style.display = 'none'; }
+  const shopEmpty = document.getElementById('shopEmptyState');
+  if (shopEmpty) shopEmpty.style.display = 'flex';
 }
 
 function switchScene(scene) {
