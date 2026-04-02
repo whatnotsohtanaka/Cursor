@@ -1390,6 +1390,7 @@
       const savedScrolls = [];
       section.querySelectorAll('.chip-row').forEach((r, i) => savedScrolls[i] = r.scrollLeft);
       section.innerHTML = '';
+      const rows = [];
       PRODUCT.dimensions.forEach((dim, dIdx) => {
         const group = document.createElement('div');
         group.className = 'variant-group';
@@ -1410,9 +1411,14 @@
           if (notAvailMode === 'hidden' && optionIsAllNotExist(dIdx, opt)) return;
           row.appendChild(createChip(opt, getChipClass(dIdx, opt), () => selectOption(dIdx, opt)));
         });
-        if (savedScrolls[dIdx] !== undefined) row.scrollLeft = savedScrolls[dIdx];
+        rows.push({ el: row, idx: dIdx });
         group.appendChild(row);
         section.appendChild(group);
+      });
+      requestAnimationFrame(() => {
+        rows.forEach(({ el, idx }) => {
+          if (savedScrolls[idx] !== undefined) el.scrollLeft = savedScrolls[idx];
+        });
       });
     }
 
