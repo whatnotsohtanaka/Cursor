@@ -880,6 +880,18 @@
       </div>
     </div>
     <div id="controlPanelBody" style="padding:0 14px 14px;display:flex;flex-direction:column;gap:10px">
+      <span style="font-size:10px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;color:rgba(255,255,255,0.3)">Not Available Display</span>
+      <div style="display:flex;gap:6px">
+        <label onclick="setNotAvailMode('disabled')" id="radioDisabled" style="flex:1;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:11px;color:rgba(255,255,255,0.6);transition:border-color 0.15s,background 0.15s">
+          <span style="width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color 0.15s" id="radioDotDisabled"><span style="width:6px;height:6px;border-radius:50%;background:#f9dc00;display:none" id="radioFillDisabled"></span></span>
+          Disabled
+        </label>
+        <label onclick="setNotAvailMode('hidden')" id="radioHidden" style="flex:1;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:11px;color:rgba(255,255,255,0.6);transition:border-color 0.15s,background 0.15s">
+          <span style="width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color 0.15s" id="radioDotHidden"><span style="width:6px;height:6px;border-radius:50%;background:#f9dc00;display:none" id="radioFillHidden"></span></span>
+          Hidden
+        </label>
+      </div>
+      <div style="height:1px;background:rgba(255,255,255,0.06)"></div>
       <button onclick="randomizeVariants()" style="width:100%;height:32px;border-radius:8px;border:none;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:background 0.15s;letter-spacing:-0.1px" onmouseenter="this.style.background='rgba(255,255,255,0.14)'" onmouseleave="this.style.background='rgba(255,255,255,0.08)'">🎲 Randomize Variants</button>
       <div style="height:1px;background:rgba(255,255,255,0.06)"></div>
       <span style="font-size:10px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;color:rgba(255,255,255,0.3)">Variant Map</span>
@@ -1088,6 +1100,21 @@
     // ==========================================
     // STATE
     // ==========================================
+    let notAvailMode = 'disabled';
+
+    function setNotAvailMode(mode) {
+      notAvailMode = mode;
+      document.getElementById('radioFillDisabled').style.display = mode === 'disabled' ? 'block' : 'none';
+      document.getElementById('radioDotDisabled').style.borderColor = mode === 'disabled' ? '#f9dc00' : 'rgba(255,255,255,0.25)';
+      document.getElementById('radioDisabled').style.borderColor = mode === 'disabled' ? 'rgba(249,220,0,0.3)' : 'rgba(255,255,255,0.1)';
+      document.getElementById('radioDisabled').style.background = mode === 'disabled' ? 'rgba(249,220,0,0.05)' : 'transparent';
+      document.getElementById('radioFillHidden').style.display = mode === 'hidden' ? 'block' : 'none';
+      document.getElementById('radioDotHidden').style.borderColor = mode === 'hidden' ? '#f9dc00' : 'rgba(255,255,255,0.25)';
+      document.getElementById('radioHidden').style.borderColor = mode === 'hidden' ? 'rgba(249,220,0,0.3)' : 'rgba(255,255,255,0.1)';
+      document.getElementById('radioHidden').style.background = mode === 'hidden' ? 'rgba(249,220,0,0.05)' : 'transparent';
+      renderAllChips();
+    }
+
     let state = {
       selections: [null, null],
       currentState: 'default',
@@ -1212,6 +1239,7 @@
         const row = document.createElement('div');
         row.className = 'chip-row';
         dim.options.forEach(opt => {
+          if (notAvailMode === 'hidden' && optionIsAllNotExist(dIdx, opt)) return;
           row.appendChild(createChip(opt, getChipClass(dIdx, opt), () => selectOption(dIdx, opt)));
         });
         group.appendChild(row);
@@ -1905,6 +1933,7 @@
     // INIT
     // ==========================================
     function init() {
+      setNotAvailMode('disabled');
       state.selections = ['9.5M', 'Black/White'];
       state.currentState = 'default';
       renderAllChips();
