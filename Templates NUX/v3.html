@@ -2022,6 +2022,16 @@
       <button class="scene-tab" onclick="switchScene('existing')" style="padding:6px 14px;font-size:12px;white-space:nowrap">Existing Sellers</button>
     </div>
 
+    <!-- Consistent template generator toggle -->
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.55)">Consistent template gen</span>
+      <label style="position:relative;width:40px;height:24px;cursor:pointer;flex-shrink:0">
+        <input type="checkbox" id="consistentTplToggle" onchange="toggleConsistentTpl()" style="opacity:0;width:0;height:0;position:absolute">
+        <span id="consistentTplTrack" style="position:absolute;inset:0;background:rgba(255,255,255,0.15);border-radius:12px;transition:background 0.2s ease"></span>
+        <span id="consistentTplThumb" style="position:absolute;left:2px;top:2px;width:20px;height:20px;background:white;border-radius:50%;transition:transform 0.2s ease;box-shadow:0 1px 3px rgba(0,0,0,0.3)"></span>
+      </label>
+    </div>
+
     <!-- New Sellers options -->
     <div id="ctrlNewSellers" style="display:flex;flex-direction:column;gap:8px">
       <div style="display:flex;align-items:center;justify-content:space-between">
@@ -2315,57 +2325,67 @@
     <div style="height:54px;flex-shrink:0"></div>
     <!-- Nav -->
     <div style="height:44px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
-      <div style="position:absolute;right:16px;display:flex;gap:0;align-items:center">
-        <button onclick="closeOnboarding()" style="width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
-        </button>
-      </div>
+      <button onclick="closeOnboarding()" style="position:absolute;left:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg>
+      </button>
+      <button onclick="closeOnboarding()" style="position:absolute;right:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+      </button>
     </div>
     <!-- Content -->
-    <div style="flex:1;display:flex;flex-direction:column;padding:8px 16px 12px;gap:0;overflow-y:auto">
-      <div style="flex:1;display:flex;flex-direction:column;gap:24px;align-items:center;justify-content:center">
+    <div style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:24px;overflow-y:auto">
+      <div style="flex:1;display:flex;flex-direction:column;gap:24px;align-items:center">
         <!-- Illustration -->
-        <div style="height:148px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center">
+        <div style="height:200px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center">
           <div style="position:relative;width:343px;height:144px">
-            <img src="icons/onboard-llines.svg" style="position:absolute;left:49px;top:58px;width:64.5px;height:8px" alt="">
-            <img src="icons/onboard-rlines.svg" style="position:absolute;left:235px;top:97px;width:59.5px;height:6px" alt="">
-            <img src="icons/onboard-star2.svg" style="position:absolute;left:200px;top:14px;width:19px;height:19px" alt="">
-            <img src="icons/onboard-star1.svg" style="position:absolute;left:219px;top:34px;width:12px;height:12px" alt="">
-            <img src="icons/onboard-emphasis.svg" style="position:absolute;left:222px;top:66px;width:16px;height:19.75px" alt="">
-            <img src="icons/onboard-star3.svg" style="position:absolute;left:98px;top:91px;width:18px;height:18px" alt="">
-            <img src="icons/onboard-tag.svg" style="position:absolute;left:115px;top:32px;width:92px;height:92px" alt="">
-            <img src="icons/onboard-package.svg" style="position:absolute;left:177px;top:79px;width:47px;height:44px;transform:rotate(-8.51deg)" alt="">
-            <img src="icons/onboard-add.svg" style="position:absolute;left:114px;top:26px;width:28px;height:28px" alt="">
+            <img src="icons/gs-l-lines.svg" style="position:absolute;left:49px;top:58px;width:64.5px;height:8px" alt="">
+            <img src="icons/gs-r-lines.svg" style="position:absolute;left:235px;top:97px;width:59.5px;height:6px" alt="">
+            <img src="icons/gs-star-md.svg" style="position:absolute;left:200px;top:14px;width:19px;height:19px" alt="">
+            <img src="icons/gs-star-sm.svg" style="position:absolute;left:219px;top:34px;width:12px;height:12px" alt="">
+            <img src="icons/gs-emphasis.svg" style="position:absolute;left:222px;top:66px;width:16px;height:19.75px" alt="">
+            <img src="icons/gs-star-lg.svg" style="position:absolute;left:98px;top:91px;width:18px;height:18px" alt="">
+            <img src="icons/gs-tag.svg" style="position:absolute;left:115px;top:32px;width:92px;height:92px" alt="">
+            <img src="icons/gs-package.svg" style="position:absolute;left:177px;top:79px;width:47px;height:44px;transform:rotate(-8.51deg)" alt="">
+            <img src="icons/gs-add.svg" style="position:absolute;left:114px;top:26px;width:28px;height:28px" alt="">
           </div>
         </div>
         <!-- Text -->
         <div style="display:flex;flex-direction:column;gap:8px;width:100%">
           <div style="display:flex;flex-direction:column;gap:4px">
-            <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#6a6a6a">Women's Fashion</div>
+            <div style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#6a6a6a">Getting Started</div>
             <div style="font-size:24px;font-weight:600;line-height:30px;letter-spacing:0.07px;color:#161616">What kind of products are you planning to sell?</div>
           </div>
-          <div style="font-size:16px;font-weight:400;line-height:22px;letter-spacing:-0.31px;color:#393939">Choose a setup method that fits your inventory and selling strategy. We'll help you set your products for success.</div>
+          <div style="font-size:18px;font-weight:400;line-height:23px;letter-spacing:-0.44px;color:#393939">Choose a setup method that fits your inventory and selling strategy. We'll help you set your products for success.</div>
         </div>
         <!-- Selection Options -->
-        <div style="display:flex;flex-direction:column;gap:12px;width:100%">
-          <!-- Option A: Unique / one-of-a-kind -->
-          <button id="onboardOptA" onclick="selectSellerType('unique')" style="display:flex;gap:12px;align-items:center;width:100%;padding:16px;background:white;border:2px solid #e0e0e0;border-radius:12px;cursor:pointer;text-align:left;font-family:var(--font);transition:border-color 0.15s,background 0.15s">
-            <div style="width:44px;height:44px;border-radius:10px;background:#fef9e7;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:24px">👗</div>
+        <div style="display:flex;flex-direction:column;gap:8px;width:100%">
+          <!-- Option A: Each Item is Specific -->
+          <button id="onboardOptA" onclick="selectSellerType('unique')" style="display:flex;gap:12px;align-items:flex-start;width:100%;padding:12px;background:white;border:1px solid #d2d2d2;border-radius:12px;cursor:pointer;text-align:left;font-family:var(--font);transition:border-color 0.15s,background 0.15s">
+            <div style="width:40px;height:40px;border-radius:100px;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <img src="icons/gs-icon-specific.svg" style="width:11px;height:11px;object-fit:contain" alt="">
+            </div>
             <div style="flex:1;display:flex;flex-direction:column;gap:2px">
-              <div style="font-size:15px;font-weight:600;line-height:20px;color:#161616">Each item is specific</div>
-              <div style="font-size:13px;font-weight:400;line-height:18px;color:#6a6a6a">Ideal when extra detail helps buyers feel confident — like brands, conditions, size variants, or unique features.</div>
+              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Each Item is Specific</div>
+              <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454">Ideal when extra detail helps buyers feel confident — like brands, conditions, size variants, or unique features.</div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:flex-end;align-self:stretch;max-height:40px;min-height:24px;flex-shrink:0">
+              <div id="onboardRadioA" style="width:20px;height:20px;border-radius:999px;border:1px solid #aaa;display:flex;align-items:center;justify-content:center;transition:border-color 0.15s"></div>
             </div>
           </button>
-          <!-- Option B: Lots of similar items -->
-          <button id="onboardOptB" onclick="selectSellerType('bulk')" style="display:flex;gap:12px;align-items:center;width:100%;padding:16px;background:white;border:2px solid #e0e0e0;border-radius:12px;cursor:pointer;text-align:left;font-family:var(--font);transition:border-color 0.15s,background 0.15s">
-            <div style="width:44px;height:44px;border-radius:10px;background:#f0f4ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:24px">👚</div>
+          <!-- Option B: Lots of Similar Items -->
+          <button id="onboardOptB" onclick="selectSellerType('bulk')" style="display:flex;gap:12px;align-items:flex-start;width:100%;padding:12px;background:white;border:1px solid #d2d2d2;border-radius:12px;cursor:pointer;text-align:left;font-family:var(--font);transition:border-color 0.15s,background 0.15s">
+            <div style="width:40px;height:40px;border-radius:100px;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <img src="icons/gs-icon-similar.svg" style="width:18.3px;height:18.3px;object-fit:contain" alt="">
+            </div>
             <div style="flex:1;display:flex;flex-direction:column;gap:2px">
-              <div style="font-size:15px;font-weight:600;line-height:20px;color:#161616">Lots of similar items</div>
-              <div style="font-size:13px;font-weight:400;line-height:18px;color:#6a6a6a">Great for fast-paced selling where products share similar details and you're moving through them quickly.</div>
+              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Lots of Similar Items</div>
+              <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454">Great for fast-paced selling where products share similar details and you're moving through them quickly.</div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:flex-end;align-self:stretch;max-height:40px;min-height:24px;flex-shrink:0">
+              <div id="onboardRadioB" style="width:20px;height:20px;border-radius:999px;border:1px solid #aaa;display:flex;align-items:center;justify-content:center;transition:border-color 0.15s"></div>
             </div>
           </button>
         </div>
-        <div style="height:32px;flex-shrink:0"></div>
       </div>
     </div>
     <!-- Bottom: Progress + CTA -->
@@ -2375,7 +2395,7 @@
           <div style="height:8px;width:25%;background:linear-gradient(to right,#ffe414,#ef6a1f);border-radius:999px;transform:translateY(-2px)"></div>
         </div>
         <div style="display:flex;align-items:center;justify-content:flex-end;gap:19px;padding:0 16px">
-          <div style="flex:1;font-size:12px;font-weight:600;line-height:16px;color:#6f6f6f;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">1 of 4</div>
+          <div style="flex:1"></div>
           <button id="onboardStep1Cta" onclick="openOnboardingStep2()" style="height:40px;padding:0 24px;border-radius:999px;background:#e0e0e0;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#999;cursor:not-allowed;transition:background 0.2s,color 0.2s" disabled>Next</button>
         </div>
       </div>
@@ -3933,6 +3953,35 @@
     <p>Publishing template…</p>
   </div>
 
+  <!-- Consistent Template Type Picker -->
+  <div id="tplTypePicker" style="display:none;position:absolute;inset:0;z-index:50;background:white;flex-direction:column">
+    <div style="height:54px;flex-shrink:0"></div>
+    <div style="height:44px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
+      <span style="font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616">What You're Selling</span>
+      <button onclick="closeTplTypePicker()" style="position:absolute;right:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+      </button>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:20px;overflow-y:auto">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:22px;font-weight:600;line-height:28px;color:#161616">What will you be selling?</div>
+        <div style="font-size:15px;font-weight:400;line-height:21px;color:#6a6a6a">Select one or more types. We'll generate a template for each.</div>
+      </div>
+      <div id="tplTypePickerGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%"></div>
+    </div>
+    <div style="flex-shrink:0;padding:0 16px 0">
+      <button id="tplTypePickerCta" onclick="confirmTplTypePicker()" disabled style="width:100%;height:48px;border-radius:999px;background:#e0e0e0;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#999;cursor:not-allowed;transition:background 0.2s,color 0.2s">Continue</button>
+    </div>
+    <div style="height:32px;overflow:hidden;width:375px;position:relative;flex-shrink:0">
+      <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:135px;height:5px;background:#222;border-radius:100px"></div>
+    </div>
+    <!-- Generating loader overlay -->
+    <div id="tplPickerLoader" style="display:none;position:absolute;inset:0;background:white;flex-direction:column;align-items:center;justify-content:center;gap:24px;z-index:5;border-radius:24px">
+      <div class="nux-loader-spinner"></div>
+      <p style="font-size:16px;font-weight:600;color:#1c1c1c;letter-spacing:-0.41px">Generating your templates…</p>
+    </div>
+  </div>
+
   <!-- Save Confirmation Modal -->
   <div class="confirm-overlay" id="saveConfirmModal">
     <div class="confirm-dialog">
@@ -4658,6 +4707,10 @@ function closeLiveCreateSheet() {
 
 function createNewTemplate() {
   closeCreateSheet();
+  if (consistentTplGen) {
+    setTimeout(() => openTplTypePicker('create'), 350);
+    return;
+  }
   editVertical = true;
   setTimeout(() => {
     openEditPage(-1, 'create');
@@ -5090,7 +5143,7 @@ function openEditById(listingId, returnTo) {
   openEditPage(0, returnTo || 'templatesl1');
 }
 
-function openEditPage(templateIndex, returnTo) {
+function openEditPage(templateIndex, returnTo, prefillType) {
   dismissInvTemplateTip();
   editReturnTo = returnTo || 'nux';
   currentTemplateIndex = templateIndex;
@@ -5144,9 +5197,10 @@ function openEditPage(templateIndex, returnTo) {
   applyCategoryConfig("Women's Contemporary");
 
   // THEN set Type chip selection (after applyCategoryConfig rebuilt them)
+  const typeToSelect = prefillType || (isNull ? '' : tpl.type);
   const typeChips = document.getElementById('typeChips');
   typeChips.querySelectorAll('.edit-chip').forEach(c => {
-    if (!isNull && c.textContent === tpl.type) {
+    if (typeToSelect && c.textContent === typeToSelect) {
       c.classList.remove('edit-chip-off');
       c.classList.add('edit-chip-on');
     } else {
@@ -5727,6 +5781,10 @@ function createNewListingFromShop() {
 
 function createNewTemplateFromShop() {
   closeLiveCreateSheet();
+  if (consistentTplGen) {
+    setTimeout(() => openTplTypePicker('shop'), 350);
+    return;
+  }
   editVertical = true;
   setTimeout(() => {
     openEditPage(-1, 'shop');
@@ -6963,16 +7021,24 @@ function selectSellerType(type) {
   sellerType = type;
   const optA = document.getElementById('onboardOptA');
   const optB = document.getElementById('onboardOptB');
+  const radioA = document.getElementById('onboardRadioA');
+  const radioB = document.getElementById('onboardRadioB');
   const cta = document.getElementById('onboardStep1Cta');
 
   [optA, optB].forEach(btn => {
-    btn.style.borderColor = '#e0e0e0';
+    btn.style.borderColor = '#d2d2d2';
     btn.style.background = 'white';
   });
+  [radioA, radioB].forEach(r => {
+    r.style.borderColor = '#aaa';
+    r.innerHTML = '';
+  });
 
-  const selected = type === 'unique' ? optA : optB;
-  selected.style.borderColor = '#161616';
-  selected.style.background = '#fafafa';
+  const selectedBtn = type === 'unique' ? optA : optB;
+  const selectedRadio = type === 'unique' ? radioA : radioB;
+  selectedBtn.style.borderColor = '#d2d2d2';
+  selectedRadio.style.borderColor = '#1c1c1c';
+  selectedRadio.innerHTML = '<div style="width:12px;height:12px;border-radius:999px;background:#2d2d2d"></div>';
 
   cta.disabled = false;
   cta.style.background = '#f9dc00';
@@ -8696,6 +8762,167 @@ function toggleSkipOnboarding() {
   }
 }
 
+let consistentTplGen = false;
+let tplPickerReturnTo = null;
+let tplPickerSelectedTypes = new Set();
+
+function toggleConsistentTpl() {
+  consistentTplGen = document.getElementById('consistentTplToggle').checked;
+  const track = document.getElementById('consistentTplTrack');
+  const thumb = document.getElementById('consistentTplThumb');
+  if (consistentTplGen) {
+    track.style.background = '#34c759';
+    thumb.style.transform = 'translateX(16px)';
+  } else {
+    track.style.background = 'rgba(255,255,255,0.15)';
+    thumb.style.transform = '';
+  }
+}
+
+function openTplTypePicker(returnTo) {
+  tplPickerReturnTo = returnTo;
+  tplPickerSelectedTypes.clear();
+  const grid = document.getElementById('tplTypePickerGrid');
+  grid.innerHTML = fashionTypes.map(ft => `
+    <button id="tplPick_${ft.id}" onclick="toggleTplPickerType('${ft.id}')" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px 8px 24px;background:#f3f3f3;border:4px solid transparent;border-radius:8px;cursor:pointer;font-family:var(--font);transition:all 0.15s ease">
+      <div style="font-size:12px;font-weight:600;line-height:16px;color:#161616;text-align:center;width:100%">${ft.label}</div>
+      <img src="${ft.img}" alt="" style="width:65px;height:65px;object-fit:contain;pointer-events:none">
+      <div class="type-card-ring" style="display:none;position:absolute;inset:-4px;border-radius:8px;border:2px solid #2d2d2d;pointer-events:none"></div>
+    </button>
+  `).join('');
+  const cta = document.getElementById('tplTypePickerCta');
+  cta.disabled = true;
+  cta.style.background = '#e0e0e0';
+  cta.style.color = '#999';
+  cta.style.cursor = 'not-allowed';
+  const loader = document.getElementById('tplPickerLoader');
+  if (loader) loader.style.display = 'none';
+  const picker = document.getElementById('tplTypePicker');
+  picker.style.display = 'flex';
+  picker.style.opacity = '0';
+  picker.style.transform = 'translateY(100%)';
+  picker.style.transition = 'transform 0.4s cubic-bezier(.32,.72,0,1), opacity 0.15s ease';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      picker.style.opacity = '1';
+      picker.style.transform = 'translateY(0)';
+    });
+  });
+}
+
+function toggleTplPickerType(typeId) {
+  if (tplPickerSelectedTypes.has(typeId)) {
+    tplPickerSelectedTypes.delete(typeId);
+  } else {
+    tplPickerSelectedTypes.add(typeId);
+  }
+  fashionTypes.forEach(ft => {
+    const btn = document.getElementById('tplPick_' + ft.id);
+    if (!btn) return;
+    const ring = btn.querySelector('.type-card-ring');
+    if (ring) ring.style.display = tplPickerSelectedTypes.has(ft.id) ? 'block' : 'none';
+  });
+  const cta = document.getElementById('tplTypePickerCta');
+  const count = tplPickerSelectedTypes.size;
+  if (count > 0) {
+    cta.disabled = false;
+    cta.style.background = '#f9dc00';
+    cta.style.color = '#161616';
+    cta.style.cursor = 'pointer';
+  } else {
+    cta.disabled = true;
+    cta.style.background = '#e0e0e0';
+    cta.style.color = '#999';
+    cta.style.cursor = 'not-allowed';
+  }
+}
+
+function closeTplTypePicker() {
+  const picker = document.getElementById('tplTypePicker');
+  picker.style.transform = 'translateY(100%)';
+  picker.style.opacity = '0';
+  setTimeout(() => { picker.style.display = 'none'; }, 400);
+}
+
+function confirmTplTypePicker() {
+  const count = tplPickerSelectedTypes.size;
+  if (count === 0) return;
+  const picker = document.getElementById('tplTypePicker');
+
+  if (count === 1) {
+    const typeId = [...tplPickerSelectedTypes][0];
+    const ft = fashionTypes.find(t => t.id === typeId);
+    picker.style.transform = 'translateY(100%)';
+    picker.style.opacity = '0';
+    setTimeout(() => { picker.style.display = 'none'; }, 400);
+    editVertical = true;
+    currentEditingListingId = null;
+    let returnTo = tplPickerReturnTo || 'create';
+    if (returnTo === 'create' && currentTemplateMode === 'l1') returnTo = 'templatesl1';
+    setTimeout(() => {
+      openEditPage(-1, returnTo, ft ? ft.label : '');
+    }, 100);
+  } else {
+    const loader = document.getElementById('tplPickerLoader');
+    if (loader) loader.style.display = 'flex';
+    setTimeout(() => {
+      handleMultiTplPick();
+      picker.style.transform = 'translateY(100%)';
+      picker.style.opacity = '0';
+      setTimeout(() => {
+        picker.style.display = 'none';
+        if (loader) loader.style.display = 'none';
+      }, 400);
+    }, 1800);
+  }
+}
+
+function handleMultiTplPick() {
+  let returnTo = tplPickerReturnTo || 'create';
+  if (returnTo === 'create' && currentTemplateMode === 'l1') returnTo = 'templatesl1';
+  const types = [...tplPickerSelectedTypes];
+  if (returnTo === 'shop') {
+    types.forEach(typeId => {
+      const ft = fashionTypes.find(t => t.id === typeId);
+      if (!ft) return;
+      const title = 'Assorted ' + ft.label;
+      addNewTemplateToShop(title);
+      const rec = listingStore[listingStore.length - 1];
+      if (rec) {
+        rec.typeId = ft.id;
+        rec.typeLabel = ft.label;
+        rec.icon = ft.icon;
+        rec.showDate = 'Mar 28 · 7:00pm · Friday Night Live';
+      }
+    });
+  } else if (returnTo === 'templatesl1') {
+    types.forEach(typeId => {
+      const ft = fashionTypes.find(t => t.id === typeId);
+      if (!ft) return;
+      const title = 'Assorted ' + ft.label;
+      addTemplateToL1Page(title, ft.label, '');
+    });
+  } else {
+    types.forEach(typeId => {
+      const ft = fashionTypes.find(t => t.id === typeId);
+      if (!ft) return;
+      const title = 'Assorted ' + ft.label;
+      const rec = createListingRecord({
+        type: 'template',
+        title: title,
+        subtitle: 'Template · Multiple Options',
+        price: '$1',
+        status: 'draft',
+        origin: 'inventory',
+        typeId: ft.id,
+        typeLabel: ft.label,
+      });
+      addTemplateToDraftTab(title, rec.id);
+    });
+    switchInvTab('draft');
+  }
+}
+
 function skipToLobby() {
   skipAllTooltips = true;
   resetTooltipState();
@@ -9140,6 +9367,10 @@ function closeTemplatesL1() {
 }
 
 function createTemplateFromL1() {
+  if (consistentTplGen) {
+    openTplTypePicker('templatesl1');
+    return;
+  }
   editVertical = true;
   currentEditingListingId = null;
   openEditPage(-1, 'templatesl1');
