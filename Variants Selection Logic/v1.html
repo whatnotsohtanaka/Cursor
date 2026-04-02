@@ -147,6 +147,27 @@
       background: rgba(255,255,255,0.12);
       color: rgba(255,255,255,0.7);
     }
+    .proto-header-toast {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 14px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      background: #f9dc00;
+      color: #1d1d1d;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--font);
+      opacity: 0;
+      transform: translateY(-4px) scale(0.95);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+      white-space: nowrap;
+    }
+    .proto-header-toast.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
 
     /* FAB — shown when header is collapsed */
     .proto-fab {
@@ -185,6 +206,33 @@
       color: #1d1d1d;
     }
 
+    [data-tip] {
+      position: relative;
+    }
+    [data-tip]::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%) scale(0.95);
+      padding: 4px 8px;
+      border-radius: 5px;
+      background: rgba(255,255,255,0.95);
+      color: #1d1d1d;
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.12s ease, transform 0.12s ease;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    [data-tip]:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+
     .phone-frame {
       position: relative;
       display: flex;
@@ -209,6 +257,32 @@
       overflow: hidden;
       position: relative;
       z-index: 2;
+      cursor: none !important;
+    }
+    .device-frame * {
+      cursor: none !important;
+    }
+
+    .proto-cursor {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 38%, rgba(255,255,255,0.12), rgba(0,0,0,0.1) 70%);
+      border: 1.5px solid rgba(0,0,0,0.18);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.12), 0 2px 6px rgba(0,0,0,0.1);
+      pointer-events: none;
+      z-index: 99998;
+      transform: translate(-50%, -50%) scale(1);
+      transition: transform 0.1s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.15s ease;
+      opacity: 0;
+      will-change: transform;
+    }
+    .proto-cursor.visible { opacity: 1; }
+    .proto-cursor.pressed {
+      transform: translate(-50%, -50%) scale(0.6);
+      background: radial-gradient(circle at 40% 38%, rgba(255,255,255,0.08), rgba(0,0,0,0.18) 70%);
+      border-color: rgba(0,0,0,0.3);
     }
 
     .screen {
@@ -778,11 +852,19 @@
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
         PRD
       </a>
+      <button class="proto-link-btn" onclick="copyShareLink()" title="Copy share link">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        Share
+      </button>
       <button class="proto-close-btn" id="protoCloseBtn" onclick="collapseProtoHeader()" title="Collapse header">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
       </button>
     </div>
+    <div class="proto-header-toast" id="protoHeaderToast">Link copied!</div>
   </div>
+
+  <!-- Prototype finger cursor -->
+  <div class="proto-cursor" id="protoCursor"></div>
 
   <!-- Floating FAB (appears when header is collapsed) -->
   <button class="proto-fab" id="protoFab" onclick="expandProtoHeader()" title="Open header menu">
@@ -790,7 +872,7 @@
   </button>
 
   <!-- ═══ DRAGGABLE CONTROL PANEL ═══ -->
-  <div id="controlPanel" style="position:fixed;left:16px;top:72px;z-index:99999;width:fit-content;min-width:210px;max-width:320px;background:rgba(30,30,30,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:14px;border:1px solid rgba(255,255,255,0.08);box-shadow:0 8px 32px rgba(0,0,0,0.4);font-family:var(--font);user-select:none;overflow:hidden">
+  <div id="controlPanel" style="position:fixed;z-index:99999;width:fit-content;min-width:210px;background:rgba(30,30,30,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:14px;border:1px solid rgba(255,255,255,0.08);box-shadow:0 8px 32px rgba(0,0,0,0.4);font-family:var(--font);user-select:none;overflow:visible;transition:left 0.35s cubic-bezier(0.32, 0.72, 0, 1), top 0.35s cubic-bezier(0.32, 0.72, 0, 1)">
     <div id="controlPanelHandle" style="padding:10px 14px 8px;cursor:grab;display:flex;align-items:center;justify-content:space-between">
       <span style="font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:rgba(255,255,255,0.4)">Controls</span>
       <div id="controlPanelCollapse" onclick="toggleControlPanel()" style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:4px;background:rgba(255,255,255,0.06)">
@@ -801,7 +883,7 @@
       <button onclick="randomizeVariants()" style="width:100%;height:32px;border-radius:8px;border:none;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:background 0.15s;letter-spacing:-0.1px" onmouseenter="this.style.background='rgba(255,255,255,0.14)'" onmouseleave="this.style.background='rgba(255,255,255,0.08)'">🎲 Randomize Variants</button>
       <div style="height:1px;background:rgba(255,255,255,0.06)"></div>
       <span style="font-size:10px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;color:rgba(255,255,255,0.3)">Variant Map</span>
-      <div id="variantTable" style="overflow-x:auto;border-radius:8px;border:1px solid rgba(255,255,255,0.06)"></div>
+      <div id="variantTable" style="overflow:visible;border-radius:8px;border:1px solid rgba(255,255,255,0.06);padding:3px"></div>
     </div>
   </div>
 
@@ -1001,7 +1083,7 @@
 
     const LOADING_DELAY_MIN = 600;
     const LOADING_DELAY_MAX = 1200;
-    const ERROR_CHANCE = 0.08;
+    const ERROR_CHANCE = 0.02;
 
     // ==========================================
     // STATE
@@ -1406,57 +1488,81 @@
     // ==========================================
     // CONTROL PANEL
     // ==========================================
+    function tableCell(emoji, active, onclick) {
+      const bg = active ? 'background:rgba(249,220,0,0.12);outline:1.5px solid #f9dc00;border-radius:4px;' : '';
+      return `<td style="padding:4px;text-align:center;cursor:pointer;${bg}" onclick="${onclick}">${emoji}</td>`;
+    }
+
     function renderVariantTable() {
       const dims = PRODUCT.dimensions;
-      const icon = { available: '✅', sold_out: '🚫', not_exist: '—' };
+      const icon = { available: '✅', sold_out: '➖', not_exist: '🚫' };
+      const tStyle = 'width:100%;border-collapse:separate;border-spacing:2px;font-size:10px;font-family:var(--font)';
+      const thStyle = 'padding:5px 4px;text-align:center;color:rgba(255,255,255,0.35);font-weight:600;white-space:nowrap';
+
       if (dims.length === 2) {
-        let html = '<table style="width:100%;border-collapse:collapse;font-size:10px;font-family:var(--font)">';
-        html += '<tr><th style="padding:5px 6px;text-align:left;color:rgba(255,255,255,0.35);font-weight:600;border-bottom:1px solid rgba(255,255,255,0.06)"></th>';
+        let html = `<table style="${tStyle}">`;
+        html += `<tr><th style="${thStyle}"></th>`;
         dims[1].options.forEach(c => {
           const short = c.includes('/') ? c.split('/').map(w => w[0]).join('/') : c.slice(0, 4);
-          html += `<th style="padding:5px 4px;text-align:center;color:rgba(255,255,255,0.35);font-weight:600;border-bottom:1px solid rgba(255,255,255,0.06);white-space:nowrap">${short}</th>`;
+          html += `<th style="${thStyle}" data-tip="${c}">${short}</th>`;
         });
         html += '</tr>';
         dims[0].options.forEach(r => {
           const isSel = r === state.selections[0];
           html += `<tr style="background:${isSel ? 'rgba(255,255,255,0.04)' : 'transparent'}">`;
-          html += `<td style="padding:4px 6px;color:rgba(255,255,255,${isSel?'0.9':'0.5'});font-weight:${isSel?'700':'500'};white-space:nowrap;border-bottom:1px solid rgba(255,255,255,0.03)">${r}</td>`;
+          html += `<td style="padding:4px 6px;color:rgba(255,255,255,${isSel?'0.9':'0.5'});font-weight:${isSel?'700':'500'};white-space:nowrap" data-tip="${r}">${r}</td>`;
           dims[1].options.forEach(c => {
             const v = getVariant([r, c]);
             const active = r === state.selections[0] && c === state.selections[1];
-            const ring = active ? 'outline:1.5px solid #f9dc00;outline-offset:1px;border-radius:3px;' : '';
-            html += `<td style="padding:4px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.03);${ring}">${icon[v.status]||'—'}</td>`;
+            const esc = (s) => s.replace(/'/g, "\\'");
+            html += tableCell(icon[v.status]||'🚫', active, `selectVariantFromTable([${dims[0].options.indexOf(r)},${dims[1].options.indexOf(c)}])`);
           });
           html += '</tr>';
         });
         html += '</table>';
         document.getElementById('variantTable').innerHTML = html;
       } else if (dims.length === 3) {
-        const sel0 = state.selections[0];
-        let html = `<div style="font-size:9px;color:rgba(255,255,255,0.3);margin-bottom:4px">${dims[0].label}: ${sel0 || '—'}</div>`;
-        html += '<table style="width:100%;border-collapse:collapse;font-size:10px;font-family:var(--font)">';
-        html += '<tr><th style="padding:5px 6px;text-align:left;color:rgba(255,255,255,0.35);font-weight:600;border-bottom:1px solid rgba(255,255,255,0.06)"></th>';
-        dims[2].options.forEach(c => {
-          const short = c.slice(0, 5);
-          html += `<th style="padding:5px 4px;text-align:center;color:rgba(255,255,255,0.35);font-weight:600;border-bottom:1px solid rgba(255,255,255,0.06);white-space:nowrap">${short}</th>`;
+        const combos = [];
+        dims[1].options.forEach(d1 => {
+          dims[2].options.forEach(d2 => {
+            combos.push({ d1, d2 });
+          });
+        });
+
+        let html = `<table style="${tStyle}">`;
+        html += `<tr><th style="${thStyle}"></th>`;
+        combos.forEach(cb => {
+          const d1Short = cb.d1.includes('/') ? cb.d1.split('/').map(w => w[0]).join('/') : cb.d1.slice(0, 4);
+          const d2Short = cb.d2.includes('/') ? cb.d2.split('/').map(w => w[0]).join('/') : cb.d2.slice(0, 4);
+          html += `<th style="${thStyle};font-size:8px;line-height:1.2" data-tip="${cb.d1} + ${cb.d2}">${d1Short}<br>${d2Short}</th>`;
         });
         html += '</tr>';
-        dims[1].options.forEach(r => {
-          const isSel = r === state.selections[1];
+
+        dims[0].options.forEach(d0 => {
+          const isSel = d0 === state.selections[0];
           html += `<tr style="background:${isSel ? 'rgba(255,255,255,0.04)' : 'transparent'}">`;
-          html += `<td style="padding:4px 6px;color:rgba(255,255,255,${isSel?'0.9':'0.5'});font-weight:${isSel?'700':'500'};white-space:nowrap;border-bottom:1px solid rgba(255,255,255,0.03)">${r}</td>`;
-          dims[2].options.forEach(c => {
-            const key = sel0 ? [sel0, r, c] : [dims[0].options[0], r, c];
-            const v = getVariant(key);
-            const active = state.selections[1] === r && state.selections[2] === c;
-            const ring = active ? 'outline:1.5px solid #f9dc00;outline-offset:1px;border-radius:3px;' : '';
-            html += `<td style="padding:4px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.03);${ring}">${icon[v.status]||'—'}</td>`;
+          html += `<td style="padding:4px 6px;color:rgba(255,255,255,${isSel?'0.9':'0.5'});font-weight:${isSel?'700':'500'};white-space:nowrap" data-tip="${d0}">${d0}</td>`;
+          combos.forEach((cb, ci) => {
+            const v = getVariant([d0, cb.d1, cb.d2]);
+            const active = d0 === state.selections[0] && cb.d1 === state.selections[1] && cb.d2 === state.selections[2];
+            const d0i = dims[0].options.indexOf(d0);
+            const d1i = dims[1].options.indexOf(cb.d1);
+            const d2i = dims[2].options.indexOf(cb.d2);
+            html += tableCell(icon[v.status]||'🚫', active, `selectVariantFromTable([${d0i},${d1i},${d2i}])`);
           });
           html += '</tr>';
         });
         html += '</table>';
         document.getElementById('variantTable').innerHTML = html;
       }
+    }
+
+    function selectVariantFromTable(indices) {
+      const dims = PRODUCT.dimensions;
+      indices.forEach((optIdx, dimIdx) => {
+        const value = dims[dimIdx].options[optIdx];
+        selectOption(dimIdx, value);
+      });
     }
 
     function randomizeVariants() {
@@ -1517,40 +1623,224 @@
       else { body.style.display = 'none'; chevron.style.transform = 'rotate(-90deg)'; }
     }
 
+    // ==========================================
+    // PROTOTYPE FINGER CURSOR + SWIPE-TO-SCROLL
+    // ==========================================
+    (function() {
+      const cursor = document.getElementById('protoCursor');
+      const device = document.querySelector('.device-frame');
+      const screen = document.getElementById('screen');
+
+      device.addEventListener('mouseenter', () => cursor.classList.add('visible'));
+      device.addEventListener('mouseleave', () => {
+        cursor.classList.remove('visible', 'pressed');
+        endSwipe();
+      });
+      device.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+      });
+      device.addEventListener('mousedown', () => cursor.classList.add('pressed'));
+      document.addEventListener('mouseup', () => cursor.classList.remove('pressed'));
+
+      let swiping = false, startY, scrollStart, lastY, lastT, velocity;
+      let momentumRaf = null, bounceRaf = null, overscroll = 0;
+      const RUBBER = 0.35;
+      const MAX_OVER = 120;
+
+      function maxScroll() { return screen.scrollHeight - screen.clientHeight; }
+
+      function applyOverscroll(px) {
+        overscroll = Math.max(-MAX_OVER, Math.min(MAX_OVER, px));
+        screen.style.transform = overscroll ? `translateY(${overscroll}px)` : '';
+      }
+
+      function springBack() {
+        cancelAnimationFrame(bounceRaf);
+        if (Math.abs(overscroll) < 0.5) { applyOverscroll(0); return; }
+        function tick() {
+          overscroll *= 0.82;
+          if (Math.abs(overscroll) < 0.5) { applyOverscroll(0); return; }
+          applyOverscroll(overscroll);
+          bounceRaf = requestAnimationFrame(tick);
+        }
+        bounceRaf = requestAnimationFrame(tick);
+      }
+
+      screen.addEventListener('mousedown', (e) => {
+        if (e.target.closest('button, a, input, .chip')) return;
+        swiping = true;
+        startY = e.clientY;
+        scrollStart = screen.scrollTop;
+        lastY = startY;
+        lastT = Date.now();
+        velocity = 0;
+        cancelAnimationFrame(momentumRaf);
+        cancelAnimationFrame(bounceRaf);
+        applyOverscroll(0);
+        e.preventDefault();
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!swiping) return;
+        const dy = startY - e.clientY;
+        const desired = scrollStart + dy;
+        const max = maxScroll();
+
+        if (desired < 0) {
+          screen.scrollTop = 0;
+          applyOverscroll(-desired * RUBBER);
+        } else if (desired > max) {
+          screen.scrollTop = max;
+          applyOverscroll(-(desired - max) * RUBBER);
+        } else {
+          screen.scrollTop = desired;
+          applyOverscroll(0);
+        }
+
+        const now = Date.now();
+        const dt = now - lastT;
+        if (dt > 0) {
+          velocity = (lastY - e.clientY) / dt;
+          lastY = e.clientY;
+          lastT = now;
+        }
+        e.preventDefault();
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (swiping) endSwipe();
+      });
+
+      function endSwipe() {
+        if (!swiping) return;
+        swiping = false;
+        if (overscroll !== 0) {
+          springBack();
+        } else if (Math.abs(velocity) > 0.2) {
+          startMomentum();
+        }
+      }
+
+      function startMomentum() {
+        let v = Math.max(-60, Math.min(60, velocity * 28));
+        const friction = 0.97;
+
+        function tick() {
+          v *= friction;
+          const before = screen.scrollTop;
+          screen.scrollTop += v;
+          const after = screen.scrollTop;
+          const max = maxScroll();
+
+          if ((after <= 0 && v < 0) || (after >= max && v > 0)) {
+            applyOverscroll(overscroll + v * 0.4);
+            v *= 0.9;
+            if (Math.abs(v) < 0.5 || Math.abs(overscroll) >= MAX_OVER) {
+              springBack();
+              return;
+            }
+            momentumRaf = requestAnimationFrame(tick);
+            return;
+          }
+
+          if (Math.abs(v) > 0.3) {
+            momentumRaf = requestAnimationFrame(tick);
+          }
+        }
+        momentumRaf = requestAnimationFrame(tick);
+      }
+    })();
+
+    function getSnapPosition() {
+      const phone = document.querySelector('.phone-frame');
+      const panel = document.getElementById('controlPanel');
+      const phoneRect = phone.getBoundingClientRect();
+      const gap = 40;
+      return {
+        x: phoneRect.right + gap,
+        y: phoneRect.top + 56
+      };
+    }
+
+    function snapPanelToPhone() {
+      const panel = document.getElementById('controlPanel');
+      const pos = getSnapPosition();
+      panel.style.left = pos.x + 'px';
+      panel.style.top = pos.y + 'px';
+    }
+
     (function() {
       const panel = document.getElementById('controlPanel');
       const handle = document.getElementById('controlPanelHandle');
       let isDragging = false, startX, startY, panelX, panelY;
+      const SNAP_DIST = 80;
+
+      snapPanelToPhone();
+      window.addEventListener('resize', () => { if (!isDragging) snapPanelToPhone(); });
+
       handle.addEventListener('mousedown', startDrag);
       handle.addEventListener('touchstart', startDrag, { passive: false });
+
       function startDrag(e) {
         if (e.target.closest('#controlPanelCollapse')) return;
-        isDragging = true; handle.style.cursor = 'grabbing';
-        const rect = panel.getBoundingClientRect(); panelX = rect.left; panelY = rect.top;
-        const point = e.touches ? e.touches[0] : e;
-        startX = point.clientX - panelX; startY = point.clientY - panelY;
-        document.addEventListener('mousemove', onDrag); document.addEventListener('mouseup', stopDrag);
-        document.addEventListener('touchmove', onDrag, { passive: false }); document.addEventListener('touchend', stopDrag);
+        isDragging = true;
+        handle.style.cursor = 'grabbing';
+        panel.style.transition = 'none';
+        const rect = panel.getBoundingClientRect();
+        panelX = rect.left; panelY = rect.top;
+        const pt = e.touches ? e.touches[0] : e;
+        startX = pt.clientX - panelX; startY = pt.clientY - panelY;
+        document.addEventListener('mousemove', onDrag);
+        document.addEventListener('mouseup', stopDrag);
+        document.addEventListener('touchmove', onDrag, { passive: false });
+        document.addEventListener('touchend', stopDrag);
         e.preventDefault();
       }
+
       function onDrag(e) {
         if (!isDragging) return;
-        const point = e.touches ? e.touches[0] : e;
-        let x = point.clientX - startX, y = point.clientY - startY;
+        const pt = e.touches ? e.touches[0] : e;
+        let x = pt.clientX - startX, y = pt.clientY - startY;
         x = Math.max(0, Math.min(window.innerWidth - panel.offsetWidth, x));
         y = Math.max(0, Math.min(window.innerHeight - panel.offsetHeight, y));
-        panel.style.left = x + 'px'; panel.style.top = y + 'px'; e.preventDefault();
+        panel.style.left = x + 'px';
+        panel.style.top = y + 'px';
+        e.preventDefault();
       }
+
       function stopDrag() {
-        isDragging = false; handle.style.cursor = 'grab';
-        document.removeEventListener('mousemove', onDrag); document.removeEventListener('mouseup', stopDrag);
-        document.removeEventListener('touchmove', onDrag); document.removeEventListener('touchend', stopDrag);
+        isDragging = false;
+        handle.style.cursor = 'grab';
+        document.removeEventListener('mousemove', onDrag);
+        document.removeEventListener('mouseup', stopDrag);
+        document.removeEventListener('touchmove', onDrag);
+        document.removeEventListener('touchend', stopDrag);
+
+        panel.style.transition = 'left 0.35s cubic-bezier(0.32, 0.72, 0, 1), top 0.35s cubic-bezier(0.32, 0.72, 0, 1)';
+        const snap = getSnapPosition();
+        const rect = panel.getBoundingClientRect();
+        const dx = rect.left - snap.x, dy = rect.top - snap.y;
+        if (Math.sqrt(dx * dx + dy * dy) < SNAP_DIST) {
+          snapPanelToPhone();
+        }
       }
     })();
 
     // ==========================================
     // PROTO HEADER — COLLAPSE / FAB / DRAG
     // ==========================================
+    const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/variants-selection-logic/v1.html';
+    let shareToastTimer = null;
+    function copyShareLink() {
+      navigator.clipboard.writeText(LIVE_URL).then(() => {
+        const toast = document.getElementById('protoHeaderToast');
+        clearTimeout(shareToastTimer);
+        toast.classList.add('visible');
+        shareToastTimer = setTimeout(() => toast.classList.remove('visible'), 2000);
+      });
+    }
+
     function collapseProtoHeader() {
       document.getElementById('protoHeader').classList.add('collapsed');
       setTimeout(() => document.getElementById('protoFab').classList.add('visible'), 150);

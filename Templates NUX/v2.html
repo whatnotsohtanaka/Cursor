@@ -43,19 +43,27 @@
 
     .proto-header {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 80px;
+      top: 0; left: 0; right: 0;
+      height: 56px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 32px;
-      z-index: 1;
+      padding: 0 14px 0 20px;
+      background: #1d1d1d;
+      z-index: 10000;
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.3s ease;
+    }
+    .proto-header.collapsed {
+      transform: translateY(-100%);
+      opacity: 0;
       pointer-events: none;
     }
-    .proto-header > * {
-      pointer-events: auto;
+    .proto-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
     }
     .proto-breadcrumb {
       display: flex;
@@ -63,23 +71,132 @@
       gap: 6px;
       font-size: 13px;
       font-weight: 400;
-      color: rgba(255,255,255,0.4);
+      color: rgba(255,255,255,0.35);
+      white-space: nowrap;
     }
     .proto-breadcrumb a {
-      color: rgba(255,255,255,0.4);
+      color: rgba(255,255,255,0.35);
       text-decoration: none;
       transition: color 0.15s;
     }
-    .proto-breadcrumb a:hover { color: rgba(255,255,255,0.7); }
-    .proto-breadcrumb .separator { margin: 0 2px; }
+    .proto-breadcrumb a:hover { color: rgba(255,255,255,0.6); }
+    .proto-breadcrumb .sep { margin: 0 1px; }
     .proto-breadcrumb .current {
-      color: rgba(255,255,255,0.7);
+      color: rgba(255,255,255,0.8);
+      font-weight: 600;
+    }
+    .proto-divider {
+      width: 1px;
+      height: 16px;
+      background: rgba(255,255,255,0.12);
+      flex-shrink: 0;
+    }
+    .proto-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.45);
+      font-size: 12px;
       font-weight: 500;
+      font-family: var(--font);
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.15s, color 0.15s;
+      cursor: pointer;
+    }
+    .proto-link-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+    }
+    .proto-link-btn svg { flex-shrink: 0; }
+    .proto-header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      margin-left: 12px;
     }
     .proto-timestamp {
       font-size: 12px;
       font-weight: 400;
       color: rgba(255,255,255,0.3);
+    }
+    .proto-close-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: none;
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+    .proto-close-btn:hover {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.7);
+    }
+    .proto-header-toast {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 14px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      background: #f9dc00;
+      color: #1d1d1d;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--font);
+      opacity: 0;
+      transform: translateY(-4px) scale(0.95);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+      white-space: nowrap;
+    }
+    .proto-header-toast.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .proto-fab {
+      position: fixed;
+      top: 8px;
+      right: 14px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #f9dc00;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      z-index: 10001;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.35), 0 1px 4px rgba(0,0,0,0.2);
+      transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.2s ease, opacity 0.25s ease;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.6);
+    }
+    .proto-fab.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+    .proto-fab:hover {
+      box-shadow: 0 6px 24px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.25);
+    }
+    .proto-fab:active {
+      transform: scale(0.95);
+      cursor: grabbing;
+    }
+    .proto-fab svg {
+      color: #1d1d1d;
     }
     .scene-switcher {
       display: flex;
@@ -1979,18 +2096,42 @@
   </style>
 </head>
 <body>
-<div class="proto-header">
-  <div class="proto-breadcrumb">
-    <a href="https://sturdy-parakeet-o3wwv73.pages.github.io/">Index</a>
-    <span class="separator">›</span>
-    <span>st</span>
-    <span class="separator">›</span>
-    <a href="https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/templates-nux/index.html" class="current" style="cursor:pointer">Templates NUX - Mobile</a>
-    <span class="separator">›</span>
-    <span style="color:rgba(255,255,255,0.85);font-weight:600;font-size:12px">V2</span>
+<div class="proto-header" id="protoHeader">
+  <div class="proto-header-left">
+    <div class="proto-breadcrumb">
+      <a href="https://sturdy-parakeet-o3wwv73.pages.github.io/">Index</a>
+      <span class="sep">›</span>
+      <span>st</span>
+      <span class="sep">›</span>
+      <a href="https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/templates-nux/index.html" class="current" style="cursor:pointer">Templates NUX - Mobile</a>
+      <span class="sep">›</span>
+      <span class="current">V2</span>
+    </div>
   </div>
-  <div class="proto-timestamp" id="protoTimestamp"></div>
+  <div class="proto-header-right">
+    <span class="proto-timestamp" id="protoTimestamp"></span>
+    <div class="proto-divider"></div>
+    <a class="proto-link-btn" href="#" target="_blank" rel="noopener">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M8 2H5a3 3 0 0 0-3 3v3a3 3 0 0 0 3 3h3a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Z" fill="currentColor" opacity="0.5"/><path d="M5 13H8a3 3 0 0 1 3 3v3a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-3a3 3 0 0 1 3-3Z" fill="currentColor" opacity="0.7"/><path d="M16 2h-3a3 3 0 0 0-3 3v3a3 3 0 0 0 3 3h3a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Z" fill="currentColor" opacity="0.6"/><path d="M19 13h-3a3 3 0 0 0-3 3v5h3a3 3 0 0 0 3-3v-5Z" fill="currentColor" opacity="0.8"/></svg>
+      Figma
+    </a>
+    <a class="proto-link-btn" href="#" target="_blank" rel="noopener">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+      PRD
+    </a>
+    <button class="proto-link-btn" onclick="copyShareLink()" title="Copy share link">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      Share
+    </button>
+    <button class="proto-close-btn" id="protoCloseBtn" onclick="collapseProtoHeader()" title="Collapse header">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+    <div class="proto-header-toast" id="protoHeaderToast">Link copied!</div>
+  </div>
 </div>
+<button class="proto-fab" id="protoFab" onclick="expandProtoHeader()" title="Open header menu">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
+</button>
 <div style="display:flex;flex-direction:column;align-items:center">
 <div class="scene-switcher">
   <button class="scene-tab active" onclick="switchScene('new-sellers')">New Sellers</button>
@@ -7526,9 +7667,79 @@ function switchScene(scene) {
 // Set timestamp
 (function() {
   const now = new Date();
-  const options = { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
-  document.getElementById('protoTimestamp').textContent = 'Last updated: ' + now.toLocaleDateString('en-US', options);
+  const pad = n => String(n).padStart(2, '0');
+  const h = now.getHours(), m = pad(now.getMinutes());
+  const ampm = h >= 12 ? 'pm' : 'am';
+  const h12 = h % 12 || 12;
+  document.getElementById('protoTimestamp').textContent =
+    `Updated by Soh Tanaka on ${now.getMonth()+1}/${now.getDate()}/${String(now.getFullYear()).slice(2)} @ ${h12}:${m}${ampm}`;
 })();
+
+  const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/templates-nux/v2.html';
+  let shareToastTimer = null;
+  function copyShareLink() {
+    navigator.clipboard.writeText(LIVE_URL).then(() => {
+      const toast = document.getElementById('protoHeaderToast');
+      clearTimeout(shareToastTimer);
+      toast.classList.add('visible');
+      shareToastTimer = setTimeout(() => toast.classList.remove('visible'), 2000);
+    });
+  }
+  function collapseProtoHeader() {
+    document.getElementById('protoHeader').classList.add('collapsed');
+    setTimeout(() => document.getElementById('protoFab').classList.add('visible'), 150);
+  }
+  function expandProtoHeader() {
+    document.getElementById('protoFab').classList.remove('visible');
+    setTimeout(() => document.getElementById('protoHeader').classList.remove('collapsed'), 100);
+  }
+  (function() {
+    const NARROW_BP = 720;
+    let wasNarrow = window.innerWidth < NARROW_BP;
+    if (wasNarrow) collapseProtoHeader();
+    window.addEventListener('resize', () => {
+      const narrow = window.innerWidth < NARROW_BP;
+      if (narrow && !wasNarrow) collapseProtoHeader();
+      else if (!narrow && wasNarrow) expandProtoHeader();
+      wasNarrow = narrow;
+    });
+    const fab = document.getElementById('protoFab');
+    let dragging = false, fabX, fabY, sX, sY, moved;
+    fab.addEventListener('mousedown', startFabDrag);
+    fab.addEventListener('touchstart', startFabDrag, { passive: false });
+    function startFabDrag(e) {
+      dragging = true; moved = false;
+      fab.style.cursor = 'grabbing'; fab.style.transition = 'box-shadow 0.2s ease';
+      const rect = fab.getBoundingClientRect(); fabX = rect.left; fabY = rect.top;
+      const pt = e.touches ? e.touches[0] : e;
+      sX = pt.clientX - fabX; sY = pt.clientY - fabY;
+      document.addEventListener('mousemove', onFabDrag);
+      document.addEventListener('mouseup', stopFabDrag);
+      document.addEventListener('touchmove', onFabDrag, { passive: false });
+      document.addEventListener('touchend', stopFabDrag);
+      e.preventDefault();
+    }
+    function onFabDrag(e) {
+      if (!dragging) return;
+      moved = true;
+      const pt = e.touches ? e.touches[0] : e;
+      let x = pt.clientX - sX, y = pt.clientY - sY;
+      x = Math.max(0, Math.min(window.innerWidth - 48, x));
+      y = Math.max(0, Math.min(window.innerHeight - 48, y));
+      fab.style.left = x + 'px'; fab.style.top = y + 'px';
+      fab.style.right = 'auto'; fab.style.bottom = 'auto';
+      e.preventDefault();
+    }
+    function stopFabDrag() {
+      dragging = false; fab.style.cursor = 'grab';
+      fab.style.transition = '';
+      document.removeEventListener('mousemove', onFabDrag);
+      document.removeEventListener('mouseup', stopFabDrag);
+      document.removeEventListener('touchmove', onFabDrag);
+      document.removeEventListener('touchend', stopFabDrag);
+      if (!moved) expandProtoHeader();
+    }
+  })();
 </script>
 </body>
 </html>
