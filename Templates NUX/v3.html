@@ -2000,7 +2000,7 @@
     <span class="separator">›</span>
     <span>st</span>
     <span class="separator">›</span>
-    <a href="index.html" class="current" style="cursor:pointer">Templates NUX - Mobile</a>
+    <a href="https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/templates-nux/index.html" class="current" style="cursor:pointer">Templates NUX - Mobile</a>
     <span class="separator">›</span>
     <span style="color:rgba(255,255,255,0.85);font-weight:600;font-size:12px">V3</span>
   </div>
@@ -2779,7 +2779,7 @@
           <div class="tpl-info">
             <div class="tpl-details">
               <div class="tpl-title">Assorted Tops</div>
-              <div class="tpl-attr">Template · Multiple Options</div>
+              <div class="tpl-attr">Template</div>
               <div class="tpl-price">$1</div>
             </div>
           </div>
@@ -3589,159 +3589,157 @@
   <div class="edit-page" id="productPage">
     <div style="height:54px;flex-shrink:0"></div>
     <div class="edit-nav">
-      <button class="edit-nav-back" id="productBackBtn" onclick="closeProductPage()"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></button>
-      <span class="edit-nav-title" id="productNavTitle">Create Listing</span>
+      <button class="edit-nav-back" id="productBackBtn" onclick="closeProductPage()" style="display:none"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></button>
+      <span class="edit-nav-title" id="productNavTitle">Listing Details</span>
       <div style="position:absolute;right:16px;display:flex;gap:8px;align-items:center">
-        <button id="productCloseBtn" onclick="closeProductPageDirect()" style="width:32px;height:32px;border:none;background:none;cursor:pointer;display:none;align-items:center;justify-content:center"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+        <button id="productCloseBtn" onclick="closeProductPageDirect()" style="width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
       </div>
     </div>
-    <div class="edit-scroll">
-      <!-- Header (null state) -->
-      <div id="productNullHeader" style="display:none;padding:8px 16px 12px">
-        <div style="font-size:18px;font-weight:600;line-height:23px;letter-spacing:-0.44px;color:#1c1c1c">What are you creating?</div>
-      </div>
-
-      <!-- Category -->
-      <div class="edit-field" id="productCategoryField" onclick="openCategorySheet()" style="cursor:pointer;position:relative">
-        <div class="edit-field-label">Category <span class="required">*</span></div>
-        <div class="edit-field-value"><span id="productCategory">Women's Contemporary</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
-      </div>
-
-      <!-- Product / Surprise Set Toggle -->
-      <div style="display:flex;gap:8px;padding:0 16px 12px">
-        <div id="toggleProduct" onclick="selectProductType('product')" style="flex:1;padding:12px;border-radius:8px;background:#1c1c1c;cursor:pointer">
-          <div style="font-size:14px;font-weight:600;line-height:19px;color:white">Product</div>
-          <div style="font-size:12px;font-weight:400;line-height:16px;color:rgba(255,255,255,0.6);margin-top:2px">A listing for a single product.</div>
-        </div>
-        <div id="toggleSurprise" onclick="selectProductType('surprise')" style="flex:1;padding:12px;border-radius:8px;background:rgba(0,0,0,0.05);cursor:pointer">
-          <div style="font-size:14px;font-weight:600;line-height:19px;color:#1c1c1c">Surprise Set</div>
-          <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454;margin-top:2px">A listing with multiple hidden items revealed live.</div>
-        </div>
-      </div>
-
-      <!-- Product Details Section -->
-      <div style="padding:12px 16px 8px">
-        <div style="font-size:18px;font-weight:600;line-height:23px;letter-spacing:-0.44px;color:#1c1c1c">Product Details</div>
-      </div>
-
-      <!-- Media Upload -->
-      <div class="edit-media-field">
-        <img src="icons/camera.svg" alt="">
-        <span>Capture, Scan or Upload Media*</span>
-      </div>
-
-      <!-- Title -->
-      <div class="edit-field">
-        <div class="edit-field-label">Title <span class="required">*</span></div>
-        <div class="edit-field-value">
-          <input type="text" value="" id="productTitleInput" placeholder="Title" onfocus="this.style.fontWeight='600';this.style.color='#1c1c1c'" style="border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;width:100%;background:transparent">
-        </div>
-      </div>
-
-      <!-- Description -->
-      <div class="edit-field">
-        <div class="edit-field-label">Description <span class="required">*</span></div>
-        <div class="edit-field-value">
-          <input type="text" value="" id="productDescInput" placeholder="Description" style="border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;width:100%;background:transparent">
-        </div>
-      </div>
-
-      <!-- Quantity -->
-      <div class="edit-field" style="display:flex;align-items:center;justify-content:space-between">
-        <div>
-          <div class="edit-field-label">Quantity Available <span class="required">*</span></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <button onclick="adjustQty(-1)" style="width:32px;height:32px;border-radius:50%;border:1px solid rgba(0,0,0,0.2);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:#1c1c1c">−</button>
-          <span id="productQty" style="font-size:14px;font-weight:600;color:#1c1c1c;min-width:20px;text-align:center">1</span>
-          <button onclick="adjustQty(1)" style="width:32px;height:32px;border-radius:50%;border:1px solid rgba(0,0,0,0.2);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:#1c1c1c">+</button>
-        </div>
-      </div>
-
-      <!-- Brand -->
-      <div class="edit-field" id="productBrandField" style="position:relative">
-        <div class="edit-field-label" id="productBrandLabel" style="display:none">Brand</div>
-        <div class="edit-field-value"><span id="productBrand" style="color:#545454;font-weight:400">Brand</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
-      </div>
-
-      <!-- Size -->
-      <div class="edit-chips-field">
-        <div class="edit-chips-label">Size</div>
-        <div class="edit-chips">
-          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">OS</span>
-          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">XS</span>
-          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">S</span>
-          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">M</span>
-          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">L</span>
-          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">XL</span>
-          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">XXL</span>
-        </div>
-      </div>
-
-      <!-- Condition -->
-      <div class="edit-chips-field">
-        <div class="edit-chips-label">Condition</div>
-        <div class="edit-chips">
-          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">New w Tag</span>
-          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">New w/out Tag</span>
-          <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">New w Defect</span>
-        </div>
-      </div>
-
-      <!-- Condition helper -->
-      <div class="edit-helper">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="8" r="6"/><path d="M8 5.5v3M8 10.5h.01"/></svg>
-        <span>Accurate condition reduces refunds and disputes.</span>
-      </div>
-
-      <!-- Add More Details -->
-      <div class="edit-field" style="cursor:pointer">
-        <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Add More Details</div>
-        <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454;margin-top:2px">Add more product attributes to this item.</div>
-        <svg viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);width:20px;height:20px"><path d="M8 4l6 6-6 6"/></svg>
-      </div>
-
-      <!-- Product Variants Section -->
-      <div style="padding:12px 16px 8px">
-        <div style="font-size:18px;font-weight:600;line-height:23px;letter-spacing:-0.44px;color:#1c1c1c">Product Variants</div>
-      </div>
-
-      <div class="edit-field" id="productVariantsField" style="cursor:pointer;position:relative">
-        <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Manage Variants</div>
-        <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454;margin-top:2px">Include available colors, sizes, and quantities.</div>
-        <svg viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);width:20px;height:20px"><path d="M8 4l6 6-6 6"/></svg>
-      </div>
-
-      <div class="edit-divider"></div>
-
-      <!-- Shipping -->
-      <div class="edit-section-title">Shipping</div>
-
-      <div class="edit-field">
-        <div class="edit-field-label" id="productWeightLabel" style="display:none">Weight <span class="required">*</span></div>
-        <div class="edit-field-value"><span id="productWeight" style="color:#545454;font-weight:400">Weight *</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
-      </div>
-
-      <div class="edit-helper">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="8" r="6"/><path d="M8 5.5v3M8 10.5h.01"/></svg>
-        <span>Sellers cover any shipping adjustments.</span>
-      </div>
-
-      <div style="margin:0 16px 12px;border-radius:8px;overflow:hidden">
-        <div style="display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 16px;border:1px solid rgba(0,0,0,0.2);border-radius:8px 8px 0 0">
-          <span style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454">Restricted Items</span>
+    <div class="edit-scroll" style="display:flex;flex-direction:column;gap:24px;padding-bottom:48px">
+      <!-- Basics -->
+      <div style="display:flex;flex-direction:column;gap:16px;padding:0 16px">
+        <!-- Category -->
+        <div id="productCategoryField" onclick="openCategorySheet()" style="cursor:pointer;border:1px solid #d2d2d2;border-radius:8px;height:56px;display:flex;align-items:center;padding:0 16px;gap:8px;background:white">
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Category <span style="color:#ce291a">*</span></div>
+            <div id="productCategory" style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Women's Contemporary</div>
+          </div>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#545454" stroke-width="1.5" stroke-linecap="round"><path d="M6 8l4 4 4-4"/></svg>
         </div>
-        <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 16px;background:#f3f3f3;border-radius:0 0 8px 8px">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1c1c1c" stroke-width="1.2" style="flex-shrink:0;margin-top:1px"><circle cx="8" cy="8" r="6"/><path d="M8 5.5v3M8 10.5h.01"/></svg>
-          <span style="font-size:12px;font-weight:400;line-height:16px;color:#1c1c1c">Carriers restrict the shipping of any items that may pose risks to <a href="#" style="color:#005ae1;text-decoration:none">health and safety</a>.</span>
+
+        <!-- Media Upload -->
+        <div style="border:1px solid #d2d2d2;border-radius:8px;height:98px;display:flex;align-items:center;justify-content:center;background:white;overflow:hidden">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <div style="font-size:13px;font-weight:590;line-height:18px;letter-spacing:-0.08px;color:#545454;text-align:center">Capture, Scan or Upload Media<span style="color:#ce291a">*</span></div>
+          </div>
+        </div>
+
+        <!-- Title -->
+        <div style="border:1px solid #d2d2d2;border-radius:8px;height:56px;display:flex;align-items:center;padding:0 16px;background:white">
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Title <span style="color:#ce291a">*</span></div>
+            <input type="text" value="" id="productTitleInput" placeholder="Title" style="border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;width:100%;background:transparent;padding:0">
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div style="border:1px solid #d2d2d2;border-radius:8px;min-height:80px;display:flex;flex-direction:column;gap:8px;padding:12px 16px;background:white">
+          <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Description <span style="color:#ce291a">*</span></div>
+          <input type="text" value="" id="productDescInput" placeholder="A stylish shirt that is light and comfortable." style="border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;width:100%;background:transparent;padding:0">
+        </div>
+
+        <!-- Quantity -->
+        <div style="border:1px solid #d2d2d2;border-radius:8px;display:flex;align-items:center;justify-content:space-between;padding:12px 12px 12px 16px;background:white">
+          <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454">Quantity Available <span style="color:#ce291a">*</span></div>
+          <div style="display:flex;align-items:center;gap:0">
+            <button onclick="adjustQty(-1)" style="width:28px;height:32px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M5 10h10"/></svg>
+            </button>
+            <div style="min-width:48px;max-width:56px;height:32px;border:1px solid rgba(0,0,0,0.1);border-radius:48px;display:flex;align-items:center;justify-content:center;padding:0 12px">
+              <span id="productQty" style="font-size:14px;font-weight:590;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;text-align:center">1</span>
+            </div>
+            <button onclick="adjustQty(1)" style="width:28px;height:32px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M10 5v10M5 10h10"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Brand -->
+        <div id="productBrandField" style="border:1px solid rgba(0,0,0,0.2);border-radius:8px;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:white;cursor:pointer">
+          <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454"><span id="productBrand">Brand</span></div>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#545454" stroke-width="1.5" stroke-linecap="round"><path d="M6 8l4 4 4-4"/></svg>
+        </div>
+
+        <!-- Size -->
+        <div style="border:1px solid #d2d2d2;border-radius:8px;padding:12px 16px 16px;background:white;display:flex;flex-direction:column;gap:8px">
+          <div style="font-size:14px;font-weight:590;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Size</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <span class="edit-chip edit-chip-on" onclick="toggleChip(this)">OS</span>
+            <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">XS</span>
+            <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">S</span>
+            <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">M</span>
+            <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">L</span>
+            <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">XL</span>
+            <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">XXL</span>
+            <div style="padding:8px 12px;background:rgba(0,0,0,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="#1c1c1c"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Condition -->
+        <div style="border:1px solid #d2d2d2;border-radius:8px;overflow:hidden;background:white">
+          <div style="padding:12px 16px 16px;display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:14px;font-weight:590;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Condition</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <span class="edit-chip edit-chip-on" onclick="toggleChip(this)">New w Tag</span>
+              <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">New w/out Tag</span>
+              <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">New w Defect</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;padding:8px 16px;background:#f3f3f3">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1c1c1c" stroke-width="1.2" style="flex-shrink:0"><circle cx="8" cy="8" r="6"/><path d="M8 5.5v3M8 10.5h.01"/></svg>
+            <span style="font-size:12px;font-weight:400;line-height:16px;color:#1c1c1c">Accurate condition reduces refunds and disputes.</span>
+          </div>
+        </div>
+
+        <!-- Add More Details -->
+        <div style="border:1px solid #d2d2d2;border-radius:8px;padding:12px 16px 16px;background:white;display:flex;align-items:center;gap:8px;cursor:pointer">
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+            <div style="font-size:14px;font-weight:590;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Add More Details</div>
+            <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454">Add more product attributes to this item.</div>
+          </div>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round" style="flex-shrink:0"><path d="M8 4l6 6-6 6"/></svg>
         </div>
       </div>
 
-      <div style="height:24px"></div>
+      <!-- Section Divider -->
+      <div style="width:100%;height:4px;background:rgba(0,0,0,0.1)"></div>
+
+      <!-- Product Variants -->
+      <div style="display:flex;flex-direction:column;gap:16px;padding:0 16px">
+        <div style="font-size:18px;font-weight:590;line-height:23px;letter-spacing:-0.44px;color:#1c1c1c">Product Variants</div>
+        <div id="productVariantsField" style="border:1px solid #d2d2d2;border-radius:8px;padding:16px;background:white;display:flex;align-items:center;gap:8px;cursor:pointer">
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+            <div style="font-size:14px;font-weight:590;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Manage Variants</div>
+            <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454">Include available colors, sizes, and quantities.</div>
+          </div>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round" style="flex-shrink:0"><path d="M8 4l6 6-6 6"/></svg>
+        </div>
+      </div>
+
+      <!-- Section Divider -->
+      <div style="width:100%;height:4px;background:rgba(0,0,0,0.1)"></div>
+
+      <!-- Shipping -->
+      <div style="display:flex;flex-direction:column;gap:16px;padding:0 16px">
+        <div style="font-size:18px;font-weight:590;line-height:23px;letter-spacing:-0.44px;color:#1c1c1c">Shipping</div>
+
+        <!-- Weight -->
+        <div style="border:1px solid #d2d2d2;border-radius:8px;height:56px;display:flex;align-items:center;padding:0 16px;gap:8px;background:white;cursor:pointer">
+          <div style="flex:1;display:flex;gap:2px;align-items:center">
+            <span id="productWeight" style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454">Weight</span>
+            <span style="font-size:12px;font-weight:400;line-height:16px;color:#ce291a">*</span>
+          </div>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#545454" stroke-width="1.5" stroke-linecap="round"><path d="M6 8l4 4 4-4"/></svg>
+        </div>
+
+        <!-- Restricted Items -->
+        <div style="border:1px solid rgba(0,0,0,0.2);border-radius:8px;overflow:hidden;background:white">
+          <div style="display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 16px">
+            <span style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#545454">Restricted Items</span>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#545454" stroke-width="1.5" stroke-linecap="round"><path d="M6 8l4 4 4-4"/></svg>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 16px;background:#f3f3f3">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1c1c1c" stroke-width="1.2" style="flex-shrink:0;margin-top:1px"><circle cx="8" cy="8" r="6"/><path d="M8 5.5v3M8 10.5h.01"/></svg>
+            <span style="font-size:12px;font-weight:400;line-height:16px;color:#1c1c1c">Carriers restrict the shipping of any items that may pose risks to <a href="#" style="color:#005ae1;text-decoration:none">health and safety</a>.</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="edit-footer" id="productPageFooter">
-      <button class="edit-btn-draft" id="productDraftBtn" onclick="productSaveDraft()">Save as Draft</button>
+    <div class="edit-footer" id="productPageFooter" style="border-top:1px solid rgba(0,0,0,0.2)">
+      <button class="edit-btn-draft" id="productDraftBtn" onclick="productSaveDraft()">Save Draft</button>
       <button class="edit-btn-next" id="productNextBtn" onclick="productNext()">Next</button>
     </div>
   </div>
@@ -3894,7 +3892,7 @@
               <div class="tpl-info">
                 <div class="tpl-details">
                   <div class="tpl-title">Assorted Tops</div>
-                  <div class="tpl-attr">Template · Multiple Options</div>
+                  <div class="tpl-attr">Template</div>
                   <div class="tpl-price">$1</div>
                 </div>
               </div>
@@ -3908,7 +3906,7 @@
               <div class="tpl-info">
                 <div class="tpl-details">
                   <div class="tpl-title">Assorted Bottoms</div>
-                  <div class="tpl-attr">Template · Multiple Options</div>
+                  <div class="tpl-attr">Template</div>
                   <div class="tpl-price">$1</div>
                 </div>
               </div>
@@ -3922,7 +3920,7 @@
               <div class="tpl-info">
                 <div class="tpl-details">
                   <div class="tpl-title">Assorted Dresses</div>
-                  <div class="tpl-attr">Template · Multiple Options</div>
+                  <div class="tpl-attr">Template</div>
                   <div class="tpl-price">$1</div>
                 </div>
               </div>
@@ -4618,7 +4616,7 @@ function cloneTemplate() {
         ${typeThumbHTML(cloneIcon || 'tops', 84)}
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px">
           <div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${clonedTitle}</div>
-          <div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div>
+          <div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template</div>
           <div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div>
         </div>
       `;
@@ -4816,7 +4814,7 @@ function configureNuxSlide4() {
         ${typeThumbHTML('tops', 140)}
         <div class="tpl-info"><div class="tpl-details">
           <div class="tpl-title">Assorted Tops</div>
-          <div class="tpl-attr">Template · Multiple Options</div>
+          <div class="tpl-attr">Template</div>
           <div class="tpl-price">$1</div>
         </div></div>
       </div>`;
@@ -4832,7 +4830,7 @@ function configureNuxSlide4() {
         ${typeThumbHTML(t.id, 140)}
         <div class="tpl-info"><div class="tpl-details">
           <div class="tpl-title">Assorted ${t.label}</div>
-          <div class="tpl-attr">Template · Multiple Options</div>
+          <div class="tpl-attr">Template</div>
           <div class="tpl-price">$1</div>
         </div></div>
       </div>`).join('');
@@ -5075,7 +5073,7 @@ function populateInventoryDraftTemplates() {
     row.onclick = function() { openEditById(lid, 'inventory'); };
     row.innerHTML = `
       ${typeThumbHTML(t.id, 84)}
-      <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Assorted ${t.label}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>`;
+      <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Assorted ${t.label}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>`;
     draftList.insertBefore(row, draftList.firstChild);
   });
   if (currentTemplateMode === 'l1') {
@@ -5529,7 +5527,7 @@ function addTemplateToDraftTab(title, listingId) {
   row.onclick = function() { openEditById(lid, 'inventory'); };
   row.innerHTML = `
     ${typeThumbHTML(iconSrc, 84)}
-    <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${title}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>`;
+    <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${title}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>`;
   if (currentTemplateMode === 'l1') row.style.display = 'none';
   draftList.insertBefore(row, draftList.firstChild);
 }
@@ -5636,22 +5634,22 @@ function openProductPage(title, attrs, isNew) {
 
   if (isNew) {
     currentEditingListingId = null;
-    navTitle.textContent = 'Create Listing';
+    navTitle.textContent = 'Listing Details';
     backBtn.style.display = 'none';
     closeBtn.style.display = 'flex';
-    nullHeader.style.display = 'block';
+    if (nullHeader) nullHeader.style.display = 'block';
     titleInput.value = '';
     titleInput.placeholder = 'Title';
     titleInput.style.fontWeight = '400';
     titleInput.style.color = '#545454';
     descInput.value = '';
-    descInput.placeholder = 'Description';
+    descInput.placeholder = 'A stylish shirt that is light and comfortable.';
     productQty = 1;
   } else {
-    navTitle.textContent = 'Edit Listing';
+    navTitle.textContent = 'Listing Details';
     backBtn.style.display = 'flex';
     closeBtn.style.display = 'none';
-    nullHeader.style.display = 'none';
+    if (nullHeader) nullHeader.style.display = 'none';
     titleInput.value = title || '';
     titleInput.style.fontWeight = '600';
     titleInput.style.color = '#1c1c1c';
@@ -6013,7 +6011,7 @@ function addNewTemplateToShop(title) {
   const rec = createListingRecord({
     type: 'template',
     title: title,
-    subtitle: 'Template · Multiple Options',
+    subtitle: 'Template',
     price: '$1',
     origin: 'shop',
     status: 'active',
@@ -6031,7 +6029,7 @@ function addNewTemplateToShop(title) {
         <div onclick="openListingDetail(${count})" style="display:flex;flex-direction:column;gap:4px;cursor:pointer">
           <div style="display:flex;flex-direction:column;gap:2px">
             <div class="listing-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">${title}</div>
-            <div class="listing-subtitle" style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#7f7f7f">Template · Multiple Options</div>
+            <div class="listing-subtitle" style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#7f7f7f">Template</div>
           </div>
           <div class="listing-price" style="font-size:13px;font-weight:600;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c">$1</div>
         </div>
@@ -6070,10 +6068,10 @@ function openShopListing(title) {
     const closeBtn = document.getElementById('productCloseBtn');
     const nullHeader = document.getElementById('productNullHeader');
 
-    navTitle.textContent = 'Edit Listing';
+    navTitle.textContent = 'Listing Details';
     backBtn.style.display = 'none';
     closeBtn.style.display = 'flex';
-    nullHeader.style.display = 'none';
+    if (nullHeader) nullHeader.style.display = 'none';
     titleInput.value = title || '';
     titleInput.style.fontWeight = '600';
     titleInput.style.color = '#1c1c1c';
@@ -6893,7 +6891,7 @@ function moveItemToActive(title) {
       <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px">
         <span class="inv-date-label">${nextShowLabel()}</span>
         <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${title}</div>
-        <div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div>
+        <div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template</div>
         <div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div>
       </div>
     `;
@@ -7130,7 +7128,7 @@ function configureStep3() {
       <div class="tpl-info">
         <div class="tpl-details">
           <div class="tpl-title">Assorted ${t.label}</div>
-          <div class="tpl-attr">Template · Multiple Options</div>
+          <div class="tpl-attr">Template</div>
           <div class="tpl-price">$1</div>
         </div>
       </div>
@@ -7397,7 +7395,7 @@ function populateShopWithTemplates() {
       const rec = createListingRecord({
         type: 'template',
         title: templateEdits[i].title,
-        subtitle: 'Template · Multiple Options',
+        subtitle: 'Template',
         price: '$1',
         brands: templateEdits[i].brands,
         sizes: templateEdits[i].sizes || templateSizes[t.id] || null,
@@ -7690,10 +7688,11 @@ function openEduListing() {
   const descInput = document.getElementById('productDescInput');
   titleInput.value = '';
   descInput.value = '';
-  document.getElementById('productNavTitle').textContent = 'Create Listing';
+  document.getElementById('productNavTitle').textContent = 'Listing Details';
   document.getElementById('productBackBtn').style.display = 'none';
   document.getElementById('productCloseBtn').style.display = 'flex';
-  document.getElementById('productNullHeader').style.display = 'none';
+  const pnh = document.getElementById('productNullHeader');
+  if (pnh) pnh.style.display = 'none';
 
   const scrollArea = page.querySelector('.edit-scroll');
   if (scrollArea) scrollArea.scrollTop = 0;
@@ -7983,7 +7982,7 @@ function shopListingOptionClone() {
           <div style="display:flex;flex-direction:column;gap:4px">
             <div style="display:flex;flex-direction:column;gap:2px">
               <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Assorted ${tpl.label} (Copy)</div>
-              <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#7f7f7f">Multiple Options</div>
+              <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#7f7f7f">Template</div>
             </div>
             <div style="font-size:13px;font-weight:600;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c">$1</div>
           </div>
@@ -8469,7 +8468,7 @@ function openListingDetail(idx) {
   detailTitleEl.textContent = detailTitle;
   const shopRow = document.querySelectorAll('#shopProductList [data-listing-id]')[idx];
   detailTitleEl.dataset.listingId = shopRow ? shopRow.dataset.listingId : '';
-  document.getElementById('detailSubtitle').textContent = '1 Available • Multiple Options';
+  document.getElementById('detailSubtitle').textContent = '1 Available';
   document.getElementById('detailPrice').textContent = '$1';
 
   const detailIcon = tpl ? (tpl.icon || 'icons/icon-tops.png') : 'icons/icon-tops.png';
@@ -8526,7 +8525,7 @@ function reopenLiveShowFromLobby() {
 // ═══ IMPORT TO SHOW ═══
 const importableItems = {
   active: [
-    { title: 'Assorted Tops', attr: 'Template', attrExtra: 'Multiple Options', price: '$1', img: 'icons/thumb-bg.png', icon: 'icons/icon-tops.png', type: 'template', hasBorder: false },
+    { title: 'Assorted Tops', attr: 'Template', attrExtra: '', price: '$1', img: 'icons/thumb-bg.png', icon: 'icons/icon-tops.png', type: 'template', hasBorder: false },
     { title: 'Floral Top', attr: null, attrExtra: null, price: '$1', img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&q=80', type: 'listing', hasBorder: true, schedule: '4/30/26 · 3:00PM' },
     { title: 'Commense Matching Dress', attr: null, attrExtra: null, price: '$1', img: 'https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=200&q=80', type: 'listing', hasBorder: true, schedule: '4/30/26 · 3:00PM' },
     { title: 'Commense White Summer Dress XS', attr: null, attrExtra: null, price: '$1', img: 'https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=200&q=80', type: 'listing', hasBorder: true, schedule: '4/30/26 · 3:00PM' },
@@ -8534,9 +8533,9 @@ const importableItems = {
     { title: 'ATHMILE Womens Short Sleeve V-Neck Shirts', attr: null, attrExtra: null, price: '$1', img: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=200&q=80', type: 'listing', hasBorder: true, schedule: null, status: 'Active' },
   ],
   draft: [
-    { title: 'Assorted Tops', attr: 'Template', attrExtra: 'Multiple Options', price: '$1', img: 'icons/thumb-bg.png', icon: 'icons/icon-tops.png', type: 'template', hasBorder: false },
-    { title: 'Assorted Bottoms', attr: 'Template', attrExtra: 'Multiple Options', price: '$1', img: 'icons/thumb-bg.png', icon: 'icons/icon-pants.png', type: 'template', hasBorder: false },
-    { title: 'Assorted Dresses', attr: 'Template', attrExtra: 'Multiple Options', price: '$1', img: 'icons/thumb-bg.png', icon: 'icons/icon-skirts.png', type: 'template', hasBorder: false },
+    { title: 'Assorted Tops', attr: 'Template', attrExtra: '', price: '$1', img: 'icons/thumb-bg.png', icon: 'icons/icon-tops.png', type: 'template', hasBorder: false },
+    { title: 'Assorted Bottoms', attr: 'Template', attrExtra: '', price: '$1', img: 'icons/thumb-bg.png', icon: 'icons/icon-pants.png', type: 'template', hasBorder: false },
+    { title: 'Assorted Dresses', attr: 'Template', attrExtra: '', price: '$1', img: 'icons/thumb-bg.png', icon: 'icons/icon-skirts.png', type: 'template', hasBorder: false },
     { title: 'Zara Satin Slip Skirt', attr: 'Auction', attrExtra: 'Size XS', price: '$22', img: 'https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=200&q=80', type: 'listing', hasBorder: true },
     { title: 'Oversized Band Tee Vintage Wash', attr: 'Auction', attrExtra: 'Size M', price: '$15', img: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=200&q=80', type: 'listing', hasBorder: true },
   ],
@@ -8668,7 +8667,7 @@ function confirmImport() {
     selectedItems.forEach(item => {
       const count = list.children.length;
       const attrText = item.type === 'template'
-        ? 'Template · Multiple Options'
+        ? 'Template'
         : (item.attr ? item.attr + (item.attrExtra ? ' · ' + item.attrExtra : '') : 'Listing · Single Product');
 
       const rec = createListingRecord({
@@ -8910,7 +8909,7 @@ function handleMultiTplPick() {
       const rec = createListingRecord({
         type: 'template',
         title: title,
-        subtitle: 'Template · Multiple Options',
+        subtitle: 'Template',
         price: '$1',
         status: 'draft',
         origin: 'inventory',
@@ -9392,7 +9391,7 @@ function populateTemplatesL1List() {
     row.onclick = function() { openEditById(lid, 'templatesl1'); };
     row.innerHTML = `
       ${typeThumbHTML(t.id, 84)}
-      <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Assorted ${t.label}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>`;
+      <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Assorted ${t.label}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>`;
     list.appendChild(row);
   });
   updateL1TemplateCount();
@@ -9415,7 +9414,7 @@ function addTemplateToL1Page(title, typeLabel, brands) {
   const showDate = nextShowLabel();
   row.innerHTML = `
     ${typeThumbHTML(rec.icon || typeId || 'tops', 84)}
-    <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><span class="inv-date-label">${showDate}</span><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${safeTitle}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><span class="inv-date-label">${showDate}</span><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${safeTitle}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>
   `;
   list.insertBefore(row, list.firstChild);
   updateL1TemplateCount();
