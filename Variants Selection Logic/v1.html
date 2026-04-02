@@ -1774,9 +1774,11 @@
       const tpl = pool[Math.floor(Math.random() * pool.length)];
 
       PRODUCT.name = tpl.name;
-      PRODUCT.imageKey = tpl.imageKey;
       PRODUCT.images = { ...tpl.images };
-      PRODUCT.dimensions = tpl.dims.map(d => ({ label: d.label, options: [...d.options] }));
+      function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
+      const dimOrder = shuffle([...Array(tpl.dims.length).keys()]);
+      PRODUCT.dimensions = dimOrder.map(i => ({ label: tpl.dims[i].label, options: [...tpl.dims[i].options] }));
+      PRODUCT.imageKey = dimOrder.indexOf(tpl.imageKey);
 
       const statuses = ['available', 'available', 'available', 'sold_out', 'not_exist'];
       PRODUCT.variants = {};
@@ -2210,11 +2212,7 @@
         if (shouldAutoOpenNotes()) setTimeout(() => toggleNotesPanel(true), 600);
       }
       setNotAvailMode('hidden');
-      state.selections = ['9.5M', 'Black/White'];
-      state.currentState = 'default';
-      renderAllChips();
-      renderProductInfo();
-      updateImages('Black/White');
+      randomizeVariants();
       const now = new Date();
       const pad = n => String(n).padStart(2, '0');
       const h = now.getHours(), m = pad(now.getMinutes());
