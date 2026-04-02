@@ -38,7 +38,7 @@
 
     body {
       font-family: var(--font);
-      background: #1a1a1a;
+      background: radial-gradient(ellipse at 85% 10%, rgba(255,255,255,0.06) 0%, transparent 50%), #262626;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -69,6 +69,13 @@
       gap: 8px;
       min-width: 0;
       flex: 1;
+    }
+    .proto-logo {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      border-radius: 5px;
+      margin-right: 4px;
     }
     .proto-breadcrumb {
       display: flex;
@@ -206,6 +213,134 @@
       color: #1d1d1d;
     }
 
+    /* Notes Overlay + Panel */
+    .notes-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 200000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .notes-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .notes-panel {
+      position: fixed;
+      z-index: 200001;
+      width: 320px;
+      max-height: 50vh;
+      background: rgba(50,50,50,0.95);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      font-family: var(--font);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(-6px) scale(0.95);
+      transform-origin: top right;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .notes-panel.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+    .notes-panel-header {
+      padding: 10px 14px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .notes-panel-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.85);
+    }
+    .notes-panel-close {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.06);
+      border: none;
+      transition: background 0.15s;
+    }
+    .notes-panel-close:hover {
+      background: rgba(255,255,255,0.12);
+    }
+    .notes-panel-body {
+      padding: 0 14px 14px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .notes-panel-content {
+      font-size: 14px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.65);
+      word-break: break-word;
+    }
+    .notes-panel-content p {
+      margin: 0 0 12px;
+    }
+    .notes-panel-content h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      margin: 14px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .notes-panel-content ul, .notes-panel-content ol {
+      margin: 0 0 12px;
+      padding-left: 18px;
+    }
+    .notes-panel-content li {
+      margin-bottom: 6px;
+    }
+    .notes-panel-content ol {
+      padding-left: 22px;
+    }
+    .notes-panel-content strong {
+      color: rgba(255,255,255,0.85);
+      font-weight: 600;
+    }
+    .notes-panel-footer {
+      padding: 10px 14px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .notes-panel-footer label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .notes-panel-footer input[type="checkbox"] {
+      accent-color: #FFE414;
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+      margin: 0;
+    }
+
     [data-tip] {
       position: relative;
     }
@@ -244,7 +379,16 @@
       inset: -8px;
       border-radius: 58px;
       border: 8px solid #2a2a2a;
-      box-shadow: inset 0 0 0 1.5px #444, 0 0 0 1px #111, 0 20px 60px rgba(0,0,0,0.6);
+      border-top-color: #363636;
+      background: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 30%);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        inset 0 0 0 1.5px #444,
+        0 0 0 1px rgba(0,0,0,0.4),
+        0 8px 24px rgba(0,0,0,0.35),
+        10px 20px 50px rgba(0,0,0,0.5),
+        16px 40px 100px rgba(0,0,0,0.4),
+        24px 64px 160px rgba(0,0,0,0.3);
       pointer-events: none;
       z-index: 3;
     }
@@ -832,6 +976,7 @@
   <div class="proto-header" id="protoHeader">
     <div class="proto-header-left">
       <div class="proto-breadcrumb">
+        <svg class="proto-logo" width="20" height="20" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M80 40C80 70.9265 70.9265 80 40 80C9.07348 80 0 70.9265 0 40C0 9.07347 9.07348 0 40 0C70.9265 0 80 9.07347 80 40Z" fill="#2D2D2D"/><path transform="translate(12.12,22.94)" d="M18.7312 34.1275C21.6005 34.1275 23.703 31.9154 24.1473 29.3869C24.4668 27.6799 24.2751 24.838 23.5722 22.0569C23.2527 20.6664 24.3359 20.0335 25.3552 21.5518L27.4578 24.7741C32.8739 32.8647 35.1712 34.1275 37.2737 34.1275C39.3762 34.1275 41.7344 33.242 47.9811 24.269L49.5755 21.993C55.1194 14.094 55.7584 10.8687 55.7584 8.97307C55.7584 3.91602 51.9337 0 46.8371 0C43.0123 0 40.8459 2.08428 38.9989 5.81469L38.2991 7.20523C37.724 8.34322 36.8964 8.34322 36.2605 7.20523L35.4967 5.75079C33.522 1.95952 31.4803 0 27.8503 0C24.2203 0 22.1786 1.83173 20.3286 5.62604L19.5649 7.20523C18.9898 8.40712 18.0344 8.46797 17.4623 7.20523L16.7625 5.68993C14.9156 1.64611 12.7461 0.00302715 8.86049 0.00302715C3.88863 0.00302715 0 3.79431 0 8.97612C0 10.8717 0.447281 14.0332 5.86338 21.8682L7.39389 24.0803C14.021 33.6224 16.443 34.1275 18.7373 34.1275H18.7312Z" fill="#FFE414"/></svg>
         <a href="https://sturdy-parakeet-o3wwv73.pages.github.io/">Index</a>
         <span class="sep">›</span>
         <span>st</span>
@@ -852,6 +997,10 @@
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
         PRD
       </a>
+      <button class="proto-link-btn" id="protoNotesBtn" onclick="toggleNotesPanel()" title="Prototype notes" style="display:none">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Notes
+      </button>
       <button class="proto-link-btn" onclick="copyShareLink()" title="Copy share link">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
         Share
@@ -863,6 +1012,23 @@
     <div class="proto-header-toast" id="protoHeaderToast">Link copied!</div>
   </div>
 
+  <!-- Notes -->
+  <div class="notes-overlay" id="notesOverlay" onclick="toggleNotesPanel(false)"></div>
+  <div class="notes-panel" id="notesPanel">
+    <div class="notes-panel-header">
+      <span class="notes-panel-title">Notes</span>
+      <button class="notes-panel-close" onclick="toggleNotesPanel(false)">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+    <div class="notes-panel-body">
+      <div class="notes-panel-content" id="notesPanelContent"></div>
+    </div>
+    <div class="notes-panel-footer">
+      <label><input type="checkbox" id="notesAutoOpenCb" onchange="saveNotesAutoOpen()">Don't show on load</label>
+    </div>
+  </div>
+
   <!-- Prototype finger cursor -->
   <div class="proto-cursor" id="protoCursor"></div>
 
@@ -872,7 +1038,7 @@
   </button>
 
   <!-- ═══ DRAGGABLE CONTROL PANEL ═══ -->
-  <div id="controlPanel" style="position:fixed;z-index:99999;width:fit-content;min-width:210px;background:rgba(30,30,30,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:14px;border:1px solid rgba(255,255,255,0.08);box-shadow:0 8px 32px rgba(0,0,0,0.4);font-family:var(--font);user-select:none;overflow:visible;transition:left 0.35s cubic-bezier(0.32, 0.72, 0, 1), top 0.35s cubic-bezier(0.32, 0.72, 0, 1)">
+  <div id="controlPanel" style="position:fixed;z-index:99999;width:fit-content;min-width:210px;background:linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 40%), rgba(30,30,30,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:14px;border:1px solid rgba(255,255,255,0.08);border-top:1px solid rgba(255,255,255,0.14);box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);font-family:var(--font);user-select:none;overflow:visible;transition:left 0.35s cubic-bezier(0.32, 0.72, 0, 1), top 0.35s cubic-bezier(0.32, 0.72, 0, 1)">
     <div id="controlPanelHandle" style="padding:10px 14px 8px;cursor:grab;display:flex;align-items:center;justify-content:space-between">
       <span style="font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:rgba(255,255,255,0.4)">Controls</span>
       <div id="controlPanelCollapse" onclick="toggleControlPanel()" style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:4px;background:rgba(255,255,255,0.06)">
@@ -882,17 +1048,17 @@
     <div id="controlPanelBody" style="padding:0 14px 14px;display:flex;flex-direction:column;gap:10px">
       <span style="font-size:10px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;color:rgba(255,255,255,0.3)">Not Available Display</span>
       <div style="display:flex;gap:6px">
-        <label onclick="setNotAvailMode('disabled')" id="radioDisabled" style="flex:1;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:11px;color:rgba(255,255,255,0.6);transition:border-color 0.15s,background 0.15s">
-          <span style="width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color 0.15s" id="radioDotDisabled"><span style="width:6px;height:6px;border-radius:50%;background:#f9dc00;display:none" id="radioFillDisabled"></span></span>
-          Disabled
-        </label>
         <label onclick="setNotAvailMode('hidden')" id="radioHidden" style="flex:1;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:11px;color:rgba(255,255,255,0.6);transition:border-color 0.15s,background 0.15s">
           <span style="width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color 0.15s" id="radioDotHidden"><span style="width:6px;height:6px;border-radius:50%;background:#f9dc00;display:none" id="radioFillHidden"></span></span>
           Hidden
         </label>
+        <label onclick="setNotAvailMode('disabled')" id="radioDisabled" style="flex:1;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:11px;color:rgba(255,255,255,0.6);transition:border-color 0.15s,background 0.15s">
+          <span style="width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color 0.15s" id="radioDotDisabled"><span style="width:6px;height:6px;border-radius:50%;background:#f9dc00;display:none" id="radioFillDisabled"></span></span>
+          Disabled
+        </label>
       </div>
       <div style="height:1px;background:rgba(255,255,255,0.06)"></div>
-      <button onclick="randomizeVariants()" style="width:100%;height:32px;border-radius:8px;border:none;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:background 0.15s;letter-spacing:-0.1px" onmouseenter="this.style.background='rgba(255,255,255,0.14)'" onmouseleave="this.style.background='rgba(255,255,255,0.08)'">🎲 Randomize Variants</button>
+      <button onclick="randomizeVariants()" style="width:100%;height:32px;border-radius:8px;border:none;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:background 0.15s;letter-spacing:-0.1px" onmouseenter="this.style.background='rgba(255,255,255,0.14)'" onmouseleave="this.style.background='rgba(255,255,255,0.08)'">🎲&nbsp;&nbsp;Randomize Variants</button>
       <div style="height:1px;background:rgba(255,255,255,0.06)"></div>
       <span style="font-size:10px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;color:rgba(255,255,255,0.3)">Variant Map</span>
       <div id="variantTable" style="overflow:visible;border-radius:8px;border:1px solid rgba(255,255,255,0.06);padding:3px"></div>
@@ -1221,6 +1387,8 @@
 
     function renderAllChips() {
       const section = document.getElementById('variantsSection');
+      const savedScrolls = [];
+      section.querySelectorAll('.chip-row').forEach((r, i) => savedScrolls[i] = r.scrollLeft);
       section.innerHTML = '';
       PRODUCT.dimensions.forEach((dim, dIdx) => {
         const group = document.createElement('div');
@@ -1242,6 +1410,7 @@
           if (notAvailMode === 'hidden' && optionIsAllNotExist(dIdx, opt)) return;
           row.appendChild(createChip(opt, getChipClass(dIdx, opt), () => selectOption(dIdx, opt)));
         });
+        if (savedScrolls[dIdx] !== undefined) row.scrollLeft = savedScrolls[dIdx];
         group.appendChild(row);
         section.appendChild(group);
       });
@@ -1538,7 +1707,7 @@
         dims[0].options.forEach(r => {
           const isSel = r === state.selections[0];
           html += `<tr style="background:${isSel ? 'rgba(255,255,255,0.04)' : 'transparent'}">`;
-          html += `<td style="padding:4px 6px;color:rgba(255,255,255,${isSel?'0.9':'0.5'});font-weight:${isSel?'700':'500'};white-space:nowrap" data-tip="${r}">${r}</td>`;
+          html += `<td style="padding:4px 6px;color:rgba(255,255,255,${isSel?'0.9':'0.5'});font-weight:${isSel?'700':'500'};white-space:nowrap">${r}</td>`;
           dims[1].options.forEach(c => {
             const v = getVariant([r, c]);
             const active = r === state.selections[0] && c === state.selections[1];
@@ -1569,7 +1738,7 @@
         dims[0].options.forEach(d0 => {
           const isSel = d0 === state.selections[0];
           html += `<tr style="background:${isSel ? 'rgba(255,255,255,0.04)' : 'transparent'}">`;
-          html += `<td style="padding:4px 6px;color:rgba(255,255,255,${isSel?'0.9':'0.5'});font-weight:${isSel?'700':'500'};white-space:nowrap" data-tip="${d0}">${d0}</td>`;
+          html += `<td style="padding:4px 6px;color:rgba(255,255,255,${isSel?'0.9':'0.5'});font-weight:${isSel?'700':'500'};white-space:nowrap">${d0}</td>`;
           combos.forEach((cb, ci) => {
             const v = getVariant([d0, cb.d1, cb.d2]);
             const active = d0 === state.selections[0] && cb.d1 === state.selections[1] && cb.d2 === state.selections[2];
@@ -1696,7 +1865,7 @@
       }
 
       screen.addEventListener('mousedown', (e) => {
-        if (e.target.closest('button, a, input, .chip')) return;
+        if (e.target.closest('button, a, input, .chip, .chip-row')) return;
         swiping = true;
         startY = e.clientY;
         scrollStart = screen.scrollTop;
@@ -1780,6 +1949,36 @@
       }
     })();
 
+    // Horizontal drag-to-scroll for chip rows
+    (function() {
+      const screen = document.querySelector('.device-frame');
+      if (!screen) return;
+      let row = null, dragging = false, startX, scrollL;
+
+      screen.addEventListener('mousedown', (e) => {
+        const r = e.target.closest('.chip-row');
+        if (!r) return;
+        row = r;
+        dragging = true;
+        startX = e.clientX;
+        scrollL = row.scrollLeft;
+        row.style.scrollBehavior = 'auto';
+        e.preventDefault();
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!dragging || !row) return;
+        row.scrollLeft = scrollL - (e.clientX - startX);
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (!dragging) return;
+        dragging = false;
+        if (row) row.style.scrollBehavior = '';
+        row = null;
+      });
+    })();
+
     function getSnapPosition() {
       const phone = document.querySelector('.phone-frame');
       const panel = document.getElementById('controlPanel');
@@ -1859,6 +2058,73 @@
     // PROTO HEADER — COLLAPSE / FAB / DRAG
     // ==========================================
     const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/variants-selection-logic/v1.html';
+
+    // ==========================================
+    // PROTO NOTES — populate to enable
+    // ==========================================
+    const PROTO_NOTES_TITLE = 'Variant Selection — State Stress Test';
+    const PROTO_NOTES_HTML = `
+      <p>This prototype exercises the five variant states: <strong>Has Inventory</strong>, <strong>Sold Out</strong>, <strong>Not Available</strong>, <strong>Loading</strong>, and <strong>Error</strong>.</p>
+      <h4>Sold Out vs. Not Available</h4>
+      <ul>
+        <li><strong>Sold Out</strong> — seller plans to sell but is currently out of stock. Chip shows strikethrough, still tappable.</li>
+        <li><strong>Not Available</strong> — seller does not offer this variant at all. Two approaches:
+          <ol>
+            <li><strong>Hidden</strong> — remove the option entirely and default to the next available combination.</li>
+            <li><strong>Disabled</strong> — show the chip as disabled and alert the user.</li>
+          </ol>
+        </li>
+      </ul>
+      <p style="opacity:0.5;font-size:12px">Use the control panel to toggle between these two behaviors.</p>
+    `;
+
+    const NOTES_STORAGE_KEY = 'proto-notes-autoopen-' + location.pathname;
+
+    function saveNotesAutoOpen() {
+      const cb = document.getElementById('notesAutoOpenCb');
+      if (cb.checked) {
+        localStorage.setItem(NOTES_STORAGE_KEY, 'no');
+      } else {
+        localStorage.removeItem(NOTES_STORAGE_KEY);
+      }
+    }
+
+    function shouldAutoOpenNotes() {
+      return localStorage.getItem(NOTES_STORAGE_KEY) !== 'no';
+    }
+
+    // Notes panel — dropdown below button
+    function positionNotesPanel() {
+      const btn = document.getElementById('protoNotesBtn');
+      const panel = document.getElementById('notesPanel');
+      if (!btn || !panel) return;
+      const r = btn.getBoundingClientRect();
+      panel.style.top = (r.bottom + 8) + 'px';
+      panel.style.right = (window.innerWidth - r.right) + 'px';
+    }
+
+    function toggleNotesPanel(show) {
+      const panel = document.getElementById('notesPanel');
+      const overlay = document.getElementById('notesOverlay');
+      if (show === undefined) show = !panel.classList.contains('visible');
+      if (show) {
+        document.getElementById('notesPanelContent').innerHTML =
+          `<div style="font-size:15px;font-weight:600;color:white;margin-bottom:10px">${PROTO_NOTES_TITLE}</div>` +
+          PROTO_NOTES_HTML;
+        document.getElementById('notesAutoOpenCb').checked = !shouldAutoOpenNotes();
+        positionNotesPanel();
+        overlay.classList.add('visible');
+        requestAnimationFrame(() => panel.classList.add('visible'));
+      } else {
+        panel.classList.remove('visible');
+        overlay.classList.remove('visible');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.getElementById('notesPanel').classList.contains('visible')) toggleNotesPanel(false);
+    });
+
     let shareToastTimer = null;
     function copyShareLink() {
       navigator.clipboard.writeText(LIVE_URL).then(() => {
@@ -1933,7 +2199,11 @@
     // INIT
     // ==========================================
     function init() {
-      setNotAvailMode('disabled');
+      if (PROTO_NOTES_HTML.trim()) {
+        document.getElementById('protoNotesBtn').style.display = '';
+        if (shouldAutoOpenNotes()) setTimeout(() => toggleNotesPanel(true), 600);
+      }
+      setNotAvailMode('hidden');
       state.selections = ['9.5M', 'Black/White'];
       state.currentState = 'default';
       renderAllChips();

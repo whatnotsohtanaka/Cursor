@@ -65,6 +65,13 @@
       min-width: 0;
       flex: 1;
     }
+    .proto-logo {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      border-radius: 5px;
+      margin-right: 4px;
+    }
     .proto-breadcrumb {
       display: flex;
       align-items: center;
@@ -163,194 +170,6 @@
       opacity: 1;
       transform: translateY(0) scale(1);
     }
-    /* Notes Modal */
-    .notes-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      z-index: 20000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-    }
-    .notes-overlay.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .notes-modal {
-      width: 520px;
-      max-width: 90vw;
-      max-height: 80vh;
-      background: #242424;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 24px 80px rgba(0,0,0,0.6);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      transform: translateY(12px) scale(0.97);
-      transition: transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
-    }
-    .notes-overlay.open .notes-modal {
-      transform: translateY(0) scale(1);
-    }
-    .notes-modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    .notes-modal-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.85);
-    }
-    .notes-modal-close {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      border: none;
-      background: rgba(255,255,255,0.06);
-      color: rgba(255,255,255,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-    }
-    .notes-modal-close:hover {
-      background: rgba(255,255,255,0.12);
-      color: rgba(255,255,255,0.7);
-    }
-    .notes-modal-body {
-      flex: 1;
-      padding: 16px 20px 20px;
-      overflow-y: auto;
-    }
-    .notes-textarea {
-      width: 100%;
-      min-height: 240px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px;
-      padding: 14px 16px;
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
-      font-size: 13px;
-      line-height: 1.6;
-      color: rgba(255,255,255,0.8);
-      resize: vertical;
-      outline: none;
-      transition: border-color 0.15s;
-      box-sizing: border-box;
-    }
-    .notes-textarea:focus {
-      border-color: rgba(249,220,0,0.4);
-    }
-    .notes-textarea:read-only {
-      background: transparent;
-      border-color: rgba(255,255,255,0.04);
-      color: rgba(255,255,255,0.6);
-      cursor: default;
-      resize: none;
-    }
-    .notes-badge {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 600;
-      padding: 2px 7px;
-      border-radius: 4px;
-      margin-left: 8px;
-      vertical-align: middle;
-    }
-    .notes-badge.editable {
-      background: rgba(249,220,0,0.15);
-      color: #f9dc00;
-    }
-    .notes-badge.readonly {
-      background: rgba(255,255,255,0.06);
-      color: rgba(255,255,255,0.35);
-    }
-
-    /* Notes Panel (remote read-only floating panel) */
-    .notes-panel {
-      position: fixed;
-      z-index: 99998;
-      width: 280px;
-      max-height: 60vh;
-      background: rgba(30,30,30,0.92);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      opacity: 0;
-      transform: translateY(8px);
-      pointer-events: none;
-      transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.32, 0.72, 0, 1),
-                  left 0.35s cubic-bezier(0.32, 0.72, 0, 1), top 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-    }
-    .notes-panel.visible {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-    .notes-panel-header {
-      padding: 10px 14px 8px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: grab;
-    }
-    .notes-panel-title {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
-    }
-    .notes-panel-close {
-      width: 20px;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border-radius: 4px;
-      background: rgba(255,255,255,0.06);
-      border: none;
-      transition: background 0.15s;
-    }
-    .notes-panel-close:hover {
-      background: rgba(255,255,255,0.12);
-    }
-    .notes-panel-body {
-      padding: 0 14px 14px;
-      overflow-y: auto;
-      flex: 1;
-    }
-    .notes-panel-content {
-      font-size: 12px;
-      line-height: 1.65;
-      color: rgba(255,255,255,0.6);
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-    .notes-panel-empty {
-      font-size: 12px;
-      color: rgba(255,255,255,0.25);
-      font-style: italic;
-    }
-
     .proto-fab {
       position: fixed;
       top: 8px;
@@ -2287,6 +2106,7 @@
 <div class="proto-header" id="protoHeader">
   <div class="proto-header-left">
     <div class="proto-breadcrumb">
+      <svg class="proto-logo" width="20" height="20" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M80 40C80 70.9265 70.9265 80 40 80C9.07348 80 0 70.9265 0 40C0 9.07347 9.07348 0 40 0C70.9265 0 80 9.07347 80 40Z" fill="#2D2D2D"/><path transform="translate(12.12,22.94)" d="M18.7312 34.1275C21.6005 34.1275 23.703 31.9154 24.1473 29.3869C24.4668 27.6799 24.2751 24.838 23.5722 22.0569C23.2527 20.6664 24.3359 20.0335 25.3552 21.5518L27.4578 24.7741C32.8739 32.8647 35.1712 34.1275 37.2737 34.1275C39.3762 34.1275 41.7344 33.242 47.9811 24.269L49.5755 21.993C55.1194 14.094 55.7584 10.8687 55.7584 8.97307C55.7584 3.91602 51.9337 0 46.8371 0C43.0123 0 40.8459 2.08428 38.9989 5.81469L38.2991 7.20523C37.724 8.34322 36.8964 8.34322 36.2605 7.20523L35.4967 5.75079C33.522 1.95952 31.4803 0 27.8503 0C24.2203 0 22.1786 1.83173 20.3286 5.62604L19.5649 7.20523C18.9898 8.40712 18.0344 8.46797 17.4623 7.20523L16.7625 5.68993C14.9156 1.64611 12.7461 0.00302715 8.86049 0.00302715C3.88863 0.00302715 0 3.79431 0 8.97612C0 10.8717 0.447281 14.0332 5.86338 21.8682L7.39389 24.0803C14.021 33.6224 16.443 34.1275 18.7373 34.1275H18.7312Z" fill="#FFE414"/></svg>
       <a href="https://sturdy-parakeet-o3wwv73.pages.github.io/">Index</a>
       <span class="sep">›</span>
       <span>st</span>
@@ -2299,11 +2119,11 @@
   <div class="proto-header-right">
     <span class="proto-timestamp" id="protoTimestamp"></span>
     <div class="proto-divider"></div>
-    <a class="proto-link-btn" href="#" target="_blank" rel="noopener">
+    <a class="proto-link-btn" href="https://www.figma.com/design/Efq06B5ZlyOhHXIKojFhFd/Product-Creation---Management?node-id=11049-81247&t=g3CBoYb6Jii1v3EA-11" target="_blank" rel="noopener">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M8 2H5a3 3 0 0 0-3 3v3a3 3 0 0 0 3 3h3a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Z" fill="currentColor" opacity="0.5"/><path d="M5 13H8a3 3 0 0 1 3 3v3a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-3a3 3 0 0 1 3-3Z" fill="currentColor" opacity="0.7"/><path d="M16 2h-3a3 3 0 0 0-3 3v3a3 3 0 0 0 3 3h3a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Z" fill="currentColor" opacity="0.6"/><path d="M19 13h-3a3 3 0 0 0-3 3v5h3a3 3 0 0 0 3-3v-5Z" fill="currentColor" opacity="0.8"/></svg>
       Figma
     </a>
-    <a class="proto-link-btn" href="#" target="_blank" rel="noopener">
+    <a class="proto-link-btn" href="https://docs.google.com/document/d/1XgTB1g1TN3eQT-mT_pGFhWmcdzeDAfr4oNBYjimfX1A/edit?tab=t.0#heading=h.uat7go897u7x" target="_blank" rel="noopener">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
       PRD
     </a>
@@ -2311,42 +2131,10 @@
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
       Share
     </button>
-    <button class="proto-link-btn" onclick="openNotes()" title="Prototype notes">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      Notes
-    </button>
     <button class="proto-close-btn" id="protoCloseBtn" onclick="collapseProtoHeader()" title="Collapse header">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
     </button>
     <div class="proto-header-toast" id="protoHeaderToast">Link copied!</div>
-  </div>
-</div>
-
-<!-- Notes Modal -->
-<div class="notes-overlay" id="notesOverlay" onclick="if(event.target===this)closeNotes()">
-  <div class="notes-modal">
-    <div class="notes-modal-header">
-      <span class="notes-modal-title">Prototype Notes <span class="notes-badge" id="notesBadge"></span></span>
-      <button class="notes-modal-close" onclick="closeNotes()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-      </button>
-    </div>
-    <div class="notes-modal-body">
-      <textarea class="notes-textarea" id="notesTextarea" placeholder="Write your notes here..."></textarea>
-    </div>
-  </div>
-</div>
-
-<!-- Notes Panel (read-only floating, remote only) -->
-<div class="notes-panel" id="notesPanel">
-  <div class="notes-panel-header" id="notesPanelHandle">
-    <span class="notes-panel-title">Notes</span>
-    <button class="notes-panel-close" onclick="closeNotesPanel()">
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-    </button>
-  </div>
-  <div class="notes-panel-body">
-    <div class="notes-panel-content" id="notesPanelContent"></div>
   </div>
 </div>
 
@@ -7906,119 +7694,6 @@ function switchScene(scene) {
       shareToastTimer = setTimeout(() => toast.classList.remove('visible'), 2000);
     });
   }
-  // Notes — Modal (local) / Panel (remote)
-  const NOTES_KEY = 'proto-notes-' + location.pathname;
-  const isLocalEnv = location.protocol === 'file:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-
-  function openNotes() {
-    if (isLocalEnv) { openNotesModal(); } else { toggleNotesPanel(true); }
-  }
-
-  function openNotesModal() {
-    const overlay = document.getElementById('notesOverlay');
-    const textarea = document.getElementById('notesTextarea');
-    const badge = document.getElementById('notesBadge');
-    textarea.value = localStorage.getItem(NOTES_KEY) || '';
-    textarea.readOnly = false;
-    textarea.placeholder = 'Write your notes here...';
-    badge.textContent = 'Editable';
-    badge.className = 'notes-badge editable';
-    overlay.classList.add('open');
-    textarea.focus();
-  }
-
-  function closeNotes() {
-    const overlay = document.getElementById('notesOverlay');
-    const textarea = document.getElementById('notesTextarea');
-    localStorage.setItem(NOTES_KEY, textarea.value);
-    overlay.classList.remove('open');
-  }
-
-  function getNotesPanelSnapPosition() {
-    const phone = document.querySelector('.phone-frame');
-    const panel = document.getElementById('notesPanel');
-    if (!phone || !panel) return { x: 40, y: 120 };
-    const phoneRect = phone.getBoundingClientRect();
-    const gap = 40;
-    return { x: phoneRect.left - panel.offsetWidth - gap, y: phoneRect.top + 56 };
-  }
-
-  function snapNotesPanel() {
-    const panel = document.getElementById('notesPanel');
-    const pos = getNotesPanelSnapPosition();
-    panel.style.left = pos.x + 'px';
-    panel.style.top = pos.y + 'px';
-  }
-
-  function toggleNotesPanel(show) {
-    const panel = document.getElementById('notesPanel');
-    const content = document.getElementById('notesPanelContent');
-    const notes = localStorage.getItem(NOTES_KEY) || '';
-    if (show === undefined) show = !panel.classList.contains('visible');
-    if (show) {
-      if (notes.trim()) {
-        content.textContent = notes;
-        content.className = 'notes-panel-content';
-      } else {
-        content.textContent = 'No notes yet.';
-        content.className = 'notes-panel-content notes-panel-empty';
-      }
-      snapNotesPanel();
-      panel.classList.add('visible');
-    } else {
-      panel.classList.remove('visible');
-    }
-  }
-
-  function closeNotesPanel() { toggleNotesPanel(false); }
-
-  (function() {
-    if (isLocalEnv) return;
-    const panel = document.getElementById('notesPanel');
-    const handle = document.getElementById('notesPanelHandle');
-    if (!panel || !handle) return;
-    let isDragging = false, startX, startY, panelX, panelY;
-    const SNAP_DIST = 80;
-    window.addEventListener('resize', () => { if (!isDragging && panel.classList.contains('visible')) snapNotesPanel(); });
-    handle.addEventListener('mousedown', sd);
-    handle.addEventListener('touchstart', sd, { passive: false });
-    function sd(e) {
-      if (e.target.closest('.notes-panel-close')) return;
-      isDragging = true; handle.style.cursor = 'grabbing';
-      const ev = e.touches ? e.touches[0] : e;
-      const rect = panel.getBoundingClientRect();
-      startX = ev.clientX; startY = ev.clientY; panelX = rect.left; panelY = rect.top;
-      panel.style.transition = 'none';
-      document.addEventListener('mousemove', od); document.addEventListener('mouseup', su);
-      document.addEventListener('touchmove', od, { passive: false }); document.addEventListener('touchend', su);
-      e.preventDefault();
-    }
-    function od(e) { if (!isDragging) return; const ev = e.touches ? e.touches[0] : e; panel.style.left = (panelX + ev.clientX - startX) + 'px'; panel.style.top = (panelY + ev.clientY - startY) + 'px'; }
-    function su() {
-      isDragging = false; handle.style.cursor = 'grab';
-      document.removeEventListener('mousemove', od); document.removeEventListener('mouseup', su);
-      document.removeEventListener('touchmove', od); document.removeEventListener('touchend', su);
-      panel.style.transition = 'opacity 0.25s ease, transform 0.25s cubic-bezier(0.32,0.72,0,1), left 0.35s cubic-bezier(0.32,0.72,0,1), top 0.35s cubic-bezier(0.32,0.72,0,1)';
-      const snap = getNotesPanelSnapPosition(); const rect = panel.getBoundingClientRect();
-      const dx = rect.left - snap.x, dy = rect.top - snap.y;
-      if (Math.sqrt(dx*dx+dy*dy) < SNAP_DIST) snapNotesPanel();
-    }
-  })();
-
-  if (!isLocalEnv) {
-    window.addEventListener('load', () => {
-      const notes = localStorage.getItem(NOTES_KEY) || '';
-      if (notes.trim()) setTimeout(() => toggleNotesPanel(true), 600);
-    });
-  }
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      if (document.getElementById('notesOverlay').classList.contains('open')) closeNotes();
-      else if (document.getElementById('notesPanel').classList.contains('visible')) closeNotesPanel();
-    }
-  });
-
   function collapseProtoHeader() {
     document.getElementById('protoHeader').classList.add('collapsed');
     setTimeout(() => document.getElementById('protoFab').classList.add('visible'), 150);
