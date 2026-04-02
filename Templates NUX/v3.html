@@ -2272,8 +2272,10 @@
         <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid white"></div>
       </div>
       <div style="display:flex;gap:12px;align-items:flex-start">
-        <div style="width:64px;height:64px;border-radius:8px;overflow:hidden;flex-shrink:0;border:1px solid #7f7f7f">
-          <img id="pinnedImg" src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
+        <div id="pinnedImgWrap" style="width:64px;height:64px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative">
+          <img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+          <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>
+          <img id="pinnedImg" src="icons/icon-tops.png" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:22px;height:22px;object-fit:contain">
         </div>
         <div style="flex:1;display:flex;flex-direction:column;min-height:64px;justify-content:center">
           <div style="display:flex;align-items:flex-start;justify-content:space-between">
@@ -2402,7 +2404,7 @@
         <div style="font-size:22px;font-weight:600;line-height:28px;color:#161616">What will you be selling?</div>
         <div style="font-size:15px;font-weight:400;line-height:21px;color:#6a6a6a">Select all that apply. We'll set up templates to match.</div>
       </div>
-      <div id="step2Grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%">
+      <div id="step2Grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%">
         <!-- Populated by configureStep2() -->
       </div>
     </div>
@@ -2749,8 +2751,10 @@
       </div>
       <div class="nux-templates-list">
         <div class="tpl-card" onclick="openEditFromShopGen()" style="cursor:pointer">
-          <div class="tpl-thumb">
-            <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
+          <div style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative">
+            <img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+            <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>
+            <img src="icons/icon-tops.png" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:49px;height:49px;object-fit:contain">
           </div>
           <div class="tpl-info">
             <div class="tpl-details">
@@ -3838,7 +3842,7 @@
             <div style="font-size:22px;font-weight:600;line-height:28px;color:#161616">What will you be selling?</div>
             <div style="font-size:15px;font-weight:400;line-height:21px;color:#6a6a6a">Based on your past shows, we've pre-selected some types. Adjust to fit your future shows. We'll generate a template for each.</div>
           </div>
-          <div id="nuxTypeGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%"></div>
+          <div id="nuxTypeGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%"></div>
         </div>
         <div style="flex-shrink:0;padding:0 16px 0">
           <button id="nuxTypesCta" onclick="generateTemplatesFromNux()" disabled style="width:100%;height:48px;border-radius:999px;background:#e0e0e0;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#999;cursor:not-allowed;transition:background 0.2s,color 0.2s">Generate Templates</button>
@@ -3862,8 +3866,10 @@
           </div>
           <div class="nux-templates-list">
             <div class="tpl-card">
-              <div class="tpl-thumb">
-                <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
+              <div style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative">
+                <img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>
+                <img src="icons/icon-tops.png" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:49px;height:49px;object-fit:contain">
               </div>
               <div class="tpl-info">
                 <div class="tpl-details">
@@ -3874,8 +3880,10 @@
               </div>
             </div>
             <div class="tpl-card">
-              <div class="tpl-thumb">
-                <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
+              <div style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative">
+                <img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>
+                <img src="icons/icon-pants.png" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:49px;height:49px;object-fit:contain">
               </div>
               <div class="tpl-info">
                 <div class="tpl-details">
@@ -3886,8 +3894,10 @@
               </div>
             </div>
             <div class="tpl-card">
-              <div class="tpl-thumb">
-                <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
+              <div style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative">
+                <img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>
+                <img src="icons/icon-skirts.png" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:49px;height:49px;object-fit:contain">
               </div>
               <div class="tpl-info">
                 <div class="tpl-details">
@@ -4126,8 +4136,10 @@
     <!-- Scrollable content -->
     <div class="edit-scroll" style="flex:1;overflow-y:auto">
       <!-- Product Image -->
-      <div id="detailImageCarousel" style="width:100%;aspect-ratio:1;background:#f3f3f3;position:relative;overflow:hidden">
-        <img id="detailHeroImg" src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
+      <div id="detailImageCarousel" style="width:100%;aspect-ratio:1;position:relative;overflow:hidden">
+        <img id="detailHeroBg" src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+        <div id="detailHeroOverlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>
+        <img id="detailHeroImg" src="icons/icon-tops.png" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:120px;height:120px;object-fit:contain">
         <!-- Dots -->
         <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px">
           <div style="width:8px;height:8px;border-radius:50%;background:#1c1c1c"></div>
@@ -4228,8 +4240,10 @@
     <div style="position:absolute;bottom:0;left:0;right:0;z-index:3;display:flex;flex-direction:column;gap:12px;padding:0 16px">
       <!-- Product Details Row -->
       <div style="display:flex;gap:12px;align-items:flex-start">
-        <div style="width:64px;height:64px;border-radius:8px;overflow:hidden;flex-shrink:0;border:1px solid #7f7f7f">
-          <img id="liveProductImg" src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
+        <div id="liveProductImgWrap" style="width:64px;height:64px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative">
+          <img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+          <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>
+          <img id="liveProductImg" src="icons/icon-tops.png" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:22px;height:22px;object-fit:contain">
         </div>
         <div style="flex:1;display:flex;flex-direction:column;min-height:64px;justify-content:center">
           <div style="display:flex;align-items:flex-start;justify-content:space-between">
@@ -4550,8 +4564,9 @@ function cloneTemplate() {
       newItem.setAttribute('data-type', 'template');
       newItem.setAttribute('onclick', "openEditPage(0,'inventory')");
       newItem.style.cssText = 'display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start';
+      const cloneIcon = currentEditingListingId ? (findListing(currentEditingListingId) || {}).icon : null;
       newItem.innerHTML = `
-        <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+        ${typeThumbHTML(cloneIcon || 'tops', 84)}
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px">
           <div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${clonedTitle}</div>
           <div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div>
@@ -4745,7 +4760,7 @@ function configureNuxSlide4() {
     copyEl.querySelector('p').textContent = 'We created a template to help you get started. Customize it to fit your style.';
     listEl.innerHTML = `
       <div class="tpl-card">
-        <div class="tpl-thumb"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+        ${typeThumbHTML('tops', 140)}
         <div class="tpl-info"><div class="tpl-details">
           <div class="tpl-title">Assorted Tops</div>
           <div class="tpl-attr">Template · Multiple Options</div>
@@ -4761,7 +4776,7 @@ function configureNuxSlide4() {
     copyEl.querySelector('p').textContent = `We made ${count} template${count !== 1 ? 's' : ''} based on your selections. Edit, assign to a show, and publish — they never run out of quantity.`;
     listEl.innerHTML = selected.map(t => `
       <div class="tpl-card">
-        <div class="tpl-thumb"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+        ${typeThumbHTML(t.id, 140)}
         <div class="tpl-info"><div class="tpl-details">
           <div class="tpl-title">Assorted ${t.label}</div>
           <div class="tpl-attr">Template · Multiple Options</div>
@@ -4859,9 +4874,10 @@ function configureNuxTypeGrid() {
   nuxSelectedTypes = new Set(['tops', 'leggings', 'pants']);
   grid.innerHTML = fashionTypes.map(t => {
     const selected = nuxSelectedTypes.has(t.id);
-    return `<button id="nuxTypeBtn_${t.id}" onclick="toggleNuxType('${t.id}')" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;background:${selected ? '#fafafa' : 'white'};border:2px solid ${selected ? '#161616' : '#e0e0e0'};border-radius:12px;cursor:pointer;font-family:var(--font);transition:border-color 0.15s,background 0.15s">
-      <div style="font-size:32px;line-height:1">${t.emoji}</div>
-      <div style="font-size:13px;font-weight:600;line-height:16px;color:#161616">${t.label}</div>
+    return `<button id="nuxTypeBtn_${t.id}" onclick="toggleNuxType('${t.id}')" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px 8px 24px;background:#f3f3f3;border:4px solid transparent;border-radius:8px;cursor:pointer;font-family:var(--font);transition:all 0.15s ease">
+      <div style="font-size:12px;font-weight:600;line-height:16px;color:#161616;text-align:center;width:100%">${t.label}</div>
+      <img src="${t.img}" alt="" style="width:65px;height:65px;object-fit:contain;pointer-events:none">
+      <div class="type-card-ring" style="display:${selected ? 'block' : 'none'};position:absolute;inset:-4px;border-radius:8px;border:2px solid #2d2d2d;pointer-events:none"></div>
     </button>`;
   }).join('');
   updateNuxTypesCta();
@@ -4874,13 +4890,8 @@ function toggleNuxType(id) {
   fashionTypes.forEach(t => {
     const btn = document.getElementById('nuxTypeBtn_' + t.id);
     if (!btn) return;
-    if (nuxSelectedTypes.has(t.id)) {
-      btn.style.borderColor = '#161616';
-      btn.style.background = '#fafafa';
-    } else {
-      btn.style.borderColor = '#e0e0e0';
-      btn.style.background = 'white';
-    }
+    const ring = btn.querySelector('.type-card-ring');
+    if (ring) ring.style.display = nuxSelectedTypes.has(t.id) ? 'block' : 'none';
   });
   updateNuxTypesCta();
 }
@@ -5002,7 +5013,7 @@ function populateInventoryDraftTemplates() {
 
   const selected = fashionTypes.filter(t => selectedTypes.has(t.id));
   selected.reverse().forEach((t, i) => {
-    const rec = createListingRecord({ title: 'Assorted ' + t.label, type: 'template', status: 'draft', typeLabel: t.label });
+    const rec = createListingRecord({ title: 'Assorted ' + t.label, type: 'template', status: 'draft', typeLabel: t.label, typeId: t.id });
     const lid = rec.id;
     const row = document.createElement('div');
     row.style.cssText = 'display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start';
@@ -5010,7 +5021,7 @@ function populateInventoryDraftTemplates() {
     row.setAttribute('data-listing-id', rec.id);
     row.onclick = function() { openEditById(lid, 'inventory'); };
     row.innerHTML = `
-      <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+      ${typeThumbHTML(t.id, 84)}
       <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Assorted ${t.label}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>`;
     draftList.insertBefore(row, draftList.firstChild);
   });
@@ -5384,7 +5395,7 @@ function saveExistingTemplate() {
     const titleInput = document.getElementById('editTitleInput');
     const title = titleInput ? titleInput.value : 'Template';
     const meta = getEditFormMeta();
-    updateListing(currentEditingListingId, { title: title, typeLabel: meta.typeLabel, brands: meta.brands });
+    updateListing(currentEditingListingId, { title: title, typeLabel: meta.typeLabel, brands: meta.brands, typeId: meta.typeId });
   }
   currentEditingListingId = null;
   closeEditPageDirect();
@@ -5398,7 +5409,9 @@ function getEditFormMeta() {
   const brandsEl = document.getElementById('editBrands');
   const brandsText = brandsEl ? brandsEl.textContent : '';
   const brands = (brandsText && brandsText !== 'Brand(s)') ? brandsText : '';
-  return { typeLabel, brands };
+  const ft = typeLabel ? fashionTypes.find(t => t.label.toLowerCase() === typeLabel.toLowerCase()) : null;
+  const typeId = ft ? ft.id : null;
+  return { typeLabel, brands, typeId };
 }
 
 function saveDraft() {
@@ -5408,7 +5421,7 @@ function saveDraft() {
   const meta = getEditFormMeta();
 
   if (currentEditingListingId) {
-    updateListing(currentEditingListingId, { title: title, typeLabel: meta.typeLabel, brands: meta.brands });
+    updateListing(currentEditingListingId, { title: title, typeLabel: meta.typeLabel, brands: meta.brands, typeId: meta.typeId });
     currentEditingListingId = null;
     closeEditPageDirect();
     setTimeout(() => { showToastMessage('Changes saved'); }, 450);
@@ -5417,7 +5430,7 @@ function saveDraft() {
     loader.querySelector('p').textContent = 'Saving draft…';
     loader.classList.add('visible');
 
-    const rec = createListingRecord({ title: title, type: 'template', status: 'draft', typeLabel: meta.typeLabel, brands: meta.brands });
+    const rec = createListingRecord({ title: title, type: 'template', status: 'draft', typeLabel: meta.typeLabel, brands: meta.brands, typeId: meta.typeId });
     addTemplateToDraftTab(title, rec.id);
     currentEditingListingId = null;
 
@@ -5452,6 +5465,8 @@ function saveDraft() {
 function addTemplateToDraftTab(title, listingId) {
   const draftList = document.getElementById('invDraftList');
   if (!draftList) return;
+  const rec = findListing(listingId);
+  const iconSrc = (rec && rec.icon) || (rec && rec.typeId) || 'tops';
   const row = document.createElement('div');
   row.style.cssText = 'display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start';
   row.setAttribute('data-type', 'template');
@@ -5459,7 +5474,7 @@ function addTemplateToDraftTab(title, listingId) {
   const lid = listingId;
   row.onclick = function() { openEditById(lid, 'inventory'); };
   row.innerHTML = `
-    <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+    ${typeThumbHTML(iconSrc, 84)}
     <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div class="inv-item-title" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${title}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>`;
   if (currentTemplateMode === 'l1') row.style.display = 'none';
   draftList.insertBefore(row, draftList.firstChild);
@@ -5936,6 +5951,7 @@ function addListingToShop(title) {
 }
 
 function addNewTemplateToShop(title) {
+  const iconSrc = currentEditingListingId ? ((findListing(currentEditingListingId) || {}).icon || 'icons/icon-tops.png') : 'icons/icon-tops.png';
   const rec = createListingRecord({
     type: 'template',
     title: title,
@@ -5950,8 +5966,8 @@ function addNewTemplateToShop(title) {
   const count = list.children.length;
   const listingHtml = `
     <div data-type="template" data-listing-id="${rec.id}" style="display:flex;gap:12px;align-items:center;padding:8px 0;border-radius:4px">
-      <div onclick="openListingDetail(${count})" style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;cursor:pointer">
-        <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
+      <div onclick="openListingDetail(${count})" style="cursor:pointer">
+        ${typeThumbHTML(iconSrc, 140)}
       </div>
       <div style="flex:1;display:flex;flex-direction:column;gap:12px;min-width:0">
         <div onclick="openListingDetail(${count})" style="display:flex;flex-direction:column;gap:4px;cursor:pointer">
@@ -6468,7 +6484,7 @@ function pricePageSave() {
       const titleInput = document.getElementById('editTitleInput');
       const title = titleInput ? titleInput.value : 'Template';
       const meta = getEditFormMeta();
-      updateListing(currentEditingListingId, { title: title, typeLabel: meta.typeLabel, brands: meta.brands });
+      updateListing(currentEditingListingId, { title: title, typeLabel: meta.typeLabel, brands: meta.brands, typeId: meta.typeId });
 
       // Update row title on L1 templates page
       const l1Row = document.querySelector('#templatesL1List [data-listing-id="' + currentEditingListingId + '"]');
@@ -6501,7 +6517,7 @@ function pricePageSaveDraft() {
     const titleInput = document.getElementById('editTitleInput');
     const title = titleInput ? titleInput.value : 'Template';
     const meta = getEditFormMeta();
-    const rec = createListingRecord({ title: title, type: 'template', status: 'draft', typeLabel: meta.typeLabel, brands: meta.brands });
+    const rec = createListingRecord({ title: title, type: 'template', status: 'draft', typeLabel: meta.typeLabel, brands: meta.brands, typeId: meta.typeId });
     addTemplateToDraftTab(title, rec.id);
   }
   currentEditingListingId = null;
@@ -6603,8 +6619,10 @@ function publishListing() {
   const brandsText = document.getElementById('editBrands').textContent;
   const brandsVal = (brandsText && brandsText !== 'Brand(s)') ? brandsText : '';
 
+  const pubFt = selectedTypeLabel ? fashionTypes.find(t => t.label.toLowerCase() === selectedTypeLabel.toLowerCase()) : null;
+  const pubTypeId = pubFt ? pubFt.id : null;
   if (isEditing && currentEditingListingId) {
-    updateListing(currentEditingListingId, { title: publishedTitle, status: 'active', typeLabel: selectedTypeLabel, brands: brandsVal });
+    updateListing(currentEditingListingId, { title: publishedTitle, status: 'active', typeLabel: selectedTypeLabel, brands: brandsVal, typeId: pubTypeId });
   }
 
   if (editReturnTo === 'shop') {
@@ -6811,8 +6829,9 @@ function moveItemToActive(title) {
     newItem.setAttribute('data-type', 'template');
     newItem.setAttribute('onclick', "openEditPage(0,'inventory')");
     newItem.style.cssText = 'display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start';
+    const moveIcon = currentEditingListingId ? ((findListing(currentEditingListingId) || {}).icon || null) : null;
     newItem.innerHTML = `
-      <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+      ${typeThumbHTML(moveIcon || 'tops', 84)}
       <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px">
         <span class="inv-date-label">${nextShowLabel()}</span>
         <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${title}</div>
@@ -6962,26 +6981,43 @@ function selectSellerType(type) {
 }
 
 const fashionTypes = [
-  { id: 'tops', emoji: '👚', label: 'Tops' },
-  { id: 'leggings', emoji: '🦵', label: 'Leggings' },
-  { id: 'pants', emoji: '👖', label: 'Pants' },
-  { id: 'shorts', emoji: '🩳', label: 'Shorts' },
-  { id: 'skirts', emoji: '💃', label: 'Skirts' },
-  { id: 'outerwear', emoji: '🧥', label: 'Outerwear' },
-  { id: 'sets', emoji: '👗', label: 'Sets' },
-  { id: 'sportsbras', emoji: '🏃‍♀️', label: 'Sports Bras' },
-  { id: 'accessories', emoji: '💍', label: 'Accessories' },
+  { id: 'tops', label: 'Tops', img: 'icons/type-tops.png', icon: 'icons/icon-tops.png' },
+  { id: 'leggings', label: 'Leggings', img: 'icons/type-leggings.png', icon: 'icons/icon-leggings.png' },
+  { id: 'pants', label: 'Pants', img: 'icons/type-pants.png', icon: 'icons/icon-pants.png' },
+  { id: 'shorts', label: 'Shorts', img: 'icons/type-shorts.png', icon: 'icons/icon-shorts.png' },
+  { id: 'skirts', label: 'Skirts', img: 'icons/type-skirts.png', icon: 'icons/icon-skirts.png' },
+  { id: 'outerwear', label: 'Outerwear', img: 'icons/type-outerwear.png', icon: 'icons/icon-outerwear.png' },
+  { id: 'sets', label: 'Sets', img: 'icons/type-sets.png', icon: 'icons/icon-sets.png' },
+  { id: 'sportsbras', label: 'Sports Bras', img: 'icons/type-sportsbras.png', icon: 'icons/icon-sportsbras.png' },
+  { id: 'accessories', label: 'Accessories', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
 ];
 let selectedTypes = new Set();
+
+function typeThumbHTML(typeIdOrIcon, size) {
+  const sz = size || 140;
+  const iconSz = Math.round(sz * 0.35);
+  let iconSrc = typeIdOrIcon;
+  if (typeIdOrIcon && !typeIdOrIcon.includes('/')) {
+    const ft = fashionTypes.find(t => t.id === typeIdOrIcon);
+    iconSrc = ft ? ft.icon : 'icons/icon-tops.png';
+  }
+  if (!iconSrc) iconSrc = 'icons/icon-tops.png';
+  return `<div style="width:${sz}px;height:${sz}px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative">` +
+    `<img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">` +
+    `<div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>` +
+    `<img src="${iconSrc}" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${iconSz}px;height:${iconSz}px;object-fit:contain">` +
+    `</div>`;
+}
 
 function configureStep2() {
   const grid = document.getElementById('step2Grid');
   selectedTypes.clear();
   updateStep2Cta();
   grid.innerHTML = fashionTypes.map(t => `
-    <button id="typeBtn_${t.id}" onclick="toggleType('${t.id}')" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;background:white;border:2px solid #e0e0e0;border-radius:12px;cursor:pointer;font-family:var(--font);transition:border-color 0.15s,background 0.15s">
-      <div style="font-size:32px;line-height:1">${t.emoji}</div>
-      <div style="font-size:13px;font-weight:600;line-height:16px;color:#161616">${t.label}</div>
+    <button id="typeBtn_${t.id}" onclick="toggleType('${t.id}')" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px 8px 24px;background:#f3f3f3;border:4px solid transparent;border-radius:8px;cursor:pointer;font-family:var(--font);transition:all 0.15s ease">
+      <div style="font-size:12px;font-weight:600;line-height:16px;color:#161616;text-align:center;width:100%">${t.label}</div>
+      <img src="${t.img}" alt="" style="width:65px;height:65px;object-fit:contain;pointer-events:none">
+      <div class="type-card-ring" style="display:none;position:absolute;inset:-4px;border-radius:8px;border:2px solid #2d2d2d;pointer-events:none"></div>
     </button>
   `).join('');
 }
@@ -6993,13 +7029,8 @@ function toggleType(id) {
   fashionTypes.forEach(t => {
     const btn = document.getElementById('typeBtn_' + t.id);
     if (!btn) return;
-    if (selectedTypes.has(t.id)) {
-      btn.style.borderColor = '#161616';
-      btn.style.background = '#fafafa';
-    } else {
-      btn.style.borderColor = '#e0e0e0';
-      btn.style.background = 'white';
-    }
+    const ring = btn.querySelector('.type-card-ring');
+    if (ring) ring.style.display = selectedTypes.has(t.id) ? 'block' : 'none';
   });
   updateStep2Cta();
 }
@@ -7029,9 +7060,7 @@ function configureStep3() {
 
   const templateCards = selected.map(t => `
     <div class="tpl-card" style="cursor:default;pointer-events:none">
-      <div class="tpl-thumb">
-        <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
-      </div>
+      ${typeThumbHTML(t.id, 140)}
       <div class="tpl-info">
         <div class="tpl-details">
           <div class="tpl-title">Assorted ${t.label}</div>
@@ -7321,8 +7350,8 @@ function populateShopWithTemplates() {
     const t = fashionTypes.find(ft => ft.id === rec.typeId) || { label: rec.title };
     return `
     <div data-type="${rec.type}" data-listing-id="${rec.id}" style="display:flex;gap:12px;align-items:center;padding:8px 0;border-radius:4px">
-      <div onclick="openListingDetail(${i})" style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;cursor:pointer">
-        <img src="${rec.img || 'icons/whatnot-logo.png'}" style="width:100%;height:100%;object-fit:cover" alt="">
+      <div onclick="openListingDetail(${i})" style="cursor:pointer">
+        ${rec.type === 'template' ? typeThumbHTML(rec.icon || rec.typeId || 'tops', 140) : '<div style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative"><img src="' + (rec.img || 'icons/whatnot-logo.png') + '" style="width:100%;height:100%;object-fit:cover" alt=""></div>'}
       </div>
       <div style="flex:1;display:flex;flex-direction:column;gap:12px;min-width:0">
         <div onclick="openListingDetail(${i})" style="display:flex;flex-direction:column;gap:4px;cursor:pointer">
@@ -7883,9 +7912,7 @@ function shopListingOptionClone() {
     const list = document.getElementById('shopProductList');
     const cloneHtml = `
       <div style="display:flex;gap:12px;align-items:center;padding:8px 0;border-radius:4px">
-        <div style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative">
-          <img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt="">
-        </div>
+        ${typeThumbHTML(tpl.id, 140)}
         <div style="flex:1;display:flex;flex-direction:column;gap:12px;min-width:0">
           <div style="display:flex;flex-direction:column;gap:4px">
             <div style="display:flex;flex-direction:column;gap:2px">
@@ -7972,6 +7999,7 @@ function createListingRecord(overrides) {
     brands: null,
     sizes: null,
     img: null,
+    icon: null,
     status: 'draft',        // 'draft' | 'active'
     origin: 'shop',         // 'shop' | 'inventory'
     typeId: null,            // fashionTypes id for templates
@@ -7979,6 +8007,10 @@ function createListingRecord(overrides) {
     pinned: false,
     ...overrides
   };
+  if (!record.icon && record.typeId) {
+    const ft = fashionTypes.find(t => t.id === record.typeId);
+    if (ft) record.icon = ft.icon;
+  }
   listingStore.push(record);
   return record;
 }
@@ -7991,8 +8023,21 @@ function updateListing(id, changes) {
   const record = findListing(id);
   if (!record) return null;
   Object.assign(record, changes);
+  if (changes.typeId && !changes.icon) {
+    const ft = fashionTypes.find(t => t.id === changes.typeId);
+    if (ft) record.icon = ft.icon;
+  }
   refreshAllViews(id);
   return record;
+}
+
+function refreshRowThumb(row, record) {
+  if (!record || record.type !== 'template' || !record.icon) return;
+  const thumbWrap = row.firstElementChild;
+  if (!thumbWrap) return;
+  const imgs = thumbWrap.querySelectorAll('img');
+  const iconImg = imgs.length >= 2 ? imgs[imgs.length - 1] : null;
+  if (iconImg && iconImg.src.includes('icon-')) iconImg.src = record.icon;
 }
 
 function refreshAllViews(listingId) {
@@ -8008,22 +8053,25 @@ function refreshAllViews(listingId) {
     if (titleEl) titleEl.textContent = record.title;
     if (priceEl) priceEl.textContent = record.price;
     if (subtitleEl) subtitleEl.textContent = record.subtitle;
+    refreshRowThumb(shopRow, record);
   }
 
   // Inventory lists
   document.querySelectorAll(`#inventoryPage [data-listing-id="${listingId}"]`).forEach(row => {
-    const titleEl = row.querySelector('.listing-title');
+    const titleEl = row.querySelector('.listing-title') || row.querySelector('.inv-item-title');
     const priceEl = row.querySelector('.listing-price');
     if (titleEl) titleEl.textContent = record.title;
     if (priceEl) priceEl.textContent = record.price;
+    refreshRowThumb(row, record);
   });
 
   // Templates L1 page
   document.querySelectorAll(`#templatesL1Page [data-listing-id="${listingId}"]`).forEach(row => {
-    const titleEl = row.querySelector('.listing-title');
+    const titleEl = row.querySelector('.listing-title') || row.querySelector('[style*="font-size:14px"]');
     const priceEl = row.querySelector('.listing-price');
     if (titleEl) titleEl.textContent = record.title;
     if (priceEl) priceEl.textContent = record.price;
+    refreshRowThumb(row, record);
   });
 
   // Pinned product in lobby
@@ -8032,6 +8080,18 @@ function refreshAllViews(listingId) {
     const pinnedPrice = document.getElementById('pinnedPrice');
     if (pinnedTitle) pinnedTitle.textContent = record.title;
     if (pinnedPrice) pinnedPrice.textContent = record.price;
+    if (record.icon) {
+      const pinnedImgEl = document.getElementById('pinnedImg');
+      if (pinnedImgEl) pinnedImgEl.src = record.icon;
+    }
+  }
+
+  // Live product overlay
+  if (record.icon) {
+    const liveImgEl = document.getElementById('liveProductImg');
+    const detailImgEl = document.getElementById('detailHeroImg');
+    if (liveImgEl && liveImgEl.src.includes('icon-')) liveImgEl.src = record.icon;
+    if (detailImgEl && detailImgEl.src.includes('icon-')) detailImgEl.src = record.icon;
   }
 
   // Listing detail page
@@ -8100,15 +8160,15 @@ function openLiveShow(templateIndex) {
   selectedBrand = null;
   selectedSize = null;
 
-  // Resolve data from the listing store if not in selected types
+  // Resolve data from the listing store — prefer store's typeId (may have been edited)
   const shopRow = document.querySelectorAll('#shopProductList [data-listing-id]')[templateIndex];
   const storeRec = shopRow ? findListing(parseInt(shopRow.dataset.listingId)) : null;
 
-  if (!tpl && storeRec && storeRec.typeId) {
-    tpl = fashionTypes.find(ft => ft.id === storeRec.typeId);
+  if (storeRec && storeRec.typeId) {
+    tpl = fashionTypes.find(ft => ft.id === storeRec.typeId) || tpl;
   }
   if (!tpl) {
-    tpl = selected[0] || { id: 'tops', label: 'Tops', emoji: '👚' };
+    tpl = selected[0] || { id: 'tops', label: 'Tops', img: 'icons/type-tops.png' };
   }
   currentLiveTemplate = tpl;
 
@@ -8151,6 +8211,10 @@ function openLiveShow(templateIndex) {
   liveTitleEl.textContent = title;
   liveTitleEl.dataset.listingId = shopRow ? shopRow.dataset.listingId : '';
   document.getElementById('liveProductAttrs').textContent = sizes[0] + ' • New w Tag';
+
+  const liveIcon = tpl.icon || 'icons/icon-tops.png';
+  const liveImgEl = document.getElementById('liveProductImg');
+  if (liveImgEl) liveImgEl.src = liveIcon;
 
   selectedBrand = hasBrands ? brands[0] : null;
   selectedSize = sizes[0];
@@ -8272,6 +8336,10 @@ function pinProduct() {
     document.getElementById('pinnedTitle').textContent = title;
     document.getElementById('pinnedAttrs').textContent = attrs;
 
+    const pinnedIcon = currentLiveTemplate ? (currentLiveTemplate.icon || 'icons/icon-tops.png') : 'icons/icon-tops.png';
+    const pinnedImgEl = document.getElementById('pinnedImg');
+    if (pinnedImgEl) pinnedImgEl.src = pinnedIcon;
+
     // Close live overlay, show lobby with pinned product
     const overlay = document.getElementById('liveShowOverlay');
     overlay.style.transition = 'opacity 0.3s ease';
@@ -8338,6 +8406,10 @@ function openListingDetail(idx) {
   document.getElementById('detailSubtitle').textContent = '1 Available • Multiple Options';
   document.getElementById('detailPrice').textContent = '$1';
 
+  const detailIcon = tpl ? (tpl.icon || 'icons/icon-tops.png') : 'icons/icon-tops.png';
+  const detailImgEl = document.getElementById('detailHeroImg');
+  if (detailImgEl) detailImgEl.src = detailIcon;
+
   const page = document.getElementById('listingDetailPage');
   const shopInner = document.getElementById('shopSheetInner');
   if (shopInner) {
@@ -8388,7 +8460,7 @@ function reopenLiveShowFromLobby() {
 // ═══ IMPORT TO SHOW ═══
 const importableItems = {
   active: [
-    { title: 'Assorted Tops', attr: 'Template', attrExtra: 'Multiple Options', price: '$1', img: 'icons/whatnot-logo.png', type: 'template', hasBorder: false },
+    { title: 'Assorted Tops', attr: 'Template', attrExtra: 'Multiple Options', price: '$1', img: 'icons/thumb-bg.png', icon: 'icons/icon-tops.png', type: 'template', hasBorder: false },
     { title: 'Floral Top', attr: null, attrExtra: null, price: '$1', img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&q=80', type: 'listing', hasBorder: true, schedule: '4/30/26 · 3:00PM' },
     { title: 'Commense Matching Dress', attr: null, attrExtra: null, price: '$1', img: 'https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=200&q=80', type: 'listing', hasBorder: true, schedule: '4/30/26 · 3:00PM' },
     { title: 'Commense White Summer Dress XS', attr: null, attrExtra: null, price: '$1', img: 'https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=200&q=80', type: 'listing', hasBorder: true, schedule: '4/30/26 · 3:00PM' },
@@ -8396,9 +8468,9 @@ const importableItems = {
     { title: 'ATHMILE Womens Short Sleeve V-Neck Shirts', attr: null, attrExtra: null, price: '$1', img: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=200&q=80', type: 'listing', hasBorder: true, schedule: null, status: 'Active' },
   ],
   draft: [
-    { title: 'Assorted Tops', attr: 'Template', attrExtra: 'Multiple Options', price: '$1', img: 'icons/whatnot-logo.png', type: 'template', hasBorder: false },
-    { title: 'Assorted Bottoms', attr: 'Template', attrExtra: 'Multiple Options', price: '$1', img: 'icons/whatnot-logo.png', type: 'template', hasBorder: false },
-    { title: 'Assorted Dresses', attr: 'Template', attrExtra: 'Multiple Options', price: '$1', img: 'icons/whatnot-logo.png', type: 'template', hasBorder: false },
+    { title: 'Assorted Tops', attr: 'Template', attrExtra: 'Multiple Options', price: '$1', img: 'icons/thumb-bg.png', icon: 'icons/icon-tops.png', type: 'template', hasBorder: false },
+    { title: 'Assorted Bottoms', attr: 'Template', attrExtra: 'Multiple Options', price: '$1', img: 'icons/thumb-bg.png', icon: 'icons/icon-pants.png', type: 'template', hasBorder: false },
+    { title: 'Assorted Dresses', attr: 'Template', attrExtra: 'Multiple Options', price: '$1', img: 'icons/thumb-bg.png', icon: 'icons/icon-skirts.png', type: 'template', hasBorder: false },
     { title: 'Zara Satin Slip Skirt', attr: 'Auction', attrExtra: 'Size XS', price: '$22', img: 'https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=200&q=80', type: 'listing', hasBorder: true },
     { title: 'Oversized Band Tee Vintage Wash', attr: 'Auction', attrExtra: 'Size M', price: '$15', img: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=200&q=80', type: 'listing', hasBorder: true },
   ],
@@ -8477,9 +8549,8 @@ function renderImportList() {
           ${isChecked ? '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7l3 3 6-6"/></svg>' : ''}
         </div>
         <div class="import-list-item">
-          <div class="import-item-img${item.hasBorder ? ' has-border' : ''}">
-            <img src="${item.img}" alt="">
-          </div>
+          ${item.type === 'template' ? typeThumbHTML(item.icon || 'tops', 84) : '<div class="import-item-img' + (item.hasBorder ? ' has-border' : '') + '"><img src="' + item.img + '" alt=""></div>'}
+
           <div class="import-item-info">
             ${statusHtml}
             <div style="display:flex;flex-direction:column;gap:2px">
@@ -8551,8 +8622,8 @@ function confirmImport() {
       const safeImportTitle = item.title.replace(/'/g, "\\'");
       const listingHtml = `
         <div data-type="${item.type}" data-listing-id="${rec.id}" ${item.type !== 'template' ? `data-title="${safeImportTitle}" onclick="openShopListingById(${rec.id})"` : ''} style="display:flex;gap:12px;align-items:center;padding:8px 0;border-radius:4px${item.type !== 'template' ? ';cursor:pointer' : ''}">
-          <div ${item.type === 'template' ? `onclick="${tapAction}"` : ''} style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;${item.type === 'template' ? 'cursor:pointer;' : ''}${item.hasBorder ? 'border:1px solid #d2d2d2' : ''}">
-            <img src="${item.img}" style="width:100%;height:100%;object-fit:cover" alt="">
+          <div ${item.type === 'template' ? `onclick="${tapAction}"` : ''} style="${item.type === 'template' ? 'cursor:pointer;' : ''}">
+            ${item.type === 'template' ? typeThumbHTML(item.icon || 'tops', 140) : '<div style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;' + (item.hasBorder ? 'border:1px solid #d2d2d2' : '') + '"><img src="' + item.img + '" style="width:100%;height:100%;object-fit:cover" alt=""></div>'}
           </div>
           <div style="flex:1;display:flex;flex-direction:column;gap:12px;min-width:0">
             <div ${item.type === 'template' ? `onclick="${tapAction}"` : ''} style="display:flex;flex-direction:column;gap:4px;${item.type === 'template' ? 'cursor:pointer' : ''}">
@@ -9081,7 +9152,7 @@ function populateTemplatesL1List() {
 
   const selected = fashionTypes.filter(t => selectedTypes.has(t.id));
   selected.forEach((t, i) => {
-    const rec = createListingRecord({ title: 'Assorted ' + t.label, type: 'template', status: 'draft', typeLabel: t.label });
+    const rec = createListingRecord({ title: 'Assorted ' + t.label, type: 'template', status: 'draft', typeLabel: t.label, typeId: t.id });
     const row = document.createElement('div');
     row.style.cssText = 'display:flex;flex-direction:row;flex-wrap:nowrap;gap:12px;padding:8px 0;cursor:pointer;align-items:flex-start';
     row.setAttribute('data-type', 'template');
@@ -9089,7 +9160,7 @@ function populateTemplatesL1List() {
     const lid = rec.id;
     row.onclick = function() { openEditById(lid, 'templatesl1'); };
     row.innerHTML = `
-      <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+      ${typeThumbHTML(t.id, 84)}
       <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Assorted ${t.label}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>`;
     list.appendChild(row);
   });
@@ -9101,7 +9172,9 @@ function addTemplateToL1Page(title, typeLabel, brands) {
   if (!list) return;
   const safeTitle = title || ('Assorted ' + (typeLabel || 'Template'));
   const tl = typeLabel || safeTitle.replace(/^Assorted\s*/i, '');
-  const rec = createListingRecord({ title: safeTitle, type: 'template', status: 'active', _shopActive: false, typeLabel: tl, brands: brands || '' });
+  const ft = fashionTypes.find(t => t.label.toLowerCase() === tl.toLowerCase());
+  const typeId = ft ? ft.id : null;
+  const rec = createListingRecord({ title: safeTitle, type: 'template', status: 'active', _shopActive: false, typeLabel: tl, brands: brands || '', typeId: typeId });
   const lid = rec.id;
   const row = document.createElement('div');
   row.setAttribute('data-type', 'template');
@@ -9110,7 +9183,7 @@ function addTemplateToL1Page(title, typeLabel, brands) {
   row.onclick = function() { openEditById(lid, 'templatesl1'); };
   const showDate = nextShowLabel();
   row.innerHTML = `
-    <div style="width:84px;height:84px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="icons/whatnot-logo.png" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+    ${typeThumbHTML(rec.icon || typeId || 'tops', 84)}
     <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><span class="inv-date-label">${showDate}</span><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">${safeTitle}</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Template <span style="color:#ccc">•</span> Multiple Options</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$1</div></div>
   `;
   list.insertBefore(row, list.firstChild);
