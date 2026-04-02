@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=393, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Variants Selection Logic - v1</title>
+  <style>
+    :root {
+      --font: -apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+      --text-primary: #1c1c1c;
+      --text-primary-title: #161616;
+      --text-secondary: #545454;
+      --text-tertiary: #6f6f6f;
+      --text-disabled: rgba(0,0,0,0.4);
+      --text-inverse: white;
+      --text-error: #ce291a;
+      --text-positive: #009e52;
+      --bg-canvas: #f3f3f3;
+      --bg-default: white;
+      --bg-inverse: #1c1c1c;
+      --bg-subtle: #f3f3f3;
+      --bg-extra-subtle: #fafafa;
+      --stroke-subtle: rgba(0,0,0,0.05);
+      --stroke-container: rgba(0,0,0,0.1);
+      --stroke-strong: #aaa;
+      --chip-selected-bg: #2d2d2d;
+      --chip-default-bg: rgba(0,0,0,0.05);
+      --chip-loading-bg: rgba(255,228,20,0.15);
+      --chip-loading-border: #ffe414;
+      --primary-yellow: #ffe414;
+      --card-shadow: 0px 1px 8px 0px rgba(0,0,0,0.04);
+      --radius-card: 16px;
+      --radius-chip: 8px;
+      --radius-rounded: 999px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: var(--font);
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .proto-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px 0 20px;
+      background: #1d1d1d;
+      z-index: 10000;
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.3s ease;
+    }
+    .proto-header.collapsed {
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .proto-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+    }
+    .proto-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.35);
+      white-space: nowrap;
+    }
+    .proto-breadcrumb a {
+      color: rgba(255,255,255,0.35);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .proto-breadcrumb a:hover { color: rgba(255,255,255,0.6); }
+    .proto-breadcrumb .sep { margin: 0 1px; }
+    .proto-breadcrumb .current {
+      color: rgba(255,255,255,0.8);
+      font-weight: 600;
+    }
+    .proto-divider {
+      width: 1px;
+      height: 16px;
+      background: rgba(255,255,255,0.12);
+      flex-shrink: 0;
+    }
+    .proto-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.45);
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font);
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.15s, color 0.15s;
+      cursor: pointer;
+    }
+    .proto-link-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+    }
+    .proto-link-btn svg { flex-shrink: 0; }
+    .proto-header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      margin-left: 12px;
+    }
+    .proto-timestamp {
+      font-size: 12px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.3);
+    }
+    .proto-close-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: none;
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+    .proto-close-btn:hover {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* FAB — shown when header is collapsed */
+    .proto-fab {
+      position: fixed;
+      top: 8px;
+      right: 14px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #f9dc00;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      z-index: 10001;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.35), 0 1px 4px rgba(0,0,0,0.2);
+      transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.2s ease, opacity 0.25s ease;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.6);
+    }
+    .proto-fab.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+    .proto-fab:hover {
+      box-shadow: 0 6px 24px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.25);
+    }
+    .proto-fab:active {
+      transform: scale(0.95);
+      cursor: grabbing;
+    }
+    .proto-fab svg {
+      color: #1d1d1d;
+    }
+
+    .phone-frame {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .phone-bezel {
+      position: absolute;
+      inset: -8px;
+      border-radius: 58px;
+      border: 8px solid #2a2a2a;
+      box-shadow: inset 0 0 0 1.5px #444, 0 0 0 1px #111, 0 20px 60px rgba(0,0,0,0.6);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .device-frame {
+      width: 393px;
+      height: 852px;
+      background: var(--bg-default);
+      border-radius: 50px;
+      overflow: hidden;
+      position: relative;
+      z-index: 2;
+    }
+
+    .screen {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+    }
+    .screen::-webkit-scrollbar { display: none; }
+
+    /* iOS Status Bar */
+    .status-bar {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 54px;
+      z-index: 9999;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 24px 0;
+    }
+    .status-bar .time {
+      font-size: 17px;
+      font-weight: 590;
+      color: white;
+      letter-spacing: 0;
+    }
+    .status-bar-icons {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    /* Image Carousel */
+    .image-carousel-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      overflow: hidden;
+      background: #f0f0f0;
+    }
+    .image-carousel {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .image-carousel .slide {
+      min-width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .image-carousel .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.3s ease;
+    }
+    .image-carousel .slide img.fading { opacity: 0; }
+    .scrim-top {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 85px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+      z-index: 2;
+    }
+    .scrim-bottom {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 85px;
+      opacity: 0.4;
+      background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.056) 11%, rgba(0,0,0,0.113) 21%, rgba(0,0,0,0.171) 30%, rgba(0,0,0,0.23) 38%, rgba(0,0,0,0.29) 45%, rgba(0,0,0,0.351) 52%, rgba(0,0,0,0.414) 58%, rgba(0,0,0,0.479) 64%, rgba(0,0,0,0.546) 69%, rgba(0,0,0,0.615) 74%, rgba(0,0,0,0.686) 79%, rgba(0,0,0,0.76) 84%, rgba(0,0,0,0.837) 89%, rgba(0,0,0,0.917) 95%, rgb(0,0,0) 100%);
+      z-index: 2;
+    }
+    .nav-overlay {
+      position: absolute;
+      top: 54px; left: 0; right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px 12px;
+      z-index: 3;
+    }
+    .nav-btn {
+      width: 32px; height: 32px;
+      border-radius: 999px;
+      background: var(--bg-inverse);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.15s;
+    }
+    .nav-btn:active { opacity: 0.7; }
+    .nav-btn svg { color: white; }
+
+    .page-control {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(32px);
+      z-index: 3;
+    }
+    .page-dot {
+      width: 6px; height: 6px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.4);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .page-dot.active {
+      width: 32px;
+      background: white;
+    }
+
+    /* Content Section */
+    .content-section {
+      padding: 16px 16px 0;
+      border-bottom: 4px solid var(--stroke-subtle);
+      padding-bottom: 32px;
+    }
+    .popular-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.05);
+      backdrop-filter: blur(24px);
+      margin-bottom: 8px;
+    }
+    .popular-badge span {
+      font-size: 12px;
+      font-weight: 590;
+      line-height: 12px;
+      color: var(--text-primary);
+    }
+    .product-title {
+      font-size: 18px;
+      font-weight: 590;
+      line-height: 23px;
+      letter-spacing: -0.44px;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .product-status {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      min-height: 18px;
+      transition: color 0.2s ease;
+    }
+    .product-status.error { color: var(--text-error); }
+    .product-status.sold-out { color: var(--text-error); font-weight: 590; }
+    .product-status.not-available { color: var(--text-error); font-weight: 590; }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 24px;
+      min-height: 21px;
+    }
+    .price-amount {
+      font-size: 16px;
+      font-weight: 590;
+      line-height: 21px;
+      letter-spacing: -0.31px;
+      color: var(--text-primary-title);
+      opacity: 0.9;
+    }
+    .price-shipping {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      color: var(--text-tertiary);
+    }
+
+    /* Variant Chips */
+    .variant-group {
+      margin-bottom: 0;
+    }
+    .variant-label {
+      font-size: 14px;
+      font-weight: 590;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .variant-label .required { color: var(--text-error); }
+    .error-asterisk { color: var(--text-error); font-weight: 700; }
+    .chip-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-left: -16px;
+      margin-right: -16px;
+      padding-left: 16px;
+      padding-right: 16px;
+      scrollbar-width: none;
+    }
+    .chip-row::-webkit-scrollbar { display: none; }
+    .chip {
+      flex-shrink: 0;
+      padding: 8px 12px;
+      border-radius: var(--radius-chip);
+      font-size: 14px;
+      font-weight: 590;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      white-space: nowrap;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      position: relative;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+      font-family: var(--font);
+    }
+    .chip:active { transform: scale(0.96); }
+
+    .chip.default {
+      background: var(--chip-default-bg);
+      color: var(--text-primary);
+    }
+    .chip.selected {
+      background: var(--chip-selected-bg);
+      color: var(--text-inverse);
+    }
+    .chip.loading {
+      background: var(--chip-selected-bg);
+      color: var(--text-inverse);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .chip-spinner {
+      display: none;
+      width: 10px; height: 10px;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      flex-shrink: 0;
+    }
+    .chip.loading .chip-spinner { display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .chip.disabled-option {
+      background: transparent;
+      color: var(--text-disabled);
+      border: 1px solid rgba(0,0,0,0.12);
+      padding: 7px 11px;
+      cursor: pointer;
+    }
+    .chip.disabled-option:active { transform: scale(0.96); }
+    .chip.strikethrough {
+      background: transparent;
+      color: var(--text-disabled);
+      border: 1px solid var(--stroke-strong);
+      padding: 7px 11px;
+      cursor: pointer;
+      position: relative;
+      overflow: visible;
+    }
+    .chip.strikethrough::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: -2px;
+      width: calc(100% + 4px);
+      height: 1px;
+      background: var(--stroke-strong);
+      transform: rotate(-22deg);
+      transform-origin: center;
+    }
+    .chip.selected.strikethrough {
+      background: var(--chip-selected-bg);
+      color: var(--text-inverse);
+      border: none;
+      padding: 8px 12px;
+    }
+    .chip.selected.strikethrough::after {
+      background: rgba(255,255,255,0.5);
+    }
+
+    /* Variants Section */
+    .variants-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    /* Social Proof / Divider */
+    .social-section {
+      margin-top: 24px;
+    }
+    .divider {
+      height: 1px;
+      background: var(--stroke-container);
+      margin-bottom: 12px;
+    }
+    .social-proof-text {
+      font-size: 12px;
+      line-height: 16px;
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .social-proof-text .bold {
+      font-weight: 590;
+      color: var(--text-primary);
+    }
+    .social-proof-text .muted {
+      font-weight: 400;
+      color: #7f7f7f;
+    }
+
+    /* Bidding + Social Actions */
+    .social-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .social-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.1);
+      border: none;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 590;
+      letter-spacing: -0.2px;
+      line-height: 16px;
+      color: var(--text-primary);
+      transition: background 0.15s;
+    }
+    .social-btn:active { background: rgba(0,0,0,0.15); }
+
+    /* Seller Snippet */
+    .seller-snippet {
+      margin-top: 24px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .seller-top {
+      background: var(--bg-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      height: 60px;
+    }
+    .seller-avatar-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+    .seller-avatar {
+      width: 32px; height: 32px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .seller-name {
+      font-size: 14px;
+      font-weight: 590;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: var(--text-primary-title);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .seller-msg-btn {
+      width: 32px; height: 32px;
+      border-radius: 999px;
+      background: var(--bg-inverse);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .seller-msg-btn:active { opacity: 0.7; }
+
+    .seller-bottom {
+      background: var(--bg-extra-subtle);
+      display: flex;
+      align-items: center;
+      padding: 12px 8px;
+    }
+    .seller-stat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .seller-stat-value {
+      font-size: 16px;
+      font-weight: 590;
+      line-height: 21px;
+      letter-spacing: -0.31px;
+      color: var(--text-primary-title);
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .seller-stat-label {
+      font-size: 10px;
+      font-weight: 590;
+      line-height: 12px;
+      letter-spacing: 0.12px;
+      color: #393939;
+    }
+    .seller-divider {
+      width: 1px;
+      height: 40px;
+      background: var(--stroke-container);
+      flex-shrink: 0;
+    }
+
+    /* Bottom Commerce Bar */
+    .commerce-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: var(--bg-default);
+      z-index: 100;
+      border-top: 1px solid #d2d2d2;
+    }
+    .bid-info {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 16px 0;
+      font-size: 13px;
+      font-weight: 590;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: var(--text-secondary);
+    }
+    .button-tray {
+      padding: 16px 16px 0;
+    }
+    .pre-bid-btn {
+      width: 100%;
+      height: 44px;
+      border-radius: 999px;
+      background: var(--primary-yellow);
+      border: none;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 590;
+      letter-spacing: -0.41px;
+      line-height: 20px;
+      color: var(--text-primary);
+      transition: transform 0.1s, opacity 0.15s;
+    }
+    .pre-bid-btn:active { transform: scale(0.98); opacity: 0.9; }
+    .pre-bid-btn:disabled {
+      background: rgba(255,228,20,0.25);
+      color: rgba(28,28,28,0.35);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .footer-toast {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%) scale(0.6);
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: #e02b2b;
+      color: white;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 590;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      white-space: nowrap;
+      z-index: 110;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s cubic-bezier(0.32, 0.72, 0, 1),
+                  transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .footer-toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+
+    .home-indicator {
+      display: flex;
+      justify-content: center;
+      padding: 8px 0;
+      height: 34px;
+    }
+    .home-indicator-bar {
+      width: 135px;
+      height: 5px;
+      border-radius: 100px;
+      background: var(--bg-inverse);
+    }
+
+    .content-spacer {
+      height: 160px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="proto-header" id="protoHeader">
+    <div class="proto-header-left">
+      <div class="proto-breadcrumb">
+        <a href="https://sturdy-parakeet-o3wwv73.pages.github.io/">Index</a>
+        <span class="sep">›</span>
+        <span>st</span>
+        <span class="sep">›</span>
+        <a href="index.html" class="current" style="cursor:pointer">Variants Selection Logic</a>
+        <span class="sep">›</span>
+        <span class="current">V1</span>
+      </div>
+    </div>
+    <div class="proto-header-right">
+      <span class="proto-timestamp" id="protoTimestamp"></span>
+      <div class="proto-divider"></div>
+      <a class="proto-link-btn" href="https://www.figma.com/design/Efq06B5ZlyOhHXIKojFhFd/Product-Creation---Management?node-id=13309-86802&t=EWm9w18TULUlYIQZ-11" target="_blank" rel="noopener">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M8 2H5a3 3 0 0 0-3 3v3a3 3 0 0 0 3 3h3a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Z" fill="currentColor" opacity="0.5"/><path d="M5 13H8a3 3 0 0 1 3 3v3a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-3a3 3 0 0 1 3-3Z" fill="currentColor" opacity="0.7"/><path d="M16 2h-3a3 3 0 0 0-3 3v3a3 3 0 0 0 3 3h3a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Z" fill="currentColor" opacity="0.6"/><path d="M19 13h-3a3 3 0 0 0-3 3v5h3a3 3 0 0 0 3-3v-5Z" fill="currentColor" opacity="0.8"/></svg>
+        Figma
+      </a>
+      <a class="proto-link-btn" href="https://docs.google.com/document/d/1Hr9BI1rszc3mk-bpH511IIkmtbrsUhWMXqyGSzJ9DbY/edit?usp=sharing" target="_blank" rel="noopener">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+        PRD
+      </a>
+      <button class="proto-close-btn" id="protoCloseBtn" onclick="collapseProtoHeader()" title="Collapse header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Floating FAB (appears when header is collapsed) -->
+  <button class="proto-fab" id="protoFab" onclick="expandProtoHeader()" title="Open header menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
+  </button>
+
+  <!-- ═══ DRAGGABLE CONTROL PANEL ═══ -->
+  <div id="controlPanel" style="position:fixed;left:16px;top:72px;z-index:99999;width:fit-content;min-width:210px;max-width:320px;background:rgba(30,30,30,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:14px;border:1px solid rgba(255,255,255,0.08);box-shadow:0 8px 32px rgba(0,0,0,0.4);font-family:var(--font);user-select:none;overflow:hidden">
+    <div id="controlPanelHandle" style="padding:10px 14px 8px;cursor:grab;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:rgba(255,255,255,0.4)">Controls</span>
+      <div id="controlPanelCollapse" onclick="toggleControlPanel()" style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:4px;background:rgba(255,255,255,0.06)">
+        <svg id="collapseChevron" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.2s ease"><path d="M1 1l4 4 4-4"/></svg>
+      </div>
+    </div>
+    <div id="controlPanelBody" style="padding:0 14px 14px;display:flex;flex-direction:column;gap:10px">
+      <button onclick="randomizeVariants()" style="width:100%;height:32px;border-radius:8px;border:none;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:background 0.15s;letter-spacing:-0.1px" onmouseenter="this.style.background='rgba(255,255,255,0.14)'" onmouseleave="this.style.background='rgba(255,255,255,0.08)'">🎲 Randomize Variants</button>
+      <div style="height:1px;background:rgba(255,255,255,0.06)"></div>
+      <span style="font-size:10px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;color:rgba(255,255,255,0.3)">Variant Map</span>
+      <div id="variantTable" style="overflow-x:auto;border-radius:8px;border:1px solid rgba(255,255,255,0.06)"></div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:center">
+  <div class="phone-frame">
+    <div class="phone-bezel"></div>
+    <div class="device-frame">
+      <div class="screen" id="screen">
+        <!-- iOS Status Bar (global, fixed) -->
+        <div class="status-bar" id="statusBar">
+          <span class="time">9:41</span>
+          <span class="status-bar-icons">
+            <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+              <rect x="0.5" y="0.5" width="3" height="11" rx="1" fill="white"/>
+              <rect x="5" y="3" width="3" height="8.5" rx="1" fill="white"/>
+              <rect x="9.5" y="5.5" width="3" height="6" rx="1" fill="white"/>
+              <rect x="14" y="7.5" width="3" height="4" rx="1" fill="white"/>
+            </svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+              <path d="M8 3.6C10.08 3.6 12 4.4 13.44 5.76L14.4 4.8C12.64 3.12 10.4 2.16 8 2.16C5.6 2.16 3.36 3.12 1.6 4.8L2.56 5.76C4 4.4 5.92 3.6 8 3.6Z" fill="white"/>
+              <path d="M8 7.2C9.28 7.2 10.48 7.68 11.44 8.56L12.4 7.6C11.12 6.4 9.6 5.76 8 5.76C6.4 5.76 4.88 6.4 3.6 7.6L4.56 8.56C5.52 7.68 6.72 7.2 8 7.2Z" fill="white"/>
+              <circle cx="8" cy="10.5" r="1.5" fill="white"/>
+            </svg>
+            <svg width="27" height="13" viewBox="0 0 27 13" fill="none">
+              <rect x="0.5" y="1" width="22" height="11" rx="3.5" stroke="white" stroke-opacity="0.35" fill="none"/>
+              <rect x="24" y="4.5" width="2" height="4" rx="1" fill="white" fill-opacity="0.4"/>
+              <rect x="2" y="2.5" width="18" height="8" rx="2" fill="white"/>
+            </svg>
+          </span>
+        </div>
+
+        <!-- Image Carousel -->
+        <div class="image-carousel-wrap" id="carouselWrap">
+          <div class="image-carousel" id="carousel">
+            <div class="slide"><img id="slideImg1" src="shoe-black-white.png" alt="Product"></div>
+            <div class="slide"><img id="slideImg2" src="shoe-black-white.png" alt="Product"></div>
+            <div class="slide"><img id="slideImg3" src="shoe-black-white.png" alt="Product"></div>
+            <div class="slide"><img id="slideImg4" src="shoe-black-white.png" alt="Product"></div>
+          </div>
+          <div class="scrim-top"></div>
+          <div class="scrim-bottom"></div>
+          <div class="nav-overlay">
+            <button class="nav-btn" onclick="history.back()" aria-label="Back">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M10 3L5 8L10 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button class="nav-btn" aria-label="More">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="3" cy="8" r="1.5" fill="white"/>
+                <circle cx="8" cy="8" r="1.5" fill="white"/>
+                <circle cx="13" cy="8" r="1.5" fill="white"/>
+              </svg>
+            </button>
+          </div>
+          <div class="page-control" id="pageControl">
+            <div class="page-dot active" data-idx="0"></div>
+            <div class="page-dot" data-idx="1"></div>
+            <div class="page-dot" data-idx="2"></div>
+            <div class="page-dot" data-idx="3"></div>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content-section">
+          <h1 class="product-title">Nike Dunk Low</h1>
+          <p class="product-status" id="productStatus">55 Available</p>
+          <div class="price-row" id="priceRow">
+            <span class="price-amount" id="priceAmount">$1</span>
+            <span class="price-shipping" id="priceShipping">+ $7.50 Shipping + Taxes</span>
+          </div>
+
+          <!-- Variants (rendered dynamically) -->
+          <div class="variants-section" id="variantsSection"></div>
+
+          <!-- Social Proof -->
+          <div class="social-section">
+            <div class="divider"></div>
+            <div class="social-proof-text">
+              <span class="bold">1.3k views</span>
+              <span class="muted">on this item</span>
+            </div>
+            <div class="social-actions">
+              <button class="social-btn">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 1.6C4.48 1.6 1.6 4.08 1.6 7.12C1.6 8.8 2.4 10.32 3.76 11.36L3.2 14.4L6.08 12.56C6.72 12.72 7.36 12.8 8 12.8C11.52 12.8 14.4 10.32 14.4 7.12C14.4 4.08 11.52 1.6 8 1.6Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                61
+              </button>
+              <button class="social-btn">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M13.6 5.6H9.6V1.6L2.4 9.6H6.4V14.4L13.6 5.6Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Share
+              </button>
+            </div>
+          </div>
+
+          <!-- Seller Snippet -->
+          <div class="seller-snippet">
+            <div class="seller-top">
+              <div class="seller-avatar-area">
+                <div class="seller-avatar">S</div>
+                <span class="seller-name">sneakerfreaker</span>
+              </div>
+              <button class="seller-msg-btn" aria-label="Message seller">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M2 3H14V12H3.6L2 13.6V3Z" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+            <div class="seller-bottom">
+              <div class="seller-stat">
+                <div class="seller-stat-value">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" fill="#1c1c1c"/><path d="M10 5L11.5 8.5L15 9L12.5 11.5L13 15L10 13.5L7 15L7.5 11.5L5 9L8.5 8.5L10 5Z" fill="#FFD700"/></svg>
+                </div>
+                <span class="seller-stat-label" style="text-decoration:underline">Premier Shop</span>
+              </div>
+              <div class="seller-divider"></div>
+              <div class="seller-stat">
+                <div class="seller-stat-value">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1L7.5 4.1L11 4.6L8.5 7L9.1 10.5L6 8.9L2.9 10.5L3.5 7L1 4.6L4.5 4.1L6 1Z" fill="#FFD700"/></svg>
+                  4.8
+                </div>
+                <span class="seller-stat-label">Rating</span>
+              </div>
+              <div class="seller-divider"></div>
+              <div class="seller-stat">
+                <div class="seller-stat-value">50k</div>
+                <span class="seller-stat-label">Reviews</span>
+              </div>
+              <div class="seller-divider"></div>
+              <div class="seller-stat">
+                <div class="seller-stat-value">169k</div>
+                <span class="seller-stat-label">Sold</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-spacer"></div>
+      </div>
+
+      <!-- Footer toast -->
+      <div class="footer-toast" id="footerToast"></div>
+
+      <!-- Bottom Commerce Bar -->
+      <div class="commerce-bar">
+        <div class="bid-info" id="bidInfo">
+          <span>Join the bidding!</span>
+          <span id="bidCount">3 Bid(s)</span>
+        </div>
+        <div class="button-tray">
+          <button class="pre-bid-btn" id="preBidBtn">Pre-Bid</button>
+        </div>
+        <div class="home-indicator">
+          <div class="home-indicator-bar"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // DATA MODEL — N-dimension variant system
+    // ==========================================
+    const PRODUCT = {
+      name: 'Nike Dunk Low',
+      shipping: 7.50,
+      dimensions: [
+        { label: 'Size', options: ['9.5M','10M','10.5M','11M','11.5M','12M','12.5M','13M'] },
+        { label: 'Color', options: ['Black/White','Brown/White'] }
+      ],
+      imageKey: 1,
+      images: { 'Black/White': 'shoe-black-white.png', 'Brown/White': 'shoe-brown-white.png' },
+      variants: {
+        '9.5M|Black/White':  { status: 'available', quantity: 55, price: 1, bids: 3 },
+        '9.5M|Brown/White':  { status: 'available', quantity: 30, price: 1, bids: 0 },
+        '10M|Black/White':   { status: 'available', quantity: 42, price: 1, bids: 7 },
+        '10M|Brown/White':   { status: 'available', quantity: 18, price: 2, bids: 0 },
+        '10.5M|Black/White': { status: 'available', quantity: 7, price: 1, bids: 1 },
+        '10.5M|Brown/White': { status: 'available', quantity: 12, price: 1, bids: 0 },
+        '11M|Black/White':   { status: 'available', quantity: 20, price: 1, bids: 12 },
+        '11M|Brown/White':   { status: 'sold_out', quantity: 0, price: 1, bids: 0 },
+        '11.5M|Black/White': { status: 'not_exist' },
+        '11.5M|Brown/White': { status: 'available', quantity: 15, price: 1, bids: 0 },
+        '12M|Black/White':   { status: 'available', quantity: 8, price: 1, bids: 0 },
+        '12M|Brown/White':   { status: 'available', quantity: 5, price: 1, bids: 2 },
+        '12.5M|Black/White': { status: 'available', quantity: 3, price: 1, bids: 0 },
+        '12.5M|Brown/White': { status: 'sold_out', quantity: 0, price: 1, bids: 0 },
+        '13M|Black/White':   { status: 'not_exist' },
+        '13M|Brown/White':   { status: 'available', quantity: 2, price: 1, bids: 5 },
+      }
+    };
+
+    const LOADING_DELAY_MIN = 600;
+    const LOADING_DELAY_MAX = 1200;
+    const ERROR_CHANCE = 0.08;
+
+    // ==========================================
+    // STATE
+    // ==========================================
+    let state = {
+      selections: [null, null],
+      currentState: 'default',
+      loadingChip: null,
+      loadingDimIdx: null,
+      carouselIdx: 0,
+      hasInteracted: false,
+    };
+
+    // ==========================================
+    // HELPERS
+    // ==========================================
+    function getVariantKey(vals) { return vals.join('|'); }
+
+    function getVariant(vals) {
+      return PRODUCT.variants[getVariantKey(vals)] || { status: 'not_exist' };
+    }
+
+    function getStatusesForOption(dimIdx, value) {
+      const results = [];
+      function recurse(d, keys) {
+        if (d === PRODUCT.dimensions.length) { results.push(getVariant(keys)); return; }
+        if (d === dimIdx) {
+          recurse(d + 1, [...keys, value]);
+        } else if (d < dimIdx) {
+          if (state.selections[d]) recurse(d + 1, [...keys, state.selections[d]]);
+        } else {
+          PRODUCT.dimensions[d].options.forEach(o => recurse(d + 1, [...keys, o]));
+        }
+      }
+      recurse(0, []);
+      return results;
+    }
+
+    function optionIsAllNotExist(dimIdx, value) {
+      const vs = getStatusesForOption(dimIdx, value);
+      return vs.length > 0 && vs.every(v => v.status === 'not_exist');
+    }
+
+    function optionIsAllSoldOut(dimIdx, value) {
+      const vs = getStatusesForOption(dimIdx, value);
+      return vs.length > 0
+        && vs.every(v => v.status === 'sold_out' || v.status === 'not_exist')
+        && vs.some(v => v.status === 'sold_out');
+    }
+
+    function findFirstAvailableInDim(dimIdx, overrideSelections) {
+      const sels = overrideSelections || state.selections;
+      for (const opt of PRODUCT.dimensions[dimIdx].options) {
+        const test = [...sels];
+        test[dimIdx] = opt;
+        if (test.every(s => s !== null)) {
+          const v = getVariant(test);
+          if (v.status === 'available') return opt;
+        }
+      }
+      for (const opt of PRODUCT.dimensions[dimIdx].options) {
+        const test = [...sels];
+        test[dimIdx] = opt;
+        if (test.every(s => s !== null)) {
+          const v = getVariant(test);
+          if (v.status === 'sold_out') return opt;
+        }
+      }
+      return null;
+    }
+
+    function findFirstAvailableCombo() {
+      let best = null;
+      function recurse(d, keys) {
+        if (d === PRODUCT.dimensions.length) {
+          const v = getVariant(keys);
+          if (!best && v.status === 'available') best = [...keys];
+          return;
+        }
+        for (const opt of PRODUCT.dimensions[d].options) {
+          recurse(d + 1, [...keys, opt]);
+          if (best) return;
+        }
+      }
+      recurse(0, []);
+      return best;
+    }
+
+    function randomDelay() {
+      return LOADING_DELAY_MIN + Math.random() * (LOADING_DELAY_MAX - LOADING_DELAY_MIN);
+    }
+
+    // ==========================================
+    // RENDER
+    // ==========================================
+    function createChip(label, chipClass, onClick) {
+      const btn = document.createElement('button');
+      btn.className = 'chip ' + chipClass;
+      const txt = document.createElement('span');
+      txt.textContent = label;
+      btn.appendChild(txt);
+      const spinner = document.createElement('span');
+      spinner.className = 'chip-spinner';
+      btn.appendChild(spinner);
+      btn.onclick = onClick;
+      return btn;
+    }
+
+    function renderAllChips() {
+      const section = document.getElementById('variantsSection');
+      section.innerHTML = '';
+      PRODUCT.dimensions.forEach((dim, dIdx) => {
+        const group = document.createElement('div');
+        group.className = 'variant-group';
+        const label = document.createElement('div');
+        label.className = 'variant-label';
+        label.id = 'dimLabel_' + dIdx;
+        label.textContent = dim.label;
+        if (dIdx === 0 && state.currentState === 'error') {
+          const asterisk = document.createElement('span');
+          asterisk.className = 'error-asterisk';
+          asterisk.textContent = ' *';
+          label.appendChild(asterisk);
+        }
+        group.appendChild(label);
+        const row = document.createElement('div');
+        row.className = 'chip-row';
+        dim.options.forEach(opt => {
+          row.appendChild(createChip(opt, getChipClass(dIdx, opt), () => selectOption(dIdx, opt)));
+        });
+        group.appendChild(row);
+        section.appendChild(group);
+      });
+    }
+
+    function getChipClass(dimIdx, value) {
+      if (state.loadingChip === value && state.loadingDimIdx === dimIdx) return 'loading';
+      if (optionIsAllNotExist(dimIdx, value)) return 'disabled-option';
+      if (state.currentState === 'loading') return 'default';
+      if (state.selections[dimIdx] === value) {
+        return optionIsAllSoldOut(dimIdx, value) ? 'selected strikethrough' : 'selected';
+      }
+      if (optionIsAllSoldOut(dimIdx, value)) return 'strikethrough';
+      return 'default';
+    }
+
+    function renderProductInfo() {
+      const statusEl = document.getElementById('productStatus');
+      const priceEl = document.getElementById('priceAmount');
+      const shippingEl = document.getElementById('priceShipping');
+      const bidBtn = document.getElementById('preBidBtn');
+      const bidInfo = document.getElementById('bidInfo');
+      const bidCountEl = document.getElementById('bidCount');
+      if (state.currentState === 'loading') return;
+
+      const allSelected = state.selections.every(s => s !== null);
+      const variant = allSelected ? getVariant(state.selections) : { status: 'not_exist' };
+      const bids = variant.bids || 0;
+      const hasBids = bids > 0;
+
+      switch (state.currentState) {
+        case 'default':
+          statusEl.textContent = `${variant.quantity} Available`;
+          statusEl.className = 'product-status';
+          priceEl.textContent = `$${variant.price}`;
+          shippingEl.textContent = `+ $${PRODUCT.shipping.toFixed(2)} Shipping + Taxes`;
+          shippingEl.style.display = '';
+          bidInfo.style.display = hasBids ? '' : 'none';
+          bidCountEl.textContent = `${bids} Bid${bids !== 1 ? 's' : ''}`;
+          bidBtn.disabled = false;
+          break;
+        case 'error':
+          statusEl.textContent = 'There was an error loading this variant.';
+          statusEl.className = 'product-status error';
+          priceEl.textContent = '—';
+          shippingEl.style.display = 'none';
+          bidInfo.style.display = 'none';
+          bidBtn.disabled = true;
+          break;
+        case 'sold_out':
+          statusEl.textContent = 'Sold Out';
+          statusEl.className = 'product-status sold-out';
+          priceEl.textContent = variant.price != null ? `$${variant.price}` : '—';
+          shippingEl.textContent = `+ $${PRODUCT.shipping.toFixed(2)} Shipping + Taxes`;
+          shippingEl.style.display = variant.price != null ? '' : 'none';
+          bidInfo.style.display = 'none';
+          bidBtn.disabled = true;
+          break;
+        case 'not_exist':
+          statusEl.textContent = 'Not Available';
+          statusEl.className = 'product-status not-available';
+          priceEl.textContent = '—';
+          shippingEl.style.display = 'none';
+          bidInfo.style.display = 'none';
+          bidBtn.disabled = true;
+          break;
+      }
+      renderVariantTable();
+    }
+
+    function updateImages(value) {
+      const img = PRODUCT.images[value] || Object.values(PRODUCT.images)[0];
+      const slides = document.querySelectorAll('[id^="slideImg"]');
+      if (!img || slides[0].src.endsWith(img)) return;
+      slides.forEach(s => s.classList.add('fading'));
+      setTimeout(() => { slides.forEach(s => { s.src = img; s.classList.remove('fading'); }); }, 300);
+    }
+
+    // ==========================================
+    // STATE MACHINE
+    // ==========================================
+    let loadingTimer = null;
+
+    function selectOption(dimIdx, value) {
+      if (state.loadingChip) return;
+      hideFooterToast();
+
+      if (optionIsAllNotExist(dimIdx, value)) {
+        showFooterToast('Option unavailable');
+        return;
+      }
+
+      if (state.selections[dimIdx] === value && state.currentState !== 'not_exist') return;
+
+      let newSels = [...state.selections];
+      newSels[dimIdx] = value;
+
+      for (let d = 0; d < PRODUCT.dimensions.length; d++) {
+        if (d !== dimIdx && !newSels[d]) {
+          newSels[d] = PRODUCT.dimensions[d].options[0];
+        }
+      }
+
+      if (newSels.every(s => s !== null) && getVariant(newSels).status === 'not_exist') {
+        for (let d = PRODUCT.dimensions.length - 1; d >= 0; d--) {
+          if (d === dimIdx) continue;
+          const fb = findFirstAvailableInDim(d, newSels);
+          if (fb) { newSels[d] = fb; break; }
+        }
+      }
+
+      if (!state.hasInteracted) {
+        state.loadingChip = value;
+        state.loadingDimIdx = dimIdx;
+        state.currentState = 'loading';
+        renderAllChips();
+        clearTimeout(loadingTimer);
+        loadingTimer = setTimeout(() => {
+          state.hasInteracted = true;
+          resolveSelection(newSels, dimIdx);
+        }, randomDelay());
+      } else {
+        resolveSelection(newSels, dimIdx);
+      }
+    }
+
+    function resolveSelection(newSels, changedDimIdx) {
+      state.loadingChip = null;
+      state.loadingDimIdx = null;
+      const variant = getVariant(newSels);
+      const simulateError = variant.status === 'available' && Math.random() < ERROR_CHANCE;
+      const status = simulateError ? 'error' : variant.status;
+
+      switch (status) {
+        case 'available':
+          state.selections = newSels;
+          state.currentState = 'default';
+          updateImages(newSels[PRODUCT.imageKey]);
+          break;
+        case 'sold_out':
+          state.selections = newSels;
+          state.currentState = 'sold_out';
+          updateImages(newSels[PRODUCT.imageKey]);
+          break;
+        case 'error':
+          renderAllChips();
+          showFooterToast('Failed to load');
+          return;
+        case 'not_exist':
+          state.selections = newSels;
+          state.currentState = 'not_exist';
+          renderAllChips();
+          renderProductInfo();
+          showFooterToast('Option unavailable');
+          return;
+      }
+
+      renderAllChips();
+      renderProductInfo();
+    }
+
+    // ==========================================
+    // FOOTER TOAST
+    // ==========================================
+    let toastTimer = null;
+    function showFooterToast(msg) {
+      const toast = document.getElementById('footerToast');
+      const bar = document.querySelector('.commerce-bar');
+      clearTimeout(toastTimer);
+      toast.textContent = msg;
+      toast.style.bottom = (bar.offsetHeight + 16) + 'px';
+      toast.classList.remove('visible');
+      requestAnimationFrame(() => { requestAnimationFrame(() => { toast.classList.add('visible'); }); });
+      toastTimer = setTimeout(() => toast.classList.remove('visible'), 3000);
+    }
+    function hideFooterToast() {
+      clearTimeout(toastTimer);
+      document.getElementById('footerToast').classList.remove('visible');
+    }
+
+    // ==========================================
+    // CAROUSEL
+    // ==========================================
+    let touchStartX = 0, touchDeltaX = 0;
+    const carouselWrap = document.getElementById('carouselWrap');
+    const carousel = document.getElementById('carousel');
+
+    function handleDragStart(x) { touchStartX = x; carousel.style.transition = 'none'; }
+    function handleDragMove(x) {
+      touchDeltaX = x - touchStartX;
+      carousel.style.transform = `translateX(${-(state.carouselIdx * 393) + touchDeltaX}px)`;
+    }
+    function handleDragEnd() {
+      carousel.style.transition = '';
+      if (Math.abs(touchDeltaX) > 50) {
+        if (touchDeltaX < 0 && state.carouselIdx < 3) state.carouselIdx++;
+        if (touchDeltaX > 0 && state.carouselIdx > 0) state.carouselIdx--;
+      }
+      touchDeltaX = 0;
+      goToSlide(state.carouselIdx);
+    }
+    carouselWrap.addEventListener('touchstart', e => handleDragStart(e.touches[0].clientX));
+    carouselWrap.addEventListener('touchmove', e => handleDragMove(e.touches[0].clientX));
+    carouselWrap.addEventListener('touchend', handleDragEnd);
+    let mouseDown = false;
+    carouselWrap.addEventListener('mousedown', e => { mouseDown = true; handleDragStart(e.clientX); e.preventDefault(); });
+    carouselWrap.addEventListener('mousemove', e => { if (mouseDown) handleDragMove(e.clientX); });
+    carouselWrap.addEventListener('mouseup', () => { if (mouseDown) { mouseDown = false; handleDragEnd(); } });
+    carouselWrap.addEventListener('mouseleave', () => { if (mouseDown) { mouseDown = false; handleDragEnd(); } });
+    document.querySelectorAll('.page-dot').forEach(dot => {
+      dot.addEventListener('click', () => goToSlide(parseInt(dot.dataset.idx)));
+    });
+    function goToSlide(idx) {
+      state.carouselIdx = idx;
+      carousel.style.transform = `translateX(${-idx * 393}px)`;
+      document.querySelectorAll('.page-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+    }
+
+    // ==========================================
+    // PRODUCT TEMPLATES
+    // ==========================================
+    const CATEGORY_TEMPLATES = {
+      shoes: [
+        { name: 'Nike Dunk Low', dims: [
+          { label: 'Size', options: ['9M','9.5M','10M','10.5M','11M','11.5M','12M','12.5M','13M'] },
+          { label: 'Color', options: ['Black/White','Brown/White'] }
+        ], imageKey: 1, images: { 'Black/White': 'shoe-black-white.png', 'Brown/White': 'shoe-brown-white.png' }, price: [1, 2] },
+        { name: 'Jordan 1 Retro High', dims: [
+          { label: 'Size', options: ['8M','8.5M','9M','9.5M','10M','10.5M','11M','11.5M','12M'] },
+          { label: 'Color', options: ['Black/White','Brown/White'] }
+        ], imageKey: 1, images: { 'Black/White': 'shoe-black-white.png', 'Brown/White': 'shoe-brown-white.png' }, price: [2, 5] },
+        { name: 'New Balance 550', dims: [
+          { label: 'Size', options: ['7M','7.5M','8M','8.5M','9M','9.5M','10M','10.5M','11M'] },
+          { label: 'Color', options: ['Black/White','Brown/White'] }
+        ], imageKey: 1, images: { 'Black/White': 'shoe-black-white.png', 'Brown/White': 'shoe-brown-white.png' }, price: [1, 2] },
+      ],
+      electronics: [
+        { name: 'Audio Aura Max', dims: [
+          { label: 'Color', options: ['Space Gray','Silver'] },
+          { label: 'Connectivity', options: ['Bluetooth 5.3','USB-C'] },
+          { label: 'Warranty', options: ['Standard','Extended'] }
+        ], imageKey: 0, images: { 'Space Gray': 'headphones-space-gray.png', 'Silver': 'headphones-silver.png' }, price: [3, 7] },
+        { name: 'ProPods Ultra', dims: [
+          { label: 'Color', options: ['Space Gray','Silver'] },
+          { label: 'Storage', options: ['64GB','128GB','256GB'] },
+          { label: 'Carrier', options: ['Unlocked','AT&T','T-Mobile'] }
+        ], imageKey: 0, images: { 'Space Gray': 'headphones-space-gray.png', 'Silver': 'headphones-silver.png' }, price: [5, 12] },
+        { name: 'SoundWave Elite', dims: [
+          { label: 'Color', options: ['Space Gray','Silver'] },
+          { label: 'Edition', options: ['Standard','Pro','Limited'] },
+          { label: 'Bundle', options: ['Unit Only','w/ Case','w/ Dock'] }
+        ], imageKey: 0, images: { 'Space Gray': 'headphones-space-gray.png', 'Silver': 'headphones-silver.png' }, price: [2, 6] },
+      ],
+      fashion: [
+        { name: 'Classic Flap Bag', dims: [
+          { label: 'Size', options: ['Mini','Small','Medium','Large'] },
+          { label: 'Color', options: ['Black','Tan'] }
+        ], imageKey: 1, images: { 'Black': 'handbag-black.png', 'Tan': 'handbag-tan.png' }, price: [40, 85] },
+        { name: 'Quilted Crossbody', dims: [
+          { label: 'Size', options: ['Small','Medium','Large'] },
+          { label: 'Color', options: ['Black','Tan'] }
+        ], imageKey: 1, images: { 'Black': 'handbag-black.png', 'Tan': 'handbag-tan.png' }, price: [25, 55] },
+        { name: 'Chain Shoulder Bag', dims: [
+          { label: 'Size', options: ['Micro','Mini','Small','Medium'] },
+          { label: 'Color', options: ['Black','Tan'] }
+        ], imageKey: 1, images: { 'Black': 'handbag-black.png', 'Tan': 'handbag-tan.png' }, price: [30, 70] },
+      ]
+    };
+
+    const CATEGORIES = Object.keys(CATEGORY_TEMPLATES);
+
+    // ==========================================
+    // CONTROL PANEL
+    // ==========================================
+    function renderVariantTable() {
+      const dims = PRODUCT.dimensions;
+      const icon = { available: '✅', sold_out: '🚫', not_exist: '—' };
+      if (dims.length === 2) {
+        let html = '<table style="width:100%;border-collapse:collapse;font-size:10px;font-family:var(--font)">';
+        html += '<tr><th style="padding:5px 6px;text-align:left;color:rgba(255,255,255,0.35);font-weight:600;border-bottom:1px solid rgba(255,255,255,0.06)"></th>';
+        dims[1].options.forEach(c => {
+          const short = c.includes('/') ? c.split('/').map(w => w[0]).join('/') : c.slice(0, 4);
+          html += `<th style="padding:5px 4px;text-align:center;color:rgba(255,255,255,0.35);font-weight:600;border-bottom:1px solid rgba(255,255,255,0.06);white-space:nowrap">${short}</th>`;
+        });
+        html += '</tr>';
+        dims[0].options.forEach(r => {
+          const isSel = r === state.selections[0];
+          html += `<tr style="background:${isSel ? 'rgba(255,255,255,0.04)' : 'transparent'}">`;
+          html += `<td style="padding:4px 6px;color:rgba(255,255,255,${isSel?'0.9':'0.5'});font-weight:${isSel?'700':'500'};white-space:nowrap;border-bottom:1px solid rgba(255,255,255,0.03)">${r}</td>`;
+          dims[1].options.forEach(c => {
+            const v = getVariant([r, c]);
+            const active = r === state.selections[0] && c === state.selections[1];
+            const ring = active ? 'outline:1.5px solid #f9dc00;outline-offset:1px;border-radius:3px;' : '';
+            html += `<td style="padding:4px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.03);${ring}">${icon[v.status]||'—'}</td>`;
+          });
+          html += '</tr>';
+        });
+        html += '</table>';
+        document.getElementById('variantTable').innerHTML = html;
+      } else if (dims.length === 3) {
+        const sel0 = state.selections[0];
+        let html = `<div style="font-size:9px;color:rgba(255,255,255,0.3);margin-bottom:4px">${dims[0].label}: ${sel0 || '—'}</div>`;
+        html += '<table style="width:100%;border-collapse:collapse;font-size:10px;font-family:var(--font)">';
+        html += '<tr><th style="padding:5px 6px;text-align:left;color:rgba(255,255,255,0.35);font-weight:600;border-bottom:1px solid rgba(255,255,255,0.06)"></th>';
+        dims[2].options.forEach(c => {
+          const short = c.slice(0, 5);
+          html += `<th style="padding:5px 4px;text-align:center;color:rgba(255,255,255,0.35);font-weight:600;border-bottom:1px solid rgba(255,255,255,0.06);white-space:nowrap">${short}</th>`;
+        });
+        html += '</tr>';
+        dims[1].options.forEach(r => {
+          const isSel = r === state.selections[1];
+          html += `<tr style="background:${isSel ? 'rgba(255,255,255,0.04)' : 'transparent'}">`;
+          html += `<td style="padding:4px 6px;color:rgba(255,255,255,${isSel?'0.9':'0.5'});font-weight:${isSel?'700':'500'};white-space:nowrap;border-bottom:1px solid rgba(255,255,255,0.03)">${r}</td>`;
+          dims[2].options.forEach(c => {
+            const key = sel0 ? [sel0, r, c] : [dims[0].options[0], r, c];
+            const v = getVariant(key);
+            const active = state.selections[1] === r && state.selections[2] === c;
+            const ring = active ? 'outline:1.5px solid #f9dc00;outline-offset:1px;border-radius:3px;' : '';
+            html += `<td style="padding:4px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.03);${ring}">${icon[v.status]||'—'}</td>`;
+          });
+          html += '</tr>';
+        });
+        html += '</table>';
+        document.getElementById('variantTable').innerHTML = html;
+      }
+    }
+
+    function randomizeVariants() {
+      const cat = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
+      const pool = CATEGORY_TEMPLATES[cat];
+      const tpl = pool[Math.floor(Math.random() * pool.length)];
+
+      PRODUCT.name = tpl.name;
+      PRODUCT.imageKey = tpl.imageKey;
+      PRODUCT.images = { ...tpl.images };
+      PRODUCT.dimensions = tpl.dims.map(d => ({ label: d.label, options: [...d.options] }));
+
+      const statuses = ['available', 'available', 'available', 'sold_out', 'not_exist'];
+      PRODUCT.variants = {};
+
+      function buildKeys(dIdx, keys) {
+        if (dIdx === PRODUCT.dimensions.length) {
+          const key = keys.join('|');
+          const pick = statuses[Math.floor(Math.random() * statuses.length)];
+          if (pick === 'available') {
+            const price = tpl.price[0] + Math.floor(Math.random() * (tpl.price[1] - tpl.price[0] + 1));
+            const bids = Math.random() < 0.3 ? Math.floor(Math.random() * 20) + 1 : 0;
+            PRODUCT.variants[key] = { status: 'available', quantity: Math.floor(Math.random() * 60) + 1, price, bids };
+          } else if (pick === 'sold_out') {
+            PRODUCT.variants[key] = { status: 'sold_out', quantity: 0, price: tpl.price[0], bids: 0 };
+          } else {
+            PRODUCT.variants[key] = { status: 'not_exist' };
+          }
+          return;
+        }
+        PRODUCT.dimensions[dIdx].options.forEach(opt => buildKeys(dIdx + 1, [...keys, opt]));
+      }
+      buildKeys(0, []);
+
+      state.selections = new Array(PRODUCT.dimensions.length).fill(null);
+      state.currentState = 'default';
+      state.loadingChip = null;
+      state.loadingDimIdx = null;
+      state.hasInteracted = false;
+
+      const combo = findFirstAvailableCombo();
+      if (combo) {
+        state.selections = combo;
+        const v = getVariant(combo);
+        state.currentState = v.status === 'available' ? 'default' : v.status;
+        updateImages(combo[PRODUCT.imageKey]);
+      }
+
+      document.querySelector('.product-title').textContent = PRODUCT.name;
+      renderAllChips();
+      renderProductInfo();
+    }
+
+    function toggleControlPanel() {
+      const body = document.getElementById('controlPanelBody');
+      const chevron = document.getElementById('collapseChevron');
+      if (body.style.display === 'none') { body.style.display = 'flex'; chevron.style.transform = ''; }
+      else { body.style.display = 'none'; chevron.style.transform = 'rotate(-90deg)'; }
+    }
+
+    (function() {
+      const panel = document.getElementById('controlPanel');
+      const handle = document.getElementById('controlPanelHandle');
+      let isDragging = false, startX, startY, panelX, panelY;
+      handle.addEventListener('mousedown', startDrag);
+      handle.addEventListener('touchstart', startDrag, { passive: false });
+      function startDrag(e) {
+        if (e.target.closest('#controlPanelCollapse')) return;
+        isDragging = true; handle.style.cursor = 'grabbing';
+        const rect = panel.getBoundingClientRect(); panelX = rect.left; panelY = rect.top;
+        const point = e.touches ? e.touches[0] : e;
+        startX = point.clientX - panelX; startY = point.clientY - panelY;
+        document.addEventListener('mousemove', onDrag); document.addEventListener('mouseup', stopDrag);
+        document.addEventListener('touchmove', onDrag, { passive: false }); document.addEventListener('touchend', stopDrag);
+        e.preventDefault();
+      }
+      function onDrag(e) {
+        if (!isDragging) return;
+        const point = e.touches ? e.touches[0] : e;
+        let x = point.clientX - startX, y = point.clientY - startY;
+        x = Math.max(0, Math.min(window.innerWidth - panel.offsetWidth, x));
+        y = Math.max(0, Math.min(window.innerHeight - panel.offsetHeight, y));
+        panel.style.left = x + 'px'; panel.style.top = y + 'px'; e.preventDefault();
+      }
+      function stopDrag() {
+        isDragging = false; handle.style.cursor = 'grab';
+        document.removeEventListener('mousemove', onDrag); document.removeEventListener('mouseup', stopDrag);
+        document.removeEventListener('touchmove', onDrag); document.removeEventListener('touchend', stopDrag);
+      }
+    })();
+
+    // ==========================================
+    // PROTO HEADER — COLLAPSE / FAB / DRAG
+    // ==========================================
+    function collapseProtoHeader() {
+      document.getElementById('protoHeader').classList.add('collapsed');
+      setTimeout(() => document.getElementById('protoFab').classList.add('visible'), 150);
+    }
+    function expandProtoHeader() {
+      document.getElementById('protoFab').classList.remove('visible');
+      setTimeout(() => document.getElementById('protoHeader').classList.remove('collapsed'), 100);
+    }
+
+    (function() {
+      const NARROW_BP = 720;
+      let wasNarrow = window.innerWidth < NARROW_BP;
+      if (wasNarrow) collapseProtoHeader();
+
+      window.addEventListener('resize', () => {
+        const narrow = window.innerWidth < NARROW_BP;
+        if (narrow && !wasNarrow) collapseProtoHeader();
+        else if (!narrow && wasNarrow) expandProtoHeader();
+        wasNarrow = narrow;
+      });
+
+      const fab = document.getElementById('protoFab');
+      let dragging = false, fabX, fabY, sX, sY, moved;
+      fab.addEventListener('mousedown', startFabDrag);
+      fab.addEventListener('touchstart', startFabDrag, { passive: false });
+
+      function startFabDrag(e) {
+        dragging = true; moved = false;
+        fab.style.cursor = 'grabbing'; fab.style.transition = 'box-shadow 0.2s ease';
+        const rect = fab.getBoundingClientRect(); fabX = rect.left; fabY = rect.top;
+        const pt = e.touches ? e.touches[0] : e;
+        sX = pt.clientX - fabX; sY = pt.clientY - fabY;
+        document.addEventListener('mousemove', onFabDrag);
+        document.addEventListener('mouseup', stopFabDrag);
+        document.addEventListener('touchmove', onFabDrag, { passive: false });
+        document.addEventListener('touchend', stopFabDrag);
+        e.preventDefault();
+      }
+      function onFabDrag(e) {
+        if (!dragging) return;
+        moved = true;
+        const pt = e.touches ? e.touches[0] : e;
+        let x = pt.clientX - sX, y = pt.clientY - sY;
+        x = Math.max(0, Math.min(window.innerWidth - 48, x));
+        y = Math.max(0, Math.min(window.innerHeight - 48, y));
+        fab.style.left = x + 'px'; fab.style.top = y + 'px';
+        fab.style.right = 'auto'; fab.style.bottom = 'auto';
+        e.preventDefault();
+      }
+      function stopFabDrag() {
+        dragging = false; fab.style.cursor = 'grab';
+        fab.style.transition = '';
+        document.removeEventListener('mousemove', onFabDrag);
+        document.removeEventListener('mouseup', stopFabDrag);
+        document.removeEventListener('touchmove', onFabDrag);
+        document.removeEventListener('touchend', stopFabDrag);
+        if (!moved) expandProtoHeader();
+      }
+    })();
+
+    // ==========================================
+    // INIT
+    // ==========================================
+    function init() {
+      state.selections = ['9.5M', 'Black/White'];
+      state.currentState = 'default';
+      renderAllChips();
+      renderProductInfo();
+      updateImages('Black/White');
+      const now = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      const h = now.getHours(), m = pad(now.getMinutes());
+      const ampm = h >= 12 ? 'pm' : 'am';
+      const h12 = h % 12 || 12;
+      document.getElementById('protoTimestamp').textContent =
+        `Updated by Soh Tanaka on ${now.getMonth()+1}/${now.getDate()}/${String(now.getFullYear()).slice(2)} @ ${h12}:${m}${ampm}`;
+    }
+    init();
+  </script>
+</body>
+</html>
