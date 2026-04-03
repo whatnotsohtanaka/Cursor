@@ -1045,6 +1045,32 @@
       height: 160px;
     }
 
+    /* iOS-style Switch */
+    .ios-switch {
+      position: relative;
+      width: 42px;
+      height: 26px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 13px;
+      cursor: pointer;
+      transition: background 0.25s ease;
+      flex-shrink: 0;
+    }
+    .ios-switch.on { background: #34c759; }
+    .ios-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      transition: transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .ios-switch.on::after { transform: translateX(16px); }
+
   </style>
 </head>
 <body>
@@ -1139,6 +1165,10 @@
           <span style="width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color 0.15s" id="radioDotDisabled"><span style="width:6px;height:6px;border-radius:50%;background:#f9dc00;display:none" id="radioFillDisabled"></span></span>
           Disabled
         </label>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 0">
+        <span style="font-size:11px;font-weight:500;color:rgba(255,255,255,0.6)">Null State</span>
+        <div class="ios-switch" id="nullStateSwitch" onclick="toggleNullState()"></div>
       </div>
       <div style="height:1px;background:rgba(255,255,255,0.06)"></div>
       <button onclick="randomizeVariants()" style="width:100%;height:32px;border-radius:8px;border:none;background:#f9dc00;color:#1d1d1d;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:background 0.15s;letter-spacing:-0.1px" onmouseenter="this.style.background='#ffe94d'" onmouseleave="this.style.background='#f9dc00'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:6px"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>Randomize Variants</button>
@@ -1331,13 +1361,13 @@
         '10.5M|Black/White': { status: 'available', quantity: 7, price: 1, bids: 1 },
         '10.5M|Brown/White': { status: 'available', quantity: 12, price: 1, bids: 0 },
         '11M|Black/White':   { status: 'available', quantity: 20, price: 1, bids: 12 },
-        '11M|Brown/White':   { status: 'sold_out', quantity: 0, price: 1, bids: 0 },
+        '11M|Brown/White':   { status: 'sold_out', quantity: 0, price: 1, soldPrice: 3, bids: 0 },
         '11.5M|Black/White': { status: 'not_exist' },
         '11.5M|Brown/White': { status: 'available', quantity: 15, price: 1, bids: 0 },
         '12M|Black/White':   { status: 'available', quantity: 8, price: 1, bids: 0 },
         '12M|Brown/White':   { status: 'available', quantity: 5, price: 1, bids: 2 },
         '12.5M|Black/White': { status: 'available', quantity: 3, price: 1, bids: 0 },
-        '12.5M|Brown/White': { status: 'sold_out', quantity: 0, price: 1, bids: 0 },
+        '12.5M|Brown/White': { status: 'sold_out', quantity: 0, price: 1, soldPrice: 2, bids: 0 },
         '13M|Black/White':   { status: 'not_exist' },
         '13M|Brown/White':   { status: 'available', quantity: 2, price: 1, bids: 5 },
       }
@@ -1351,6 +1381,8 @@
     // STATE
     // ==========================================
     let notAvailMode = 'disabled';
+    let nullStateEnabled = false;
+    let nullStateActive = false;
 
     function setNotAvailMode(mode) {
       notAvailMode = mode;
@@ -1363,6 +1395,28 @@
       document.getElementById('radioHidden').style.borderColor = mode === 'hidden' ? 'rgba(249,220,0,0.3)' : 'rgba(255,255,255,0.1)';
       document.getElementById('radioHidden').style.background = mode === 'hidden' ? 'rgba(249,220,0,0.05)' : 'transparent';
       renderAllChips();
+    }
+
+    function toggleNullState() {
+      nullStateEnabled = !nullStateEnabled;
+      document.getElementById('nullStateSwitch').classList.toggle('on', nullStateEnabled);
+      if (nullStateEnabled) {
+        nullStateActive = true;
+        state.selections = new Array(PRODUCT.dimensions.length).fill(null);
+        state.currentState = 'default';
+        state.hasInteracted = false;
+      } else {
+        nullStateActive = false;
+        const combo = findFirstAvailableCombo();
+        if (combo) {
+          state.selections = combo;
+          const v = getVariant(combo);
+          state.currentState = v.status === 'available' ? 'default' : v.status;
+          updateImages(combo[PRODUCT.imageKey]);
+        }
+      }
+      renderAllChips();
+      renderProductInfo();
     }
 
     let state = {
@@ -1391,6 +1445,7 @@
           recurse(d + 1, [...keys, value]);
         } else if (d < dimIdx) {
           if (state.selections[d]) recurse(d + 1, [...keys, state.selections[d]]);
+          else PRODUCT.dimensions[d].options.forEach(o => recurse(d + 1, [...keys, o]));
         } else {
           PRODUCT.dimensions[d].options.forEach(o => recurse(d + 1, [...keys, o]));
         }
@@ -1447,6 +1502,18 @@
       }
       recurse(0, []);
       return best;
+    }
+
+    function getPriceRange() {
+      let low = Infinity, high = -Infinity;
+      for (const key in PRODUCT.variants) {
+        const v = PRODUCT.variants[key];
+        if (v.status === 'available' && v.price != null) {
+          if (v.price < low) low = v.price;
+          if (v.price > high) high = v.price;
+        }
+      }
+      return low <= high ? { low, high } : null;
     }
 
     function randomDelay() {
@@ -1510,6 +1577,10 @@
       if (state.loadingChip === value && state.loadingDimIdx === dimIdx) return 'loading';
       if (optionIsAllNotExist(dimIdx, value)) return 'disabled-option';
       if (state.currentState === 'loading') return 'default';
+      if (nullStateActive) {
+        if (optionIsAllSoldOut(dimIdx, value)) return 'strikethrough';
+        return 'default';
+      }
       if (state.selections[dimIdx] === value) {
         return optionIsAllSoldOut(dimIdx, value) ? 'selected strikethrough' : 'selected';
       }
@@ -1525,6 +1596,25 @@
       const bidInfo = document.getElementById('bidInfo');
       const bidCountEl = document.getElementById('bidCount');
       if (state.currentState === 'loading') return;
+
+      if (nullStateActive) {
+        const range = getPriceRange();
+        statusEl.textContent = '—';
+        statusEl.className = 'product-status';
+        if (range && range.low !== range.high) {
+          priceEl.textContent = `$${range.low} – $${range.high}`;
+        } else if (range) {
+          priceEl.textContent = `$${range.low}`;
+        } else {
+          priceEl.textContent = '—';
+        }
+        shippingEl.textContent = `+ $${PRODUCT.shipping.toFixed(2)} Shipping + Taxes`;
+        shippingEl.style.display = '';
+        bidInfo.style.display = 'none';
+        bidBtn.disabled = true;
+        renderVariantTable();
+        return;
+      }
 
       const allSelected = state.selections.every(s => s !== null);
       const variant = allSelected ? getVariant(state.selections) : { status: 'not_exist' };
@@ -1550,15 +1640,17 @@
           bidInfo.style.display = 'none';
           bidBtn.disabled = true;
           break;
-        case 'sold_out':
+        case 'sold_out': {
           statusEl.textContent = 'Sold Out';
           statusEl.className = 'product-status sold-out';
-          priceEl.textContent = variant.price != null ? `$${variant.price}` : '—';
+          const displayPrice = variant.soldPrice != null ? variant.soldPrice : variant.price;
+          priceEl.textContent = displayPrice != null ? `$${displayPrice}` : '—';
           shippingEl.textContent = `+ $${PRODUCT.shipping.toFixed(2)} Shipping + Taxes`;
-          shippingEl.style.display = variant.price != null ? '' : 'none';
+          shippingEl.style.display = displayPrice != null ? '' : 'none';
           bidInfo.style.display = 'none';
           bidBtn.disabled = true;
           break;
+        }
         case 'not_exist':
           statusEl.textContent = 'Not Available';
           statusEl.className = 'product-status not-available';
@@ -1587,6 +1679,7 @@
     function selectOption(dimIdx, value) {
       if (state.loadingChip) return;
       hideFooterToast();
+      nullStateActive = false;
 
       if (optionIsAllNotExist(dimIdx, value)) {
         showFooterToast('Option unavailable');
@@ -1876,7 +1969,8 @@
             const bids = Math.random() < 0.3 ? Math.floor(Math.random() * 20) + 1 : 0;
             PRODUCT.variants[key] = { status: 'available', quantity: Math.floor(Math.random() * 60) + 1, price, bids };
           } else if (pick === 'sold_out') {
-            PRODUCT.variants[key] = { status: 'sold_out', quantity: 0, price: tpl.price[0], bids: 0 };
+            const sp = tpl.price[0] + Math.floor(Math.random() * (tpl.price[1] - tpl.price[0] + 1));
+            PRODUCT.variants[key] = { status: 'sold_out', quantity: 0, price: tpl.price[0], soldPrice: sp, bids: 0 };
           } else {
             PRODUCT.variants[key] = { status: 'not_exist' };
           }
@@ -1892,12 +1986,16 @@
       state.loadingDimIdx = null;
       state.hasInteracted = false;
 
-      const combo = findFirstAvailableCombo();
-      if (combo) {
-        state.selections = combo;
-        const v = getVariant(combo);
-        state.currentState = v.status === 'available' ? 'default' : v.status;
-        updateImages(combo[PRODUCT.imageKey]);
+      if (nullStateEnabled) {
+        nullStateActive = true;
+      } else {
+        const combo = findFirstAvailableCombo();
+        if (combo) {
+          state.selections = combo;
+          const v = getVariant(combo);
+          state.currentState = v.status === 'available' ? 'default' : v.status;
+          updateImages(combo[PRODUCT.imageKey]);
+        }
       }
 
       document.querySelector('.product-title').textContent = PRODUCT.name;
