@@ -5486,15 +5486,8 @@ function switchScene(scene) {
 }
 
 // Set timestamp
-(function() {
-  const now = new Date();
-  const pad = n => String(n).padStart(2, '0');
-  const h = now.getHours(), m = pad(now.getMinutes());
-  const ampm = h >= 12 ? 'pm' : 'am';
-  const h12 = h % 12 || 12;
-  document.getElementById('protoTimestamp').textContent =
-    `Updated by Soh Tanaka on ${now.getMonth()+1}/${now.getDate()}/${String(now.getFullYear()).slice(2)} @ ${h12}:${m}${ampm}`;
-})();
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/2/26 @ 9:30pm';
+document.getElementById('protoTimestamp').textContent = PROTO_TIMESTAMP;
 
   const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/templates-nux/v1.html';
   let shareToastTimer = null;

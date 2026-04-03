@@ -2197,6 +2197,11 @@
     const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/variants-selection-logic/v1.html';
 
     // ==========================================
+    // PROTO META
+    // ==========================================
+    const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/2/26 @ 9:30pm';
+
+    // ==========================================
     // PROTO NOTES — populate to enable
     // ==========================================
     const PROTO_NOTES_TITLE = 'Variant Selection — State Stress Test';
@@ -2342,13 +2347,7 @@
       }
       setNotAvailMode('hidden');
       randomizeVariants();
-      const now = new Date();
-      const pad = n => String(n).padStart(2, '0');
-      const h = now.getHours(), m = pad(now.getMinutes());
-      const ampm = h >= 12 ? 'pm' : 'am';
-      const h12 = h % 12 || 12;
-      document.getElementById('protoTimestamp').textContent =
-        `Updated by Soh Tanaka on ${now.getMonth()+1}/${now.getDate()}/${String(now.getFullYear()).slice(2)} @ ${h12}:${m}${ampm}`;
+      document.getElementById('protoTimestamp').textContent = PROTO_TIMESTAMP;
     }
     init();
   </script>
