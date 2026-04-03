@@ -1071,6 +1071,31 @@
     }
     .ios-switch.on::after { transform: translateX(16px); }
 
+    /* Control panel dropdown */
+    .ctrl-select {
+      width: 100%;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.7);
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 0 28px 0 10px;
+      cursor: pointer;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='rgba(255,255,255,0.4)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      transition: border-color 0.15s;
+    }
+    .ctrl-select:hover { border-color: rgba(255,255,255,0.2); }
+    .ctrl-select:focus { border-color: rgba(249,220,0,0.4); }
+    .ctrl-select option { background: #1e1e1e; color: rgba(255,255,255,0.7); }
+
   </style>
 </head>
 <body>
@@ -1156,16 +1181,11 @@
     </div>
     <div id="controlPanelBody" style="padding:0 14px 14px;display:flex;flex-direction:column;gap:10px">
       <span style="font-size:10px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;color:rgba(255,255,255,0.3)">Not Available Display</span>
-      <div style="display:flex;gap:6px">
-        <label onclick="setNotAvailMode('hidden')" id="radioHidden" style="flex:1;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:11px;color:rgba(255,255,255,0.6);transition:border-color 0.15s,background 0.15s">
-          <span style="width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color 0.15s" id="radioDotHidden"><span style="width:6px;height:6px;border-radius:50%;background:#f9dc00;display:none" id="radioFillHidden"></span></span>
-          Hidden
-        </label>
-        <label onclick="setNotAvailMode('disabled')" id="radioDisabled" style="flex:1;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:11px;color:rgba(255,255,255,0.6);transition:border-color 0.15s,background 0.15s">
-          <span style="width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color 0.15s" id="radioDotDisabled"><span style="width:6px;height:6px;border-radius:50%;background:#f9dc00;display:none" id="radioFillDisabled"></span></span>
-          Disabled
-        </label>
-      </div>
+      <select id="notAvailSelect" class="ctrl-select" onchange="setNotAvailMode(this.value)">
+        <option value="hidden" selected>Hidden</option>
+        <option value="disabled">Disabled</option>
+        <option value="sold_out">Unavail = Sold Out</option>
+      </select>
       <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 0">
         <span style="font-size:11px;font-weight:500;color:rgba(255,255,255,0.6)">Null State</span>
         <div class="ios-switch" id="nullStateSwitch" onclick="toggleNullState()"></div>
@@ -1361,13 +1381,13 @@
         '10.5M|Black/White': { status: 'available', quantity: 7, price: 1, bids: 1 },
         '10.5M|Brown/White': { status: 'available', quantity: 12, price: 1, bids: 0 },
         '11M|Black/White':   { status: 'available', quantity: 20, price: 1, bids: 12 },
-        '11M|Brown/White':   { status: 'sold_out', quantity: 0, price: 1, soldPrice: 3, bids: 0 },
+        '11M|Brown/White':   { status: 'sold_out', quantity: 0, price: 1, soldPrice: 14, bids: 0 },
         '11.5M|Black/White': { status: 'not_exist' },
         '11.5M|Brown/White': { status: 'available', quantity: 15, price: 1, bids: 0 },
         '12M|Black/White':   { status: 'available', quantity: 8, price: 1, bids: 0 },
         '12M|Brown/White':   { status: 'available', quantity: 5, price: 1, bids: 2 },
         '12.5M|Black/White': { status: 'available', quantity: 3, price: 1, bids: 0 },
-        '12.5M|Brown/White': { status: 'sold_out', quantity: 0, price: 1, soldPrice: 2, bids: 0 },
+        '12.5M|Brown/White': { status: 'sold_out', quantity: 0, price: 1, soldPrice: 10, bids: 0 },
         '13M|Black/White':   { status: 'not_exist' },
         '13M|Brown/White':   { status: 'available', quantity: 2, price: 1, bids: 5 },
       }
@@ -1380,21 +1400,22 @@
     // ==========================================
     // STATE
     // ==========================================
-    let notAvailMode = 'disabled';
+    let notAvailMode = 'hidden';
     let nullStateEnabled = false;
     let nullStateActive = false;
 
     function setNotAvailMode(mode) {
       notAvailMode = mode;
-      document.getElementById('radioFillDisabled').style.display = mode === 'disabled' ? 'block' : 'none';
-      document.getElementById('radioDotDisabled').style.borderColor = mode === 'disabled' ? '#f9dc00' : 'rgba(255,255,255,0.25)';
-      document.getElementById('radioDisabled').style.borderColor = mode === 'disabled' ? 'rgba(249,220,0,0.3)' : 'rgba(255,255,255,0.1)';
-      document.getElementById('radioDisabled').style.background = mode === 'disabled' ? 'rgba(249,220,0,0.05)' : 'transparent';
-      document.getElementById('radioFillHidden').style.display = mode === 'hidden' ? 'block' : 'none';
-      document.getElementById('radioDotHidden').style.borderColor = mode === 'hidden' ? '#f9dc00' : 'rgba(255,255,255,0.25)';
-      document.getElementById('radioHidden').style.borderColor = mode === 'hidden' ? 'rgba(249,220,0,0.3)' : 'rgba(255,255,255,0.1)';
-      document.getElementById('radioHidden').style.background = mode === 'hidden' ? 'rgba(249,220,0,0.05)' : 'transparent';
+      if (!nullStateActive && state.selections.every(s => s !== null)) {
+        const v = getVariant(state.selections);
+        if (mode === 'sold_out' && v.status === 'not_exist') {
+          state.currentState = 'sold_out';
+        } else if (mode !== 'sold_out' && v.status === 'not_exist' && state.currentState === 'sold_out') {
+          state.currentState = 'not_exist';
+        }
+      }
       renderAllChips();
+      renderProductInfo();
     }
 
     function toggleNullState() {
@@ -1575,16 +1596,18 @@
 
     function getChipClass(dimIdx, value) {
       if (state.loadingChip === value && state.loadingDimIdx === dimIdx) return 'loading';
-      if (optionIsAllNotExist(dimIdx, value)) return 'disabled-option';
+      const allNotExist = optionIsAllNotExist(dimIdx, value);
+      if (allNotExist && notAvailMode !== 'sold_out') return 'disabled-option';
+      const unavailable = optionIsAllSoldOut(dimIdx, value) || (allNotExist && notAvailMode === 'sold_out');
       if (state.currentState === 'loading') return 'default';
       if (nullStateActive) {
-        if (optionIsAllSoldOut(dimIdx, value)) return 'strikethrough';
+        if (unavailable) return 'strikethrough';
         return 'default';
       }
       if (state.selections[dimIdx] === value) {
-        return optionIsAllSoldOut(dimIdx, value) ? 'selected strikethrough' : 'selected';
+        return unavailable ? 'selected strikethrough' : 'selected';
       }
-      if (optionIsAllSoldOut(dimIdx, value)) return 'strikethrough';
+      if (unavailable) return 'strikethrough';
       return 'default';
     }
 
@@ -1599,7 +1622,7 @@
 
       if (nullStateActive) {
         const range = getPriceRange();
-        statusEl.textContent = '—';
+        statusEl.textContent = 'Multiple available';
         statusEl.className = 'product-status';
         if (range && range.low !== range.high) {
           priceEl.textContent = `$${range.low} – $${range.high}`;
@@ -1640,17 +1663,16 @@
           bidInfo.style.display = 'none';
           bidBtn.disabled = true;
           break;
-        case 'sold_out': {
-          statusEl.textContent = 'Sold Out';
-          statusEl.className = 'product-status sold-out';
-          const displayPrice = variant.soldPrice != null ? variant.soldPrice : variant.price;
-          priceEl.textContent = displayPrice != null ? `$${displayPrice}` : '—';
+        case 'sold_out':
+          const isMappedUnavail = notAvailMode === 'sold_out' && variant.status === 'not_exist';
+          statusEl.textContent = isMappedUnavail ? 'Unavailable' : 'Sold Out';
+          statusEl.className = isMappedUnavail ? 'product-status not-available' : 'product-status sold-out';
+          priceEl.textContent = variant.price != null ? `$${variant.price}` : '—';
           shippingEl.textContent = `+ $${PRODUCT.shipping.toFixed(2)} Shipping + Taxes`;
-          shippingEl.style.display = displayPrice != null ? '' : 'none';
+          shippingEl.style.display = variant.price != null ? '' : 'none';
           bidInfo.style.display = 'none';
           bidBtn.disabled = true;
           break;
-        }
         case 'not_exist':
           statusEl.textContent = 'Not Available';
           statusEl.className = 'product-status not-available';
@@ -1681,12 +1703,12 @@
       hideFooterToast();
       nullStateActive = false;
 
-      if (optionIsAllNotExist(dimIdx, value)) {
+      if (optionIsAllNotExist(dimIdx, value) && notAvailMode !== 'sold_out') {
         showFooterToast('Option unavailable');
         return;
       }
 
-      if (state.selections[dimIdx] === value && state.currentState !== 'not_exist') return;
+      if (state.selections[dimIdx] === value && state.currentState !== 'not_exist' && state.currentState !== 'sold_out') return;
 
       let newSels = [...state.selections];
       newSels[dimIdx] = value;
@@ -1697,7 +1719,7 @@
         }
       }
 
-      if (newSels.every(s => s !== null) && getVariant(newSels).status === 'not_exist') {
+      if (newSels.every(s => s !== null) && getVariant(newSels).status === 'not_exist' && notAvailMode !== 'sold_out') {
         for (let d = PRODUCT.dimensions.length - 1; d >= 0; d--) {
           if (d === dimIdx) continue;
           const fb = findFirstAvailableInDim(d, newSels);
@@ -1743,6 +1765,12 @@
           showFooterToast('Failed to load');
           return;
         case 'not_exist':
+          if (notAvailMode === 'sold_out') {
+            state.selections = newSels;
+            state.currentState = 'sold_out';
+            updateImages(newSels[PRODUCT.imageKey]);
+            break;
+          }
           state.selections = newSels;
           state.currentState = 'not_exist';
           renderAllChips();
@@ -1969,7 +1997,7 @@
             const bids = Math.random() < 0.3 ? Math.floor(Math.random() * 20) + 1 : 0;
             PRODUCT.variants[key] = { status: 'available', quantity: Math.floor(Math.random() * 60) + 1, price, bids };
           } else if (pick === 'sold_out') {
-            const sp = tpl.price[0] + Math.floor(Math.random() * (tpl.price[1] - tpl.price[0] + 1));
+            const sp = tpl.price[1] * (2 + Math.floor(Math.random() * 4));
             PRODUCT.variants[key] = { status: 'sold_out', quantity: 0, price: tpl.price[0], soldPrice: sp, bids: 0 };
           } else {
             PRODUCT.variants[key] = { status: 'not_exist' };
@@ -2443,7 +2471,6 @@
         document.getElementById('protoNotesBtn').style.display = '';
         if (shouldAutoOpenNotes()) setTimeout(() => toggleNotesPanel(true), 600);
       }
-      setNotAvailMode('hidden');
       randomizeVariants();
       document.getElementById('protoTimestamp').textContent = PROTO_TIMESTAMP;
     }
