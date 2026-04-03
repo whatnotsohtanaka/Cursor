@@ -1182,9 +1182,9 @@
     <div id="controlPanelBody" style="padding:0 14px 14px;display:flex;flex-direction:column;gap:10px">
       <span style="font-size:10px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;color:rgba(255,255,255,0.3)">Not Available Display</span>
       <select id="notAvailSelect" class="ctrl-select" onchange="setNotAvailMode(this.value)">
-        <option value="hidden" selected>Hidden</option>
+        <option value="hidden">Hidden</option>
         <option value="disabled">Disabled</option>
-        <option value="sold_out">Unavail = Sold Out</option>
+        <option value="sold_out" selected>Unavail = Sold Out</option>
       </select>
       <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 0">
         <span style="font-size:11px;font-weight:500;color:rgba(255,255,255,0.6)">Null State</span>
@@ -1400,7 +1400,7 @@
     // ==========================================
     // STATE
     // ==========================================
-    let notAvailMode = 'hidden';
+    let notAvailMode = 'sold_out';
     let nullStateEnabled = false;
     let nullStateActive = false;
 
@@ -1625,9 +1625,9 @@
         statusEl.textContent = 'Multiple available';
         statusEl.className = 'product-status';
         if (range && range.low !== range.high) {
-          priceEl.textContent = `$${range.low} – $${range.high}`;
+          priceEl.textContent = `Starting at $${range.low} – $${range.high}`;
         } else if (range) {
-          priceEl.textContent = `$${range.low}`;
+          priceEl.textContent = `Starting at $${range.low}`;
         } else {
           priceEl.textContent = '—';
         }
@@ -1648,7 +1648,7 @@
         case 'default':
           statusEl.textContent = `${variant.quantity} Available`;
           statusEl.className = 'product-status';
-          priceEl.textContent = `$${variant.price}`;
+          priceEl.textContent = `Starting at $${variant.price}`;
           shippingEl.textContent = `+ $${PRODUCT.shipping.toFixed(2)} Shipping + Taxes`;
           shippingEl.style.display = '';
           bidInfo.style.display = hasBids ? '' : 'none';
@@ -1667,7 +1667,7 @@
           const isMappedUnavail = notAvailMode === 'sold_out' && variant.status === 'not_exist';
           statusEl.textContent = isMappedUnavail ? 'Unavailable' : 'Sold Out';
           statusEl.className = isMappedUnavail ? 'product-status not-available' : 'product-status sold-out';
-          priceEl.textContent = variant.price != null ? `$${variant.price}` : '—';
+          priceEl.textContent = variant.price != null ? `Starting at $${variant.price}` : '—';
           shippingEl.textContent = `+ $${PRODUCT.shipping.toFixed(2)} Shipping + Taxes`;
           shippingEl.style.display = variant.price != null ? '' : 'none';
           bidInfo.style.display = 'none';
