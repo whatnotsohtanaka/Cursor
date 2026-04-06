@@ -778,23 +778,23 @@
     }
     .chip.disabled-option:active { transform: scale(0.96); }
     .chip.strikethrough {
-      background: transparent;
-      color: var(--text-disabled);
-      border: 1px solid var(--stroke-strong);
-      padding: 7px 11px;
+      background: #f0f0f0;
+      color: var(--text-primary);
+      border: 1.5px solid #1c1c1c;
+      padding: 6.5px 10.5px;
       cursor: pointer;
       position: relative;
-      overflow: visible;
+      overflow: hidden;
     }
     .chip.strikethrough::after {
       content: '';
       position: absolute;
-      top: 50%; left: -2px;
-      width: calc(100% + 4px);
-      height: 1px;
-      background: var(--stroke-strong);
-      transform: rotate(-22deg);
-      transform-origin: center;
+      top: 50%;
+      left: 50%;
+      width: 1px;
+      height: 80px;
+      background: #1c1c1c;
+      transform: translate(-50%, -50%) rotate(39.4deg);
     }
     .chip.selected.strikethrough {
       background: var(--chip-selected-bg);
