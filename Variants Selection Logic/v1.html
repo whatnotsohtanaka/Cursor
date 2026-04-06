@@ -1665,7 +1665,7 @@
           break;
         case 'sold_out':
           const isMappedUnavail = notAvailMode === 'sold_out' && variant.status === 'not_exist';
-          statusEl.textContent = isMappedUnavail ? 'Unavailable' : 'Sold Out';
+          statusEl.textContent = isMappedUnavail ? 'Not Available' : 'Sold Out';
           statusEl.className = isMappedUnavail ? 'product-status not-available' : 'product-status sold-out';
           priceEl.textContent = variant.price != null ? `Starting at $${variant.price}` : '—';
           shippingEl.textContent = `+ $${PRODUCT.shipping.toFixed(2)} Shipping + Taxes`;
@@ -2338,7 +2338,7 @@
         <li><strong>Sold Out</strong> — seller plans to sell but is currently out of stock. Chip shows strikethrough, still tappable.</li>
         <li><strong>Not Available</strong> — seller does not offer this variant at all. Three approaches:
           <ol>
-            <li><strong>Unavail = Sold Out</strong> (recommended) — treat unavailable the same as sold out. Both use the strikethrough chip. Tapping shows "Unavailable" status with no toast. Simplifies the UI by removing a distinct disabled state.</li>
+            <li><strong>Unavail = Sold Out</strong> (recommended) — treat unavailable the same as sold out. Both use the strikethrough chip. Tapping shows "Not Available" status with no toast. Simplifies the UI by removing a distinct disabled state.</li>
             <li><strong>Hidden</strong> — remove the option entirely and default to the next available combination.</li>
             <li><strong>Disabled</strong> — show the chip as disabled (dashed border) and alert the user with a toast.</li>
           </ol>
