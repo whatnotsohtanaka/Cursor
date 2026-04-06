@@ -2336,14 +2336,17 @@
       <h4>Sold Out vs. Not Available</h4>
       <ul>
         <li><strong>Sold Out</strong> — seller plans to sell but is currently out of stock. Chip shows strikethrough, still tappable.</li>
-        <li><strong>Not Available</strong> — seller does not offer this variant at all. Two approaches:
+        <li><strong>Not Available</strong> — seller does not offer this variant at all. Three approaches:
           <ol>
+            <li><strong>Unavail = Sold Out</strong> (recommended) — treat unavailable the same as sold out. Both use the strikethrough chip. Tapping shows "Unavailable" status with no toast. Simplifies the UI by removing a distinct disabled state.</li>
             <li><strong>Hidden</strong> — remove the option entirely and default to the next available combination.</li>
-            <li><strong>Disabled</strong> — show the chip as disabled and alert the user.</li>
+            <li><strong>Disabled</strong> — show the chip as disabled (dashed border) and alert the user with a toast.</li>
           </ol>
         </li>
       </ul>
-      <p style="opacity:0.5;font-size:12px">Use the control panel to toggle between these two behaviors.</p>
+      <h4>Null State</h4>
+      <p>Toggle on to preview the initial state before any variant is selected — no chips highlighted, price shows a range, availability reads "Multiple available", and the CTA is disabled.</p>
+      <p style="opacity:0.5;font-size:12px">Use the control panel dropdown and toggle to switch between behaviors.</p>
     `;
 
     const NOTES_STORAGE_KEY = 'proto-notes-autoopen-' + location.pathname;
