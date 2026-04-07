@@ -48,17 +48,18 @@
 
     body {
       font-family: var(--font);
-      background: #1a1a1a;
+      background: radial-gradient(ellipse at 85% 10%, rgba(255,255,255,0.06) 0%, transparent 50%), #262626;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
       min-height: 100vh;
       overflow: hidden;
     }
 
     .proto-header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
+      position: relative;
+      width: 100%;
+      flex-shrink: 0;
       height: 56px;
       display: flex;
       align-items: center;
@@ -254,6 +255,63 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 100%;
+    }
+
+    .proto-zoom {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: rgba(30,30,30,0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      font-family: var(--font);
+      user-select: none;
+      overflow: hidden;
+    }
+    .proto-zoom button {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .proto-zoom button:hover {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.8);
+    }
+    .proto-zoom button:active {
+      background: rgba(255,255,255,0.12);
+    }
+    .proto-zoom-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.4);
+      min-width: 42px;
+      text-align: center;
+      letter-spacing: -0.2px;
+      border-left: 1px solid rgba(255,255,255,0.06);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      height: 32px;
+      line-height: 32px;
+      cursor: pointer;
+    }
+    .proto-zoom-label:hover {
+      color: rgba(255,255,255,0.6);
     }
 
     .phone-frame {
@@ -261,6 +319,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transform: scale(var(--phone-scale, 1));
+      transform-origin: top center;
     }
 
     .phone-bezel {
@@ -1819,6 +1879,7 @@
       padding-right: 16px;
     }
     .edit-chips::-webkit-scrollbar { display: none; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
     .edit-chip { flex-shrink: 0; }
     .edit-chip {
       padding: 8px 16px;
@@ -2156,8 +2217,17 @@
 <button class="proto-fab" id="protoFab" onclick="expandProtoHeader()" title="Open header menu">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
 </button>
+
+<!-- Zoom Controls -->
+<div class="proto-zoom" id="protoZoom">
+  <button onclick="zoomPhone(-0.05)" title="Zoom out">−</button>
+  <span class="proto-zoom-label" id="protoZoomLabel" onclick="resetPhoneZoom()" title="Reset to 100%">100%</span>
+  <button onclick="zoomPhone(0.05)" title="Zoom in">+</button>
+</div>
+
+<div class="proto-body">
 <!-- ═══ DRAGGABLE CONTROL PANEL ═══ -->
-<div id="controlPanel" style="position:fixed;left:16px;top:72px;z-index:99999;width:fit-content;min-width:220px;background:rgba(30,30,30,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:14px;border:1px solid rgba(255,255,255,0.08);box-shadow:0 8px 32px rgba(0,0,0,0.4);font-family:var(--font);user-select:none;overflow:hidden">
+<div id="controlPanel" style="position:fixed;z-index:99999;width:fit-content;min-width:220px;background:linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 40%), rgba(30,30,30,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:14px;border:1px solid rgba(255,255,255,0.08);border-top:1px solid rgba(255,255,255,0.14);box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);font-family:var(--font);user-select:none;overflow:visible;transition:left 0.35s cubic-bezier(0.32, 0.72, 0, 1), top 0.35s cubic-bezier(0.32, 0.72, 0, 1)">
   <!-- Drag handle -->
   <div id="controlPanelHandle" style="padding:10px 14px 8px;cursor:grab;display:flex;align-items:center;justify-content:space-between">
     <span style="font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:rgba(255,255,255,0.4)">Controls</span>
@@ -2176,9 +2246,9 @@
     <div style="display:flex;align-items:center;justify-content:space-between">
       <span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.55)">Consistent template gen</span>
       <label style="position:relative;width:40px;height:24px;cursor:pointer;flex-shrink:0">
-        <input type="checkbox" id="consistentTplToggle" onchange="toggleConsistentTpl()" style="opacity:0;width:0;height:0;position:absolute">
-        <span id="consistentTplTrack" style="position:absolute;inset:0;background:rgba(255,255,255,0.15);border-radius:12px;transition:background 0.2s ease"></span>
-        <span id="consistentTplThumb" style="position:absolute;left:2px;top:2px;width:20px;height:20px;background:white;border-radius:50%;transition:transform 0.2s ease;box-shadow:0 1px 3px rgba(0,0,0,0.3)"></span>
+        <input type="checkbox" id="consistentTplToggle" checked onchange="toggleConsistentTpl()" style="opacity:0;width:0;height:0;position:absolute">
+        <span id="consistentTplTrack" style="position:absolute;inset:0;background:#34c759;border-radius:12px;transition:background 0.2s ease"></span>
+        <span id="consistentTplThumb" style="position:absolute;left:2px;top:2px;width:20px;height:20px;background:white;border-radius:50%;transition:transform 0.2s ease;box-shadow:0 1px 3px rgba(0,0,0,0.3);transform:translateX(16px)"></span>
       </label>
     </div>
 
@@ -2230,7 +2300,7 @@
   </div>
 </div>
 
-<div style="display:flex;flex-direction:column;align-items:center">
+<div id="phoneWrapper" style="display:flex;flex-direction:column;align-items:center">
 <div class="phone-frame">
   <div class="phone-bezel"></div>
   <div class="device">
@@ -2431,13 +2501,11 @@
         </div>
         <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid white"></div>
       </div>
-      <div style="display:flex;gap:12px;align-items:flex-start">
-        <div id="pinnedImgWrap" style="width:64px;height:64px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative">
-          <img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-          <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>
-          <img id="pinnedImg" src="icons/icon-tops.png" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:22px;height:22px;object-fit:contain">
+      <div style="display:flex;gap:12px;align-items:center">
+        <div id="pinnedThumb" style="width:48px;height:48px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;background:rgba(255,255,255,0.1)">
+          <img id="pinnedImg" src="" style="width:100%;height:100%;object-fit:cover;display:none" alt="">
         </div>
-        <div style="flex:1;display:flex;flex-direction:column;min-height:64px;justify-content:center">
+        <div style="flex:1;display:flex;flex-direction:column;min-height:44px;justify-content:center">
           <div style="display:flex;align-items:flex-start;justify-content:space-between">
             <div style="flex:1;display:flex;flex-direction:column;gap:2px">
               <div id="pinnedTitle" style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:white"></div>
@@ -3802,17 +3870,17 @@
         </div>
 
         <!-- Size -->
-        <div style="border:1px solid #d2d2d2;border-radius:8px;padding:12px 16px 16px;background:white;display:flex;flex-direction:column;gap:8px">
-          <div style="font-size:14px;font-weight:590;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Size</div>
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-            <span class="edit-chip edit-chip-on" onclick="toggleChip(this)">OS</span>
-            <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">XS</span>
-            <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">S</span>
-            <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">M</span>
-            <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">L</span>
-            <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">XL</span>
-            <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">XXL</span>
-            <div style="padding:8px 12px;background:rgba(0,0,0,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center">
+        <div style="border:1px solid #d2d2d2;border-radius:8px;padding:12px 0 16px;background:white;display:flex;flex-direction:column;gap:8px;overflow:hidden">
+          <div style="font-size:14px;font-weight:590;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;padding:0 16px">Size</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:0 16px" class="hide-scrollbar">
+            <span class="edit-chip edit-chip-on" onclick="selectSingleChip(this)">OS</span>
+            <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">XS</span>
+            <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">S</span>
+            <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">M</span>
+            <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">L</span>
+            <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">XL</span>
+            <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">XXL</span>
+            <div style="padding:8px 12px;background:rgba(0,0,0,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="#1c1c1c"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
             </div>
           </div>
@@ -3820,12 +3888,12 @@
 
         <!-- Condition -->
         <div style="border:1px solid #d2d2d2;border-radius:8px;overflow:hidden;background:white">
-          <div style="padding:12px 16px 16px;display:flex;flex-direction:column;gap:8px">
-            <div style="font-size:14px;font-weight:590;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Condition</div>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-              <span class="edit-chip edit-chip-on" onclick="toggleChip(this)">New w Tag</span>
-              <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">New w/out Tag</span>
-              <span class="edit-chip edit-chip-off" onclick="toggleChip(this)">New w Defect</span>
+          <div style="padding:12px 0 16px;display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:14px;font-weight:590;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;padding:0 16px">Condition</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:0 16px" class="hide-scrollbar">
+              <span class="edit-chip edit-chip-on" onclick="selectSingleChip(this)">New w Tag</span>
+              <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">New w/out Tag</span>
+              <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">New w Defect</span>
             </div>
           </div>
           <div style="display:flex;gap:8px;align-items:center;padding:8px 16px;background:#f3f3f3">
@@ -4195,14 +4263,14 @@
         <div onclick="closeCreateSheet();createNewListing()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
           <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
             <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create new listings or templates.</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Each item is specific, but can have options like size or color</div>
           </div>
           <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
         </div>
         <div id="createTemplateCard" onclick="closeCreateSheet();createNewTemplate()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
           <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
             <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create reusable templates.</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Products are similar and you are moving through them quickly</div>
           </div>
           <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
         </div>
@@ -4213,14 +4281,14 @@
         <div onclick="closeCreateSheet();createNewListing()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
           <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
             <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create a new product listing.</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Each item is specific, but can have options like size or color</div>
           </div>
           <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
         </div>
         <div onclick="closeCreateSheet();createNewTemplate()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
           <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
             <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create a reusable template.</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Products are similar and you are moving through them quickly</div>
           </div>
           <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
         </div>
@@ -4245,7 +4313,7 @@
           <div onclick="closeCreateSheet();createNewListing()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
             <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
               <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
-              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create a new product listing.</div>
+              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Each item is specific, but can have options like size or color</div>
             </div>
             <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
           </div>
@@ -4262,7 +4330,7 @@
           <div onclick="closeCreateSheet();createNewTemplate()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
             <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
               <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
-              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create a reusable template.</div>
+              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Products are similar and you are moving through them quickly</div>
             </div>
             <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
           </div>
@@ -4437,17 +4505,9 @@
     <div style="position:absolute;bottom:0;left:0;right:0;z-index:3;display:flex;flex-direction:column;gap:12px;padding:0 16px">
       <!-- Product Details Row -->
       <div style="display:flex;gap:12px;align-items:flex-start">
-        <div id="liveProductImgWrap" style="width:64px;height:64px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative">
-          <img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-          <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>
-          <img id="liveProductImg" src="icons/icon-tops.png" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:22px;height:22px;object-fit:contain">
-        </div>
-        <div style="flex:1;display:flex;flex-direction:column;min-height:64px;justify-content:center">
+        <div style="flex:1;display:flex;flex-direction:column;min-height:44px;justify-content:center">
           <div style="display:flex;align-items:flex-start;justify-content:space-between">
             <div style="flex:1;display:flex;flex-direction:column;gap:2px">
-              <div style="display:flex;align-items:center;gap:4px">
-                <span style="background:white;color:#1c1c1c;font-size:10px;font-weight:600;padding:2px 4px;border-radius:2px;letter-spacing:0.12px;line-height:10px">#1</span>
-              </div>
               <div id="liveProductTitle" style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:white">Lulu Lemon - Women's Contemporary</div>
               <div id="liveProductAttrs" style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:white">XS • New w Tag</div>
             </div>
@@ -4604,14 +4664,14 @@
         <div onclick="createNewListingFromShop()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
           <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
             <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create new listings or templates.</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Each item is specific, but can have options like size or color</div>
           </div>
           <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
         </div>
         <div onclick="createNewTemplateFromShop()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
           <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
             <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create reusable templates.</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Products are similar and you are moving through them quickly</div>
           </div>
           <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
         </div>
@@ -4636,7 +4696,7 @@
           <div onclick="createNewListingFromShop()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
             <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
               <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
-              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create a new product listing.</div>
+              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Each item is specific, but can have options like size or color</div>
             </div>
             <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
           </div>
@@ -4653,7 +4713,7 @@
           <div onclick="createNewTemplateFromShop()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
             <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
               <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
-              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Create a reusable template.</div>
+              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Products are similar and you are moving through them quickly</div>
             </div>
             <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
           </div>
@@ -4726,6 +4786,7 @@
     </div>
   </div>
 
+</div>
 </div>
 </div>
 </div>
@@ -5453,13 +5514,17 @@ function openEditPage(templateIndex, returnTo, prefillType) {
       c.classList.add('edit-chip-off');
     });
   } else {
-    currentSizeMode = tpl.type === 'Shoes' ? 'shoes' : 'clothing';
+    currentSizeMode = resolveTemplateSizeMode(tpl.type);
     selectedSizes.clear();
     const editsForSizes = templateEdits[templateIndex];
     if (returnTo === 'shop' && editsForSizes && editsForSizes.sizes) {
       editsForSizes.sizes.forEach(s => selectedSizes.add(s));
     } else if (currentSizeMode === 'shoes') {
-      ['7W', '7.5W', '8W', '8.5W', '9W'].forEach(s => selectedSizes.add(s));
+      ['7', '8', '9', '10'].forEach(s => selectedSizes.add(s));
+    } else if (currentSizeMode === 'waist') {
+      ['29', '30', '31', '32'].forEach(s => selectedSizes.add(s));
+    } else if (currentSizeMode === 'accessories') {
+      selectedSizes.add('OS');
     } else {
       ['XS', 'S', 'M', 'L', 'XL'].forEach(s => selectedSizes.add(s));
     }
@@ -6253,9 +6318,63 @@ const shoeSizesAll = [
 let selectedSizes = new Set();
 let currentSizeMode = 'clothing';
 
+const waistSizesWomen = ['24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36'];
+const waistSizesMen = ['28', '29', '30', '31', '32', '33', '34', '36', '38', '40'];
+const accessorySizesList = ['OS'];
+
+function getEditCategoryName() {
+  const el = document.getElementById('editCategory');
+  return el ? el.textContent.trim() : '';
+}
+
+function getWaistSizesForCategory(categoryName) {
+  if (categoryName === "Men's Fashion") return waistSizesMen;
+  return waistSizesWomen;
+}
+
+function typeImpliesShoeSizes(typeLabel) {
+  if (!typeLabel) return false;
+  const t = typeLabel.trim();
+  if (t === 'Shoes' || t === 'Sneakers' || t === 'Boots' || t === 'Slides') return true;
+  return /^(Running|Basketball|Lifestyle|Skateboarding|High Tops|Low Tops)$/i.test(t);
+}
+
+function typeImpliesWaistSizes(typeLabel) {
+  if (!typeLabel) return false;
+  const t = typeLabel.trim();
+  return /^(Pants|Shorts|Bottoms|Jeans|Denim|Chinos|Slacks|Boardshorts)$/i.test(t);
+}
+
+function typeImpliesAccessorySizes(typeLabel) {
+  if (!typeLabel) return false;
+  const t = typeLabel.trim();
+  return /^(Accessories|Bags|Handbags|Belts|Hats|Jewelry|Watches|Sunglasses|Scarves|Ties|Wallets|Other)$/i.test(t);
+}
+
+function resolveTemplateSizeMode(typeLabel) {
+  if (typeImpliesShoeSizes(typeLabel)) return 'shoes';
+  if (typeImpliesWaistSizes(typeLabel)) return 'waist';
+  if (typeImpliesAccessorySizes(typeLabel)) return 'accessories';
+  return 'clothing';
+}
+
+function templateSizeSelectionFamily(mode) {
+  if (mode === 'shoes') return 'shoes';
+  if (mode === 'waist') return 'waist:' + getEditCategoryName();
+  if (mode === 'accessories') return 'accessories';
+  return 'clothing';
+}
+
+function getSizesForTemplateRender() {
+  if (currentSizeMode === 'shoes') return shoeSizesCommon;
+  if (currentSizeMode === 'waist') return getWaistSizesForCategory(getEditCategoryName());
+  if (currentSizeMode === 'accessories') return accessorySizesList;
+  return clothingSizes;
+}
+
 function renderSizeChips() {
   const container = document.getElementById('sizeChipsContainer');
-  const sizes = currentSizeMode === 'shoes' ? shoeSizesCommon : clothingSizes;
+  const sizes = getSizesForTemplateRender();
 
   let html = sizes.map(s => {
     const isOn = selectedSizes.has(s);
@@ -6335,12 +6454,12 @@ function selectChip(el, group) {
   el.classList.add('edit-chip-on');
   if (group === 'type') {
     const typeName = el.textContent;
-    const newMode = typeName === 'Shoes' ? 'shoes' : 'clothing';
-    if (newMode !== currentSizeMode) {
-      currentSizeMode = newMode;
-      selectedSizes.clear();
-      renderSizeChips();
-    }
+    const newMode = resolveTemplateSizeMode(typeName);
+    const oldFam = templateSizeSelectionFamily(currentSizeMode);
+    const newFam = templateSizeSelectionFamily(newMode);
+    if (oldFam !== newFam) selectedSizes.clear();
+    currentSizeMode = newMode;
+    renderSizeChips();
     updateGeneratedTitle();
   }
 }
@@ -6349,6 +6468,15 @@ function selectChip(el, group) {
 function toggleChip(el) {
   el.classList.toggle('edit-chip-on');
   el.classList.toggle('edit-chip-off');
+}
+
+function selectSingleChip(el) {
+  el.parentElement.querySelectorAll('.edit-chip').forEach(c => {
+    c.classList.remove('edit-chip-on');
+    c.classList.add('edit-chip-off');
+  });
+  el.classList.remove('edit-chip-off');
+  el.classList.add('edit-chip-on');
 }
 
 // Auto-generate title from Type + Brands
@@ -7874,15 +8002,25 @@ function showEduTip() {
 
   const el = document.createElement('div');
   el.id = 'eduTooltip';
-  el.style.cssText = 'position:absolute;left:16px;right:16px;z-index:50;padding-top:4px;opacity:0;transition:opacity 0.3s ease';
-  el.innerHTML = `
-    <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:8px solid #2d2d2d;margin-left:16px"></div>
+  const arrowTop = tip.arrow === 'top';
+  el.style.cssText = arrowTop
+    ? 'position:absolute;left:16px;right:16px;bottom:0;transform:translateY(100%);z-index:50;padding-top:4px;opacity:0;transition:opacity 0.3s ease'
+    : 'position:absolute;left:16px;right:16px;z-index:50;padding-bottom:4px;opacity:0;transition:opacity 0.3s ease';
+  el.innerHTML = arrowTop
+    ? `<div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:8px solid #2d2d2d;margin-left:16px"></div>
     <div style="background:#2d2d2d;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 16px rgba(0,0,0,0.1)">
       <span style="flex:1;font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:white">${tip.text}</span>
       <div onclick="event.stopPropagation();advanceEduTip()" style="width:16px;height:16px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center">
         <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
       </div>
-    </div>`;
+    </div>`
+    : `<div style="background:#2d2d2d;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 16px rgba(0,0,0,0.1)">
+      <span style="flex:1;font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:white">${tip.text}</span>
+      <div onclick="event.stopPropagation();advanceEduTip()" style="width:16px;height:16px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l8 8M9 1l-8 8"/></svg>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center"><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #2d2d2d"></div></div>`;
   target.style.position = 'relative';
   target.appendChild(el);
   requestAnimationFrame(() => { el.style.opacity = '1'; });
@@ -7973,7 +8111,7 @@ function showInvTemplateTip() {
   if (firstRow && tip.parentElement) {
     const parentRect = tip.parentElement.getBoundingClientRect();
     const rowRect = firstRow.getBoundingClientRect();
-    tip.style.bottom = (parentRect.bottom - rowRect.top + 4) + 'px';
+    tip.style.bottom = (parentRect.bottom - rowRect.top - 16) + 'px';
   }
   tip.style.display = 'block';
   tip.style.opacity = '0';
@@ -8004,7 +8142,11 @@ function dismissPinnedProductTip() {
   if (!tip || tip.style.display === 'none') return;
   tip.style.opacity = '0';
   setTimeout(() => { tip.style.display = 'none'; }, 300);
-  setTimeout(() => showReviewTemplatesTooltip(), 400);
+  const pinnedRow = pinnedShopIndex >= 0 ? document.querySelectorAll('#shopProductList [data-listing-id]')[pinnedShopIndex] : null;
+  const isTemplate = pinnedRow && pinnedRow.getAttribute('data-type') === 'template';
+  if (isTemplate) {
+    setTimeout(() => showReviewTemplatesTooltip(), 400);
+  }
 }
 
 function showShopSelectOptionTip() {
@@ -8296,8 +8438,12 @@ function refreshAllViews(listingId) {
     if (pinnedTitle) pinnedTitle.textContent = record.title;
     if (pinnedPrice) pinnedPrice.textContent = record.price;
     if (record.icon) {
-      const pinnedImgEl = document.getElementById('pinnedImg');
-      if (pinnedImgEl) pinnedImgEl.src = record.icon;
+      const pinnedThumb = document.getElementById('pinnedThumb');
+      if (pinnedThumb) {
+        const sz = 48;
+        const iconSz = Math.round(sz * 0.35);
+        pinnedThumb.innerHTML = `<img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div><img src="${record.icon}" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${iconSz}px;height:${iconSz}px;object-fit:contain">`;
+      }
     }
   }
 
@@ -8378,6 +8524,12 @@ function openLiveShow(templateIndex) {
   // Resolve data from the listing store — prefer store's typeId (may have been edited)
   const shopRow = document.querySelectorAll('#shopProductList [data-listing-id]')[templateIndex];
   const storeRec = shopRow ? findListing(parseInt(shopRow.dataset.listingId)) : null;
+
+  // Product listings skip the overlay and pin directly
+  if (shopRow && shopRow.dataset.type === 'listing') {
+    pinListingDirectly(templateIndex, shopRow, storeRec);
+    return;
+  }
 
   if (storeRec && storeRec.typeId) {
     tpl = fashionTypes.find(ft => ft.id === storeRec.typeId) || tpl;
@@ -8514,6 +8666,62 @@ function updateLiveAttrs() {
   }
 }
 
+function pinListingDirectly(idx, shopRow, storeRec) {
+  hasEverPinned = true;
+
+  if (pinnedShopIndex >= 0) {
+    updateShopListingPinState(pinnedShopIndex, false);
+    const prevRow = document.querySelectorAll('#shopProductList [data-listing-id]')[pinnedShopIndex];
+    if (prevRow) {
+      const prevRec = findListing(parseInt(prevRow.dataset.listingId));
+      if (prevRec) prevRec.pinned = false;
+    }
+  }
+
+  pinnedShopIndex = idx;
+  currentLiveShopIndex = idx;
+  updateShopListingPinState(idx, true);
+  if (storeRec) storeRec.pinned = true;
+
+  const title = storeRec ? storeRec.title : (shopRow.dataset.title || 'Listing');
+  const attrs = (storeRec && storeRec.sizes && storeRec.sizes[0] ? storeRec.sizes[0] : 'OS') + ' • New w Tag';
+  document.getElementById('pinnedTitle').textContent = title;
+  document.getElementById('pinnedAttrs').textContent = attrs;
+
+  const tpl = storeRec && storeRec.typeId ? fashionTypes.find(ft => ft.id === storeRec.typeId) : null;
+  currentLiveTemplate = tpl || null;
+  const pinnedThumbRestore = document.getElementById('pinnedThumb');
+  if (pinnedThumbRestore && storeRec && storeRec.icon) {
+    const sz = 48, iconSz = Math.round(sz * 0.35);
+    pinnedThumbRestore.innerHTML = `<img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div><img src="${storeRec.icon}" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${iconSz}px;height:${iconSz}px;object-fit:contain">`;
+  } else if (pinnedThumbRestore && tpl && tpl.icon) {
+    const sz = 48, iconSz = Math.round(sz * 0.35);
+    pinnedThumbRestore.innerHTML = `<img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div><img src="${tpl.icon}" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${iconSz}px;height:${iconSz}px;object-fit:contain">`;
+  }
+
+  const inner = document.getElementById('shopSheetInner');
+  inner.style.transform = 'translateY(100%)';
+  setTimeout(() => {
+    document.getElementById('shopSheet').style.display = 'none';
+
+    document.getElementById('lobbyPinnedProduct').style.display = 'flex';
+    document.getElementById('lobbyDefaultCta').style.display = 'none';
+    if (document.getElementById('lobbyActiveCta')) document.getElementById('lobbyActiveCta').style.display = 'none';
+    document.getElementById('lobbySideMenu').style.bottom = '188px';
+
+    const chatArea = document.getElementById('lobbyChatArea');
+    const pinnedEl = document.getElementById('lobbyPinnedProduct');
+    if (chatArea && chatArea.style.display !== 'none' && pinnedEl) {
+      chatArea.style.bottom = (pinnedEl.offsetHeight + 32 + 16) + 'px';
+    }
+
+    const badgeText = document.querySelector('#lobbySideMenu .shop-badge-text');
+    if (badgeText) badgeText.textContent = selectedTypes.size;
+
+    setTimeout(() => showPinnedProductTip(), 600);
+  }, 420);
+}
+
 function pinProduct() {
   clearAllLiveTips();
   hasEverPinned = true;
@@ -8551,9 +8759,25 @@ function pinProduct() {
     document.getElementById('pinnedTitle').textContent = title;
     document.getElementById('pinnedAttrs').textContent = attrs;
 
-    const pinnedIcon = currentLiveTemplate ? (currentLiveTemplate.icon || 'icons/icon-tops.png') : 'icons/icon-tops.png';
+    const pinnedThumb = document.getElementById('pinnedThumb');
     const pinnedImgEl = document.getElementById('pinnedImg');
-    if (pinnedImgEl) pinnedImgEl.src = pinnedIcon;
+    if (pinnedThumb && pinnedImgEl) {
+      const rec = pinnedRow ? findListing(parseInt(pinnedRow.dataset.listingId)) : null;
+      if (rec && rec.type === 'template' && rec.icon) {
+        pinnedThumb.innerHTML = '';
+        const sz = 48;
+        const iconSz = Math.round(sz * 0.35);
+        pinnedThumb.innerHTML = `<img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div><img src="${rec.icon}" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${iconSz}px;height:${iconSz}px;object-fit:contain">`;
+      } else if (currentLiveTemplate && currentLiveTemplate.icon) {
+        pinnedThumb.innerHTML = '';
+        const sz = 48;
+        const iconSz = Math.round(sz * 0.35);
+        pinnedThumb.innerHTML = `<img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div><img src="${currentLiveTemplate.icon}" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${iconSz}px;height:${iconSz}px;object-fit:contain">`;
+      } else {
+        pinnedThumb.style.background = 'rgba(255,255,255,0.1)';
+        pinnedThumb.innerHTML = '<img id="pinnedImg" src="" style="width:100%;height:100%;object-fit:cover;display:none" alt="">';
+      }
+    }
 
     // Close live overlay, show lobby with pinned product
     const overlay = document.getElementById('liveShowOverlay');
@@ -8911,7 +9135,7 @@ function toggleSkipOnboarding() {
   }
 }
 
-let consistentTplGen = false;
+let consistentTplGen = true;
 let tplPickerReturnTo = null;
 let tplPickerSelectedTypes = new Set();
 
@@ -9068,7 +9292,13 @@ function handleMultiTplPick() {
       });
       addTemplateToDraftTab(title, rec.id);
     });
+    const invPage = document.getElementById('inventoryPage');
+    if (invPage) {
+      invPage.style.display = 'flex';
+      invPage.style.flexDirection = 'column';
+    }
     switchInvTab('draft');
+    updateProductCount();
   }
 }
 
@@ -9357,10 +9587,32 @@ function switchScene(scene) {
 
 
 // ─── Draggable Control Panel ───
+function getSnapPosition() {
+  const phone = document.querySelector('.phone-frame');
+  const panel = document.getElementById('controlPanel');
+  const phoneRect = phone.getBoundingClientRect();
+  const gap = 56;
+  return {
+    x: phoneRect.right + gap,
+    y: phoneRect.top + 56
+  };
+}
+
+function snapPanelToPhone() {
+  const panel = document.getElementById('controlPanel');
+  const pos = getSnapPosition();
+  panel.style.left = pos.x + 'px';
+  panel.style.top = pos.y + 'px';
+}
+
 (function() {
   const panel = document.getElementById('controlPanel');
   const handle = document.getElementById('controlPanelHandle');
   let isDragging = false, startX, startY, panelX, panelY;
+  const SNAP_DIST = 80;
+
+  snapPanelToPhone();
+  window.addEventListener('resize', () => { if (!isDragging) snapPanelToPhone(); });
 
   handle.addEventListener('mousedown', startDrag);
   handle.addEventListener('touchstart', startDrag, { passive: false });
@@ -9369,12 +9621,11 @@ function switchScene(scene) {
     if (e.target.closest('#controlPanelCollapse')) return;
     isDragging = true;
     handle.style.cursor = 'grabbing';
+    panel.style.transition = 'none';
     const rect = panel.getBoundingClientRect();
-    panelX = rect.left;
-    panelY = rect.top;
-    const point = e.touches ? e.touches[0] : e;
-    startX = point.clientX - panelX;
-    startY = point.clientY - panelY;
+    panelX = rect.left; panelY = rect.top;
+    const pt = e.touches ? e.touches[0] : e;
+    startX = pt.clientX - panelX; startY = pt.clientY - panelY;
     document.addEventListener('mousemove', onDrag);
     document.addEventListener('mouseup', stopDrag);
     document.addEventListener('touchmove', onDrag, { passive: false });
@@ -9384,9 +9635,8 @@ function switchScene(scene) {
 
   function onDrag(e) {
     if (!isDragging) return;
-    const point = e.touches ? e.touches[0] : e;
-    let x = point.clientX - startX;
-    let y = point.clientY - startY;
+    const pt = e.touches ? e.touches[0] : e;
+    let x = pt.clientX - startX, y = pt.clientY - startY;
     x = Math.max(0, Math.min(window.innerWidth - panel.offsetWidth, x));
     y = Math.max(0, Math.min(window.innerHeight - panel.offsetHeight, y));
     panel.style.left = x + 'px';
@@ -9401,8 +9651,61 @@ function switchScene(scene) {
     document.removeEventListener('mouseup', stopDrag);
     document.removeEventListener('touchmove', onDrag);
     document.removeEventListener('touchend', stopDrag);
+
+    panel.style.transition = 'left 0.35s cubic-bezier(0.32, 0.72, 0, 1), top 0.35s cubic-bezier(0.32, 0.72, 0, 1)';
+    const snap = getSnapPosition();
+    const rect = panel.getBoundingClientRect();
+    const dx = rect.left - snap.x, dy = rect.top - snap.y;
+    if (Math.sqrt(dx * dx + dy * dy) < SNAP_DIST) {
+      snapPanelToPhone();
+    }
   }
 })();
+
+let phoneScaleOverride = null;
+
+function getAutoScale() {
+  const protoBody = document.querySelector('.proto-body');
+  const available = protoBody.clientHeight;
+  const bezelH = 852 + 16;
+  const minH = 640;
+  return Math.max((available * 0.85) / bezelH, minH / bezelH);
+}
+
+function applyPhoneScale(s) {
+  const bezelH = 852 + 16;
+  const bezelW = 393 + 16;
+  const protoBody = document.querySelector('.proto-body');
+  const available = protoBody.clientHeight;
+  const wrapper = document.getElementById('phoneWrapper');
+  document.querySelector('.phone-frame').style.setProperty('--phone-scale', s);
+  wrapper.style.width = (bezelW * s) + 'px';
+  wrapper.style.height = (bezelH * s) + 'px';
+  document.body.style.overflow = (bezelH * s > available) ? 'auto' : 'hidden';
+  document.getElementById('protoZoomLabel').textContent = Math.round(s * 100) + '%';
+}
+
+function scalePhone() {
+  if (phoneScaleOverride !== null) {
+    applyPhoneScale(phoneScaleOverride);
+  } else {
+    applyPhoneScale(getAutoScale());
+  }
+}
+
+function zoomPhone(delta) {
+  const current = phoneScaleOverride !== null ? phoneScaleOverride : getAutoScale();
+  phoneScaleOverride = Math.max(0.3, Math.min(current + delta, 2));
+  applyPhoneScale(phoneScaleOverride);
+}
+
+function resetPhoneZoom() {
+  phoneScaleOverride = 1;
+  applyPhoneScale(1);
+}
+
+scalePhone();
+window.addEventListener('resize', scalePhone);
 
 function toggleControlPanel() {
   const body = document.getElementById('controlPanelBody');

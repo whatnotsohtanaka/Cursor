@@ -33,17 +33,18 @@
 
     body {
       font-family: var(--font);
-      background: #1a1a1a;
+      background: radial-gradient(ellipse at 85% 10%, rgba(255,255,255,0.06) 0%, transparent 50%), #262626;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
       min-height: 100vh;
       overflow: hidden;
     }
 
     .proto-header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
+      position: relative;
+      width: 100%;
+      flex-shrink: 0;
       height: 56px;
       display: flex;
       align-items: center;
@@ -240,6 +241,63 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 100%;
+    }
+
+    .proto-zoom {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: rgba(30,30,30,0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      font-family: var(--font);
+      user-select: none;
+      overflow: hidden;
+    }
+    .proto-zoom button {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .proto-zoom button:hover {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.8);
+    }
+    .proto-zoom button:active {
+      background: rgba(255,255,255,0.12);
+    }
+    .proto-zoom-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.4);
+      min-width: 42px;
+      text-align: center;
+      letter-spacing: -0.2px;
+      border-left: 1px solid rgba(255,255,255,0.06);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      height: 32px;
+      line-height: 32px;
+      cursor: pointer;
+    }
+    .proto-zoom-label:hover {
+      color: rgba(255,255,255,0.6);
     }
 
     .phone-frame {
@@ -247,6 +305,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transform: scale(var(--phone-scale, 1));
+      transform-origin: top center;
     }
 
     .phone-bezel {
@@ -2023,6 +2083,16 @@
 <button class="proto-fab" id="protoFab" onclick="expandProtoHeader()" title="Open header menu">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
 </button>
+
+<!-- Zoom Controls -->
+<div class="proto-zoom" id="protoZoom">
+  <button onclick="zoomPhone(-0.05)" title="Zoom out">−</button>
+  <span class="proto-zoom-label" id="protoZoomLabel" onclick="resetPhoneZoom()" title="Reset to 100%">100%</span>
+  <button onclick="zoomPhone(0.05)" title="Zoom in">+</button>
+</div>
+
+<div class="proto-body">
+<div id="phoneWrapper" style="display:flex;flex-direction:column;align-items:center">
 <div class="scene-switcher">
   <button class="scene-tab active" onclick="switchScene('existing')">Existing Users</button>
   <button class="scene-tab" onclick="switchScene('new-sellers')">New Sellers</button>
@@ -3754,7 +3824,7 @@
         <div onclick="createNewListing()" style="background:#f3f3f3;border-radius:12px;padding:16px;position:relative;overflow:hidden;min-height:87px;cursor:pointer">
           <div style="position:relative;z-index:2">
             <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454;margin-top:4px">Create new listings or templates.</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454;margin-top:4px">Each item is specific, but can have options like size or color</div>
           </div>
           <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
         </div>
@@ -3762,7 +3832,7 @@
         <div onclick="createNewTemplate()" style="background:#f3f3f3;border-radius:12px;padding:16px;position:relative;overflow:hidden;min-height:87px;cursor:pointer">
           <div style="position:relative;z-index:2">
             <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454;margin-top:4px">Create new listings or templates.</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454;margin-top:4px">Products are similar and you are moving through them quickly</div>
           </div>
           <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
         </div>
@@ -3815,6 +3885,8 @@
     </div>
   </div>
 
+</div>
+</div>
 </div>
 </div>
 
@@ -4299,11 +4371,14 @@ function openEditPage(templateIndex, returnTo) {
       c.classList.add('edit-chip-off');
     });
   } else {
-    // Set size mode based on type
-    currentSizeMode = tpl.type === 'Shoes' ? 'shoes' : 'clothing';
+    currentSizeMode = resolveTemplateSizeMode(tpl.type);
     selectedSizes.clear();
     if (currentSizeMode === 'shoes') {
-      ['7W', '7.5W', '8W', '8.5W', '9W'].forEach(s => selectedSizes.add(s));
+      ['7', '8', '9', '10'].forEach(s => selectedSizes.add(s));
+    } else if (currentSizeMode === 'waist') {
+      ['29', '30', '31', '32'].forEach(s => selectedSizes.add(s));
+    } else if (currentSizeMode === 'accessories') {
+      selectedSizes.add('OS');
     } else {
       ['XS', 'S', 'M', 'L', 'XL'].forEach(s => selectedSizes.add(s));
     }
@@ -4609,9 +4684,63 @@ const shoeSizesAll = [
 let selectedSizes = new Set();
 let currentSizeMode = 'clothing';
 
+const waistSizesWomen = ['24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36'];
+const waistSizesMen = ['28', '29', '30', '31', '32', '33', '34', '36', '38', '40'];
+const accessorySizesList = ['OS'];
+
+function getEditCategoryName() {
+  const el = document.getElementById('editCategory');
+  return el ? el.textContent.trim() : '';
+}
+
+function getWaistSizesForCategory(categoryName) {
+  if (categoryName === "Men's Fashion") return waistSizesMen;
+  return waistSizesWomen;
+}
+
+function typeImpliesShoeSizes(typeLabel) {
+  if (!typeLabel) return false;
+  const t = typeLabel.trim();
+  if (t === 'Shoes' || t === 'Sneakers' || t === 'Boots' || t === 'Slides') return true;
+  return /^(Running|Basketball|Lifestyle|Skateboarding|High Tops|Low Tops)$/i.test(t);
+}
+
+function typeImpliesWaistSizes(typeLabel) {
+  if (!typeLabel) return false;
+  const t = typeLabel.trim();
+  return /^(Pants|Shorts|Bottoms|Jeans|Denim|Chinos|Slacks|Boardshorts)$/i.test(t);
+}
+
+function typeImpliesAccessorySizes(typeLabel) {
+  if (!typeLabel) return false;
+  const t = typeLabel.trim();
+  return /^(Accessories|Bags|Handbags|Belts|Jewelry|Watches|Sunglasses|Scarves|Ties|Wallets|Other)$/i.test(t);
+}
+
+function resolveTemplateSizeMode(typeLabel) {
+  if (typeImpliesShoeSizes(typeLabel)) return 'shoes';
+  if (typeImpliesWaistSizes(typeLabel)) return 'waist';
+  if (typeImpliesAccessorySizes(typeLabel)) return 'accessories';
+  return 'clothing';
+}
+
+function templateSizeSelectionFamily(mode) {
+  if (mode === 'shoes') return 'shoes';
+  if (mode === 'waist') return 'waist:' + getEditCategoryName();
+  if (mode === 'accessories') return 'accessories';
+  return 'clothing';
+}
+
+function getSizesForTemplateRender() {
+  if (currentSizeMode === 'shoes') return shoeSizesCommon;
+  if (currentSizeMode === 'waist') return getWaistSizesForCategory(getEditCategoryName());
+  if (currentSizeMode === 'accessories') return accessorySizesList;
+  return clothingSizes;
+}
+
 function renderSizeChips() {
   const container = document.getElementById('sizeChipsContainer');
-  const sizes = currentSizeMode === 'shoes' ? shoeSizesCommon : clothingSizes;
+  const sizes = getSizesForTemplateRender();
 
   let html = sizes.map(s => {
     const isOn = selectedSizes.has(s);
@@ -4691,12 +4820,12 @@ function selectChip(el, group) {
   el.classList.add('edit-chip-on');
   if (group === 'type') {
     const typeName = el.textContent;
-    const newMode = typeName === 'Shoes' ? 'shoes' : 'clothing';
-    if (newMode !== currentSizeMode) {
-      currentSizeMode = newMode;
-      selectedSizes.clear();
-      renderSizeChips();
-    }
+    const newMode = resolveTemplateSizeMode(typeName);
+    const oldFam = templateSizeSelectionFamily(currentSizeMode);
+    const newFam = templateSizeSelectionFamily(newMode);
+    if (oldFam !== newFam) selectedSizes.clear();
+    currentSizeMode = newMode;
+    renderSizeChips();
     updateGeneratedTitle();
   }
 }
@@ -5554,6 +5683,51 @@ document.getElementById('protoTimestamp').textContent = PROTO_TIMESTAMP;
       if (!moved) expandProtoHeader();
     }
   })();
+
+let phoneScaleOverride = null;
+
+function getAutoScale() {
+  const protoBody = document.querySelector('.proto-body');
+  const available = protoBody.clientHeight;
+  const bezelH = 852 + 16;
+  const minH = 640;
+  return Math.max((available * 0.85) / bezelH, minH / bezelH);
+}
+
+function applyPhoneScale(s) {
+  const bezelH = 852 + 16;
+  const bezelW = 393 + 16;
+  const protoBody = document.querySelector('.proto-body');
+  const available = protoBody.clientHeight;
+  const wrapper = document.getElementById('phoneWrapper');
+  document.querySelector('.phone-frame').style.setProperty('--phone-scale', s);
+  wrapper.style.width = (bezelW * s) + 'px';
+  wrapper.style.height = (bezelH * s) + 'px';
+  document.body.style.overflow = (bezelH * s > available) ? 'auto' : 'hidden';
+  document.getElementById('protoZoomLabel').textContent = Math.round(s * 100) + '%';
+}
+
+function scalePhone() {
+  if (phoneScaleOverride !== null) {
+    applyPhoneScale(phoneScaleOverride);
+  } else {
+    applyPhoneScale(getAutoScale());
+  }
+}
+
+function zoomPhone(delta) {
+  const current = phoneScaleOverride !== null ? phoneScaleOverride : getAutoScale();
+  phoneScaleOverride = Math.max(0.3, Math.min(current + delta, 2));
+  applyPhoneScale(phoneScaleOverride);
+}
+
+function resetPhoneZoom() {
+  phoneScaleOverride = 1;
+  applyPhoneScale(1);
+}
+
+scalePhone();
+window.addEventListener('resize', scalePhone);
 </script>
 </body>
 </html>
