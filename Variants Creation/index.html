@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=393, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
   <title>Variants Creation - Mobile</title>
   <style>
     :root {
@@ -53,7 +53,8 @@
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      overflow: hidden;
+      overflow-x: auto;
+      overflow-y: hidden;
     }
 
     .proto-header {
@@ -67,12 +68,7 @@
       padding: 0 14px 0 20px;
       background: #1d1d1d;
       z-index: 10000;
-      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.3s ease;
-    }
-    .proto-header.collapsed {
-      transform: translateY(-100%);
-      opacity: 0;
-      pointer-events: none;
+      overflow-x: hidden;
     }
     .proto-header-left {
       display: flex;
@@ -96,6 +92,8 @@
       font-weight: 400;
       color: rgba(255,255,255,0.35);
       white-space: nowrap;
+      min-width: 0;
+      flex: 1;
     }
     .proto-breadcrumb a {
       color: rgba(255,255,255,0.35);
@@ -138,32 +136,48 @@
     .proto-header-right {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       flex-shrink: 0;
       margin-left: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .proto-header-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 8px;
+      flex-shrink: 0;
+      min-width: 0;
+    }
+    .proto-header-meta.proto-header-meta--hidden {
+      display: none;
+    }
+    .proto-hamburger-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.85);
+      cursor: pointer;
+      transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .proto-hamburger-btn:active {
+      background: rgba(255, 255, 255, 0.14);
+    }
+    .proto-hamburger-btn svg {
+      display: block;
     }
     .proto-timestamp {
       font-size: 12px;
       font-weight: 400;
       color: rgba(255,255,255,0.3);
-    }
-    .proto-close-btn {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      border: none;
-      background: rgba(255,255,255,0.06);
-      color: rgba(255,255,255,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-      flex-shrink: 0;
-    }
-    .proto-close-btn:hover {
-      background: rgba(255,255,255,0.12);
-      color: rgba(255,255,255,0.7);
     }
     .proto-header-toast {
       position: absolute;
@@ -316,41 +330,6 @@
       margin: 0;
     }
 
-    .proto-fab {
-      position: fixed;
-      top: 8px;
-      right: 14px;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #f9dc00;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: grab;
-      z-index: 10001;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.35), 0 1px 4px rgba(0,0,0,0.2);
-      transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.2s ease, opacity 0.25s ease;
-      opacity: 0;
-      pointer-events: none;
-      transform: scale(0.6);
-    }
-    .proto-fab.visible {
-      opacity: 1;
-      pointer-events: auto;
-      transform: scale(1);
-    }
-    .proto-fab:hover {
-      box-shadow: 0 6px 24px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.25);
-    }
-    .proto-fab:active {
-      transform: scale(0.95);
-      cursor: grabbing;
-    }
-    .proto-fab svg {
-      color: #1d1d1d;
-    }
     .scene-switcher {
       display: flex;
       background: rgba(255,255,255,0.08);
@@ -387,19 +366,21 @@
       justify-content: center;
       width: 100%;
       min-height: 0;
+      overflow: visible;
     }
 
-    /* Phone + controls: panel stays to the right of the device (no overlap / tap blocking) */
+    /* Phone centered in stage; control panel is fixed and can hang past the viewport */
     .proto-demo-row {
+      position: relative;
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      gap: 16px;
       width: 100%;
       flex: 1;
       min-height: 0;
-      padding: 0 20px;
+      padding: 0;
       box-sizing: border-box;
+      overflow: visible;
     }
 
     .proto-zoom {
@@ -456,6 +437,298 @@
     }
     .proto-zoom-label:hover {
       color: rgba(255,255,255,0.6);
+    }
+
+    /* ─── Mobile shell: full-viewport prototype, drawer for tooling ─── */
+    .proto-mobile-drawer {
+      position: fixed;
+      inset: 0;
+      z-index: 150000;
+      pointer-events: none;
+      visibility: hidden;
+    }
+    .proto-mobile-drawer.open {
+      pointer-events: auto;
+      visibility: visible;
+    }
+    .proto-mobile-drawer-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .proto-mobile-drawer.open .proto-mobile-drawer-backdrop {
+      opacity: 1;
+    }
+    .proto-mobile-drawer-panel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: min(360px, 92vw);
+      max-width: 100%;
+      background: #1a1a1a;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 8px 0 40px rgba(0, 0, 0, 0.45);
+      transform: translateX(-105%);
+      transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+    .proto-mobile-drawer.open .proto-mobile-drawer-panel {
+      transform: translateX(0);
+    }
+    .proto-mobile-drawer-top {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .proto-mobile-drawer-top span {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+    }
+    .proto-mobile-drawer-close {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.75);
+      cursor: pointer;
+      font-size: 22px;
+      line-height: 1;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .proto-mobile-drawer-content {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    .proto-zoom.proto-zoom-in-drawer {
+      position: relative !important;
+      bottom: auto !important;
+      right: auto !important;
+      left: auto !important;
+      top: auto !important;
+      width: 100% !important;
+      border-radius: 0;
+      margin-top: 0;
+      flex-shrink: 0;
+      z-index: 1;
+    }
+
+    /* Narrow viewport: panel sits centered above phone (JS sets position) */
+    body.proto-control-panel-stacked #controlPanel {
+      max-width: min(380px, calc(100vw - 24px));
+    }
+    body.proto-control-panel-stacked #controlPanelHandle {
+      cursor: default;
+    }
+
+    .proto-mobile-chrome-pull {
+      display: none;
+    }
+    .proto-mobile-chrome-retract {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      body.proto-mobile {
+        align-items: stretch;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+      /* Immersive chrome: header fixed, pulled down from strip below status / safe area */
+      body.proto-mobile #protoHeader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        z-index: 100000;
+        transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      body.proto-mobile.proto-mobile-chrome-retracted #protoHeader {
+        transform: translateY(-100%);
+        pointer-events: none;
+      }
+      body.proto-mobile:not(.proto-mobile-chrome-retracted) #protoHeader {
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+      body.proto-mobile.proto-mobile-chrome-retracted .proto-mobile-chrome-pull {
+        display: block;
+        position: fixed;
+        top: env(safe-area-inset-top, 0px);
+        left: 0;
+        right: 0;
+        height: 44px;
+        z-index: 99999;
+        touch-action: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body.proto-mobile .proto-mobile-chrome-retract {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        flex-shrink: 0;
+        margin-right: 2px;
+        border: none;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.55);
+        cursor: pointer;
+        transition: background 0.15s;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body.proto-mobile .proto-mobile-chrome-retract:active {
+        background: rgba(255, 255, 255, 0.14);
+      }
+      body.proto-mobile.proto-mobile-chrome-retracted .proto-mobile-chrome-retract {
+        display: none !important;
+      }
+      body.proto-mobile .proto-header {
+        padding: max(6px, env(safe-area-inset-top, 0px)) max(8px, env(safe-area-inset-right, 0px))
+          max(6px, env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));
+        height: auto;
+        min-height: 48px;
+        flex-wrap: nowrap;
+        gap: 4px;
+      }
+      body.proto-mobile .proto-hamburger-btn {
+        display: inline-flex;
+      }
+      body.proto-mobile .proto-header-left {
+        display: none !important;
+      }
+      body.proto-mobile .proto-header-meta {
+        display: none !important;
+      }
+      body.proto-mobile .proto-header-right {
+        margin-left: 0;
+        flex: 1;
+        gap: 4px;
+      }
+      body.proto-mobile .proto-link-btn {
+        padding: 8px 9px;
+        font-size: 0;
+        gap: 0;
+        min-width: 40px;
+        justify-content: center;
+      }
+      body.proto-mobile .proto-link-btn .proto-btn-label {
+        display: none;
+      }
+      body.proto-mobile .proto-link-btn svg {
+        margin: 0;
+      }
+      body.proto-mobile .proto-body {
+        width: 100%;
+        align-self: stretch;
+        align-items: stretch;
+        flex: 1;
+        min-height: 0;
+        padding-top: env(safe-area-inset-top, 0px);
+        transition: padding-top 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      body.proto-mobile:not(.proto-mobile-chrome-retracted) .proto-body {
+        padding-top: var(--mobile-proto-header-h, 56px);
+      }
+      body.proto-mobile .proto-demo-row {
+        width: 100%;
+        align-items: stretch;
+        flex: 1;
+        min-height: 0;
+      }
+      body.proto-mobile #phoneWrapper {
+        width: 100% !important;
+        max-width: none !important;
+        height: auto !important;
+        flex: 1 1 auto;
+        min-height: calc(
+          100dvh - var(--mobile-proto-header-h, 0px) - env(safe-area-inset-top, 0px) -
+            env(safe-area-inset-bottom, 0px)
+        );
+        align-self: stretch;
+      }
+      body.proto-mobile .phone-bezel {
+        display: none !important;
+      }
+      body.proto-mobile .phone-frame {
+        width: 100%;
+        min-height: 100%;
+        transform: none !important;
+        flex: 1;
+        align-self: stretch;
+      }
+      body.proto-mobile .device.device-frame {
+        width: 100% !important;
+        max-width: none !important;
+        height: 100% !important;
+        min-height: calc(
+          100dvh - var(--mobile-proto-header-h, 0px) - env(safe-area-inset-top, 0px) -
+            env(safe-area-inset-bottom, 0px)
+        );
+        border-radius: 0 !important;
+        box-shadow: none !important;
+      }
+      body.proto-mobile .proto-cursor {
+        display: none !important;
+      }
+      body.proto-mobile .device.device-frame,
+      body.proto-mobile .device.device-frame * {
+        cursor: auto !important;
+      }
+      body.proto-mobile #controlPanel {
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        right: auto !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        flex-shrink: 0;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        transition: none !important;
+      }
+      body.proto-mobile #controlPanelHandle {
+        display: none !important;
+      }
+      body.proto-mobile #controlPanelBody {
+        padding: 8px 16px 20px !important;
+        display: flex !important;
+      }
+      body.proto-mobile .proto-header-toast {
+        right: max(8px, env(safe-area-inset-right, 0px));
+      }
+      body.proto-mobile #protoZoom {
+        display: none !important;
+      }
     }
 
     .ctrl-variant-row {
@@ -4142,7 +4415,14 @@
   </style>
 </head>
 <body>
+<div id="protoMobileChromePull" class="proto-mobile-chrome-pull" aria-hidden="true"></div>
 <div class="proto-header" id="protoHeader">
+  <button type="button" class="proto-mobile-chrome-retract" id="protoMobileChromeRetractBtn" onclick="setMobileProtoChromeRetracted(true)" aria-label="Hide toolbar" title="Hide toolbar">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+  </button>
+  <button type="button" class="proto-hamburger-btn" id="protoHamburgerBtn" onclick="toggleProtoMobileDrawer()" aria-label="Prototype controls and zoom" title="Controls & zoom">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
+  </button>
   <div class="proto-header-left">
     <div class="proto-breadcrumb">
       <svg class="proto-logo" width="20" height="20" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M80 40C80 70.9265 70.9265 80 40 80C9.07348 80 0 70.9265 0 40C0 9.07347 9.07348 0 40 0C70.9265 0 80 9.07347 80 40Z" fill="#2D2D2D"/><path transform="translate(12.12,22.94)" d="M18.7312 34.1275C21.6005 34.1275 23.703 31.9154 24.1473 29.3869C24.4668 27.6799 24.2751 24.838 23.5722 22.0569C23.2527 20.6664 24.3359 20.0335 25.3552 21.5518L27.4578 24.7741C32.8739 32.8647 35.1712 34.1275 37.2737 34.1275C39.3762 34.1275 41.7344 33.242 47.9811 24.269L49.5755 21.993C55.1194 14.094 55.7584 10.8687 55.7584 8.97307C55.7584 3.91602 51.9337 0 46.8371 0C43.0123 0 40.8459 2.08428 38.9989 5.81469L38.2991 7.20523C37.724 8.34322 36.8964 8.34322 36.2605 7.20523L35.4967 5.75079C33.522 1.95952 31.4803 0 27.8503 0C24.2203 0 22.1786 1.83173 20.3286 5.62604L19.5649 7.20523C18.9898 8.40712 18.0344 8.46797 17.4623 7.20523L16.7625 5.68993C14.9156 1.64611 12.7461 0.00302715 8.86049 0.00302715C3.88863 0.00302715 0 3.79431 0 8.97612C0 10.8717 0.447281 14.0332 5.86338 21.8682L7.39389 24.0803C14.021 33.6224 16.443 34.1275 18.7373 34.1275H18.7312Z" fill="#FFE414"/></svg>
@@ -4154,28 +4434,38 @@
     </div>
   </div>
   <div class="proto-header-right">
-    <span class="proto-timestamp" id="protoTimestamp"></span>
-    <div class="proto-divider"></div>
+    <div class="proto-header-meta">
+      <span class="proto-timestamp" id="protoTimestamp"></span>
+      <div class="proto-divider"></div>
+    </div>
     <a class="proto-link-btn" href="https://www.figma.com/design/Efq06B5ZlyOhHXIKojFhFd/Product-Creation---Management?node-id=15647-103655&m=dev" target="_blank" rel="noopener">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M8 2H5a3 3 0 0 0-3 3v3a3 3 0 0 0 3 3h3a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Z" fill="currentColor" opacity="0.5"/><path d="M5 13H8a3 3 0 0 1 3 3v3a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-3a3 3 0 0 1 3-3Z" fill="currentColor" opacity="0.7"/><path d="M16 2h-3a3 3 0 0 0-3 3v3a3 3 0 0 0 3 3h3a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Z" fill="currentColor" opacity="0.6"/><path d="M19 13h-3a3 3 0 0 0-3 3v5h3a3 3 0 0 0 3-3v-5Z" fill="currentColor" opacity="0.8"/></svg>
-      Figma
+      <span class="proto-btn-label">Figma</span>
     </a>
     <a class="proto-link-btn" href="https://docs.google.com/document/d/1Hr9BI1rszc3mk-bpH511IIkmtbrsUhWMXqyGSzJ9DbY/edit?tab=t.0#heading=h.j5sk7xjejuu4" target="_blank" rel="noopener">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
-      PRD
+      <span class="proto-btn-label">PRD</span>
     </a>
     <button type="button" class="proto-link-btn" id="protoNotesBtn" onclick="toggleNotesPanel()" title="Prototype notes" style="display:none">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      Notes
+      <span class="proto-btn-label">Notes</span>
     </button>
-    <button class="proto-link-btn" onclick="copyShareLink()" title="Copy share link">
+    <button type="button" class="proto-link-btn" onclick="copyShareLink()" title="Copy share link">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-      Share
-    </button>
-    <button class="proto-close-btn" id="protoCloseBtn" onclick="collapseProtoHeader()" title="Collapse header">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      <span class="proto-btn-label">Share</span>
     </button>
     <div class="proto-header-toast" id="protoHeaderToast">Link copied!</div>
+  </div>
+</div>
+
+<div class="proto-mobile-drawer" id="protoMobileDrawer" aria-hidden="true">
+  <div class="proto-mobile-drawer-backdrop" id="protoMobileDrawerBackdrop" onclick="toggleProtoMobileDrawer(false)"></div>
+  <div class="proto-mobile-drawer-panel" role="dialog" aria-label="Prototype controls" aria-modal="true">
+    <div class="proto-mobile-drawer-top">
+      <span>Prototype</span>
+      <button type="button" class="proto-mobile-drawer-close" id="protoMobileDrawerClose" onclick="toggleProtoMobileDrawer(false)" aria-label="Close">×</button>
+    </div>
+    <div class="proto-mobile-drawer-content" id="protoMobileDrawerContent"></div>
   </div>
 </div>
 
@@ -4197,10 +4487,7 @@
 
 <div class="proto-cursor" id="protoCursor" aria-hidden="true"></div>
 
-<button class="proto-fab" id="protoFab" onclick="expandProtoHeader()" title="Open header menu">
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
-</button>
-
+<span id="protoZoomDesktopAnchor" aria-hidden="true"></span>
 <!-- Zoom Controls -->
 <div class="proto-zoom" id="protoZoom">
   <button onclick="zoomPhone(-0.05)" title="Zoom out">−</button>
@@ -7134,8 +7421,8 @@
 </div>
 </div>
 
-<!-- ═══ DRAGGABLE CONTROL PANEL (anchored right of phone in row; draggable with offset) ═══ -->
-<div id="controlPanel" style="position:relative;flex-shrink:0;align-self:flex-start;z-index:100001;width:fit-content;min-width:220px;background:linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 40%), rgba(30,30,30,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:14px;border:1px solid rgba(255,255,255,0.08);border-top:1px solid rgba(255,255,255,0.14);box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);font-family:var(--font);user-select:none;overflow:visible;transition:left 0.35s cubic-bezier(0.32, 0.72, 0, 1), top 0.35s cubic-bezier(0.32, 0.72, 0, 1)">
+<!-- ═══ DRAGGABLE CONTROL PANEL (fixed beside phone; can hang off viewport edge) ═══ -->
+<div id="controlPanel" style="position:fixed;z-index:100001;width:fit-content;min-width:220px;background:linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 40%), rgba(30,30,30,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:14px;border:1px solid rgba(255,255,255,0.08);border-top:1px solid rgba(255,255,255,0.14);box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);font-family:var(--font);user-select:none;overflow:visible;transition:left 0.35s cubic-bezier(0.32, 0.72, 0, 1), top 0.35s cubic-bezier(0.32, 0.72, 0, 1)">
   <div id="controlPanelHandle" style="padding:10px 14px 8px;cursor:grab;display:flex;align-items:center;justify-content:space-between">
     <span style="font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:rgba(255,255,255,0.4)">Controls</span>
     <div id="controlPanelCollapse" onclick="toggleControlPanel()" style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:4px;background:rgba(255,255,255,0.06)">
@@ -15518,6 +15805,92 @@ function initPrototypeScene() {
   applyTemplateMode();
 }
 
+const PROTO_MOBILE_MQ = window.matchMedia('(max-width: 768px)');
+
+function isProtoMobileShell() {
+  return PROTO_MOBILE_MQ.matches;
+}
+
+function toggleProtoMobileDrawer(open) {
+  if (!isProtoMobileShell()) return;
+  const d = document.getElementById('protoMobileDrawer');
+  if (!d) return;
+  const next = open === undefined ? !d.classList.contains('open') : !!open;
+  d.classList.toggle('open', next);
+  d.setAttribute('aria-hidden', next ? 'false' : 'true');
+  document.body.style.overflow = next ? 'hidden' : '';
+}
+
+function updateMobileProtoLayoutVars() {
+  if (!document.body.classList.contains('proto-mobile')) {
+    document.documentElement.style.removeProperty('--mobile-proto-header-h');
+    return;
+  }
+  const retracted = document.body.classList.contains('proto-mobile-chrome-retracted');
+  const hdr = document.getElementById('protoHeader');
+  if (!hdr) return;
+  const h = retracted ? 0 : hdr.offsetHeight;
+  document.documentElement.style.setProperty('--mobile-proto-header-h', h + 'px');
+}
+
+function setMobileProtoChromeRetracted(retracted) {
+  if (!document.body.classList.contains('proto-mobile')) return;
+  document.body.classList.toggle('proto-mobile-chrome-retracted', !!retracted);
+  updateMobileProtoLayoutVars();
+  requestAnimationFrame(() => {
+    if (typeof resetControlPanelPosition === 'function') resetControlPanelPosition();
+    if (typeof syncProtoTimestampCompact === 'function') syncProtoTimestampCompact();
+    if (typeof updateMobileProtoLayoutVars === 'function') updateMobileProtoLayoutVars();
+  });
+}
+
+function syncProtoMobileChrome() {
+  const mobile = isProtoMobileShell();
+  const wasMobile = document.body.classList.contains('proto-mobile');
+  document.body.classList.toggle('proto-mobile', mobile);
+
+  const panel = document.getElementById('controlPanel');
+  const drawerSlot = document.getElementById('protoMobileDrawerContent');
+  const demoRow = document.querySelector('.proto-demo-row');
+  const zoom = document.getElementById('protoZoom');
+  const anchor = document.getElementById('protoZoomDesktopAnchor');
+
+  if (wasMobile && !mobile) {
+    const dd = document.getElementById('protoMobileDrawer');
+    if (dd && dd.classList.contains('open')) {
+      dd.classList.remove('open');
+      dd.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+  }
+
+  if (mobile) {
+    if (!wasMobile) {
+      document.body.classList.add('proto-mobile-chrome-retracted');
+    }
+    phoneScaleOverride = null;
+    if (drawerSlot && panel && panel.parentElement !== drawerSlot) {
+      drawerSlot.appendChild(panel);
+    }
+    if (zoom && drawerSlot && zoom.parentElement === drawerSlot && anchor && anchor.parentNode) {
+      anchor.parentNode.insertBefore(zoom, anchor.nextSibling);
+    }
+    if (zoom) zoom.classList.remove('proto-zoom-in-drawer');
+    if (typeof applyControlPanelCollapsedUI === 'function') applyControlPanelCollapsedUI(false);
+    updateMobileProtoLayoutVars();
+  } else {
+    document.body.classList.remove('proto-mobile-chrome-retracted');
+    if (drawerSlot && panel && demoRow && panel.parentElement !== demoRow) {
+      demoRow.appendChild(panel);
+    }
+    if (zoom && anchor && anchor.parentNode) {
+      anchor.parentNode.insertBefore(zoom, anchor.nextSibling);
+    }
+    if (zoom) zoom.classList.remove('proto-zoom-in-drawer');
+    updateMobileProtoLayoutVars();
+  }
+}
+
 let phoneScaleOverride = null;
 
 function getAutoScale() {
@@ -15529,22 +15902,56 @@ function getAutoScale() {
 }
 
 function applyPhoneScale(s) {
+  const wrapper = document.getElementById('phoneWrapper');
+  const frame = document.querySelector('.phone-frame');
+  const protoBody = document.querySelector('.proto-body');
+
+  if (isProtoMobileShell()) {
+    if (frame) frame.style.setProperty('--phone-scale', '1');
+    if (wrapper) {
+      wrapper.style.width = '';
+      wrapper.style.height = '';
+    }
+    document.body.style.overflowY = 'auto';
+    document.body.style.overflowX = 'hidden';
+    const zl = document.getElementById('protoZoomLabel');
+    if (zl) zl.textContent = '100%';
+    requestAnimationFrame(() => {
+      if (typeof resetControlPanelPosition === 'function') resetControlPanelPosition();
+      if (typeof syncProtoTimestampCompact === 'function') syncProtoTimestampCompact();
+      if (typeof updateMobileProtoLayoutVars === 'function') updateMobileProtoLayoutVars();
+    });
+    return;
+  }
+
   const bezelH = 852 + 16;
   const bezelW = 393 + 16;
-  const protoBody = document.querySelector('.proto-body');
-  const available = protoBody.clientHeight;
-  const wrapper = document.getElementById('phoneWrapper');
-  document.querySelector('.phone-frame').style.setProperty('--phone-scale', s);
-  wrapper.style.width = (bezelW * s) + 'px';
-  wrapper.style.height = (bezelH * s) + 'px';
-  document.body.style.overflow = (bezelH * s > available) ? 'auto' : 'hidden';
-  document.getElementById('protoZoomLabel').textContent = Math.round(s * 100) + '%';
+  const available = protoBody ? protoBody.clientHeight : 0;
+  if (frame) frame.style.setProperty('--phone-scale', s);
+  if (wrapper) {
+    wrapper.style.width = (bezelW * s) + 'px';
+    wrapper.style.height = (bezelH * s) + 'px';
+  }
+  if (bezelH * s > available) {
+    document.body.style.overflowY = 'auto';
+  } else {
+    document.body.style.overflowY = 'hidden';
+  }
+  document.body.style.overflowX = 'auto';
+  const zl2 = document.getElementById('protoZoomLabel');
+  if (zl2) zl2.textContent = Math.round(s * 100) + '%';
   requestAnimationFrame(() => {
     if (typeof resetControlPanelPosition === 'function') resetControlPanelPosition();
+    if (typeof syncProtoTimestampCompact === 'function') syncProtoTimestampCompact();
   });
 }
 
 function scalePhone() {
+  syncProtoMobileChrome();
+  if (isProtoMobileShell()) {
+    applyPhoneScale(1);
+    return;
+  }
   if (phoneScaleOverride !== null) {
     applyPhoneScale(phoneScaleOverride);
   } else {
@@ -15553,18 +15960,62 @@ function scalePhone() {
 }
 
 function zoomPhone(delta) {
+  if (isProtoMobileShell()) return;
   const current = phoneScaleOverride !== null ? phoneScaleOverride : getAutoScale();
   phoneScaleOverride = Math.max(0.3, Math.min(current + delta, 2));
   applyPhoneScale(phoneScaleOverride);
 }
 
 function resetPhoneZoom() {
+  if (isProtoMobileShell()) {
+    applyPhoneScale(1);
+    return;
+  }
   phoneScaleOverride = 1;
   applyPhoneScale(1);
 }
 
 scalePhone();
 window.addEventListener('resize', scalePhone);
+PROTO_MOBILE_MQ.addEventListener('change', () => {
+  scalePhone();
+});
+
+(function initProtoMobileChromePull() {
+  const pull = document.getElementById('protoMobileChromePull');
+  if (!pull) return;
+  let startY = 0;
+  let tracking = false;
+  pull.addEventListener(
+    'touchstart',
+    (e) => {
+      if (!document.body.classList.contains('proto-mobile-chrome-retracted')) return;
+      startY = e.touches[0].clientY;
+      tracking = true;
+    },
+    { passive: true }
+  );
+  pull.addEventListener(
+    'touchmove',
+    (e) => {
+      if (!tracking) return;
+      const dy = e.touches[0].clientY - startY;
+      if (dy > 24) {
+        setMobileProtoChromeRetracted(false);
+        tracking = false;
+      }
+    },
+    { passive: true }
+  );
+  pull.addEventListener('touchend', () => {
+    tracking = false;
+  });
+  pull.addEventListener('click', () => {
+    if (document.body.classList.contains('proto-mobile-chrome-retracted')) {
+      setMobileProtoChromeRetracted(false);
+    }
+  });
+})();
 
 (function initProtoFingerCursor() {
   const cursor = document.getElementById('protoCursor');
@@ -15589,11 +16040,99 @@ window.addEventListener('resize', scalePhone);
   document.addEventListener('mouseup', () => cursor.classList.remove('pressed'));
 })();
 
-function resetControlPanelPosition() {
+let controlPanelSnapX = 0;
+let controlPanelSnapY = 0;
+
+const CONTROL_PANEL_VIEW_MARGIN = 12;
+const CONTROL_PANEL_SIDE_GAP = 40;
+const CONTROL_PANEL_ABOVE_GAP = 12;
+const CONTROL_PANEL_LAYOUT_MIN_W = 280;
+
+function applyControlPanelCollapsedUI(collapsed) {
+  const body = document.getElementById('controlPanelBody');
+  const chevron = document.getElementById('collapseChevron');
+  if (!body || !chevron) return;
+  if (collapsed) {
+    body.style.display = 'none';
+    chevron.style.transform = 'rotate(-90deg)';
+  } else {
+    body.style.display = 'flex';
+    chevron.style.transform = '';
+  }
+}
+
+function getControlPanelLayoutWidth() {
   const panel = document.getElementById('controlPanel');
-  if (!panel) return;
-  panel.style.left = '';
-  panel.style.top = '';
+  if (!panel) return CONTROL_PANEL_LAYOUT_MIN_W;
+  const w = panel.getBoundingClientRect().width;
+  return Math.max(w > 0 ? w : 0, CONTROL_PANEL_LAYOUT_MIN_W);
+}
+
+function controlPanelSideLayoutWouldClip() {
+  const phone = document.querySelector('.phone-frame');
+  if (!phone) return false;
+  const pr = phone.getBoundingClientRect();
+  const pw = getControlPanelLayoutWidth();
+  const snapLeft = pr.right + CONTROL_PANEL_SIDE_GAP;
+  const snapRight = snapLeft + pw;
+  if (snapRight > window.innerWidth - CONTROL_PANEL_VIEW_MARGIN) return true;
+  if (snapLeft < CONTROL_PANEL_VIEW_MARGIN) return true;
+  return false;
+}
+
+function syncControlPanelStackedState() {
+  if (document.body.classList.contains('proto-mobile')) {
+    document.body.classList.remove('proto-control-panel-stacked');
+    return;
+  }
+  const needs = controlPanelSideLayoutWouldClip();
+  const was = document.body.classList.contains('proto-control-panel-stacked');
+  document.body.classList.toggle('proto-control-panel-stacked', needs);
+  if (needs && !was) {
+    applyControlPanelCollapsedUI(true);
+  }
+}
+
+function snapControlPanelToPhone() {
+  if (document.body.classList.contains('proto-mobile')) return;
+  const phone = document.querySelector('.phone-frame');
+  const panel = document.getElementById('controlPanel');
+  if (!phone || !panel) return;
+  const r = phone.getBoundingClientRect();
+  panel.style.position = 'fixed';
+  panel.style.right = 'auto';
+
+  if (document.body.classList.contains('proto-control-panel-stacked')) {
+    const pw = panel.offsetWidth || 220;
+    const ph = panel.offsetHeight || 44;
+    let left = r.left + r.width / 2 - pw / 2;
+    left = Math.max(
+      CONTROL_PANEL_VIEW_MARGIN,
+      Math.min(left, window.innerWidth - pw - CONTROL_PANEL_VIEW_MARGIN)
+    );
+    const header = document.getElementById('protoHeader');
+    const headerBottom = header ? header.getBoundingClientRect().bottom : 0;
+    const zoneTop = Math.max(CONTROL_PANEL_VIEW_MARGIN, headerBottom);
+    const zoneBottom = r.top - CONTROL_PANEL_ABOVE_GAP;
+    let top;
+    if (zoneBottom - zoneTop >= ph) {
+      top = zoneTop + (zoneBottom - zoneTop - ph) / 2;
+    } else {
+      top = Math.max(zoneTop, zoneBottom - ph);
+    }
+    controlPanelSnapX = left;
+    controlPanelSnapY = top;
+  } else {
+    controlPanelSnapX = r.right + CONTROL_PANEL_SIDE_GAP;
+    controlPanelSnapY = r.top;
+  }
+  panel.style.left = controlPanelSnapX + 'px';
+  panel.style.top = controlPanelSnapY + 'px';
+}
+
+function resetControlPanelPosition() {
+  syncControlPanelStackedState();
+  snapControlPanelToPhone();
 }
 
 (function() {
@@ -15607,12 +16146,27 @@ function resetControlPanelPosition() {
   const SNAP_DIST = 80;
 
   resetControlPanelPosition();
-  window.addEventListener('resize', () => { if (!isDragging) resetControlPanelPosition(); });
+  window.addEventListener('resize', () => {
+    if (!isDragging) resetControlPanelPosition();
+  });
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!isDragging) {
+        requestAnimationFrame(() => {
+          if (typeof resetControlPanelPosition === 'function') resetControlPanelPosition();
+        });
+      }
+    },
+    { capture: true, passive: true }
+  );
 
   handle.addEventListener('mousedown', startDrag);
   handle.addEventListener('touchstart', startDrag, { passive: false });
 
   function startDrag(e) {
+    if (document.body.classList.contains('proto-mobile')) return;
+    if (document.body.classList.contains('proto-control-panel-stacked')) return;
     if (e.target.closest('#controlPanelCollapse')) return;
     isDragging = true;
     handle.style.cursor = 'grabbing';
@@ -15634,8 +16188,9 @@ function resetControlPanelPosition() {
     const pt = e.touches ? e.touches[0] : e;
     let nl = dragOrigLeft + (pt.clientX - dragPtrX);
     let nt = dragOrigTop + (pt.clientY - dragPtrY);
-    nl = Math.max(-120, Math.min(window.innerWidth - 80, nl));
-    nt = Math.max(-40, Math.min(window.innerHeight - 60, nt));
+    const pw = panel.offsetWidth || 220;
+    nl = Math.max(-pw + 48, Math.min(window.innerWidth + 160, nl));
+    nt = Math.max(-40, Math.min(window.innerHeight - 48, nt));
     panel.style.left = nl + 'px';
     panel.style.top = nt + 'px';
     e.preventDefault();
@@ -15652,7 +16207,7 @@ function resetControlPanelPosition() {
     panel.style.transition = 'left 0.35s cubic-bezier(0.32, 0.72, 0, 1), top 0.35s cubic-bezier(0.32, 0.72, 0, 1)';
     const l = parseFloat(panel.style.left) || 0;
     const t = parseFloat(panel.style.top) || 0;
-    if (Math.hypot(l, t) < SNAP_DIST) {
+    if (Math.hypot(l - controlPanelSnapX, t - controlPanelSnapY) < SNAP_DIST) {
       resetControlPanelPosition();
     }
   }
@@ -16069,14 +16624,9 @@ requestAnimationFrame(() => {
 
 function toggleControlPanel() {
   const body = document.getElementById('controlPanelBody');
-  const chevron = document.getElementById('collapseChevron');
-  if (body.style.display === 'none') {
-    body.style.display = 'flex';
-    chevron.style.transform = '';
-  } else {
-    body.style.display = 'none';
-    chevron.style.transform = 'rotate(-90deg)';
-  }
+  if (!body) return;
+  const isCollapsed = body.style.display === 'none';
+  applyControlPanelCollapsedUI(!isCollapsed);
 }
 
 // (Seller Hub / Menu / Inventory starting page is now handled by switchStartingPage)
@@ -16219,7 +16769,60 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/8/26 @ 5:44pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/8/26 @ 7:06pm';
+const PROTO_TIMESTAMP_SHORT = (() => {
+  const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
+  return m ? m[1].trim() : PROTO_TIMESTAMP;
+})();
+
+function protoBreadcrumbContentRight(crumb) {
+  if (!crumb) return 0;
+  let maxR = crumb.getBoundingClientRect().right;
+  Array.from(crumb.children).forEach((el) => {
+    if (el.classList.contains('sep')) return;
+    const er = el.getBoundingClientRect();
+    if (er.width > 0 && er.height > 0) maxR = Math.max(maxR, er.right);
+  });
+  return maxR;
+}
+
+function syncProtoTimestampCompact() {
+  const ts = document.getElementById('protoTimestamp');
+  const crumb = document.querySelector('.proto-breadcrumb');
+  const meta = document.querySelector('.proto-header-meta');
+  if (!ts || !crumb || !meta) return;
+
+  if (document.body.classList.contains('proto-mobile')) {
+    ts.textContent = PROTO_TIMESTAMP;
+    ts.removeAttribute('title');
+    meta.classList.remove('proto-header-meta--hidden');
+    return;
+  }
+
+  meta.classList.remove('proto-header-meta--hidden');
+  ts.style.removeProperty('display');
+  ts.textContent = PROTO_TIMESTAMP;
+  ts.removeAttribute('title');
+
+  const gapSlack = 10;
+  const metaLeft = () => meta.getBoundingClientRect().left;
+  const touchesPublishLine = () => protoBreadcrumbContentRight(crumb) > metaLeft() - gapSlack;
+
+  if (!touchesPublishLine()) return;
+
+  ts.textContent = PROTO_TIMESTAMP_SHORT;
+  ts.setAttribute('title', PROTO_TIMESTAMP);
+  if (!touchesPublishLine()) return;
+
+  requestAnimationFrame(() => {
+    if (document.body.classList.contains('proto-mobile')) return;
+    if (protoBreadcrumbContentRight(crumb) > meta.getBoundingClientRect().left - gapSlack) {
+      meta.classList.add('proto-header-meta--hidden');
+      ts.textContent = PROTO_TIMESTAMP;
+      ts.removeAttribute('title');
+    }
+  });
+}
 
 const PROTO_NOTES_TITLE = 'Variants creation and pricing';
 const PROTO_NOTES_HTML = `
@@ -16282,11 +16885,16 @@ function toggleNotesPanel(show) {
 }
 
 document.addEventListener('keydown', (e) => {
-  const panel = document.getElementById('notesPanel');
-  if (e.key === 'Escape' && panel && panel.classList.contains('visible')) toggleNotesPanel(false);
+  if (e.key === 'Escape') {
+    const md = document.getElementById('protoMobileDrawer');
+    if (md && md.classList.contains('open')) toggleProtoMobileDrawer(false);
+    const panel = document.getElementById('notesPanel');
+    if (panel && panel.classList.contains('visible')) toggleNotesPanel(false);
+  }
 });
 
-document.getElementById('protoTimestamp').textContent = PROTO_TIMESTAMP;
+syncProtoTimestampCompact();
+window.addEventListener('resize', () => requestAnimationFrame(syncProtoTimestampCompact));
 
 const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/variants-creation/index.html';
 let shareToastTimer = null;
@@ -16298,14 +16906,6 @@ function copyShareLink() {
     shareToastTimer = setTimeout(() => toast.classList.remove('visible'), 2000);
   });
 }
-function collapseProtoHeader() {
-  document.getElementById('protoHeader').classList.add('collapsed');
-  setTimeout(() => document.getElementById('protoFab').classList.add('visible'), 150);
-}
-function expandProtoHeader() {
-  document.getElementById('protoFab').classList.remove('visible');
-  setTimeout(() => document.getElementById('protoHeader').classList.remove('collapsed'), 100);
-}
 
 (function initProtoNotes() {
   if (PROTO_NOTES_HTML.trim()) {
@@ -16315,55 +16915,10 @@ function expandProtoHeader() {
   }
 })();
 
-  (function() {
-    const NARROW_BP = 720;
-    let wasNarrow = window.innerWidth < NARROW_BP;
-    if (wasNarrow) collapseProtoHeader();
-    window.addEventListener('resize', () => {
-      const narrow = window.innerWidth < NARROW_BP;
-      if (narrow && !wasNarrow) collapseProtoHeader();
-      else if (!narrow && wasNarrow) expandProtoHeader();
-      wasNarrow = narrow;
-      const notesPanel = document.getElementById('notesPanel');
-      if (notesPanel && notesPanel.classList.contains('visible')) positionNotesPanel();
-    });
-    const fab = document.getElementById('protoFab');
-    let dragging = false, fabX, fabY, sX, sY, moved;
-    fab.addEventListener('mousedown', startFabDrag);
-    fab.addEventListener('touchstart', startFabDrag, { passive: false });
-    function startFabDrag(e) {
-      dragging = true; moved = false;
-      fab.style.cursor = 'grabbing'; fab.style.transition = 'box-shadow 0.2s ease';
-      const rect = fab.getBoundingClientRect(); fabX = rect.left; fabY = rect.top;
-      const pt = e.touches ? e.touches[0] : e;
-      sX = pt.clientX - fabX; sY = pt.clientY - fabY;
-      document.addEventListener('mousemove', onFabDrag);
-      document.addEventListener('mouseup', stopFabDrag);
-      document.addEventListener('touchmove', onFabDrag, { passive: false });
-      document.addEventListener('touchend', stopFabDrag);
-      e.preventDefault();
-    }
-    function onFabDrag(e) {
-      if (!dragging) return;
-      moved = true;
-      const pt = e.touches ? e.touches[0] : e;
-      let x = pt.clientX - sX, y = pt.clientY - sY;
-      x = Math.max(0, Math.min(window.innerWidth - 48, x));
-      y = Math.max(0, Math.min(window.innerHeight - 48, y));
-      fab.style.left = x + 'px'; fab.style.top = y + 'px';
-      fab.style.right = 'auto'; fab.style.bottom = 'auto';
-      e.preventDefault();
-    }
-    function stopFabDrag() {
-      dragging = false; fab.style.cursor = 'grab';
-      fab.style.transition = '';
-      document.removeEventListener('mousemove', onFabDrag);
-      document.removeEventListener('mouseup', stopFabDrag);
-      document.removeEventListener('touchmove', onFabDrag);
-      document.removeEventListener('touchend', stopFabDrag);
-      if (!moved) expandProtoHeader();
-    }
-  })();
+  window.addEventListener('resize', () => {
+    const notesPanel = document.getElementById('notesPanel');
+    if (notesPanel && notesPanel.classList.contains('visible')) positionNotesPanel();
+  });
 </script>
 </body>
 </html>
