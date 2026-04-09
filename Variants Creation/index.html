@@ -9276,11 +9276,12 @@ function vmUsesNestedVariantList() {
   ) {
     return true;
   }
-  if (
-    variantMgr.colors.length > 0 &&
-    variantMgr.sizes.length === 0 &&
+  const hasCustomWithValues =
     variantMgr.customRows.length > 0 &&
-    variantMgr.customRows.some((r) => r.values.length > 0)
+    variantMgr.customRows.some((r) => r.values.length > 0);
+  if (
+    hasCustomWithValues &&
+    (variantMgr.sizes.length > 0 || variantMgr.colors.length > 0)
   ) {
     return true;
   }
@@ -9292,7 +9293,9 @@ function vmUsesNestedVariantList() {
  */
 function vmColorsIterForNested() {
   if (variantMgr.colors.length > 0) return variantMgr.colors.slice();
-  if (variantMgr.sizes.length > 0 && variantMgr.conditionSelections.length > 0) return [''];
+  if (variantMgr.sizes.length > 0 &&
+      (variantMgr.conditionSelections.length > 0 || variantMgr.customRows.length > 0))
+    return [''];
   return [];
 }
 
@@ -9309,7 +9312,8 @@ function vmValidGroupByKeys() {
   }
   const hasNestableAxes =
     (variantMgr.sizes.length && variantMgr.colors.length) ||
-    (variantMgr.colors.length > 0 && !variantMgr.sizes.length);
+    (variantMgr.colors.length > 0 && !variantMgr.sizes.length) ||
+    (variantMgr.sizes.length > 0 && !variantMgr.colors.length);
   if (hasNestableAxes && variantMgr.customRows.length) {
     variantMgr.customRows.forEach((row, cri) => {
       keys.push('custom:' + cri);
@@ -10136,8 +10140,12 @@ function refreshVariantsManagerUI() {
 
   const createBtn = document.getElementById('vmBtnCreateCustom');
   const createLbl = document.getElementById('vmCreateCustomLabel');
-  const hasPresetChips = (isFashSnk) || chipSlots.sizes || chipSlots.colors;
-  const showCreateLabel = !hasRows && !hasPresetChips;
+  const hasVisibleChips =
+    (chipSlots.sizes && (isFashSnk || variantMgr.sizes.length > 0)) ||
+    (chipSlots.colors && (isFashSnk || variantMgr.colors.length > 0)) ||
+    (chipCond && chipCond.style.display !== 'none') ||
+    variantMgr.customRows.length > 0;
+  const showCreateLabel = !hasRows && !hasVisibleChips;
   if (createBtn) createBtn.classList.toggle('vm-create-expanded', showCreateLabel);
   if (createLbl) createLbl.style.display = showCreateLabel ? '' : 'none';
 
@@ -10213,7 +10221,7 @@ function refreshVariantsManagerUI() {
     } else {
       variantMgr.sizes.forEach((sz, i) => {
         const label = escapeHtmlVm(vmL1Display(sz));
-        const n = (nSub || variantMgr.colors.length) * vmNestedCustomMultiplier();
+        const n = (nSub || variantMgr.colors.length || 1) * vmNestedCustomMultiplier();
         const q = vmSumChildQtyForNestedL1(sz, variantMgr.groupBy);
         const safeSz = encodeURIComponent(String(sz));
         parts.push(
@@ -17977,7 +17985,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 10:59am';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 12:56pm';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
