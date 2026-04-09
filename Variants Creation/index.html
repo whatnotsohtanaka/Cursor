@@ -1852,14 +1852,24 @@
       flex: 1 1 auto;
     }
 
-    .home-indicator {
+    .ios-home-indicator-global {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 34px;
+      pointer-events: none;
+      z-index: 99999;
+    }
+    .ios-home-indicator-global::after {
+      content: '';
       position: absolute;
       bottom: 8px;
       left: 50%;
       transform: translateX(-50%);
-      width: 134px;
+      width: 135px;
       height: 5px;
-      background: #404040;
+      background: #1c1c1c;
       border-radius: 100px;
     }
 
@@ -2182,16 +2192,6 @@
     }
     .btn-tertiary:active { opacity: 0.8; }
 
-    .nux-home-indicator {
-      position: absolute;
-      bottom: 8px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 135px;
-      height: 5px;
-      background: #1c1c1c;
-      border-radius: 100px;
-    }
 
     /* Step 4 - Templates list */
     .nux-templates-copy {
@@ -2700,18 +2700,6 @@
       background: #e8e8e8;
       color: #7f7f7f;
     }
-    .variants-home-indicator {
-      display: flex;
-      justify-content: center;
-      padding-top: 10px;
-    }
-    .variants-home-indicator::after {
-      content: '';
-      width: 135px;
-      height: 5px;
-      border-radius: 100px;
-      background: #1c1c1c;
-    }
 
     /* Variant manager overlays (above edit-page z-index 210) */
     .vm-overlay {
@@ -2835,6 +2823,9 @@
     .vm-sheet-footer.vm-sheet-footer-with-keyboard {
       padding: 12px 16px 34px;
       border-top: 1px solid transparent;
+    }
+    .vm-sheet-footer.vm-sheet-footer-with-keyboard.vm-kb-active {
+      padding-bottom: 12px;
     }
     .vm-sheet-footer.vm-sheet-footer-with-keyboard.vm-footer-scrolled {
       border-top-color: rgba(0, 0, 0, 0.06);
@@ -5865,8 +5856,6 @@
         </div>
         <span class="tab-label tab-label-inactive">Account</span>
       </div>
-      <!-- Home Indicator -->
-      <div class="home-indicator"></div>
     </div>
 
   </div>
@@ -6002,8 +5991,6 @@
     <div onclick="openCreateSheet()" style="position:absolute;bottom:40px;right:16px;width:56px;height:56px;border-radius:50%;background:#ffe414;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:6">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1c1c1c" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
     </div>
-    <!-- Home Indicator -->
-    <div class="home-indicator"></div>
   </div>
 
   <!-- ═══ TEMPLATES L1 PAGE ═══ -->
@@ -6041,8 +6028,6 @@
     <div onclick="createTemplateFromL1()" style="position:absolute;bottom:40px;right:16px;width:56px;height:56px;border-radius:50%;background:#ffe414;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:6">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1c1c1c" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
     </div>
-    <!-- Home Indicator -->
-    <div class="home-indicator"></div>
   </div>
 
   <!-- ═══ SELLER TOOLS PAGE ═══ -->
@@ -6178,7 +6163,6 @@
         </div>
       </div>
     </div>
-    <div class="home-indicator"></div>
   </div>
 
   <!-- ═══ TEMPLATE EDIT PAGE ═══ -->
@@ -6680,7 +6664,6 @@
     </div>
     <div class="variants-tray">
       <button type="button" class="variants-save-btn" id="variantsManagerSaveBtn" onclick="variantsManagerSave()" disabled aria-disabled="true">Save</button>
-      <div class="variants-home-indicator" aria-hidden="true"></div>
     </div>
     <div id="vmUnsavedOverlay" class="vm-unsaved-overlay" role="dialog" aria-modal="true" aria-labelledby="vmUnsavedTitle" aria-describedby="vmUnsavedBody" onclick="if(event.target===this)vmUnsavedCancel()">
       <div class="vm-unsaved-panel" onclick="event.stopPropagation()">
@@ -7101,7 +7084,6 @@
         </div>
         <div class="nux-buttons">
           <button class="btn-primary" onclick="goNux(1)">Start Tour</button>
-          <div class="nux-home-indicator"></div>
         </div>
       </div>
 
@@ -7151,7 +7133,6 @@
         </div>
         <div class="nux-buttons">
           <button class="btn-primary" onclick="goNux(2)">Next</button>
-          <div class="nux-home-indicator"></div>
         </div>
       </div>
 
@@ -7175,7 +7156,6 @@
         </div>
         <div class="nux-buttons">
           <button class="btn-primary" id="nuxSlide2Cta" onclick="tryItOut()">Try It Out</button>
-          <div class="nux-home-indicator"></div>
         </div>
       </div>
 
@@ -7263,7 +7243,6 @@
         </div>
         <div class="nux-buttons">
           <button class="btn-primary" id="nuxSlide4Cta" onclick="nuxSlide4Action()">Go to Inventory</button>
-          <div class="nux-home-indicator"></div>
         </div>
       </div>
 
@@ -7898,6 +7877,8 @@
       </div>
     </div>
   </div>
+
+  <div class="ios-home-indicator-global" aria-hidden="true"></div>
 
 </div>
 </div>
@@ -12661,6 +12642,8 @@ function showVmSoftKeyboard() {
   if (slot) {
     slot.appendChild(kb);
     slot.setAttribute('aria-hidden', 'false');
+    const footer = panel?.querySelector('.vm-sheet-footer-with-keyboard');
+    if (footer) footer.classList.add('vm-kb-active');
   }
   kb.setAttribute('aria-hidden', 'false');
   requestAnimationFrame(() => {
@@ -12675,7 +12658,11 @@ function hideVmSoftKeyboard() {
     kb.classList.remove('open');
     kb.setAttribute('aria-hidden', 'true');
     const slot = kb.closest('.vm-sheet-keyboard-slot');
-    if (slot) slot.setAttribute('aria-hidden', 'true');
+    if (slot) {
+      slot.setAttribute('aria-hidden', 'true');
+      const footer = slot.closest('.vm-sheet-panel')?.querySelector('.vm-sheet-footer-with-keyboard');
+      if (footer) footer.classList.remove('vm-kb-active');
+    }
     if (vmSoftKbParkTimer) clearTimeout(vmSoftKbParkTimer);
     vmSoftKbParkTimer = setTimeout(() => {
       parkVmSoftKeyboard();
@@ -18334,7 +18321,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 4:27pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 4:40pm';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
