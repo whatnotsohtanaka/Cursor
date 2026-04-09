@@ -560,21 +560,64 @@
       inset: -8px;
       border-radius: 58px;
       border: 8px solid #2a2a2a;
+      border-top-color: #363636;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, transparent 30%);
       box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
         inset 0 0 0 1.5px #444,
-        0 0 0 1px #111,
-        0 20px 60px rgba(0,0,0,0.6);
+        0 0 0 1px rgba(0, 0, 0, 0.4),
+        0 8px 24px rgba(0, 0, 0, 0.35),
+        10px 20px 50px rgba(0, 0, 0, 0.5),
+        16px 40px 100px rgba(0, 0, 0, 0.4),
+        24px 64px 160px rgba(0, 0, 0, 0.3);
       pointer-events: none;
       z-index: 3;
     }
 
-    .device {
+    .device.device-frame {
       width: 393px;
       height: 852px;
       position: relative;
       overflow: hidden;
       border-radius: 50px;
       z-index: 2;
+      cursor: none !important;
+    }
+    .device.device-frame * {
+      cursor: none !important;
+    }
+
+    .proto-cursor {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.06) 50%, rgba(0, 0, 0, 0.08) 80%);
+      border: 1.5px solid rgba(0, 0, 0, 0.12);
+      box-shadow:
+        inset 0 4px 6px -2px rgba(255, 255, 255, 0.3),
+        inset 0 -3px 5px -2px rgba(0, 0, 0, 0.08),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        0 2px 8px rgba(0, 0, 0, 0.12);
+      pointer-events: none;
+      z-index: 99998;
+      transform: translate(-50%, -50%) scale(1);
+      transition: transform 0.1s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.15s ease;
+      opacity: 0;
+      will-change: transform;
+    }
+    .proto-cursor.visible {
+      opacity: 1;
+    }
+    .proto-cursor.pressed {
+      transform: translate(-50%, -50%) scale(0.82);
+      background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.03) 50%, rgba(0, 0, 0, 0.15) 80%);
+      border-color: rgba(0, 0, 0, 0.25);
+      box-shadow:
+        inset 0 3px 4px -2px rgba(255, 255, 255, 0.15),
+        inset 0 -2px 4px -2px rgba(0, 0, 0, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.06),
+        0 1px 4px rgba(0, 0, 0, 0.15);
     }
 
     .page {
@@ -2433,7 +2476,7 @@
       padding: 16px 16px 34px;
       border-top: 1px solid rgba(0, 0, 0, 0.06);
     }
-    /* Sheet primary Done sits above the in-sheet iOS keyboard */
+    /* Primary Save CTA for option-creation sheets; sits above in-sheet keyboard when applicable */
     .vm-sheet-footer.vm-sheet-footer-with-keyboard {
       padding: 16px 16px 12px;
       border-top: 1px solid rgba(0, 0, 0, 0.06);
@@ -2442,20 +2485,30 @@
       width: 100%;
       border: none;
       border-radius: 999px;
+      min-height: 44px;
       padding: 12px 24px;
       font-family: var(--font);
       font-size: 16px;
       font-weight: 600;
       line-height: 20px;
       letter-spacing: -0.41px;
-      background: rgba(0, 0, 0, 0.1);
+      background: #ffe414;
       color: #1c1c1c;
       cursor: pointer;
     }
     .vm-done-btn:disabled {
+      background: rgba(0, 0, 0, 0.06);
+      color: rgba(0, 0, 0, 0.35);
+      cursor: default;
+    }
+    /* Dismiss-only sheets (e.g. nested drill-down, group by) */
+    .vm-done-btn.vm-done-btn-secondary {
+      background: rgba(0, 0, 0, 0.1);
+      color: #1c1c1c;
+    }
+    .vm-done-btn.vm-done-btn-secondary:disabled {
       background: rgba(0, 0, 0, 0.05);
       color: rgba(0, 0, 0, 0.4);
-      cursor: default;
     }
     .vm-section-label {
       font-size: 14px;
@@ -3257,8 +3310,13 @@
       overflow: visible;
       background: transparent;
     }
+    /* Section already has 16px horizontal padding — rows span full width inside it */
     .price-variant-tree-mount .vm-l1-row {
-      padding: 12px 16px;
+      padding: 12px 0;
+    }
+    .price-variant-tree-mount .vm-list-divider {
+      margin-left: 0;
+      margin-right: 0;
     }
     .price-variant-row-meta {
       font-size: 13px;
@@ -3275,21 +3333,28 @@
       inset: 0;
       z-index: 280;
       background: #fff;
-      transform: translateX(100%);
+      transform: translate3d(100%, 0, 0);
       pointer-events: none;
-      transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+      transition: transform 0.46s cubic-bezier(0.32, 0.72, 0, 1);
+      will-change: transform;
     }
     .price-variant-drill-layer.open {
-      transform: translateX(0);
+      transform: translate3d(0, 0, 0);
       pointer-events: auto;
     }
-    .price-page-main-parked {
-      transform: translateX(-28%);
-      opacity: 0.38;
-      pointer-events: none;
+    /* Global price chrome: keep transition always so unpark animates (parallax back from drill). */
+    #pricePage > .edit-nav,
+    #pricePage > #pricePageScroll,
+    #pricePage > .edit-footer {
       transition:
-        transform 0.4s cubic-bezier(0.32, 0.72, 0, 1),
-        opacity 0.35s ease;
+        transform 0.48s cubic-bezier(0.32, 0.72, 0, 1),
+        opacity 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+    .price-page-main-parked {
+      transform: translate3d(-26%, 0, 0) scale(0.965);
+      transform-origin: right center;
+      opacity: 0.4;
+      pointer-events: none;
     }
     .price-override-sheet .vm-sheet-footer-grab {
       flex-shrink: 0;
@@ -4130,6 +4195,8 @@
   </div>
 </div>
 
+<div class="proto-cursor" id="protoCursor" aria-hidden="true"></div>
+
 <button class="proto-fab" id="protoFab" onclick="expandProtoHeader()" title="Open header menu">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
 </button>
@@ -4147,7 +4214,7 @@
 <div id="phoneWrapper" style="display:flex;flex-direction:column;align-items:center;flex-shrink:0">
 <div class="phone-frame">
   <div class="phone-bezel"></div>
-  <div class="device">
+  <div class="device device-frame">
 
   <!-- Global Status Bar -->
   <div class="global-status-bar">
@@ -5951,7 +6018,7 @@
         </div>
       </div>
       <div class="vm-sheet-footer">
-        <button type="button" class="vm-done-btn" id="vmSizesDoneBtn" onclick="applyVmSizes()">Done</button>
+        <button type="button" class="vm-done-btn" id="vmSizesDoneBtn" onclick="applyVmSizes()">Save</button>
       </div>
     </div>
   </div>
@@ -5976,7 +6043,7 @@
         <div id="vmColorInputsMount"></div>
       </div>
       <div class="vm-sheet-footer vm-sheet-footer-with-keyboard">
-        <button type="button" class="vm-done-btn" id="vmColorsDoneBtn" onclick="applyVmColors(event)" disabled>Done</button>
+        <button type="button" class="vm-done-btn" id="vmColorsDoneBtn" onclick="applyVmColors(event)" disabled>Save</button>
       </div>
       <div class="vm-sheet-keyboard-slot" aria-hidden="true"></div>
     </div>
@@ -6002,7 +6069,7 @@
         <div id="vmPlayerInputsMount"></div>
       </div>
       <div class="vm-sheet-footer vm-sheet-footer-with-keyboard">
-        <button type="button" class="vm-done-btn" id="vmPlayersDoneBtn" onclick="applyVmPlayers(event)" disabled>Done</button>
+        <button type="button" class="vm-done-btn" id="vmPlayersDoneBtn" onclick="applyVmPlayers(event)" disabled>Save</button>
       </div>
       <div class="vm-sheet-keyboard-slot" aria-hidden="true"></div>
     </div>
@@ -6029,7 +6096,7 @@
       </div>
       <div class="vm-sheet-body vm-condition-list" id="vmConditionList"></div>
       <div class="vm-sheet-footer">
-        <button type="button" class="vm-done-btn" onclick="applyVmConditions()">Done</button>
+        <button type="button" class="vm-done-btn" onclick="applyVmConditions()">Save</button>
       </div>
     </div>
   </div>
@@ -6065,7 +6132,7 @@
       <div class="vm-sheet-footer vm-sheet-footer-with-keyboard">
         <div class="vm-custom-footer-row" id="vmCustomFooterRow">
           <button type="button" class="vm-custom-delete-btn" id="vmCustomDeleteBtn" style="display:none" onclick="vmDeleteEntireCustomOption()">Delete</button>
-          <button type="button" class="vm-done-btn" id="vmCustomDoneBtn" onclick="applyVmCustom()" disabled style="flex:1">Done</button>
+          <button type="button" class="vm-done-btn" id="vmCustomDoneBtn" onclick="applyVmCustom()" disabled style="flex:1">Save</button>
         </div>
       </div>
       <div class="vm-sheet-keyboard-slot" aria-hidden="true"></div>
@@ -6086,7 +6153,7 @@
       </div>
       <div class="vm-sheet-body vm-nested-list-mount" id="vmNestedListMount"></div>
       <div class="vm-sheet-footer">
-        <button type="button" class="vm-done-btn" onclick="closeVmNestedSheet()">Done</button>
+        <button type="button" class="vm-done-btn vm-done-btn-secondary" onclick="closeVmNestedSheet()">Done</button>
       </div>
     </div>
   </div>
@@ -6105,7 +6172,7 @@
       </div>
       <div class="vm-sheet-body" id="vmGroupByListMount"></div>
       <div class="vm-sheet-footer">
-        <button type="button" class="vm-done-btn" onclick="closeVmGroupBySheet()">Done</button>
+        <button type="button" class="vm-done-btn vm-done-btn-secondary" onclick="closeVmGroupBySheet()">Done</button>
       </div>
     </div>
   </div>
@@ -6157,10 +6224,11 @@
       </div>
       <div
         class="vm-sheet-footer"
+        id="priceOverrideSheetFooter"
         style="display:flex;gap:8px;padding:12px 16px 16px;background:#fff;border-top:1px solid rgba(0,0,0,0.08)"
       >
-        <button type="button" class="confirm-btn-destructive" style="flex:1;margin:0;height:44px;width:auto" onclick="priceOverrideSheetReset()">Reset</button>
-        <button type="button" class="edit-btn-publish" style="flex:1;margin:0" onclick="priceOverrideSheetSave()">Save</button>
+        <button type="button" class="confirm-btn-destructive" id="priceOverrideResetBtn" style="display:none;flex:1;margin:0;height:44px;width:auto" onclick="priceOverrideSheetReset()">Reset</button>
+        <button type="button" class="edit-btn-publish" id="priceOverrideSaveBtn" style="flex:1;margin:0" onclick="priceOverrideSheetSave()">Save</button>
       </div>
       <div class="vm-sheet-footer-grab" aria-hidden="true">
         <div class="vm-sheet-grab"><span></span></div>
@@ -9478,6 +9546,30 @@ let priceDrillKind = null;
 let priceOverrideEditingKey = null;
 /** @type {Record<string, string>} */
 let priceDrillItemsByKey = {};
+let priceDrillUnparkTimer = null;
+
+/** Parallax back: drill slides off first, then main chrome eases forward. Pass immediate for hard reset. */
+function priceUnparkPricePageMainChrome(immediate) {
+  if (priceDrillUnparkTimer != null) {
+    clearTimeout(priceDrillUnparkTimer);
+    priceDrillUnparkTimer = null;
+  }
+  const mainNav = document.querySelector('#pricePage > .edit-nav');
+  const mainScroll = document.getElementById('pricePageScroll');
+  const footer = document.querySelector('#pricePage > .edit-footer');
+  const apply = () => {
+    mainNav?.classList.remove('price-page-main-parked');
+    mainScroll?.classList.remove('price-page-main-parked');
+    footer?.classList.remove('price-page-main-parked');
+  };
+  if (immediate) apply();
+  else {
+    priceDrillUnparkTimer = window.setTimeout(() => {
+      priceDrillUnparkTimer = null;
+      apply();
+    }, 56);
+  }
+}
 
 function priceResolveVmGroupBy() {
   const validGroupBy = [];
@@ -9575,8 +9667,8 @@ function priceNumericPrice(s) {
 }
 
 /**
- * L1 subtitle: price range first, then count of children with non-default buy format
- * (Figma 19633:67274); red range when any child override exists.
+ * L1 subtitle: price range first, then variant count or "Multiple formats" when any child
+ * uses a non-default buy format (Figma 19633:67274); red range when any child override exists.
  */
 function priceL1RowSubHtml(nVariants, childKeys) {
   if (!childKeys.length) return escapeHtmlVm(`${nVariants} Variants`);
@@ -9609,7 +9701,7 @@ function priceL1RowSubHtml(nVariants, childKeys) {
 
   const suffix =
     formatDiffCount > 0
-      ? `${formatDiffCount} format${formatDiffCount !== 1 ? 's' : ''} updated`
+      ? 'Multiple formats'
       : `${nVariants} variant${nVariants !== 1 ? 's' : ''}`;
 
   return `${priceHtml}<span class="price-variant-meta-sep"> · </span>${escapeHtmlVm(suffix)}`;
@@ -9945,6 +10037,10 @@ function priceOpenOverrideForCustomLeaf(encKey, encTitle) {
 }
 
 function priceShowVariantDrill(l1Key, kind, children) {
+  if (priceDrillUnparkTimer != null) {
+    clearTimeout(priceDrillUnparkTimer);
+    priceDrillUnparkTimer = null;
+  }
   priceDrillItemsByKey = {};
   children.forEach((c) => {
     priceDrillItemsByKey[c.key] = priceTextFromHtml(c.titleHtml);
@@ -10012,12 +10108,7 @@ function priceCloseVariantDrill() {
   priceDrillL1Key = null;
   priceDrillKind = null;
   priceDrillItemsByKey = {};
-  const mainNav = document.querySelector('#pricePage > .edit-nav');
-  const mainScroll = document.getElementById('pricePageScroll');
-  const footer = document.querySelector('#pricePage > .edit-footer');
-  if (mainNav) mainNav.classList.remove('price-page-main-parked');
-  if (mainScroll) mainScroll.classList.remove('price-page-main-parked');
-  if (footer) footer.classList.remove('price-page-main-parked');
+  priceUnparkPricePageMainChrome(false);
 }
 
 function priceOverrideSelectFormatChip(el) {
@@ -10045,6 +10136,16 @@ function priceOverrideStartingInputFromStored(startingPrice) {
   if (!Number.isFinite(n) || n <= 0) return '1';
   if (Number.isInteger(n)) return String(n);
   return String(n);
+}
+
+function priceSyncOverrideSheetResetVisibility() {
+  const key = priceOverrideEditingKey;
+  const resetBtn = document.getElementById('priceOverrideResetBtn');
+  const saveBtn = document.getElementById('priceOverrideSaveBtn');
+  if (!resetBtn || !saveBtn) return;
+  const hasSavedOverride = !!(key && priceVariantOverrides[key]);
+  resetBtn.style.display = hasSavedOverride ? '' : 'none';
+  saveBtn.style.flex = '1';
 }
 
 function priceOpenOverrideSheet(key, titleText) {
@@ -10076,6 +10177,7 @@ function priceOpenOverrideSheet(key, titleText) {
       productReturnTo === 'shop' || productReturnTo === 'edu' ? 'none' : '';
   }
 
+  priceSyncOverrideSheetResetVisibility();
   vmOpenOverlay('priceVariantOverrideOverlay');
 }
 
@@ -10200,15 +10302,13 @@ function syncPricePageChrome() {
 }
 
 function priceResetVariantPricingNavState() {
-  priceCloseVariantDrill();
+  priceUnparkPricePageMainChrome(true);
+  document.getElementById('priceVariantDrillLayer')?.classList.remove('open');
+  priceDrillL1Key = null;
+  priceDrillKind = null;
+  priceDrillItemsByKey = {};
   document.getElementById('priceVariantOverrideOverlay')?.classList.remove('open');
   priceOverrideEditingKey = null;
-  const mainNav = document.querySelector('#pricePage > .edit-nav');
-  const mainScroll = document.getElementById('pricePageScroll');
-  const footer = document.querySelector('#pricePage > .edit-footer');
-  if (mainNav) mainNav.classList.remove('price-page-main-parked');
-  if (mainScroll) mainScroll.classList.remove('price-page-main-parked');
-  if (footer) footer.classList.remove('price-page-main-parked');
 }
 
 function pricePageNavBack() {
@@ -15459,6 +15559,29 @@ function resetPhoneZoom() {
 scalePhone();
 window.addEventListener('resize', scalePhone);
 
+(function initProtoFingerCursor() {
+  const cursor = document.getElementById('protoCursor');
+  const device = document.querySelector('.device-frame');
+  if (!cursor || !device) return;
+
+  function showCursor() {
+    cursor.classList.add('visible');
+  }
+  function hideCursor() {
+    cursor.classList.remove('visible', 'pressed');
+  }
+  function moveCursor(clientX, clientY) {
+    cursor.style.left = clientX + 'px';
+    cursor.style.top = clientY + 'px';
+  }
+
+  device.addEventListener('mouseenter', showCursor);
+  device.addEventListener('mouseleave', hideCursor);
+  device.addEventListener('mousemove', (e) => moveCursor(e.clientX, e.clientY));
+  device.addEventListener('mousedown', () => cursor.classList.add('pressed'));
+  document.addEventListener('mouseup', () => cursor.classList.remove('pressed'));
+})();
+
 function resetControlPanelPosition() {
   const panel = document.getElementById('controlPanel');
   if (!panel) return;
@@ -16089,7 +16212,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/8/26 @ 5:33pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/8/26 @ 5:42pm';
 
 const PROTO_NOTES_TITLE = 'Variants creation and pricing';
 const PROTO_NOTES_HTML = `
