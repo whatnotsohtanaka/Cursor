@@ -2827,12 +2827,17 @@
     .vm-sheet-footer {
       flex-shrink: 0;
       padding: 16px 16px 34px;
-      border-top: 1px solid rgba(0, 0, 0, 0.06);
+      border-top: 1px solid transparent;
     }
-    /* Primary Save CTA for option-creation sheets; sits above in-sheet keyboard when applicable */
+    .vm-sheet-footer.vm-footer-scrolled {
+      border-top-color: rgba(0, 0, 0, 0.06);
+    }
     .vm-sheet-footer.vm-sheet-footer-with-keyboard {
-      padding: 16px 16px 12px;
-      border-top: 1px solid rgba(0, 0, 0, 0.06);
+      padding: 12px 16px 16px;
+      border-top: 1px solid transparent;
+    }
+    .vm-sheet-footer.vm-sheet-footer-with-keyboard.vm-footer-scrolled {
+      border-top-color: rgba(0, 0, 0, 0.06);
     }
     .vm-done-btn {
       width: 100%;
@@ -3494,9 +3499,11 @@
       padding: 0 16px 8px;
     }
     .vm-row-head span {
-      font-size: 13px;
-      font-weight: 600;
-      color: #7f7f7f;
+      font-size: 14px;
+      font-weight: 590;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #1c1c1c;
     }
     .vm-color-input-row,
     .vm-custom-value-row {
@@ -4094,6 +4101,52 @@
     }
     .vm-custom-delete-icon-btn:focus-visible {
       outline: 2px solid rgba(28, 28, 28, 0.3);
+    }
+    .vm-add-option-dashed {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 56px;
+      min-height: 56px;
+      padding: 0 16px;
+      background: #f3f3f3;
+      border: 1px dashed #d2d2d2;
+      border-radius: 8px;
+      cursor: pointer;
+      box-sizing: border-box;
+      width: 100%;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 590;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #1c1c1c;
+      margin: 4px 16px 0;
+      width: calc(100% - 32px);
+    }
+    .vm-add-option-dashed:active { opacity: 0.8; }
+    .vm-add-option-dashed svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+    .vm-footer-pill-destructive {
+      border: none;
+      border-radius: 999px;
+      min-height: 44px;
+      padding: 12px 24px;
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 590;
+      line-height: 20px;
+      letter-spacing: -0.41px;
+      background: #ce291a;
+      color: #fff;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+    .vm-footer-pill-destructive:active { opacity: 0.88;
       outline-offset: 2px;
     }
     #vmCustomFooterRow .vm-footer-pill-secondary,
@@ -4108,47 +4161,65 @@
     .product-variants-summary-divider {
       height: 1px;
       background: rgba(0, 0, 0, 0.1);
-      margin: 0 16px;
     }
     .product-variants-summary-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px 16px 14px;
+      gap: 8px;
       font-family: var(--font);
+      font-size: 14px;
+      line-height: 19px;
+      letter-spacing: -0.15px;
     }
     .product-variants-summary-row-main {
       flex: 1;
       min-width: 0;
-      font-size: 14px;
-      line-height: 19px;
-      letter-spacing: -0.15px;
+      display: flex;
+      gap: 4px;
+      align-items: baseline;
+      white-space: nowrap;
     }
     .product-variants-summary-label {
       font-weight: 590;
       color: #1c1c1c;
     }
-    .product-variants-summary-meta {
+    .product-variants-summary-dot {
       font-weight: 400;
-      color: #545454;
+      color: #7f7f7f;
+    }
+    .product-variants-summary-meta {
+      font-weight: 590;
+      color: #7f7f7f;
     }
     .product-variants-summary-qty {
       flex-shrink: 0;
       font-size: 14px;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #7f7f7f;
+      white-space: nowrap;
+    }
+    .product-variants-summary-qty b {
+      font-weight: 590;
+    }
+    .product-variants-summary-more {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-family: var(--font);
+      font-size: 14px;
       font-weight: 590;
       line-height: 19px;
       letter-spacing: -0.15px;
-      color: #1c1c1c;
+      color: #7f7f7f;
     }
-    .product-variants-summary-more {
-      padding: 0 16px 14px;
-      font-family: var(--font);
-      font-size: 13px;
-      font-weight: 590;
-      line-height: 18px;
-      letter-spacing: -0.08px;
-      color: #005ae1;
+    .product-variants-summary-more-label {
+      flex: 1;
+      min-width: 0;
+    }
+    .product-variants-summary-more-total {
+      flex-shrink: 0;
+      white-space: nowrap;
     }
 
     .edit-nav {
@@ -6452,7 +6523,7 @@
             </div>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round" style="flex-shrink:0"><path d="M8 4l6 6-6 6"/></svg>
           </div>
-          <div id="productVariantsSummaryMount" style="display:none" aria-live="polite"></div>
+          <div id="productVariantsSummaryMount" style="display:none;flex-direction:column;gap:8px;padding:12px 16px;border-top:1px solid rgba(0,0,0,0.1)" aria-live="polite"></div>
         </div>
       </div>
 
@@ -6586,10 +6657,6 @@
           <div class="vm-section-label" id="vmSizesSectionLabelNumeric">Numeric sizes (00 – 24)</div>
           <div class="vm-size-grid" id="vmSizesGridNumeric"></div>
         </div>
-        <div class="vm-sizes-block" id="vmSizesBlockPants" style="display: none;">
-          <div class="vm-section-label" id="vmSizesSectionLabelPants">Pants · waist (inches)</div>
-          <div class="vm-size-grid" id="vmSizesGridPants"></div>
-        </div>
       </div>
       <div class="vm-sheet-footer">
         <button type="button" class="vm-done-btn" id="vmSizesDoneBtn" onclick="applyVmSizes()">Save</button>
@@ -6620,17 +6687,18 @@
           </div>
         </div>
         <div class="vm-row-head">
-          <span>Values</span>
+          <span>Option Value</span>
         </div>
         <div id="vmColorInputsMount"></div>
+        <button type="button" class="vm-add-option-dashed" onclick="vmAddColorRow()">
+          <svg viewBox="0 0 16 16" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.25"/><path d="M8 5.5v5M5.5 8h5"/></svg>
+          Add Option
+        </button>
       </div>
       <div class="vm-sheet-footer vm-sheet-footer-with-keyboard">
-        <div class="vm-colors-footer-row" id="vmColorsFooterRow">
-          <button type="button" class="vm-custom-delete-icon-btn" id="vmColorsDeleteAllBtn" aria-label="Remove all colors" onclick="vmPromptDiscardAllColors()"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" aria-hidden="true"><path d="M5.5 7h9l-1 10h-7L5.5 7z"/><path d="M8 7V5.5a1 1 0 011-1h2a1 1 0 011 1V7"/><path d="M3.5 7h13"/></svg></button>
-          <div class="vm-sheet-footer-actions vm-colors-footer-actions">
-            <button type="button" class="vm-footer-pill-secondary" onclick="vmAddColorRow()">Add</button>
-            <button type="button" class="vm-footer-pill-primary" id="vmColorsDoneBtn" onclick="applyVmColors(event)" disabled>Save</button>
-          </div>
+        <div class="vm-sheet-footer-actions" id="vmColorsFooterRow">
+          <button type="button" class="vm-footer-pill-destructive" id="vmColorsDiscardBtn" style="display:none;flex:1;min-width:0" onclick="vmPromptDiscardAllColors()">Discard</button>
+          <button type="button" class="vm-footer-pill-primary" id="vmColorsDoneBtn" style="flex:1;min-width:0" onclick="applyVmColors(event)" disabled>Save</button>
         </div>
       </div>
       <div class="vm-sheet-keyboard-slot" aria-hidden="true"></div>
@@ -6710,17 +6778,18 @@
           </div>
         </div>
         <div class="vm-row-head">
-          <span>Values</span>
+          <span>Option Value</span>
         </div>
         <div id="vmCustomValuesMount"></div>
+        <button type="button" class="vm-add-option-dashed" onclick="vmAddCustomValueRow()">
+          <svg viewBox="0 0 16 16" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.25"/><path d="M8 5.5v5M5.5 8h5"/></svg>
+          Add Option
+        </button>
       </div>
       <div class="vm-sheet-footer vm-sheet-footer-with-keyboard">
-        <div class="vm-custom-footer-row" id="vmCustomFooterRow">
-          <button type="button" class="vm-custom-delete-icon-btn" id="vmCustomDeleteBtn" aria-label="Delete option" onclick="vmPromptDiscardCustomOption()"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" aria-hidden="true"><path d="M5.5 7h9l-1 10h-7L5.5 7z"/><path d="M8 7V5.5a1 1 0 011-1h2a1 1 0 011 1V7"/><path d="M3.5 7h13"/></svg></button>
-          <div class="vm-sheet-footer-actions vm-custom-footer-actions">
-            <button type="button" class="vm-footer-pill-secondary" onclick="vmAddCustomValueRow()">Add</button>
-            <button type="button" class="vm-footer-pill-primary" id="vmCustomDoneBtn" onclick="applyVmCustom()" disabled>Save</button>
-          </div>
+        <div class="vm-sheet-footer-actions" id="vmCustomFooterRow">
+          <button type="button" class="vm-footer-pill-destructive" id="vmCustomDiscardBtn" style="display:none;flex:1;min-width:0" onclick="vmPromptDiscardCustomOption()">Discard</button>
+          <button type="button" class="vm-footer-pill-primary" id="vmCustomDoneBtn" style="flex:1;min-width:0" onclick="applyVmCustom()" disabled>Save</button>
         </div>
       </div>
       <div class="vm-sheet-keyboard-slot" aria-hidden="true"></div>
@@ -10738,24 +10807,27 @@ function refreshProductVariantsSummary() {
 
   const visible = data.slice(0, VM_PRODUCT_VARIANTS_SUMMARY_MAX);
   const moreN = data.length - visible.length;
+  let totalQty = 0;
+  data.forEach(r => { totalQty += (r.qty || 0); });
   const parts = [];
   visible.forEach((r, i) => {
     if (i > 0) parts.push('<div class="product-variants-summary-divider" aria-hidden="true"></div>');
     parts.push(
       `<div class="product-variants-summary-row">
-        <div class="product-variants-summary-row-main"><span class="product-variants-summary-label">${escapeHtmlVm(r.label)}</span><span class="product-variants-summary-meta"> · Variants: ${r.variantCount}</span></div>
-        <span class="product-variants-summary-qty">Qty: ${r.qty}</span>
+        <div class="product-variants-summary-row-main"><span class="product-variants-summary-label">${escapeHtmlVm(r.label)}</span><span class="product-variants-summary-dot">·</span><span class="product-variants-summary-meta">Variants: ${r.variantCount}</span></div>
+        <span class="product-variants-summary-qty"><b>Qty:</b> ${r.qty}</span>
       </div>`
     );
   });
   if (moreN > 0) {
+    parts.push('<div class="product-variants-summary-divider" aria-hidden="true"></div>');
     parts.push(
-      `<div class="product-variants-summary-more">${moreN} More</div>`
+      `<div class="product-variants-summary-more"><span class="product-variants-summary-more-label">+${moreN} More</span><span class="product-variants-summary-more-total">Total: ${totalQty}</span></div>`
     );
   }
 
   mount.innerHTML = parts.join('');
-  mount.style.display = '';
+  mount.style.display = 'flex';
   syncProductQuantityRowVisibility();
 }
 
@@ -11679,6 +11751,22 @@ function vmOpenOverlay(id) {
   requestAnimationFrame(() => {
     requestAnimationFrame(() => el.classList.add('open'));
   });
+  vmBindFooterScrollShadow(el);
+}
+
+function vmBindFooterScrollShadow(overlay) {
+  const body = overlay.querySelector('.vm-sheet-body');
+  const footer = overlay.querySelector('.vm-sheet-footer');
+  if (!body || !footer) return;
+  const check = () => {
+    const scrollable = body.scrollHeight > body.clientHeight + 2;
+    const atBottom = body.scrollTop + body.clientHeight >= body.scrollHeight - 2;
+    footer.classList.toggle('vm-footer-scrolled', scrollable && !atBottom);
+  };
+  body.removeEventListener('scroll', body._vmFooterScroll);
+  body._vmFooterScroll = check;
+  body.addEventListener('scroll', check, { passive: true });
+  requestAnimationFrame(check);
 }
 
 function closeAllVariantManagerSheets() {
@@ -11728,21 +11816,15 @@ function buildVmSizesGrid() {
   const gridLetters = document.getElementById('vmSizesGridLetters');
   const gridNumeric = document.getElementById('vmSizesGridNumeric');
   const blockNumeric = document.getElementById('vmSizesBlockNumeric');
-  const gridPants = document.getElementById('vmSizesGridPants');
-  const blockPants = document.getElementById('vmSizesBlockPants');
   const shoe = vmSizesGridUsesShoeSizes();
   if (shoe) {
     vmFillSizesGridEl(gridLetters, vmGetSizesShoeLabels());
     vmFillSizesGridEl(gridNumeric, []);
     if (blockNumeric) blockNumeric.style.display = 'none';
-    vmFillSizesGridEl(gridPants, []);
-    if (blockPants) blockPants.style.display = 'none';
   } else {
     vmFillSizesGridEl(gridLetters, VM_TOPS_LETTER_SIZES.slice());
     vmFillSizesGridEl(gridNumeric, VM_TOPS_NUMERIC_SIZES.slice());
     if (blockNumeric) blockNumeric.style.display = '';
-    vmFillSizesGridEl(gridPants, vmGetSizesPantsLabels());
-    if (blockPants) blockPants.style.display = '';
   }
 }
 
@@ -11839,9 +11921,9 @@ function applyVmSizes() {
 }
 
 function vmSyncColorsSheetFooter() {
-  const del = document.getElementById('vmColorsDeleteAllBtn');
+  const discard = document.getElementById('vmColorsDiscardBtn');
   const startedWith = variantMgr.colors.length > 0;
-  if (del) del.style.display = startedWith ? 'flex' : 'none';
+  if (discard) discard.style.display = startedWith ? '' : 'none';
 }
 
 /** 'colors' | 'custom' — which whole-set delete vmDiscardOptionsConfirm should run */
@@ -12575,11 +12657,9 @@ function vmSyncCustomSheetHeader() {
 }
 
 function vmSyncCustomSheetFooter() {
-  const row = document.getElementById('vmCustomFooterRow');
-  const del = document.getElementById('vmCustomDeleteBtn');
+  const discard = document.getElementById('vmCustomDiscardBtn');
   const editing = vmEditingCustomIndex != null;
-  if (del) del.style.display = editing ? 'flex' : 'none';
-  if (row) row.classList.toggle('vm-custom-footer-has-delete', editing);
+  if (discard) discard.style.display = editing ? '' : 'none';
 }
 
 function vmDeleteEntireCustomOption() {
@@ -18049,7 +18129,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 2:27pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 3:21pm';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
