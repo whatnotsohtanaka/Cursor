@@ -574,6 +574,27 @@
       body.proto-mobile .vm-sheet-footer.vm-sheet-footer-with-keyboard {
         padding: 16px 16px max(12px, env(safe-area-inset-bottom, 0px));
       }
+      /* Phone-frame radii + overflow:hidden clip fixed sheet chrome on full-bleed mobile */
+      body.proto-mobile .vm-overlay {
+        border-radius: 0 !important;
+      }
+      body.proto-mobile .bottom-sheet-overlay {
+        border-radius: 0 !important;
+      }
+      body.proto-mobile #importSheet {
+        border-radius: 0 !important;
+      }
+      body.proto-mobile #importItemList {
+        min-height: 0;
+      }
+      body.proto-mobile #invActiveList,
+      body.proto-mobile #invDraftList,
+      body.proto-mobile #invInactiveList {
+        min-height: 0;
+      }
+      body.proto-mobile .variants-tray {
+        padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+      }
       /* Immersive chrome: header fixed, pulled down from strip below status / safe area */
       body.proto-mobile #protoHeader {
         position: fixed;
@@ -3954,6 +3975,7 @@
 
     .edit-scroll {
       flex: 1;
+      min-height: 0;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
@@ -4253,6 +4275,7 @@
       background: white;
       border-radius: 16px 16px 0 0;
       max-height: 70%;
+      min-height: 0;
       display: flex;
       flex-direction: column;
       transform: translateY(100%);
@@ -4279,6 +4302,7 @@
     }
     .bottom-sheet-list {
       flex: 1;
+      min-height: 0;
       overflow-y: auto;
       padding-bottom: 34px;
     }
