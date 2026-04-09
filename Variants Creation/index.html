@@ -9173,6 +9173,27 @@ function vmChipsToolbarSlotCount() {
 /** Chips always visible in toolbar; extra dimensions tuck into ··· menu. */
 const VM_TOOLBAR_MAX_VISIBLE_CHIPS = 3;
 
+/** Sizes + Colors currently visible in the Options bar (each 0 or 1). */
+function vmToolbarBaseChipCountVisible() {
+  const slots = vmToolbarChipSlotsForProductCategory();
+  const chipS = document.getElementById('vmChipSizes');
+  const chipC = document.getElementById('vmChipColors');
+  let n = 0;
+  if (slots.sizes && chipS && chipS.style.display !== 'none') n++;
+  if (slots.colors && chipC && chipC.style.display !== 'none') n++;
+  return n;
+}
+
+/**
+ * How many custom option chips we can show on the bar (after Sizes/Colors).
+ * Remaining custom rows appear only under ⋯.
+ */
+function vmToolbarCustomOnBarCount() {
+  if (!variantMgr.customRows.length) return 0;
+  const room = Math.max(0, VM_TOOLBAR_MAX_VISIBLE_CHIPS - vmToolbarBaseChipCountVisible());
+  return Math.min(variantMgr.customRows.length, room);
+}
+
 function vmConditionFlatRowSubtitleCount() {
   if (variantMgr.sizes.length && variantMgr.colors.length) {
     return variantMgr.sizes.length * variantMgr.colors.length;
@@ -9291,6 +9312,9 @@ function vmReorderOptionToolbarChips() {
   if (chipCustomQ.style.display !== 'none') {
     slot.push({ el: chipCustomQ, active: variantMgr.customRows.length > 0, order: 2 });
   }
+  chipsInner.querySelectorAll('.vm-option-chip-custom-extra').forEach((el, idx) => {
+    slot.push({ el, active: true, order: 3 + idx });
+  });
   slot.sort((a, b) => {
     if (a.active !== b.active) return a.active ? -1 : 1;
     return a.order - b.order;
@@ -9310,10 +9334,9 @@ function vmSyncToolbarMoreButton(tuckedChipCount) {
   const createLbl = document.getElementById('vmMoreCreateShortcut');
   const createText = document.getElementById('vmMoreCreateText');
   if (!moreBtn) return;
+  /* ⋯ only has “Create Custom” → expose + (or full “Create Custom”) instead of ellipsis menu. */
   const createShortcut =
-    tuckedChipCount === 0 &&
-    !vmPopoverConditionRowVisible() &&
-    variantMgr.customRows.length === 0;
+    tuckedChipCount === 0 && !vmPopoverConditionRowVisible();
   const nCond = variantMgr.conditionSelections.length;
   /* Badge = how many option *types* sit behind ⋯, not values (e.g. one “Condition” row, not two condition picks). */
   const condMenuBadge =
@@ -9519,7 +9542,33 @@ function refreshVariantsManagerUI() {
     }
   }
   const chipCustomQ = document.getElementById('vmChipCustomQuick');
-  if (chipCustomQ) chipCustomQ.style.display = 'none';
+  const chipsInner = document.querySelector('#variantsManagerPage .vm-options-chips-inner');
+  chipsInner?.querySelectorAll('.vm-option-chip-custom-extra').forEach((el) => el.remove());
+  const onBarCustom = vmToolbarCustomOnBarCount();
+  if (chipCustomQ) {
+    if (variantMgr.customRows.length > 0 && onBarCustom > 0) {
+      chipCustomQ.style.display = '';
+      const row0 = variantMgr.customRows[0];
+      chipCustomQ.textContent = `${row0.title} (${row0.values.length})`;
+      chipCustomQ.setAttribute('aria-label', `Edit ${row0.title}`);
+      chipCustomQ.onclick = () => openVmCustomSheetEdit(0);
+      for (let i = 1; i < onBarCustom; i++) {
+        const row = variantMgr.customRows[i];
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'vm-option-chip vm-option-chip-custom-extra';
+        b.textContent = `${row.title} (${row.values.length})`;
+        b.setAttribute('aria-label', `Edit ${row.title}`);
+        b.addEventListener('click', () => openVmCustomSheetEdit(i));
+        chipsInner?.appendChild(b);
+      }
+    } else {
+      chipCustomQ.style.display = 'none';
+      chipCustomQ.textContent = 'Custom';
+      chipCustomQ.removeAttribute('aria-label');
+      chipCustomQ.onclick = () => openVmCustomSheetFromMenu();
+    }
+  }
   vmReorderOptionToolbarChips();
 
   if (chipCond) {
@@ -9535,10 +9584,7 @@ function refreshVariantsManagerUI() {
     chipCond.textContent = nCond ? `Condition (${nCond})` : 'Condition';
   }
 
-  const tuckedChipCount = Math.max(
-    0,
-    vmChipsToolbarSlotCount() - VM_TOOLBAR_MAX_VISIBLE_CHIPS
-  );
+  const tuckedChipCount = Math.max(0, variantMgr.customRows.length - onBarCustom);
   vmSyncToolbarMoreButton(tuckedChipCount);
 
   const groupRow = document.getElementById('vmGroupByRow');
@@ -11582,7 +11628,9 @@ function rebuildVmMorePopoverCustomSection() {
   const mount = document.getElementById('vmMorePopoverCustomMount');
   if (!mount) return;
   mount.innerHTML = '';
+  const onBar = vmToolbarCustomOnBarCount();
   variantMgr.customRows.forEach((row, idx) => {
+    if (idx < onBar) return;
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'vm-popover-row';
@@ -16958,7 +17006,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/8/26 @ 8:28pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/8/26 @ 8:49pm';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
