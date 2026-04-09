@@ -180,25 +180,33 @@
       color: rgba(255,255,255,0.3);
     }
     .proto-header-toast {
-      position: absolute;
-      top: calc(100% + 8px);
-      right: 14px;
-      padding: 6px 14px;
-      border-radius: 8px;
+      position: fixed;
+      top: calc(56px + 8px + env(safe-area-inset-top, 0px));
+      left: 50%;
+      right: auto;
+      padding: 10px 18px;
+      border-radius: 10px;
       background: #f9dc00;
       color: #1d1d1d;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
       font-family: var(--font);
       opacity: 0;
-      transform: translateY(-4px) scale(0.95);
+      transform: translateX(-50%) translateY(-8px) scale(0.96);
       pointer-events: none;
-      transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+      z-index: 200020;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.32, 0.72, 0, 1);
       white-space: nowrap;
     }
     .proto-header-toast.visible {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translateX(-50%) translateY(0) scale(1);
+    }
+    .proto-link-btn.proto-share-btn--flash {
+      background: rgba(249, 220, 0, 0.22);
+      border-color: rgba(249, 220, 0, 0.45);
+      color: #f9dc00;
     }
 
     /* Notes overlay + panel (see pixel-perfect-frontend skill) */
@@ -760,7 +768,7 @@
         display: flex !important;
       }
       body.proto-mobile .proto-header-toast {
-        right: max(8px, env(safe-area-inset-right, 0px));
+        top: calc(var(--mobile-proto-header-h, 56px) + 10px + env(safe-area-inset-top, 0px));
       }
       body.proto-mobile #protoZoom {
         display: none !important;
@@ -2392,6 +2400,10 @@
       backdrop-filter: blur(32px);
       -webkit-backdrop-filter: blur(32px);
       flex-shrink: 0;
+      max-width: min(200px, 46vw);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .vm-option-more {
       width: 28px;
@@ -2429,21 +2441,50 @@
       align-items: center;
       gap: 12px;
       width: 100%;
+      min-width: 0;
       min-height: 28px;
+      /* Badge on ⋯ sits outside the circle; chip row still clips in .vm-options-chips-scroll only. */
+      overflow: visible;
+      padding-right: 10px;
+      box-sizing: border-box;
     }
     .vm-options-toolbar-label {
-      flex-shrink: 0;
-      margin-right: auto;
+      flex: 0 0 auto;
       font-size: 13px;
       font-weight: 600;
       line-height: 18px;
       letter-spacing: -0.08px;
       color: #7f7f7f;
+      white-space: nowrap;
+    }
+    /* Custom / color value rows: tapping padded area focuses field (label is pointer-events: none). */
+    .vm-color-input-row .vm-input-wrap,
+    .vm-custom-value-row .vm-input-wrap {
+      cursor: pointer;
+      align-self: stretch;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .vm-color-input-row .vm-sheet-row-delete,
+    .vm-custom-value-row .vm-sheet-row-delete {
+      align-self: center;
+    }
+    /* Option sort sheet: no top grab; list uses .vm-groupby-row (selection), not ↑↓. */
+    .vm-sort-custom-sheet-panel .vm-sheet-nav {
+      padding-top: 12px;
+    }
+    .vm-sort-custom-options-body {
+      padding: 0 16px 8px;
+      box-sizing: border-box;
+    }
+    .vm-sort-custom-options-body #vmSortCustomOptionsListMount {
+      padding: 8px 0 24px;
+      box-sizing: border-box;
     }
     .vm-options-chips-scroll {
-      flex: 1;
+      flex: 1 1 0%;
       min-width: 0;
-      overflow-x: auto;
+      max-width: 100%;
+      overflow-x: hidden;
       overflow-y: hidden;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
@@ -2458,12 +2499,15 @@
       justify-content: flex-end;
       gap: 8px;
       min-height: 28px;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
     }
     .vm-more-type-badge {
       display: none;
       position: absolute;
-      top: -5px;
-      right: -5px;
+      top: -4px;
+      right: -4px;
       min-width: 16px;
       height: 16px;
       padding: 0 4px;
@@ -2476,6 +2520,7 @@
       text-align: center;
       pointer-events: none;
       box-sizing: border-box;
+      z-index: 2;
     }
     .vm-more-type-badge.show {
       display: block;
@@ -2831,6 +2876,70 @@
     .vm-done-btn.vm-done-btn-secondary:disabled {
       background: rgba(0, 0, 0, 0.05);
       color: rgba(0, 0, 0, 0.4);
+    }
+    /* Colors / custom sheet footer (Figma 15647:103866 create, 15647:103878 edit) */
+    .vm-sheet-footer-actions {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      gap: 12px;
+      width: 100%;
+    }
+    .vm-sheet-footer-actions .vm-footer-pill-secondary,
+    .vm-sheet-footer-actions .vm-footer-pill-primary {
+      flex: 1;
+      min-width: 0;
+    }
+    .vm-colors-footer-row {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      gap: 12px;
+      width: 100%;
+    }
+    .vm-colors-footer-row .vm-colors-footer-actions {
+      flex: 1;
+      min-width: 0;
+    }
+    /* Large Secondary — Add (black / white label) */
+    .vm-footer-pill-secondary {
+      border: none;
+      border-radius: 999px;
+      min-height: 44px;
+      padding: 12px 24px;
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 20px;
+      letter-spacing: -0.41px;
+      background: #1c1c1c;
+      color: #fff;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+    .vm-footer-pill-secondary:active {
+      opacity: 0.88;
+    }
+    /* Large Primary — Save (yellow) */
+    .vm-footer-pill-primary {
+      border: none;
+      border-radius: 999px;
+      min-height: 44px;
+      padding: 12px 24px;
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 20px;
+      letter-spacing: -0.41px;
+      background: #ffe414;
+      color: #1c1c1c;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+    .vm-footer-pill-primary:disabled {
+      background: rgba(0, 0, 0, 0.06);
+      color: rgba(0, 0, 0, 0.35);
+      cursor: default;
     }
     .vm-section-label {
       font-size: 14px;
@@ -3406,8 +3515,8 @@
     .vm-color-input-row,
     .vm-custom-value-row {
       display: flex;
-      align-items: flex-start;
-      gap: 8px;
+      align-items: stretch;
+      gap: 16px;
       padding: 0 16px 12px;
       box-sizing: border-box;
       overflow: hidden;
@@ -3580,11 +3689,32 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 16px;
+      padding: 12px 16px;
+      margin: 0 0 12px;
+      box-sizing: border-box;
+      width: 100%;
       background: #fff;
-      border: 1px solid #d2d2d2;
-      border-radius: 8px;
-      margin-bottom: 16px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .price-unique-toggle-card:focus {
+      outline: none;
+    }
+    .price-unique-toggle-card:focus-visible {
+      outline: 2px solid #2d2d2d;
+      outline-offset: 2px;
+    }
+    .price-unique-toggle-card:active {
+      background: #fafafa;
+    }
+    .price-per-variant-section--unique-on .price-override-details-block {
+      margin-top: 32px;
     }
     .price-unique-toggle-card .toggle-track {
       flex-shrink: 0;
@@ -3876,15 +4006,15 @@
       box-sizing: border-box;
     }
     .vm-unsaved-save {
-      background: #e6e6e6;
+      background: #ffe414;
       color: #1c1c1c;
     }
     .vm-unsaved-save:disabled {
       cursor: not-allowed;
-      opacity: 0.5;
-      color: #7f7f7f;
+      background: rgba(0, 0, 0, 0.06);
+      color: rgba(0, 0, 0, 0.35);
     }
-    .vm-unsaved-save:active {
+    .vm-unsaved-save:active:not(:disabled) {
       filter: brightness(0.96);
     }
     .vm-unsaved-discard {
@@ -3913,6 +4043,17 @@
     .vm-unsaved-cancel:active {
       opacity: 0.65;
     }
+    .vm-discard-options-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 350;
+      background: rgba(0, 0, 0, 0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      box-sizing: border-box;
+    }
     .vm-custom-footer-row {
       display: flex;
       flex-direction: row;
@@ -3920,22 +4061,57 @@
       gap: 12px;
       width: 100%;
     }
-    .vm-custom-delete-btn {
+    .vm-custom-footer-row .vm-custom-footer-actions {
       flex: 1;
       min-width: 0;
+    }
+    .vm-custom-footer-row.vm-custom-footer-has-delete .vm-custom-footer-actions {
+      flex: 1;
+    }
+    /* List row delete: 32×32 hit, 20×20 icon, no fill (Figma Sheet Custom value rows) */
+    .vm-sheet-row-delete {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      margin: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      border-radius: 8px;
+    }
+    .vm-sheet-row-delete:active {
+      opacity: 0.65;
+    }
+    /* Footer delete entire option: 44×44 tertiary Icon Button + blur (Figma 15713:46759) */
+    .vm-custom-delete-icon-btn {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
+      padding: 0;
       border: none;
       border-radius: 999px;
-      padding: 12px 16px;
-      font-family: var(--font);
-      font-size: 16px;
-      font-weight: 600;
-      line-height: 20px;
-      letter-spacing: -0.41px;
-      background: #ce291a;
-      color: #fff;
+      background: rgba(0, 0, 0, 0.1);
+      -webkit-backdrop-filter: blur(32px);
+      backdrop-filter: blur(32px);
       cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
     }
-    #vmCustomFooterRow .vm-done-btn {
+    .vm-custom-delete-icon-btn:focus-visible {
+      outline: 2px solid rgba(28, 28, 28, 0.3);
+      outline-offset: 2px;
+    }
+    #vmCustomFooterRow .vm-footer-pill-secondary,
+    #vmCustomFooterRow .vm-footer-pill-primary {
       flex: 1;
       min-width: 0;
     }
@@ -4548,11 +4724,11 @@
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
       <span class="proto-btn-label">Notes</span>
     </button>
-    <button type="button" class="proto-link-btn" onclick="copyShareLink()" title="Copy share link">
+    <button type="button" class="proto-link-btn" id="protoShareBtn" onclick="copyShareLink()" title="Copy share link">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
       <span class="proto-btn-label">Share</span>
     </button>
-    <div class="proto-header-toast" id="protoHeaderToast">Link copied!</div>
+    <div class="proto-header-toast" id="protoHeaderToast" role="status" aria-live="polite" aria-atomic="true">Link copied!</div>
   </div>
 </div>
 
@@ -6060,6 +6236,12 @@
         </div>
       </div>
 
+      <!-- Featured In -->
+      <div class="edit-field" id="priceFeaturedIn">
+        <div class="edit-field-label">Featured In <span class="required">*</span></div>
+        <div class="edit-field-value"><span id="priceFeaturedInValue">All Shows</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+      </div>
+
       <!-- Sudden Death -->
       <div class="edit-field" style="display:flex;align-items:center;gap:12px">
         <div style="flex:1">
@@ -6071,22 +6253,23 @@
         </div>
       </div>
 
-      <!-- Featured In -->
-      <div class="edit-field" id="priceFeaturedIn">
-        <div class="edit-field-label">Featured In <span class="required">*</span></div>
-        <div class="edit-field-value"><span id="priceFeaturedInValue">All Shows</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
-      </div>
-
       <div class="price-per-variant-section" id="pricePerVariantSection" style="display:none">
-        <div class="price-unique-toggle-card">
+        <button
+          type="button"
+          class="price-unique-toggle-card"
+          id="priceUniquePerVariantCard"
+          role="switch"
+          aria-checked="false"
+          onclick="priceToggleUniquePerVariant()"
+        >
           <div class="price-unique-toggle-copy">
             <div class="price-per-variant-title-text">Set unique price per variant</div>
             <div class="price-per-variant-sub">Turn this off to customize prices by variant.</div>
           </div>
-          <div class="toggle-track" id="priceUniquePerVariantToggle" role="switch" aria-checked="false" onclick="priceToggleUniquePerVariant()">
+          <div class="toggle-track" id="priceUniquePerVariantToggle" aria-hidden="true">
             <div class="toggle-thumb"></div>
           </div>
-        </div>
+        </button>
         <div class="price-override-details-block" id="priceOverrideDetailsBlock" style="display:none">
           <h2 class="price-override-details-heading">Override Variant Details</h2>
           <div class="price-variant-tree-mount" id="priceVariantTreeMount"></div>
@@ -6227,18 +6410,7 @@
         <!-- Size -->
         <div id="productSizeSection" class="product-size-section">
           <div class="product-dimension-label">Size</div>
-          <div class="product-dimension-chips hide-scrollbar">
-            <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">OS</span>
-            <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">XS</span>
-            <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">S</span>
-            <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">M</span>
-            <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">L</span>
-            <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">XL</span>
-            <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">XXL</span>
-            <div style="padding:8px 12px;background:rgba(0,0,0,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="#1c1c1c"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg>
-            </div>
-          </div>
+          <div class="product-dimension-chips hide-scrollbar"></div>
         </div>
 
         <!-- Condition -->
@@ -6333,7 +6505,7 @@
       <span class="edit-nav-title">Manage Variants</span>
     </div>
     <div style="flex:1;display:flex;flex-direction:column;min-height:0;background:var(--bg-default,white)">
-      <div style="padding:24px 16px 0;display:flex;flex-direction:column;gap:16px;flex-shrink:0">
+      <div style="padding:24px 16px 0;display:flex;flex-direction:column;gap:16px;flex-shrink:0;min-width:0;width:100%;box-sizing:border-box">
         <div class="vm-options-toolbar">
           <span class="vm-options-toolbar-label">Options</span>
           <div class="vm-options-chips-scroll hide-scrollbar">
@@ -6344,6 +6516,21 @@
             </div>
           </div>
           <button type="button" class="vm-option-more" id="vmBtnMore" aria-label="More options" onclick="vmOnToolbarOverflowClick(event)"><span id="vmMoreTypeBadge" class="vm-more-type-badge" aria-hidden="true">0</span><span id="vmMoreCreateShortcut" class="vm-more-create-shortcut" style="display:none"><span id="vmMoreCreateText" class="vm-more-create-text">Create Custom</span><span class="vm-more-create-plus" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.75" stroke-linecap="round"><path d="M10 4v12M4 10h12"/></svg></span></span><span id="vmMoreIconEllipsis" class="vm-more-btn-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="#1c1c1c"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg></span></button>
+        </div>
+        <div id="vmOptionSortOrderRow" class="vm-group-by-wrap" style="display: none">
+          <button
+            type="button"
+            class="vm-group-by-field"
+            id="vmOptionSortOrderField"
+            onclick="openVmSortCustomOptionsSheet()"
+            aria-haspopup="dialog"
+          >
+            <div class="vm-group-by-field-text">
+              <span class="vm-group-by-lbl">Option sort order</span>
+              <span class="vm-group-by-val" id="vmOptionSortOrderVal"></span>
+            </div>
+            <svg class="vm-group-by-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M6 8l4 4 4-4" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
         <div id="vmGroupByRow" class="vm-group-by-wrap" style="display:none">
           <button type="button" class="vm-group-by-field" id="vmGroupByBtn" onclick="openVmGroupBySheet(event)" aria-haspopup="dialog" aria-expanded="false">
@@ -6382,6 +6569,27 @@
           <button type="button" class="vm-unsaved-save" id="vmUnsavedSaveBtn" onclick="vmUnsavedSave()">Save</button>
           <button type="button" class="vm-unsaved-discard" onclick="vmUnsavedDiscard()">Discard</button>
           <button type="button" class="vm-unsaved-cancel" onclick="vmUnsavedCancel()">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div
+      id="vmDiscardOptionsOverlay"
+      class="vm-discard-options-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="vmDiscardOptionsTitle"
+      aria-describedby="vmDiscardOptionsBody"
+      onclick="if(event.target===this)vmDiscardOptionsCancel()"
+    >
+      <div class="vm-unsaved-panel" onclick="event.stopPropagation()">
+        <div class="vm-unsaved-spacer" aria-hidden="true"></div>
+        <div class="vm-unsaved-content">
+          <h2 id="vmDiscardOptionsTitle">Discard options?</h2>
+          <p id="vmDiscardOptionsBody">These options will be removed. You can add them again later.</p>
+        </div>
+        <div class="vm-unsaved-actions">
+          <button type="button" class="vm-unsaved-discard" onclick="vmDiscardOptionsConfirm()">Discard</button>
+          <button type="button" class="vm-unsaved-cancel" onclick="vmDiscardOptionsCancel()">Cancel</button>
         </div>
       </div>
     </div>
@@ -6434,12 +6642,17 @@
       <div class="vm-sheet-body">
         <div class="vm-row-head">
           <span>Colors</span>
-          <button type="button" class="vm-pill-add" onclick="vmAddColorRow()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#1c1c1c" stroke-width="1.5"><path d="M6 2v8M2 6h8"/></svg> Add</button>
         </div>
         <div id="vmColorInputsMount"></div>
       </div>
       <div class="vm-sheet-footer vm-sheet-footer-with-keyboard">
-        <button type="button" class="vm-done-btn" id="vmColorsDoneBtn" onclick="applyVmColors(event)" disabled>Save</button>
+        <div class="vm-colors-footer-row" id="vmColorsFooterRow">
+          <button type="button" class="vm-custom-delete-icon-btn" id="vmColorsDeleteAllBtn" aria-label="Remove all colors" onclick="vmPromptDiscardAllColors()"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" aria-hidden="true"><path d="M5.5 7h9l-1 10h-7L5.5 7z"/><path d="M8 7V5.5a1 1 0 011-1h2a1 1 0 011 1V7"/><path d="M3.5 7h13"/></svg></button>
+          <div class="vm-sheet-footer-actions vm-colors-footer-actions">
+            <button type="button" class="vm-footer-pill-secondary" onclick="vmAddColorRow()">Add</button>
+            <button type="button" class="vm-footer-pill-primary" id="vmColorsDoneBtn" onclick="applyVmColors(event)" disabled>Save</button>
+          </div>
+        </div>
       </div>
       <div class="vm-sheet-keyboard-slot" aria-hidden="true"></div>
     </div>
@@ -6521,14 +6734,16 @@
         </div>
         <div class="vm-row-head">
           <span>Values</span>
-          <button type="button" class="vm-pill-add" onclick="vmAddCustomValueRow()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#1c1c1c" stroke-width="1.5"><path d="M6 2v8M2 6h8"/></svg> Add</button>
         </div>
         <div id="vmCustomValuesMount"></div>
       </div>
       <div class="vm-sheet-footer vm-sheet-footer-with-keyboard">
         <div class="vm-custom-footer-row" id="vmCustomFooterRow">
-          <button type="button" class="vm-custom-delete-btn" id="vmCustomDeleteBtn" style="display:none" onclick="vmDeleteEntireCustomOption()">Delete</button>
-          <button type="button" class="vm-done-btn" id="vmCustomDoneBtn" onclick="applyVmCustom()" disabled style="flex:1">Save</button>
+          <button type="button" class="vm-custom-delete-icon-btn" id="vmCustomDeleteBtn" aria-label="Delete option" onclick="vmPromptDiscardCustomOption()"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" aria-hidden="true"><path d="M5.5 7h9l-1 10h-7L5.5 7z"/><path d="M8 7V5.5a1 1 0 011-1h2a1 1 0 011 1V7"/><path d="M3.5 7h13"/></svg></button>
+          <div class="vm-sheet-footer-actions vm-custom-footer-actions">
+            <button type="button" class="vm-footer-pill-secondary" onclick="vmAddCustomValueRow()">Add</button>
+            <button type="button" class="vm-footer-pill-primary" id="vmCustomDoneBtn" onclick="applyVmCustom()" disabled>Save</button>
+          </div>
         </div>
       </div>
       <div class="vm-sheet-keyboard-slot" aria-hidden="true"></div>
@@ -6549,7 +6764,27 @@
       </div>
       <div class="vm-sheet-body vm-nested-list-mount" id="vmNestedListMount"></div>
       <div class="vm-sheet-footer">
-        <button type="button" class="vm-done-btn vm-done-btn-secondary" onclick="closeVmNestedSheet()">Done</button>
+        <button type="button" class="vm-done-btn" onclick="closeVmNestedSheet()">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Variant manager: Custom option sort order (selection list like Group by; no ↑↓) -->
+  <div class="vm-overlay vm-overlay-light" id="vmSortCustomOptionsOverlay" onclick="closeVmSortCustomOptionsSheet()">
+    <div class="vm-sheet-panel vm-sort-custom-sheet-panel" onclick="event.stopPropagation()">
+      <div class="vm-sheet-nav">
+        <span class="vm-sheet-nav-spacer"></span>
+        <div class="vm-sheet-nav-mid">
+          <div class="vm-sheet-h1">Option sort order</div>
+          <div class="vm-sheet-sub">Sort by which option is first. Other options keep the same relative order.</div>
+        </div>
+        <button type="button" class="vm-icon-btn" aria-label="Close" onclick="closeVmSortCustomOptionsSheet()"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+      </div>
+      <div class="vm-sheet-body vm-sort-custom-options-body">
+        <div id="vmSortCustomOptionsListMount"></div>
+      </div>
+      <div class="vm-sheet-footer">
+        <button type="button" class="vm-done-btn" onclick="closeVmSortCustomOptionsSheet()">Save</button>
       </div>
     </div>
   </div>
@@ -8724,8 +8959,9 @@ function openProductPage(title, attrs, isNew) {
   } else if (isNew && controlProductListingNullEnabled) {
     syncProductListingMedia(null);
   }
-  if (isNew && controlProductListingNullEnabled) {
-    resetProductPageSizeChipsNone();
+  const pcForSizes = document.getElementById('productCategory');
+  if (pcForSizes && pcForSizes.textContent.trim()) {
+    applyProductListingSizeModeFromCategory(pcForSizes.textContent.trim());
   }
   syncProductFormFieldsFromSavedVariants();
   refreshProductVariantsSummary();
@@ -8786,6 +9022,7 @@ function vmApplyVariantSnapshot(json) {
   variantMgr.l1Qty = s.l1Qty || {};
   variantMgr.childQty = s.childQty || {};
   variantMgr.conditionQty = s.conditionQty || {};
+  vmNormalizeAllLegacyTopsSizesInVariantMgr();
 }
 
 function isVariantsManagerDirty() {
@@ -8829,11 +9066,15 @@ function openVariantsManagerPage() {
   if (!productPage || !vm || !productPage.classList.contains('active')) return;
   const unsaved = document.getElementById('vmUnsavedOverlay');
   if (unsaved) unsaved.style.display = 'none';
+  const discardOv = document.getElementById('vmDiscardOptionsOverlay');
+  if (discardOv) discardOv.style.display = 'none';
+  vmDiscardOptionsKind = null;
   productPage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
   productPage.style.transform = 'translateX(-30%)';
   productPage.style.opacity = '0.3';
   vm.style.visibility = '';
   vm.classList.add('active');
+  vmEnsureOptionsToolbarResizeObserver();
   refreshVariantsManagerUI();
   renderVmNavPresetChips();
   variantsManagerSnapshot = vmSnapshotVariantState();
@@ -8843,6 +9084,9 @@ function closeVariantsManagerPage() {
   closeAllVariantManagerSheets();
   const unsaved = document.getElementById('vmUnsavedOverlay');
   if (unsaved) unsaved.style.display = 'none';
+  const discardOv = document.getElementById('vmDiscardOptionsOverlay');
+  if (discardOv) discardOv.style.display = 'none';
+  vmDiscardOptionsKind = null;
   const productPage = document.getElementById('productPage');
   const vm = document.getElementById('variantsManagerPage');
   if (!vm || !productPage) return;
@@ -8977,6 +9221,9 @@ function vmComputeTotalVariantSkuCount() {
   const nCond = variantMgr.conditionSelections.length;
   const condMult = nCond > 0 ? nCond : 1;
   const cust = vmNestedCustomMultiplier();
+  if (nS === 0 && nC === 0 && variantMgr.customRows.length > 0) {
+    return cust * condMult;
+  }
   if (nS > 0 && nC > 0) return nS * nC * condMult * cust;
   if (nS > 0) return nS * condMult * cust;
   if (nC > 0) return nC * cust;
@@ -9025,6 +9272,7 @@ function vmNestedCustomPartLists() {
  * (conditions belong under each size, not as top-level peers).
  */
 function vmUsesNestedVariantList() {
+  if (vmVariantMgrIsCustomDimensionOnlyCategory()) return false;
   if (variantMgr.sizes.length > 0 && variantMgr.colors.length > 0) return true;
   if (
     variantMgr.sizes.length > 0 &&
@@ -9160,6 +9408,70 @@ function vmCustomL1QtyKey(cri, val) {
   return '__c' + cri + '::' + String(val);
 }
 
+/** Custom listing with no sizes/colors and 2+ option rows — L1 = first row’s values, L2 = combos of the rest. */
+function vmCustomOnlyMultiRow() {
+  return (
+    !variantMgr.sizes.length &&
+    !variantMgr.colors.length &&
+    variantMgr.customRows.length > 1
+  );
+}
+
+/** Count of L2 leaves under each first-row value (product of other custom rows’ value counts). */
+function vmCustomOnlyMultiL2Count() {
+  if (variantMgr.customRows.length < 2) return 1;
+  let m = 1;
+  for (let i = 1; i < variantMgr.customRows.length; i++) {
+    m *= Math.max(1, variantMgr.customRows[i].values.length);
+  }
+  return m;
+}
+
+function vmSumChildQtyForCustomOnlyFirst(val0) {
+  const combos = vmNestedCustomPartLists();
+  let sum = 0;
+  combos.forEach((pr) => {
+    const parts = pr === null ? [] : pr;
+    const p0 = parts.find((p) => p.cri === 0);
+    if (!p0 || String(p0.val) !== String(val0)) return;
+    const k = vmExpandedChildKey('', '', null, parts);
+    const v = variantMgr.childQty[k];
+    sum += v != null ? v : 1;
+  });
+  return sum;
+}
+
+function vmSyncL1QtyFromCustomOnlyMultiChildren() {
+  const row0 = variantMgr.customRows[0];
+  if (!row0 || !vmCustomOnlyMultiRow()) return;
+  row0.values.forEach((val) => {
+    variantMgr.l1Qty[vmCustomL1QtyKey(0, val)] = vmSumChildQtyForCustomOnlyFirst(val);
+  });
+}
+
+function vmFormatCustomOnlyNestedL2Title(parts) {
+  const plist = parts == null ? [] : parts;
+  const tail = plist.filter((p) => p.cri > 0);
+  if (!tail.length) return '—';
+  const t = tail
+    .map((p) => String(p.val).trim())
+    .filter(Boolean)
+    .join(' · ');
+  return escapeHtmlVm(t || '—');
+}
+
+/** Custom-only listing: one flat row per value only when there is a single custom option row. */
+function vmCustomFlatLeafMode() {
+  if (vmVariantMgrIsCustomDimensionOnlyCategory()) {
+    return variantMgr.customRows.length === 1;
+  }
+  return (
+    !variantMgr.sizes.length &&
+    !variantMgr.colors.length &&
+    variantMgr.customRows.length === 1
+  );
+}
+
 /** Toolbar chip slots only (Sizes / Colors / custom). Condition lives in the ··· menu, not as a chip. */
 function vmChipsToolbarSlotCount() {
   const slots = vmToolbarChipSlotsForProductCategory();
@@ -9170,28 +9482,115 @@ function vmChipsToolbarSlotCount() {
   return n;
 }
 
-/** Chips always visible in toolbar; extra dimensions tuck into ··· menu. */
-const VM_TOOLBAR_MAX_VISIBLE_CHIPS = 3;
-
-/** Sizes + Colors currently visible in the Options bar (each 0 or 1). */
-function vmToolbarBaseChipCountVisible() {
+/** Option chips in bar DOM order (left → right) eligible for layout (category + data). */
+function vmGetToolbarChipsForLayout() {
+  const inner = document.querySelector('#variantsManagerPage .vm-options-chips-inner');
+  if (!inner) return [];
   const slots = vmToolbarChipSlotsForProductCategory();
-  const chipS = document.getElementById('vmChipSizes');
-  const chipC = document.getElementById('vmChipColors');
-  let n = 0;
-  if (slots.sizes && chipS && chipS.style.display !== 'none') n++;
-  if (slots.colors && chipC && chipC.style.display !== 'none') n++;
-  return n;
+  const out = [];
+  inner.querySelectorAll(':scope > .vm-option-chip').forEach((el) => {
+    if (el.id === 'vmChipSizes' && !slots.sizes) return;
+    if (el.id === 'vmChipColors' && !slots.colors) return;
+    if (
+      (el.id === 'vmChipCustomQuick' || el.classList.contains('vm-option-chip-custom-extra')) &&
+      variantMgr.customRows.length === 0
+    ) {
+      return;
+    }
+    out.push(el);
+  });
+  return out;
 }
 
-/**
- * How many custom option chips we can show on the bar (after Sizes/Colors).
- * Remaining custom rows appear only under ⋯.
- */
-function vmToolbarCustomOnBarCount() {
-  if (!variantMgr.customRows.length) return 0;
-  const room = Math.max(0, VM_TOOLBAR_MAX_VISIBLE_CHIPS - vmToolbarBaseChipCountVisible());
-  return Math.min(variantMgr.customRows.length, room);
+function vmToolbarTuckedChipCountForBadge() {
+  const inner = document.querySelector('#variantsManagerPage .vm-options-chips-inner');
+  if (!inner) return 0;
+  return inner.querySelectorAll('.vm-option-chip[data-vm-tucked="1"]').length;
+}
+
+function vmMeasureAndApplyToolbarChips() {
+  const page = document.getElementById('variantsManagerPage');
+  const scroll = document.querySelector('#variantsManagerPage .vm-options-chips-scroll');
+  const inner = document.querySelector('#variantsManagerPage .vm-options-chips-inner');
+  if (!page?.classList.contains('active') || !scroll || !inner) return;
+
+  const chips = vmGetToolbarChipsForLayout();
+  chips.forEach((c) => {
+    c.removeAttribute('data-vm-tucked');
+    c.style.display = '';
+  });
+
+  if (chips.length === 0) {
+    vmSyncToolbarMoreButton(0);
+    rebuildVmMorePopoverCustomSection();
+    return;
+  }
+
+  const measurePass = () => {
+    void scroll.offsetHeight;
+    void inner.offsetHeight;
+    const maxW = Math.max(0, Math.floor(scroll.getBoundingClientRect().width));
+
+    /* Bar uses flex-end: keep the *suffix* (chips nearest ⋯), tuck from the left. */
+    const fitsSuffix = (v) => {
+      const start = chips.length - v;
+      for (let i = 0; i < chips.length; i++) {
+        chips[i].style.display = i >= start ? '' : 'none';
+      }
+      void inner.offsetHeight;
+      return inner.scrollWidth <= maxW + 1;
+    };
+
+    let best = chips.length;
+    if (maxW <= 0) {
+      best = chips.length;
+    } else if (!fitsSuffix(chips.length)) {
+      best = 0;
+      for (let v = chips.length - 1; v >= 0; v--) {
+        if (fitsSuffix(v)) {
+          best = v;
+          break;
+        }
+      }
+    }
+
+    const start = chips.length - best;
+    for (let i = 0; i < chips.length; i++) {
+      if (i >= start) {
+        chips[i].style.display = '';
+        chips[i].removeAttribute('data-vm-tucked');
+      } else {
+        chips[i].style.display = 'none';
+        chips[i].setAttribute('data-vm-tucked', '1');
+      }
+    }
+
+    vmSyncToolbarMoreButton(vmToolbarTuckedChipCountForBadge());
+    rebuildVmMorePopoverCustomSection();
+  };
+
+  measurePass();
+  /* ⋯ button may switch create vs icon width after first pass — re-measure once layout settles */
+  requestAnimationFrame(measurePass);
+}
+
+let vmOptionsToolbarResizeObserver = null;
+
+function vmEnsureOptionsToolbarResizeObserver() {
+  const scroll = document.querySelector('#variantsManagerPage .vm-options-chips-scroll');
+  const toolbar = document.querySelector('#variantsManagerPage .vm-options-toolbar');
+  if ((!scroll && !toolbar) || vmOptionsToolbarResizeObserver) return;
+  vmOptionsToolbarResizeObserver = new ResizeObserver(() => {
+    vmMeasureAndApplyToolbarChips();
+  });
+  if (scroll) vmOptionsToolbarResizeObserver.observe(scroll);
+  if (toolbar) vmOptionsToolbarResizeObserver.observe(toolbar);
+}
+
+function vmScheduleOptionsToolbarChipLayout() {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => vmMeasureAndApplyToolbarChips());
+  });
 }
 
 function vmConditionFlatRowSubtitleCount() {
@@ -9236,7 +9635,14 @@ function vmL1RowSubtitleCountFor(groupBy) {
 }
 
 /** Tops: letter sizing through 5XL, then numeric dress / misses 00–24. */
-const VM_TOPS_LETTER_SIZES = ['OS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', '4XL', '5XL'];
+const VM_TOPS_LETTER_LEGACY_MAP = { XXL: '2XL', XXXL: '3XL' };
+
+function vmNormalizeTopsLetterSize(sz) {
+  const s = String(sz);
+  return VM_TOPS_LETTER_LEGACY_MAP[s] || s;
+}
+
+const VM_TOPS_LETTER_SIZES = ['OS', 'XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'];
 const VM_TOPS_NUMERIC_SIZES = (() => {
   const o = ['00'];
   for (let n = 0; n <= 24; n++) o.push(String(n));
@@ -9296,6 +9702,17 @@ function vmIsSportsBreaksPreset() {
   return idx >= 0 && VARIANT_STRESS_PRESETS[idx].key === 'sports_breaks';
 }
 
+/**
+ * Non–fashion listings (no Sizes/Colors chips) are custom-dimension-only in Manage Variants.
+ * Stale size/color state from switching category must not block L1 rows for custom values.
+ * Sports breaks still use sizes[] for the players list.
+ */
+function vmVariantMgrIsCustomDimensionOnlyCategory() {
+  if (vmIsSportsBreaksPreset()) return false;
+  const slots = vmToolbarChipSlotsForProductCategory();
+  return !slots.sizes && !slots.colors;
+}
+
 function vmReorderOptionToolbarChips() {
   const chipsInner = document.querySelector('#variantsManagerPage .vm-options-chips-inner');
   const chipS = document.getElementById('vmChipSizes');
@@ -9334,7 +9751,7 @@ function vmSyncToolbarMoreButton(tuckedChipCount) {
   const createLbl = document.getElementById('vmMoreCreateShortcut');
   const createText = document.getElementById('vmMoreCreateText');
   if (!moreBtn) return;
-  /* ⋯ only has “Create Custom” → expose + (or full “Create Custom”) instead of ellipsis menu. */
+  /* ⋯ would only be “Create Custom” (no tucked chips, no Condition row) → + opens sheet directly. */
   const createShortcut =
     tuckedChipCount === 0 && !vmPopoverConditionRowVisible();
   const nCond = variantMgr.conditionSelections.length;
@@ -9352,18 +9769,7 @@ function vmSyncToolbarMoreButton(tuckedChipCount) {
       typeBadge.setAttribute('aria-hidden', 'true');
     }
   }
-  const hasOpts = vmHasSavableVariantOptions();
-  const createFullLabel = createShortcut && !hasOpts;
-  const createIconOnly = createShortcut && hasOpts;
-  if (createFullLabel) {
-    moreBtn.dataset.mode = 'create';
-    moreBtn.classList.add('vm-option-more--create');
-    moreBtn.classList.remove('vm-option-more--create-compact');
-    moreBtn.setAttribute('aria-label', 'Create custom option');
-    if (createLbl) createLbl.style.display = 'flex';
-    if (createText) createText.style.display = '';
-    if (ell) ell.style.display = 'none';
-  } else if (createIconOnly) {
+  if (createShortcut) {
     moreBtn.dataset.mode = 'create';
     moreBtn.classList.remove('vm-option-more--create');
     moreBtn.classList.add('vm-option-more--create-compact');
@@ -9421,8 +9827,8 @@ function vmSizeSortKey(a, b) {
   }
   const letters = VM_TOPS_LETTER_SIZES;
   const nums = VM_TOPS_NUMERIC_SIZES;
-  const sa = String(a);
-  const sb = String(b);
+  const sa = vmNormalizeTopsLetterSize(a);
+  const sb = vmNormalizeTopsLetterSize(b);
   const iaL = letters.indexOf(sa);
   const ibL = letters.indexOf(sb);
   const iaN = nums.indexOf(sa);
@@ -9445,6 +9851,219 @@ function vmSizeSortKey(a, b) {
   const fb = parseFloat(sb);
   if (!Number.isNaN(fa) && !Number.isNaN(fb)) return fa - fb;
   return sa.localeCompare(sb);
+}
+
+function vmMigrateLegacyTopsLetterStorageKeys() {
+  if (vmSizesGridUsesShoeSizes()) return;
+  Object.keys(VM_TOPS_LETTER_LEGACY_MAP).forEach((oldSz) => {
+    const newSz = VM_TOPS_LETTER_LEGACY_MAP[oldSz];
+    if (variantMgr.l1Qty[oldSz] != null) {
+      if (variantMgr.l1Qty[newSz] == null) variantMgr.l1Qty[newSz] = variantMgr.l1Qty[oldSz];
+      delete variantMgr.l1Qty[oldSz];
+    }
+    Object.keys(variantMgr.childQty).slice().forEach((k) => {
+      const parts = k.split('|');
+      if (parts[0] === oldSz) {
+        parts[0] = newSz;
+        const nk = parts.join('|');
+        if (!Object.prototype.hasOwnProperty.call(variantMgr.childQty, nk)) {
+          variantMgr.childQty[nk] = variantMgr.childQty[k];
+        }
+        delete variantMgr.childQty[k];
+      }
+    });
+    if (typeof priceVariantOverrides !== 'undefined' && priceVariantOverrides) {
+      Object.keys(priceVariantOverrides).slice().forEach((k) => {
+        const parts = k.split('|');
+        if (parts[0] === oldSz) {
+          parts[0] = newSz;
+          const nk = parts.join('|');
+          if (!Object.prototype.hasOwnProperty.call(priceVariantOverrides, nk)) {
+            priceVariantOverrides[nk] = priceVariantOverrides[k];
+          }
+          delete priceVariantOverrides[k];
+        }
+      });
+    }
+  });
+}
+
+function vmNormalizeAllLegacyTopsSizesInVariantMgr() {
+  if (vmSizesGridUsesShoeSizes()) return;
+  vmMigrateLegacyTopsLetterStorageKeys();
+  variantMgr.sizes = [...new Set(variantMgr.sizes.map(vmNormalizeTopsLetterSize))].sort(vmSizeSortKey);
+  variantMgr.pendingSizes = [...new Set(variantMgr.pendingSizes.map(vmNormalizeTopsLetterSize))].sort(vmSizeSortKey);
+}
+
+/** Swap custom row indices in expanded variant keys (|cI:j| segments). */
+function vmSwapCustomRowIndicesInStorageKey(key, idxA, idxB) {
+  if (idxA === idxB || key == null) return String(key);
+  return String(key)
+    .split('|')
+    .map((seg) => {
+      const m = /^c(\d+):(\d+)$/.exec(seg);
+      if (!m) return seg;
+      let cri = parseInt(m[1], 10);
+      if (cri === idxA) cri = idxB;
+      else if (cri === idxB) cri = idxA;
+      return 'c' + cri + ':' + m[2];
+    })
+    .join('|');
+}
+
+function vmRemapObjectKeysWith(map, keyFn) {
+  const next = {};
+  Object.keys(map).forEach((k) => {
+    next[keyFn(k)] = map[k];
+  });
+  return next;
+}
+
+/** Swap two adjacent custom option rows and remap qty / price keys so SKUs stay correct. */
+function vmApplyAdjacentCustomRowSwap(lowerIdx) {
+  const idxA = lowerIdx;
+  const idxB = lowerIdx + 1;
+  if (idxB >= variantMgr.customRows.length) return;
+  const swapK = (k) => vmSwapCustomRowIndicesInStorageKey(k, idxA, idxB);
+
+  variantMgr.childQty = vmRemapObjectKeysWith(variantMgr.childQty, swapK);
+
+  const nextL1 = {};
+  Object.keys(variantMgr.l1Qty).forEach((k) => {
+    const m = /^__c(\d+)::([\s\S]*)$/.exec(k);
+    if (m) {
+      let cri = parseInt(m[1], 10);
+      if (cri === idxA) cri = idxB;
+      else if (cri === idxB) cri = idxA;
+      nextL1['__c' + cri + '::' + m[2]] = variantMgr.l1Qty[k];
+    } else {
+      nextL1[swapK(k)] = variantMgr.l1Qty[k];
+    }
+  });
+  variantMgr.l1Qty = nextL1;
+
+  if (typeof priceVariantOverrides !== 'undefined' && priceVariantOverrides) {
+    priceVariantOverrides = vmRemapObjectKeysWith(priceVariantOverrides, swapK);
+  }
+
+  const t = variantMgr.customRows[idxA];
+  variantMgr.customRows[idxA] = variantMgr.customRows[idxB];
+  variantMgr.customRows[idxB] = t;
+
+  const gb = variantMgr.groupBy;
+  if (typeof gb === 'string' && gb.startsWith('custom:')) {
+    const cri = parseInt(gb.slice(7), 10);
+    if (!Number.isNaN(cri)) {
+      let n = cri;
+      if (n === idxA) n = idxB;
+      else if (n === idxB) n = idxA;
+      variantMgr.groupBy = 'custom:' + n;
+    }
+  }
+
+  if (vmEditingCustomIndex != null) {
+    let e = vmEditingCustomIndex;
+    if (e === idxA) e = idxB;
+    else if (e === idxB) e = idxA;
+    vmEditingCustomIndex = e;
+  }
+  if (typeof priceDrillCustomRowIndex !== 'undefined' && priceDrillCustomRowIndex != null) {
+    let e = priceDrillCustomRowIndex;
+    if (e === idxA) e = idxB;
+    else if (e === idxB) e = idxA;
+    priceDrillCustomRowIndex = e;
+  }
+}
+
+/** Put customRows[leadIdx] first; remaining rows keep their relative order. */
+function vmApplyCustomRowLeadOrder(leadIdx) {
+  const n = variantMgr.customRows.length;
+  if (leadIdx < 0 || leadIdx >= n) return;
+  const perm = [leadIdx, ...[...Array(n).keys()].filter((j) => j !== leadIdx)];
+  vmApplyCustomRowPermutation(perm);
+}
+
+function vmRemapStorageKeyForCustomRowPermutation(key, oldToNew) {
+  if (key == null) return key;
+  const s = String(key);
+  const m = /^__c(\d+)::([\s\S]*)$/.exec(s);
+  if (m) {
+    const oi = parseInt(m[1], 10);
+    const ni = oldToNew[oi];
+    if (ni === undefined) return s;
+    return '__c' + ni + '::' + m[2];
+  }
+  return s
+    .split('|')
+    .map((seg) => {
+      const p = /^c(\d+):(\d+)$/.exec(seg);
+      if (!p) return seg;
+      const oi = parseInt(p[1], 10);
+      const ni = oldToNew[oi];
+      if (ni === undefined) return seg;
+      return 'c' + ni + ':' + p[2];
+    })
+    .join('|');
+}
+
+/**
+ * Reorder customRows to perm[k] = former index at position k, remapping variant keys (mirrors adjacent swaps).
+ */
+function vmApplyCustomRowPermutation(perm) {
+  const rows = variantMgr.customRows;
+  const n = rows.length;
+  if (!perm || perm.length !== n) return;
+  const oldToNew = {};
+  for (let oi = 0; oi < n; oi++) {
+    oldToNew[oi] = perm.indexOf(oi);
+  }
+  const remapKey = (k) => vmRemapStorageKeyForCustomRowPermutation(k, oldToNew);
+
+  variantMgr.childQty = vmRemapObjectKeysWith(variantMgr.childQty, remapKey);
+  const nextL1 = {};
+  Object.keys(variantMgr.l1Qty).forEach((k) => {
+    nextL1[remapKey(k)] = variantMgr.l1Qty[k];
+  });
+  variantMgr.l1Qty = nextL1;
+  if (typeof priceVariantOverrides !== 'undefined' && priceVariantOverrides) {
+    priceVariantOverrides = vmRemapObjectKeysWith(priceVariantOverrides, remapKey);
+  }
+
+  variantMgr.customRows = perm.map((i) => rows[i]);
+
+  const gb = variantMgr.groupBy;
+  if (typeof gb === 'string' && gb.startsWith('custom:')) {
+    const cri = parseInt(gb.slice(7), 10);
+    if (!Number.isNaN(cri) && oldToNew[cri] !== undefined) {
+      variantMgr.groupBy = 'custom:' + oldToNew[cri];
+    }
+  }
+  if (vmEditingCustomIndex != null && oldToNew[vmEditingCustomIndex] !== undefined) {
+    vmEditingCustomIndex = oldToNew[vmEditingCustomIndex];
+  }
+  if (typeof priceDrillCustomRowIndex !== 'undefined' && priceDrillCustomRowIndex != null) {
+    const e = priceDrillCustomRowIndex;
+    if (oldToNew[e] !== undefined) priceDrillCustomRowIndex = oldToNew[e];
+  }
+}
+
+function vmMoveCustomRowToFront(idx) {
+  vmApplyCustomRowLeadOrder(idx);
+}
+
+function vmFinishCustomRowReorderUi() {
+  priceResolveVmGroupBy();
+  ensureVmQtyDefaults();
+  refreshVariantsManagerUI();
+  refreshProductVariantsSummary();
+  rebuildVmMorePopoverCustomSection();
+  priceRefreshVariantTree();
+  if (document.getElementById('priceVariantDrillLayer')?.classList.contains('open')) {
+    const ch = priceGetDrillChildrenForL1();
+    if (ch.length && priceDrillL1Key != null && priceDrillKind) {
+      priceShowVariantDrill(priceDrillL1Key, priceDrillKind, ch);
+    }
+  }
 }
 
 function ensureVmQtyDefaults() {
@@ -9486,6 +10105,57 @@ function ensureVmQtyDefaults() {
       if (variantMgr.l1Qty[c] == null) variantMgr.l1Qty[c] = 1;
     });
   }
+
+  vmPruneStaleCustomFlatL1Qty();
+  if (
+    !variantMgr.sizes.length &&
+    !variantMgr.colors.length &&
+    variantMgr.customRows.length > 1
+  ) {
+    const combos = vmNestedCustomPartLists();
+    combos.forEach((partsRaw) => {
+      const parts = partsRaw === null ? [] : partsRaw;
+      const k = vmExpandedChildKey('', '', null, parts);
+      if (variantMgr.childQty[k] == null) variantMgr.childQty[k] = 1;
+    });
+    const row0 = variantMgr.customRows[0];
+    if (row0) {
+      row0.values.forEach((val) => {
+        const lk = vmCustomL1QtyKey(0, val);
+        if (variantMgr.l1Qty[lk] == null) {
+          variantMgr.l1Qty[lk] = vmCustomOnlyMultiL2Count();
+        }
+      });
+    }
+  } else if (
+    !variantMgr.sizes.length &&
+    !variantMgr.colors.length &&
+    variantMgr.customRows.length === 1
+  ) {
+    variantMgr.customRows.forEach((row, cri) => {
+      row.values.forEach((val) => {
+        const k = vmCustomL1QtyKey(cri, val);
+        if (variantMgr.l1Qty[k] == null) variantMgr.l1Qty[k] = 1;
+      });
+    });
+  }
+}
+
+/** Remove L1 qty keys for custom values that no longer exist (flat custom-only lists). */
+function vmPruneStaleCustomFlatL1Qty() {
+  if (variantMgr.sizes.length || variantMgr.colors.length) return;
+  const valid = new Set();
+  if (variantMgr.customRows.length > 1) {
+    const row0 = variantMgr.customRows[0];
+    if (row0) row0.values.forEach((val) => valid.add(vmCustomL1QtyKey(0, val)));
+  } else {
+    variantMgr.customRows.forEach((row, cri) => {
+      row.values.forEach((val) => valid.add(vmCustomL1QtyKey(cri, val)));
+    });
+  }
+  Object.keys(variantMgr.l1Qty).forEach((k) => {
+    if (/^__c\d+::/.test(k) && !valid.has(k)) delete variantMgr.l1Qty[k];
+  });
 }
 
 function vmGroupByDisplayLabel() {
@@ -9541,36 +10211,6 @@ function refreshVariantsManagerUI() {
         : 'Colors';
     }
   }
-  const chipCustomQ = document.getElementById('vmChipCustomQuick');
-  const chipsInner = document.querySelector('#variantsManagerPage .vm-options-chips-inner');
-  chipsInner?.querySelectorAll('.vm-option-chip-custom-extra').forEach((el) => el.remove());
-  const onBarCustom = vmToolbarCustomOnBarCount();
-  if (chipCustomQ) {
-    if (variantMgr.customRows.length > 0 && onBarCustom > 0) {
-      chipCustomQ.style.display = '';
-      const row0 = variantMgr.customRows[0];
-      chipCustomQ.textContent = `${row0.title} (${row0.values.length})`;
-      chipCustomQ.setAttribute('aria-label', `Edit ${row0.title}`);
-      chipCustomQ.onclick = () => openVmCustomSheetEdit(0);
-      for (let i = 1; i < onBarCustom; i++) {
-        const row = variantMgr.customRows[i];
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'vm-option-chip vm-option-chip-custom-extra';
-        b.textContent = `${row.title} (${row.values.length})`;
-        b.setAttribute('aria-label', `Edit ${row.title}`);
-        b.addEventListener('click', () => openVmCustomSheetEdit(i));
-        chipsInner?.appendChild(b);
-      }
-    } else {
-      chipCustomQ.style.display = 'none';
-      chipCustomQ.textContent = 'Custom';
-      chipCustomQ.removeAttribute('aria-label');
-      chipCustomQ.onclick = () => openVmCustomSheetFromMenu();
-    }
-  }
-  vmReorderOptionToolbarChips();
-
   if (chipCond) {
     if (vmIsSportsBreaksPreset()) {
       chipCond.style.display = 'none';
@@ -9583,9 +10223,51 @@ function refreshVariantsManagerUI() {
     const nCond = variantMgr.conditionSelections.length;
     chipCond.textContent = nCond ? `Condition (${nCond})` : 'Condition';
   }
+  const chipCustomQ = document.getElementById('vmChipCustomQuick');
+  const chipsInner = document.querySelector('#variantsManagerPage .vm-options-chips-inner');
+  chipsInner?.querySelectorAll('.vm-option-chip-custom-extra').forEach((el) => el.remove());
+  if (chipCustomQ) {
+    if (variantMgr.customRows.length > 0) {
+      chipCustomQ.style.display = '';
+      const row0 = variantMgr.customRows[0];
+      chipCustomQ.textContent = `${row0.title} (${row0.values.length})`;
+      chipCustomQ.setAttribute('title', `${row0.title} (${row0.values.length})`);
+      chipCustomQ.setAttribute('aria-label', `Edit ${row0.title}`);
+      chipCustomQ.setAttribute('data-custom-row-index', '0');
+      chipCustomQ.onclick = () => openVmCustomSheetEdit(0);
+      for (let i = 1; i < variantMgr.customRows.length; i++) {
+        const row = variantMgr.customRows[i];
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'vm-option-chip vm-option-chip-custom-extra';
+        b.textContent = `${row.title} (${row.values.length})`;
+        b.setAttribute('title', `${row.title} (${row.values.length})`);
+        b.setAttribute('aria-label', `Edit ${row.title}`);
+        b.setAttribute('data-custom-row-index', String(i));
+        b.addEventListener('click', () => openVmCustomSheetEdit(i));
+        chipsInner?.appendChild(b);
+      }
+    } else {
+      chipCustomQ.style.display = 'none';
+      chipCustomQ.textContent = 'Custom';
+      chipCustomQ.removeAttribute('title');
+      chipCustomQ.removeAttribute('aria-label');
+      chipCustomQ.removeAttribute('data-custom-row-index');
+      chipCustomQ.onclick = () => openVmCustomSheetFromMenu();
+    }
+  }
+  vmReorderOptionToolbarChips();
+  vmEnsureOptionsToolbarResizeObserver();
+  vmScheduleOptionsToolbarChipLayout();
 
-  const tuckedChipCount = Math.max(0, variantMgr.customRows.length - onBarCustom);
-  vmSyncToolbarMoreButton(tuckedChipCount);
+  const showOptionSort = variantMgr.customRows.length >= 2;
+  const sortRow = document.getElementById('vmOptionSortOrderRow');
+  const sortVal = document.getElementById('vmOptionSortOrderVal');
+  if (sortRow) sortRow.style.display = showOptionSort ? '' : 'none';
+  if (sortVal && showOptionSort) {
+    const lead = variantMgr.customRows[0];
+    sortVal.textContent = lead ? lead.title || 'Option' : '';
+  }
 
   const groupRow = document.getElementById('vmGroupByRow');
   const groupVal = document.getElementById('vmGroupByValue');
@@ -9686,7 +10368,7 @@ function refreshVariantsManagerUI() {
         if (i < variantMgr.sizes.length - 1) parts.push('<div class="vm-list-divider"></div>');
       });
     }
-  } else if (variantMgr.sizes.length > 0) {
+  } else if (variantMgr.sizes.length > 0 && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
     variantMgr.sizes.forEach((sz, i) => {
       const label = escapeHtmlVm(vmL1Display(sz));
       const q = variantMgr.l1Qty[sz] ?? 1;
@@ -9704,7 +10386,7 @@ function refreshVariantsManagerUI() {
       );
       if (i < variantMgr.sizes.length - 1) parts.push('<div class="vm-list-divider"></div>');
     });
-  } else if (variantMgr.colors.length > 0) {
+  } else if (variantMgr.colors.length > 0 && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
     variantMgr.colors.forEach((col, i) => {
       const label = escapeHtmlVm(col);
       const q = variantMgr.l1Qty[col] ?? 1;
@@ -9724,7 +10406,7 @@ function refreshVariantsManagerUI() {
     });
   }
 
-  if (!nested) {
+  if (!nested && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
     variantMgr.conditionSelections.forEach((cond) => {
       if (parts.length) parts.push('<div class="vm-list-divider"></div>');
       const q = variantMgr.conditionQty[cond] ?? 1;
@@ -9745,16 +10427,64 @@ function refreshVariantsManagerUI() {
   }
 
   if (!nested) {
-    variantMgr.customRows.forEach((row) => {
-      if (parts.length) parts.push('<div class="vm-list-divider"></div>');
-      parts.push(
-        `<div class="vm-flat-row">
+    const customOnly =
+      (vmVariantMgrIsCustomDimensionOnlyCategory() ||
+        (!variantMgr.sizes.length && !variantMgr.colors.length)) &&
+      variantMgr.customRows.length > 0;
+    const customFlatLeaf = vmCustomFlatLeafMode();
+    const customMultiL1 = customOnly && variantMgr.customRows.length > 1;
+    if (customFlatLeaf) {
+      variantMgr.customRows.forEach((row, cri) => {
+        row.values.forEach((val) => {
+          if (parts.length) parts.push('<div class="vm-list-divider"></div>');
+          const qKey = vmCustomL1QtyKey(cri, val);
+          const q = variantMgr.l1Qty[qKey] ?? 1;
+          const label = escapeHtmlVm(String(val));
+          const safeKey = encodeURIComponent(qKey);
+          parts.push(
+            `<div class="vm-flat-row">
+      ${cam}
+      <div class="vm-row-main"><div class="vm-row-title">${label}</div></div>
+      <div class="vm-stepper">
+        <button type="button" aria-label="Decrease" onclick="event.stopPropagation();vmDeltaL1Qty(decodeURIComponent('${safeKey}'),-1)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5"><path d="M5 10h10"/></svg></button>
+        <div class="vm-stepper-val">${q}</div>
+        <button type="button" aria-label="Increase" onclick="event.stopPropagation();vmDeltaL1Qty(decodeURIComponent('${safeKey}'),1)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5"><path d="M10 5v10M5 10h10"/></svg></button>
+      </div>
+    </div>`
+          );
+        });
+      });
+    } else if (customMultiL1) {
+      const row0 = variantMgr.customRows[0];
+      const nL2 = vmCustomOnlyMultiL2Count();
+      if (row0) {
+        row0.values.forEach((val, i) => {
+          if (parts.length) parts.push('<div class="vm-list-divider"></div>');
+          const q = vmSumChildQtyForCustomOnlyFirst(val);
+          const label = escapeHtmlVm(String(val));
+          const safeVal = encodeURIComponent(String(val));
+          parts.push(
+            `<div class="vm-l1-row" role="button" tabindex="0" onclick="openVmCustomOnlyNestedSheet(decodeURIComponent('${safeVal}'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openVmCustomOnlyNestedSheet(decodeURIComponent('${safeVal}'));}">
+          ${cam}
+          <div class="vm-row-main"><div class="vm-row-title">${label}</div><div class="vm-row-sub">${nL2} Variants</div></div>
+          <div class="vm-stepper"><div class="vm-stepper-val muted">${q}</div></div>
+          <div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"/></svg></div>
+        </div>`
+          );
+        });
+      }
+    } else if (!customOnly) {
+      variantMgr.customRows.forEach((row) => {
+        if (parts.length) parts.push('<div class="vm-list-divider"></div>');
+        parts.push(
+          `<div class="vm-flat-row">
       ${cam}
       <div class="vm-row-main"><div class="vm-row-title">${escapeHtmlVm(row.title)}</div><div class="vm-row-sub">${row.values.length} Variants</div></div>
       <div class="vm-stepper"><div class="vm-stepper-val muted">1</div></div>
     </div>`
-      );
-    });
+        );
+      });
+    }
   }
 
   listEl.innerHTML = parts.join('');
@@ -9883,7 +10613,7 @@ function vmGetProductVariantsSummaryRows() {
         });
       });
     }
-  } else if (variantMgr.sizes.length > 0) {
+  } else if (variantMgr.sizes.length > 0 && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
     variantMgr.sizes.forEach((sz) => {
       rows.push({
         label: vmL1Display(sz),
@@ -9891,7 +10621,7 @@ function vmGetProductVariantsSummaryRows() {
         qty: variantMgr.l1Qty[sz] ?? 1,
       });
     });
-  } else if (variantMgr.colors.length > 0) {
+  } else if (variantMgr.colors.length > 0 && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
     variantMgr.colors.forEach((c) => {
       rows.push({
         label: String(c),
@@ -9901,7 +10631,7 @@ function vmGetProductVariantsSummaryRows() {
     });
   }
 
-  if (!nested) {
+  if (!nested && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
     variantMgr.conditionSelections.forEach((cond) => {
       const nCond = vmConditionFlatRowSubtitleCount();
       rows.push({
@@ -9913,13 +10643,43 @@ function vmGetProductVariantsSummaryRows() {
   }
 
   if (!nested) {
-    variantMgr.customRows.forEach((row) => {
-      rows.push({
-        label: row.title,
-        variantCount: row.values.length,
-        qty: 1,
+    const customOnly =
+      (vmVariantMgrIsCustomDimensionOnlyCategory() ||
+        (!variantMgr.sizes.length && !variantMgr.colors.length)) &&
+      variantMgr.customRows.length > 0;
+    const customFlatLeaf = vmCustomFlatLeafMode();
+    const customMultiL1 = customOnly && variantMgr.customRows.length > 1;
+    if (customFlatLeaf) {
+      variantMgr.customRows.forEach((row, cri) => {
+        row.values.forEach((val) => {
+          rows.push({
+            label: String(val),
+            variantCount: 1,
+            qty: variantMgr.l1Qty[vmCustomL1QtyKey(cri, val)] ?? 1,
+          });
+        });
       });
-    });
+    } else if (customMultiL1) {
+      const row0 = variantMgr.customRows[0];
+      const nL2 = vmCustomOnlyMultiL2Count();
+      if (row0) {
+        row0.values.forEach((val) => {
+          rows.push({
+            label: String(val),
+            variantCount: nL2,
+            qty: vmSumChildQtyForCustomOnlyFirst(val),
+          });
+        });
+      }
+    } else if (!customOnly) {
+      variantMgr.customRows.forEach((row) => {
+        rows.push({
+          label: row.title,
+          variantCount: row.values.length,
+          qty: 1,
+        });
+      });
+    }
   }
 
   return rows;
@@ -10028,8 +10788,10 @@ let priceVariantOverrides = {};
 /** When true, price variant drill list shows only SKUs with a custom (overridden) price. */
 let priceVariantFilterOverridesOnly = false;
 let priceDrillL1Key = null;
-/** @type {'nested'|'size'|'color'|'condition'|null} */
+/** @type {'nested'|'size'|'color'|'condition'|'customRow'|'customFirstMulti'|null} */
 let priceDrillKind = null;
+/** Set when priceDrillKind === 'customRow' (title alone may not be unique). */
+let priceDrillCustomRowIndex = null;
 let priceOverrideEditingKey = null;
 /** @type {Record<string, string>} */
 let priceDrillItemsByKey = {};
@@ -10305,6 +11067,21 @@ function priceGetCustomValueChild(rowIndex, valIndex, val) {
   return { key, titleHtml: escapeHtmlVm(String(val)) };
 }
 
+function priceGetCustomOnlyFirstRowChildren(val0) {
+  const combos = vmNestedCustomPartLists();
+  const out = [];
+  combos.forEach((partsRaw) => {
+    const parts = partsRaw === null ? [] : partsRaw;
+    const p0 = parts.find((p) => p.cri === 0);
+    if (!p0 || String(p0.val) !== String(val0)) return;
+    const k = vmExpandedChildKey('', '', null, parts);
+    const tail = parts.filter((p) => p.cri > 0);
+    const titleHtml = escapeHtmlVm(tail.map((p) => p.val).join(' · '));
+    out.push({ key: k, titleHtml });
+  });
+  return out;
+}
+
 function priceSyncDrillCustomPriceFilterUI() {
   const row = document.getElementById('priceDrillOverrideFilterRow');
   const chip = document.getElementById('priceDrillCustomPriceFilterChip');
@@ -10482,7 +11259,7 @@ function priceRefreshVariantTree() {
         );
       });
     }
-  } else if (variantMgr.sizes.length > 0) {
+  } else if (variantMgr.sizes.length > 0 && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
     variantMgr.sizes.forEach((sz) => {
       const label = escapeHtmlVm(vmL1Display(sz));
       const ch = priceGetFlatSizeChildren(sz);
@@ -10495,7 +11272,7 @@ function priceRefreshVariantTree() {
         `onclick="priceHandleFlatSizePriceRow('${safeSz}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceHandleFlatSizePriceRow('${safeSz}');}"`
       );
     });
-  } else if (variantMgr.colors.length > 0) {
+  } else if (variantMgr.colors.length > 0 && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
     variantMgr.colors.forEach((col) => {
       const label = escapeHtmlVm(col);
       const ch = priceGetFlatColorChildren(col);
@@ -10510,7 +11287,7 @@ function priceRefreshVariantTree() {
     });
   }
 
-  if (!nested && variantMgr.conditionSelections.length) {
+  if (!nested && variantMgr.conditionSelections.length && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
     variantMgr.conditionSelections.forEach((cond) => {
       const label = escapeHtmlVm(cond);
       const ch = priceGetConditionBranchChildren(cond);
@@ -10526,24 +11303,40 @@ function priceRefreshVariantTree() {
     });
   }
 
-  if (
-    !nested &&
-    !variantMgr.sizes.length &&
-    !variantMgr.colors.length &&
-    variantMgr.customRows.length
-  ) {
-    variantMgr.customRows.forEach((row, ri) => {
+  const customPriceAxesClear =
+    vmVariantMgrIsCustomDimensionOnlyCategory() ||
+    (!variantMgr.sizes.length && !variantMgr.colors.length);
+  if (!nested && customPriceAxesClear && variantMgr.customRows.length) {
+    if (variantMgr.customRows.length === 1) {
+      const row = variantMgr.customRows[0];
       row.values.forEach((val, vi) => {
-        const c = priceGetCustomValueChild(ri, vi, val);
-        const label = escapeHtmlVm(row.title + ': ' + val);
+        const c = priceGetCustomValueChild(0, vi, val);
+        const label = escapeHtmlVm(String(val));
         pushL1(
           label,
           1,
           [c.key],
-          `onclick="priceOpenOverrideForCustomLeaf('${encodeURIComponent(c.key)}','${encodeURIComponent(String(val))}')"`
+          `onclick="priceOpenOverrideForCustomLeaf('${encodeURIComponent(c.key)}','${encodeURIComponent(String(val))}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceOpenOverrideForCustomLeaf('${encodeURIComponent(c.key)}','${encodeURIComponent(String(val))}');}"`
         );
       });
-    });
+    } else {
+      const row0 = variantMgr.customRows[0];
+      const nL2 = vmCustomOnlyMultiL2Count();
+      if (row0) {
+        row0.values.forEach((val) => {
+          const ch = priceGetCustomOnlyFirstRowChildren(val);
+          const ck = ch.map((x) => x.key);
+          const label = escapeHtmlVm(String(val));
+          const safeVal = encodeURIComponent(String(val));
+          pushL1(
+            label,
+            Math.max(ch.length, nL2),
+            ck,
+            `onclick="priceHandleCustomOnlyFirstRowVal('${safeVal}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceHandleCustomOnlyFirstRowVal('${safeVal}');}"`
+          );
+        });
+      }
+    }
   }
 
   const parts = [];
@@ -10589,6 +11382,13 @@ function priceOpenOverrideForCustomLeaf(encKey, encTitle) {
   priceOpenOverrideSheet(decodeURIComponent(encKey), decodeURIComponent(encTitle));
 }
 
+function priceHandleCustomOnlyFirstRowVal(valEnc) {
+  const val0 = decodeURIComponent(valEnc);
+  const children = priceGetCustomOnlyFirstRowChildren(val0);
+  if (!children.length) return;
+  priceShowVariantDrill(val0, 'customFirstMulti', children);
+}
+
 function priceShowVariantDrill(l1Key, kind, children) {
   if (priceDrillUnparkTimer != null) {
     clearTimeout(priceDrillUnparkTimer);
@@ -10600,6 +11400,7 @@ function priceShowVariantDrill(l1Key, kind, children) {
   });
   priceDrillL1Key = l1Key;
   priceDrillKind = kind;
+  if (kind !== 'customRow') priceDrillCustomRowIndex = null;
   priceVariantFilterOverridesOnly = false;
 
   const titleEl = document.getElementById('priceVariantDrillTitle');
@@ -10638,6 +11439,7 @@ function priceCloseVariantDrill() {
   if (layer) layer.classList.remove('open');
   priceDrillL1Key = null;
   priceDrillKind = null;
+  priceDrillCustomRowIndex = null;
   priceDrillItemsByKey = {};
   priceVariantFilterOverridesOnly = false;
   priceSyncDrillCustomPriceFilterUI();
@@ -10733,6 +11535,17 @@ function priceGetDrillChildrenForL1() {
   if (priceDrillKind === 'size') return priceGetFlatSizeChildren(priceDrillL1Key);
   if (priceDrillKind === 'color') return priceGetFlatColorChildren(priceDrillL1Key);
   if (priceDrillKind === 'condition') return priceGetConditionBranchChildren(priceDrillL1Key);
+  if (priceDrillKind === 'customFirstMulti') {
+    return priceGetCustomOnlyFirstRowChildren(priceDrillL1Key);
+  }
+  if (priceDrillKind === 'customRow' && priceDrillCustomRowIndex != null) {
+    const row = variantMgr.customRows[priceDrillCustomRowIndex];
+    if (!row) return [];
+    return row.values.map((val, vi) => {
+      const c = priceGetCustomValueChild(priceDrillCustomRowIndex, vi, val);
+      return { key: c.key, titleHtml: escapeHtmlVm(String(val)) };
+    });
+  }
   return [];
 }
 
@@ -10781,14 +11594,17 @@ function priceCloseOverrideSheet(isCancel) {
 
 function priceToggleUniquePerVariant() {
   const t = document.getElementById('priceUniquePerVariantToggle');
+  const card = document.getElementById('priceUniquePerVariantCard');
   if (!t) return;
   const on = !t.classList.contains('on');
   t.classList.toggle('on', on);
-  t.setAttribute('aria-checked', on ? 'true' : 'false');
   priceUniquePerVariantEnabled = on;
+  if (card) card.setAttribute('aria-checked', on ? 'true' : 'false');
   if (!on) priceVariantFilterOverridesOnly = false;
   const details = document.getElementById('priceOverrideDetailsBlock');
   const tree = document.getElementById('priceVariantTreeMount');
+  const section = document.getElementById('pricePerVariantSection');
+  if (section) section.classList.toggle('price-per-variant-section--unique-on', on);
   if (details) details.style.display = on ? '' : 'none';
   if (tree) tree.style.display = on ? '' : 'none';
   if (on) priceRefreshVariantTree();
@@ -10823,9 +11639,11 @@ function syncPricePageChrome() {
   if (section) {
     const show = isProduct && hasVar;
     section.style.display = show ? '' : 'none';
+    const card = document.getElementById('priceUniquePerVariantCard');
     if (show && toggle) {
       toggle.classList.toggle('on', priceUniquePerVariantEnabled);
-      toggle.setAttribute('aria-checked', priceUniquePerVariantEnabled ? 'true' : 'false');
+      if (card) card.setAttribute('aria-checked', priceUniquePerVariantEnabled ? 'true' : 'false');
+      section.classList.toggle('price-per-variant-section--unique-on', priceUniquePerVariantEnabled);
       if (details) details.style.display = priceUniquePerVariantEnabled ? '' : 'none';
       if (tree) tree.style.display = priceUniquePerVariantEnabled ? '' : 'none';
       if (priceUniquePerVariantEnabled) priceRefreshVariantTree();
@@ -10833,6 +11651,7 @@ function syncPricePageChrome() {
     } else if (!show && tree) {
       tree.style.display = 'none';
       if (details) details.style.display = 'none';
+      section.classList.remove('price-per-variant-section--unique-on');
       priceSyncDrillCustomPriceFilterUI();
     }
   }
@@ -10843,6 +11662,7 @@ function priceResetVariantPricingNavState() {
   document.getElementById('priceVariantDrillLayer')?.classList.remove('open');
   priceDrillL1Key = null;
   priceDrillKind = null;
+  priceDrillCustomRowIndex = null;
   priceDrillItemsByKey = {};
   priceVariantFilterOverridesOnly = false;
   priceSyncDrillCustomPriceFilterUI();
@@ -10892,6 +11712,7 @@ function closeAllVariantManagerSheets() {
     'vmConditionOverlay',
     'vmCustomOverlay',
     'vmNestedOverlay',
+    'vmSortCustomOptionsOverlay',
     'vmGroupByOverlay',
     'priceVariantOverrideOverlay',
   ].forEach((id) => {
@@ -11004,6 +11825,7 @@ function vmSyncColorsSheetChrome() {
 }
 
 function openVmSizesSheet() {
+  vmNormalizeAllLegacyTopsSizesInVariantMgr();
   vmSyncSizesSheetChrome();
   buildVmSizesGrid();
   variantMgr.pendingSizes = variantMgr.sizes.slice();
@@ -11017,7 +11839,11 @@ function closeVmSizesSheet() {
 }
 
 function applyVmSizes() {
-  variantMgr.sizes = variantMgr.pendingSizes.slice().sort(vmSizeSortKey);
+  if (!vmSizesGridUsesShoeSizes()) {
+    vmMigrateLegacyTopsLetterStorageKeys();
+    variantMgr.pendingSizes = [...new Set(variantMgr.pendingSizes.map(vmNormalizeTopsLetterSize))].sort(vmSizeSortKey);
+  }
+  variantMgr.sizes = variantMgr.pendingSizes.slice();
   Object.keys(variantMgr.l1Qty).forEach((k) => {
     if (!variantMgr.sizes.includes(k)) delete variantMgr.l1Qty[k];
   });
@@ -11027,11 +11853,84 @@ function applyVmSizes() {
   showToastMessage('Option added');
 }
 
+function vmSyncColorsSheetFooter() {
+  const del = document.getElementById('vmColorsDeleteAllBtn');
+  const startedWith = variantMgr.colors.length > 0;
+  if (del) del.style.display = startedWith ? 'flex' : 'none';
+}
+
+/** 'colors' | 'custom' — which whole-set delete vmDiscardOptionsConfirm should run */
+let vmDiscardOptionsKind = null;
+
+function vmOpenDiscardOptionsDialog(title, message, kind) {
+  vmDiscardOptionsKind = kind;
+  const t = document.getElementById('vmDiscardOptionsTitle');
+  const b = document.getElementById('vmDiscardOptionsBody');
+  if (t) t.textContent = title;
+  if (b) b.textContent = message;
+  const ov = document.getElementById('vmDiscardOptionsOverlay');
+  if (ov) ov.style.display = 'flex';
+}
+
+function vmCloseDiscardOptionsDialog() {
+  vmDiscardOptionsKind = null;
+  const ov = document.getElementById('vmDiscardOptionsOverlay');
+  if (ov) ov.style.display = 'none';
+}
+
+function vmPromptDiscardAllColors() {
+  vmOpenDiscardOptionsDialog(
+    'Discard all colors?',
+    'This removes every color you added for this listing. You can add colors again later.',
+    'colors'
+  );
+}
+
+function vmPromptDiscardCustomOption() {
+  if (vmEditingCustomIndex == null) return;
+  const row = variantMgr.customRows[vmEditingCustomIndex];
+  const name = (row && row.title && String(row.title).trim()) || 'This option';
+  vmOpenDiscardOptionsDialog(
+    'Discard this option?',
+    name + ' and all of its values will be removed. You can add options again later.',
+    'custom'
+  );
+}
+
+function vmDiscardOptionsConfirm() {
+  const kind = vmDiscardOptionsKind;
+  vmCloseDiscardOptionsDialog();
+  if (kind === 'colors') vmDeleteAllColorsFromSheet();
+  else if (kind === 'custom') vmDeleteEntireCustomOption();
+}
+
+function vmDiscardOptionsCancel() {
+  vmCloseDiscardOptionsDialog();
+}
+
+function vmDeleteAllColorsFromSheet() {
+  variantMgr.colors.forEach((c) => {
+    delete variantMgr.l1Qty[c];
+  });
+  variantMgr.colors = [];
+  variantMgr.pendingColorsDraft = [''];
+  ensureVmQtyDefaults();
+  hideVmSoftKeyboard();
+  closeVmColorsSheet();
+  requestAnimationFrame(() => {
+    refreshVariantsManagerUI();
+    refreshProductVariantsSummary();
+    syncProductFormFieldsFromSavedVariants();
+    showToastMessage('Option removed');
+  });
+}
+
 function openVmColorsSheet() {
   vmSyncColorsSheetChrome();
   variantMgr.pendingColorsDraft = variantMgr.colors.length ? variantMgr.colors.slice() : [''];
   renderVmColorRows();
   vmSyncColorDoneState();
+  vmSyncColorsSheetFooter();
   vmOpenOverlay('vmColorsOverlay');
   const first = document.querySelector('#vmColorInputsMount .vm-color-row-input');
   vmRafFocusSheetInput(first);
@@ -11164,12 +12063,15 @@ function createVmColorRowEl(val, idx, totalRows) {
   wrap.appendChild(lab);
   wrap.appendChild(ctrlRow);
   vmBindWdsTextWrap(wrap);
+  wrap.addEventListener('click', (e) => {
+    if (e.target.closest('.vm-input-clear')) return;
+    input.focus();
+  });
   row.appendChild(wrap);
-  if (showTrash && idx > 0) {
+  if (showTrash) {
     const del = document.createElement('button');
     del.type = 'button';
-    del.className = 'vm-icon-btn';
-    del.style.cssText = 'margin-top:12px;flex-shrink:0';
+    del.className = 'vm-sheet-row-delete';
     del.setAttribute('aria-label', 'Remove color');
     del.innerHTML = VM_COLOR_TRASH_SVG;
     del.addEventListener('click', () => vmRemoveColorRow(del));
@@ -11195,8 +12097,9 @@ function vmRemoveColorRow(triggerBtn) {
   const rowEl = triggerBtn && triggerBtn.closest ? triggerBtn.closest('.vm-color-input-row') : null;
   const mount = document.getElementById('vmColorInputsMount');
   const liveIdx = rowEl && mount ? [...mount.children].indexOf(rowEl) : -1;
-  if (liveIdx <= 0) return;
-  if (liveIdx >= 0) variantMgr.pendingColorsDraft.splice(liveIdx, 1);
+  const n = mount ? mount.children.length : 0;
+  if (liveIdx < 0 || n <= 1) return;
+  variantMgr.pendingColorsDraft.splice(liveIdx, 1);
   if (variantMgr.pendingColorsDraft.length === 0) variantMgr.pendingColorsDraft.push('');
   const focusIdx = Math.max(0, liveIdx - 1);
   renderVmColorRows();
@@ -11624,23 +12527,79 @@ function positionVmPopover() {
   pop.style.left = 'auto';
 }
 
+function renderVmSortCustomOptionsList() {
+  const mount = document.getElementById('vmSortCustomOptionsListMount');
+  if (!mount) return;
+  mount.innerHTML = '';
+  const rows = variantMgr.customRows;
+  if (rows.length < 2) return;
+
+  const leader = rows[0];
+  const ordered = rows.slice().sort((a, b) => String(a.title || '').localeCompare(String(b.title || ''), undefined, { sensitivity: 'base' }));
+
+  ordered.forEach((row) => {
+    const idx = rows.indexOf(row);
+    if (idx < 0) return;
+    const label = row.title || 'Option';
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'vm-groupby-row' + (row === leader ? ' on' : '');
+    b.innerHTML = `<span>${escapeHtmlVm(label)}</span><span class="vm-groupby-radio" aria-hidden="true"></span>`;
+    b.addEventListener('click', () => {
+      if (row === leader) {
+        closeVmSortCustomOptionsSheet();
+        return;
+      }
+      vmApplyCustomRowLeadOrder(idx);
+      closeVmSortCustomOptionsSheet();
+      vmFinishCustomRowReorderUi();
+    });
+    mount.appendChild(b);
+  });
+}
+
+function openVmSortCustomOptionsSheet() {
+  closeVmMoreMenu();
+  if (variantMgr.customRows.length < 2) return;
+  renderVmSortCustomOptionsList();
+  vmOpenOverlay('vmSortCustomOptionsOverlay');
+}
+
+function closeVmSortCustomOptionsSheet() {
+  document.getElementById('vmSortCustomOptionsOverlay')?.classList.remove('open');
+}
+
 function rebuildVmMorePopoverCustomSection() {
   const mount = document.getElementById('vmMorePopoverCustomMount');
   if (!mount) return;
   mount.innerHTML = '';
-  const onBar = vmToolbarCustomOnBarCount();
-  variantMgr.customRows.forEach((row, idx) => {
-    if (idx < onBar) return;
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'vm-popover-row';
-    b.textContent = `${row.title} (${row.values.length})`;
-    b.addEventListener('click', () => {
-      closeVmMoreMenu();
-      openVmCustomSheetEdit(idx);
+  const inner = document.querySelector('#variantsManagerPage .vm-options-chips-inner');
+  if (inner) {
+    inner.querySelectorAll('.vm-option-chip[data-vm-tucked="1"]').forEach((el) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'vm-popover-row';
+      b.textContent = el.textContent.trim();
+      if (el.id === 'vmChipSizes') {
+        b.addEventListener('click', () => {
+          closeVmMoreMenu();
+          openVmSizesSheet();
+        });
+      } else if (el.id === 'vmChipColors') {
+        b.addEventListener('click', () => {
+          closeVmMoreMenu();
+          openVmColorsSheet();
+        });
+      } else {
+        const idx = parseInt(el.getAttribute('data-custom-row-index') || '0', 10);
+        b.addEventListener('click', () => {
+          closeVmMoreMenu();
+          openVmCustomSheetEdit(idx);
+        });
+      }
+      mount.appendChild(b);
     });
-    mount.appendChild(b);
-  });
+  }
   syncVmMorePopoverCustomLabel();
 }
 
@@ -11667,9 +12626,11 @@ function vmSyncCustomSheetHeader() {
 }
 
 function vmSyncCustomSheetFooter() {
+  const row = document.getElementById('vmCustomFooterRow');
   const del = document.getElementById('vmCustomDeleteBtn');
   const editing = vmEditingCustomIndex != null;
-  if (del) del.style.display = editing ? 'block' : 'none';
+  if (del) del.style.display = editing ? 'flex' : 'none';
+  if (row) row.classList.toggle('vm-custom-footer-has-delete', editing);
 }
 
 function vmDeleteEntireCustomOption() {
@@ -11835,12 +12796,15 @@ function createVmCustomValueRowEl(val, idx, totalRows) {
   wrap.appendChild(lab);
   wrap.appendChild(ctrlRow);
   vmBindWdsTextWrap(wrap);
+  wrap.addEventListener('click', (e) => {
+    if (e.target.closest('.vm-input-clear')) return;
+    input.focus();
+  });
   row.appendChild(wrap);
-  if (showTrash && idx > 0) {
+  if (showTrash) {
     const del = document.createElement('button');
     del.type = 'button';
-    del.className = 'vm-icon-btn';
-    del.style.cssText = 'margin-top:12px;flex-shrink:0';
+    del.className = 'vm-sheet-row-delete';
     del.setAttribute('aria-label', 'Remove value');
     del.innerHTML = VM_COLOR_TRASH_SVG;
     del.addEventListener('click', () => vmRemoveCustomValueRow(del));
@@ -11866,8 +12830,9 @@ function vmRemoveCustomValueRow(triggerBtn) {
   const rowEl = triggerBtn && triggerBtn.closest ? triggerBtn.closest('.vm-custom-value-row') : null;
   const mount = document.getElementById('vmCustomValuesMount');
   const liveIdx = rowEl && mount ? [...mount.children].indexOf(rowEl) : -1;
-  if (liveIdx <= 0) return;
-  if (liveIdx >= 0) variantMgr.pendingCustomValuesDraft.splice(liveIdx, 1);
+  const n = mount ? mount.children.length : 0;
+  if (liveIdx < 0 || n <= 1) return;
+  variantMgr.pendingCustomValuesDraft.splice(liveIdx, 1);
   if (variantMgr.pendingCustomValuesDraft.length === 0) variantMgr.pendingCustomValuesDraft.push('');
   const focusIdx = Math.max(0, liveIdx - 1);
   renderVmCustomValueRows();
@@ -11916,10 +12881,72 @@ function applyVmCustom() {
   } else {
     variantMgr.customRows.push(entry);
   }
+  ensureVmQtyDefaults();
   closeVmCustomSheet();
   refreshVariantsManagerUI();
   refreshProductVariantsSummary();
   showToastMessage('Option added');
+}
+
+/** Custom-only with 2+ rows: L1 row drills into full SKUs (remaining dimensions) under that first value. */
+function openVmCustomOnlyNestedSheet(l1Val) {
+  if (!vmCustomOnlyMultiRow()) return;
+  const row0 = variantMgr.customRows[0];
+  if (!row0 || !row0.values.some((v) => String(v) === String(l1Val))) return;
+  const mount = document.getElementById('vmNestedListMount');
+  if (!mount) return;
+  mount.innerHTML = '';
+  const cam = vmThumbCamHtml();
+  const h1 = document.getElementById('vmNestedTitle');
+  const sub = document.getElementById('vmNestedSub');
+  if (h1) h1.textContent = String(l1Val);
+  const combos = vmNestedCustomPartLists();
+  const rows = [];
+  combos.forEach((partsRaw) => {
+    const parts = partsRaw === null ? [] : partsRaw;
+    const p0 = parts.find((p) => p.cri === 0);
+    if (!p0 || String(p0.val) !== String(l1Val)) return;
+    rows.push(parts);
+  });
+  if (sub) {
+    const n = rows.length;
+    sub.textContent = n === 1 ? '1 Variant' : `${n} Variants`;
+  }
+  const safeL1 = encodeURIComponent(String(l1Val));
+  rows.forEach((parts, idx) => {
+    const k = vmExpandedChildKey('', '', null, parts);
+    let q = variantMgr.childQty[k];
+    if (q == null) q = 1;
+    const label = vmFormatCustomOnlyNestedL2Title(parts);
+    const safeParts = encodeURIComponent(parts.map((p) => `${p.cri}:${p.vi}`).join(','));
+    mount.insertAdjacentHTML(
+      'beforeend',
+      `<div class="vm-flat-row" style="padding:16px 0;margin:0">
+        ${cam}
+        <div class="vm-row-main"><div class="vm-row-title">${label}</div></div>
+        <div class="vm-stepper">
+          <button type="button" aria-label="Decrease" onclick="event.stopPropagation();vmDeltaCustomOnlyNestedChildQty(decodeURIComponent('${safeL1}'),decodeURIComponent('${safeParts}'),-1)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5"><path d="M5 10h10"/></svg></button>
+          <div class="vm-stepper-val">${q}</div>
+          <button type="button" aria-label="Increase" onclick="event.stopPropagation();vmDeltaCustomOnlyNestedChildQty(decodeURIComponent('${safeL1}'),decodeURIComponent('${safeParts}'),1)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5"><path d="M10 5v10M5 10h10"/></svg></button>
+        </div>
+      </div>`
+    );
+    if (idx < rows.length - 1) mount.insertAdjacentHTML('beforeend', '<div class="vm-list-divider"></div>');
+  });
+  vmOpenOverlay('vmNestedOverlay');
+}
+
+function vmDeltaCustomOnlyNestedChildQty(l1Val, partsEnc, d) {
+  const parts = vmDecodePartsEnc(partsEnc || '');
+  const p0 = parts.find((p) => p.cri === 0);
+  if (!p0 || String(p0.val) !== String(l1Val)) return;
+  const k = vmExpandedChildKey('', '', null, parts);
+  let cur = variantMgr.childQty[k];
+  if (cur == null) cur = 1;
+  variantMgr.childQty[k] = Math.max(0, cur + d);
+  vmSyncL1QtyFromCustomOnlyMultiChildren();
+  refreshVariantsManagerUI();
+  openVmCustomOnlyNestedSheet(l1Val);
 }
 
 function openVmNestedSheet(l1Key) {
@@ -12026,6 +13053,10 @@ function openVmNestedSheet(l1Key) {
 }
 
 function vmSyncL1QtyFromNestedChildren() {
+  if (vmCustomOnlyMultiRow()) {
+    vmSyncL1QtyFromCustomOnlyMultiChildren();
+    return;
+  }
   if (!vmUsesNestedVariantList()) return;
   const validGroupBy = vmValidGroupByKeys();
   let groupBy = variantMgr.groupBy;
@@ -12614,7 +13645,7 @@ function openShopListing(title) {
   }, 450);
 }
 
-let clothingSizes = ['OS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
+let clothingSizes = ['OS', 'XS', 'S', 'M', 'L', 'XL', '2XL'];
 const shoeSizesCommon = ['7', '7.5', '8', '8.5', '9', '9.5', '10', '10.5', '11'];
 const shoeSizesAll = [
   '4', '4.5', '5', '5.5', '6', '6.5', '7', '7.5', '8', '8.5',
@@ -12630,6 +13661,11 @@ const accessorySizesList = ['OS'];
 
 function getEditCategoryName() {
   const el = document.getElementById('editCategory');
+  return el ? el.textContent.trim() : '';
+}
+
+function getProductCategoryName() {
+  const el = document.getElementById('productCategory');
   return el ? el.textContent.trim() : '';
 }
 
@@ -12678,6 +13714,15 @@ function getSizesForTemplateRender() {
   return clothingSizes;
 }
 
+/** Listing Details size chips: use product category for waist splits (Men's vs Women's). */
+function getSizesForProductListingRender() {
+  const cat = getProductCategoryName();
+  if (currentSizeMode === 'shoes') return shoeSizesCommon;
+  if (currentSizeMode === 'waist') return getWaistSizesForCategory(cat);
+  if (currentSizeMode === 'accessories') return accessorySizesList;
+  return clothingSizes;
+}
+
 function renderSizeChips() {
   const container = document.getElementById('sizeChipsContainer');
   const sizes = getSizesForTemplateRender();
@@ -12703,16 +13748,21 @@ function toggleSizeChip(size) {
   renderSizeChips();
 }
 
-function openSizesSheet() {
+function openSizesSheet(target) {
+  sizesSheetTarget = target === 'product' ? 'product' : 'edit';
   const sheet = document.getElementById('sizesSheet');
   const list = document.getElementById('sizesList');
 
-  const selected = shoeSizesAll.filter(s => selectedSizes.has(s));
-  const unselected = shoeSizesAll.filter(s => !selectedSizes.has(s));
+  const picked =
+    sizesSheetTarget === 'product'
+      ? new Set(productListingSelectedSize ? [productListingSelectedSize] : [])
+      : selectedSizes;
+  const selected = shoeSizesAll.filter(s => picked.has(s));
+  const unselected = shoeSizesAll.filter(s => !picked.has(s));
   const ordered = [...selected, ...unselected];
 
   list.innerHTML = ordered.map(s => {
-    const isSelected = selectedSizes.has(s);
+    const isSelected = picked.has(s);
     return `<div class="bottom-sheet-item" onclick="toggleSizeInSheet('${s}')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer">
       <span style="font-size:16px;font-weight:${isSelected ? '600' : '400'};color:#1c1c1c">${s}</span>
       <div style="width:22px;height:22px;border-radius:4px;${isSelected ? 'background:#1c1c1c' : 'border:1.5px solid #bbb'};display:flex;align-items:center;justify-content:center">
@@ -12730,6 +13780,12 @@ function openSizesSheet() {
 }
 
 function toggleSizeInSheet(size) {
+  if (sizesSheetTarget === 'product') {
+    productListingSelectedSize = size;
+    renderProductPageSizeChips();
+    closeSizesSheet();
+    return;
+  }
   if (selectedSizes.has(size)) {
     selectedSizes.delete(size);
   } else {
@@ -12746,6 +13802,7 @@ function applySizesFromSheet() {
 function closeSizesSheet() {
   const sheet = document.getElementById('sizesSheet');
   sheet.classList.remove('open');
+  sizesSheetTarget = 'edit';
   setTimeout(() => { sheet.style.display = 'none'; }, 350);
 }
 
@@ -12786,6 +13843,11 @@ function selectSingleChip(el) {
   });
   el.classList.remove('edit-chip-off');
   el.classList.add('edit-chip-on');
+  const productSec = document.getElementById('productSizeSection');
+  if (productSec && productSec.contains(el)) {
+    const t = el.textContent.trim();
+    if (t && t !== '...') productListingSelectedSize = t;
+  }
 }
 
 // Auto-generate title from Type + Brands
@@ -12825,13 +13887,13 @@ const categoryConfig = {
     types: ['Tops', 'Leggings', 'Pants', 'Shorts', 'Skirts', 'Outerwear', 'Sets', 'Sports Bras', 'Accessories'],
     brands: ['Alo Yoga', 'Anthropologie', 'Aritzia', 'Babaton', 'Commense', 'COS', 'Eileen Fisher', 'Everlane', 'Farm Rio', 'Free People', 'Good American', 'H&M', 'J.Crew', 'Lulu Lemon', 'Madewell', 'Nordstrom', 'Princess Polly', 'Reformation', 'Skims', 'Theory', 'Urban Outfitters', 'Vince', 'Vuori', 'Zara'],
     defaultSizeMode: 'clothing',
-    clothingSizes: ['OS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'],
+    clothingSizes: ['OS', 'XS', 'S', 'M', 'L', 'XL', '2XL'],
   },
   "Men's Fashion": {
     types: ['Shoes', 'Shirts', 'Pants', 'Jackets', 'Suits', 'Shorts', 'Activewear', 'Accessories'],
     brands: ['Nike', 'Polo Ralph Lauren', 'J.Crew', 'Uniqlo', 'Zara', 'H&M', 'Banana Republic', 'Brooks Brothers', 'Bonobos', 'Levi\'s', 'Tommy Hilfiger', 'Calvin Klein', 'Hugo Boss', 'Lacoste', 'Patagonia', 'The North Face', 'Carhartt', 'Vineyard Vines', 'Todd Snyder', 'Reigning Champ'],
     defaultSizeMode: 'clothing',
-    clothingSizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'],
+    clothingSizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'],
   },
   "Sneakers": {
     types: ['Running', 'Basketball', 'Lifestyle', 'Skateboarding', 'High Tops', 'Low Tops', 'Slides', 'Boots'],
@@ -12843,7 +13905,7 @@ const categoryConfig = {
     types: ['Hoodies', 'Tees', 'Pants', 'Jackets', 'Hats', 'Shorts', 'Accessories', 'Bags'],
     brands: ['Supreme', 'Stussy', 'BAPE', 'Off-White', 'Kith', 'Palace', 'Comme des Garcons', 'Fear of God', 'Essentials', 'Travis Scott', 'Corteiz', 'Sp5der', 'Hellstar', 'Chrome Hearts', 'Rhude', 'Gallery Dept', 'Cactus Jack', 'Drew House', 'Broken Planet', 'Human Made'],
     defaultSizeMode: 'clothing',
-    clothingSizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'],
+    clothingSizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'],
   },
   "Designer": {
     types: ['Bags', 'Shoes', 'Clothing', 'Accessories', 'Jewelry', 'Watches', 'Sunglasses', 'Scarves'],
@@ -12855,7 +13917,7 @@ const categoryConfig = {
     types: ['Clothing', 'Shoes', 'Accessories', 'Bags', 'Jewelry', 'Other'],
     brands: ['Nike', 'Adidas', 'Zara', 'H&M', 'Uniqlo', 'Gap', 'Levi\'s', 'Calvin Klein', 'Tommy Hilfiger', 'Ralph Lauren'],
     defaultSizeMode: 'clothing',
-    clothingSizes: ['OS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'],
+    clothingSizes: ['OS', 'XS', 'S', 'M', 'L', 'XL', '2XL'],
   }
 };
 
@@ -12871,6 +13933,10 @@ let selectedBrands = new Set();
 let brandsDisplayOrder = [];
 /** 'edit' = template edit (#editBrands); 'product' = listing flow (#productBrand) */
 let brandsSheetTarget = 'edit';
+/** 'edit' = create flow (multi-select shoe sizes); 'product' = listing row (single-select) */
+let sizesSheetTarget = 'edit';
+/** Single selected Size value on Listing Details (product page dimension row). */
+let productListingSelectedSize = null;
 
 function openBrandsSheet() {
   openBrandsSheetForTarget('edit');
@@ -13116,13 +14182,42 @@ function syncWomensFashionBrandsFromCategory(categoryName) {
   config.brands.forEach((b) => womensFashionBrands.push(b));
 }
 
-function resetProductPageSizeChipsNone() {
-  const section = document.getElementById('productSizeSection');
-  if (!section) return;
-  section.querySelectorAll('.edit-chip').forEach((chip) => {
-    chip.classList.remove('edit-chip-on');
-    chip.classList.add('edit-chip-off');
-  });
+/**
+ * Align Listing Details size chip row with categoryConfig (e.g. Sneakers → US men's common run).
+ */
+function applyProductListingSizeModeFromCategory(categoryName) {
+  const name = String(categoryName || '').trim();
+  if (!name) return;
+  const config = categoryConfig[name] || categoryConfig['_default'];
+  currentSizeMode = config.defaultSizeMode;
+  clothingSizes.length = 0;
+  config.clothingSizes.forEach((s) => clothingSizes.push(s));
+  productListingSelectedSize = null;
+  renderProductPageSizeChips();
+}
+
+function renderProductPageSizeChips() {
+  const wrap = document.querySelector('#productSizeSection .product-dimension-chips');
+  if (!wrap) return;
+  const sizes = getSizesForProductListingRender();
+  const parts = [];
+  for (const s of sizes) {
+    const isOn = productListingSelectedSize === s;
+    parts.push(
+      `<span class="edit-chip ${isOn ? 'edit-chip-on' : 'edit-chip-off'}" onclick="selectSingleChip(this)">${escapeHtmlVm(
+        String(s)
+      )}</span>`
+    );
+  }
+  if (currentSizeMode === 'shoes') {
+    parts.push(
+      `<span class="edit-chip edit-chip-off" onclick="openSizesSheet('product')" style="letter-spacing:2px">...</span>`
+    );
+  }
+  parts.push(
+    `<div style="padding:8px 12px;background:rgba(0,0,0,0.05);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="#1c1c1c"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg></div>`
+  );
+  wrap.innerHTML = parts.join('');
 }
 
 function applyCategoryConfig(categoryName) {
@@ -13171,7 +14266,6 @@ function selectCategory(cat) {
     }
     const brandWrapEl = document.getElementById('productBrandField');
     if (brandWrapEl) vmUpdateWdsInputWrapState(brandWrapEl);
-    resetProductPageSizeChipsNone();
     const pIdx = stressPresetIndexForWhatnotCategory(cat);
     if (pIdx >= 0) {
       stressPresetIndex = pIdx;
@@ -13194,6 +14288,7 @@ function selectCategory(cat) {
       }
     }
     vmSyncProductCategoryWrap();
+    applyProductListingSizeModeFromCategory(cat);
     closeCategorySheet();
     return;
   }
@@ -16707,7 +17802,7 @@ function clearStressVariantData() {
   vmSyncWdsWrapForFieldId('productTitleInput');
   vmSyncProductCategoryWrap();
 
-  resetProductPageSizeChipsNone();
+  applyProductListingSizeModeFromCategory("Women's Contemporary");
   syncProductListingMedia(null);
   refreshProductVariantsSummary();
   syncProductFormFieldsFromSavedVariants();
@@ -16808,6 +17903,7 @@ function applyStressVariantPreset(preset, opts) {
         : [];
       variantMgr.groupBy = preset.groupBy || 'sizes';
       variantMgr.optionLabels = { ...olDef, ...(preset.optionLabels || {}) };
+      vmNormalizeAllLegacyTopsSizesInVariantMgr();
     }
   }
 
@@ -17006,7 +18102,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/8/26 @ 8:49pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 8:29am';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -17136,13 +18232,74 @@ window.addEventListener('resize', () => requestAnimationFrame(syncProtoTimestamp
 
 const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/variants-creation/index.html';
 let shareToastTimer = null;
+let shareBtnFlashTimer = null;
+
+function copyShareLinkGetUrl() {
+  try {
+    const u = new URL(window.location.href);
+    u.hash = '';
+    if (u.protocol === 'file:' || u.protocol === 'about:') return LIVE_URL;
+    return u.href;
+  } catch {
+    return LIVE_URL;
+  }
+}
+
+function copyShareLinkShowToast(message, flashButton) {
+  const toast = document.getElementById('protoHeaderToast');
+  if (!toast) return;
+  clearTimeout(shareToastTimer);
+  toast.textContent = message || 'Link copied!';
+  toast.classList.add('visible');
+  void toast.offsetWidth;
+  shareToastTimer = setTimeout(() => toast.classList.remove('visible'), 2600);
+
+  if (flashButton !== false) {
+    const shareBtn = document.getElementById('protoShareBtn');
+    if (shareBtn) {
+      clearTimeout(shareBtnFlashTimer);
+      shareBtn.classList.add('proto-share-btn--flash');
+      shareBtn.setAttribute('aria-label', message || 'Link copied!');
+      shareBtnFlashTimer = setTimeout(() => {
+        shareBtn.classList.remove('proto-share-btn--flash');
+        shareBtn.setAttribute('aria-label', 'Copy share link');
+      }, 1600);
+    }
+  }
+}
+
+function copyShareLinkFallbackExec(url) {
+  const ta = document.createElement('textarea');
+  ta.value = url;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  ta.style.top = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  ta.setSelectionRange(0, url.length);
+  let ok = false;
+  try {
+    ok = document.execCommand('copy');
+  } catch (_) {}
+  document.body.removeChild(ta);
+  return ok;
+}
+
 function copyShareLink() {
-  navigator.clipboard.writeText(LIVE_URL).then(() => {
-    const toast = document.getElementById('protoHeaderToast');
-    clearTimeout(shareToastTimer);
-    toast.classList.add('visible');
-    shareToastTimer = setTimeout(() => toast.classList.remove('visible'), 2000);
-  });
+  const url = copyShareLinkGetUrl();
+  const done = () => copyShareLinkShowToast('Link copied!', true);
+  const fail = () => copyShareLinkShowToast('Copy blocked — open in https or select the URL', false);
+
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    navigator.clipboard.writeText(url).then(done).catch(() => {
+      if (copyShareLinkFallbackExec(url)) done();
+      else fail();
+    });
+    return;
+  }
+  if (copyShareLinkFallbackExec(url)) done();
+  else fail();
 }
 
 (function initProtoNotes() {
