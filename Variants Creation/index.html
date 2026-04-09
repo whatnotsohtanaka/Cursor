@@ -6275,7 +6275,7 @@
       </div>
       <div class="price-drill-filter-wrap" id="priceDrillOverrideFilterRow" style="display:none" aria-label="Variant price filters">
         <div class="price-override-filter-row">
-          <button type="button" class="price-override-filter-chip" id="priceDrillCustomPriceFilterChip" aria-pressed="false" onclick="priceToggleDrillCustomPriceFilter()">Custom Price</button>
+          <button type="button" class="price-override-filter-chip" id="priceDrillCustomPriceFilterChip" aria-pressed="false" onclick="priceToggleDrillCustomPriceFilter()">Custom Variant</button>
         </div>
       </div>
       <div class="edit-scroll" id="priceVariantDrillScroll" style="flex:1;min-height:0"></div>
@@ -6360,6 +6360,14 @@
           <input type="text" value="" id="productDescInput" placeholder="" style="border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;width:100%;background:transparent;padding:0" onkeydown="if(event.key==='Enter'){event.preventDefault();}" />
         </div>
 
+        <!-- Type (category-specific, e.g. Fashion) -->
+        <div id="productTypeSection" style="border:1px solid #d2d2d2;border-radius:8px;overflow:hidden;background:white;display:none">
+          <div style="padding:12px 0 16px;display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:14px;font-weight:590;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;padding:0 16px">Type</div>
+            <div id="productTypeChips" style="display:flex;gap:8px;align-items:center;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:0 16px" class="hide-scrollbar"></div>
+          </div>
+        </div>
+
         <!-- Quantity (hidden when Manage Variants has options — qty lives on variants) -->
         <div id="productQuantityRow" class="product-qty-row">
           <div class="product-qty-label">Quantity Available <span style="color:#ce291a">*</span></div>
@@ -6416,7 +6424,7 @@
         </div>
 
         <!-- Add More Details -->
-        <div style="border:1px solid #d2d2d2;border-radius:8px;padding:12px 16px 16px;background:white;display:flex;align-items:center;gap:8px;cursor:pointer">
+        <div id="productAddMoreDetails" style="border:1px solid #d2d2d2;border-radius:8px;padding:12px 16px 16px;background:white;display:flex;align-items:center;gap:8px;cursor:pointer">
           <div style="flex:1;display:flex;flex-direction:column;gap:2px">
             <div style="font-size:14px;font-weight:590;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Add More Details</div>
             <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454">Add more product attributes to this item.</div>
@@ -10038,8 +10046,10 @@ function refreshVariantsManagerUI() {
 
   const ol = variantMgr.optionLabels;
   const chipSlots = vmToolbarChipSlotsForProductCategory();
+  const isFashSnk = vmIsFashionOrSneakersProductCategory();
   if (chipS) {
-    if (!chipSlots.sizes) {
+    const showSizes = chipSlots.sizes && (isFashSnk || variantMgr.sizes.length > 0);
+    if (!showSizes) {
       chipS.style.display = 'none';
     } else {
       chipS.style.display = '';
@@ -10049,7 +10059,8 @@ function refreshVariantsManagerUI() {
     }
   }
   if (chipC) {
-    if (!chipSlots.colors) {
+    const showColors = chipSlots.colors && (isFashSnk || variantMgr.colors.length > 0);
+    if (!showColors) {
       chipC.style.display = 'none';
     } else {
       chipC.style.display = '';
@@ -10125,8 +10136,7 @@ function refreshVariantsManagerUI() {
 
   const createBtn = document.getElementById('vmBtnCreateCustom');
   const createLbl = document.getElementById('vmCreateCustomLabel');
-  const isCustomOnlyCat = !chipSlots.sizes && !chipSlots.colors;
-  const showCreateLabel = isCustomOnlyCat && !hasRows;
+  const showCreateLabel = !hasRows;
   if (createBtn) createBtn.classList.toggle('vm-create-expanded', showCreateLabel);
   if (createLbl) createLbl.style.display = showCreateLabel ? '' : 'none';
 
@@ -10576,9 +10586,56 @@ function syncProductQuantityRowVisibility() {
 
 function syncProductFormFieldsFromSavedVariants() {
   syncProductFashionBrandAndSizeVisibility();
+
+  const idx = vmStressPresetIndexFromProductCategory();
+  const preset = idx >= 0 ? VARIANT_STRESS_PRESETS[idx] : null;
+
+  const typeEl = document.getElementById('productTypeSection');
+  const typeChips = document.getElementById('productTypeChips');
+  if (typeEl && typeChips) {
+    const types = preset && preset.listingTypes;
+    if (types && types.length) {
+      typeChips.innerHTML = types.map(t =>
+        `<span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">${escapeHtmlVm(t)}</span>`
+      ).join('');
+      typeEl.style.display = '';
+    } else {
+      typeEl.style.display = 'none';
+    }
+  }
+
   const condEl = document.getElementById('productConditionSection');
-  if (condEl)
-    condEl.style.display = variantMgr.conditionSelections.length ? 'none' : '';
+  if (condEl) {
+    if (variantMgr.conditionSelections.length) {
+      condEl.style.display = 'none';
+    } else if (preset && Array.isArray(preset.listingConditions)) {
+      if (preset.listingConditions.length === 0) {
+        condEl.style.display = 'none';
+      } else {
+        const chipsWrap = condEl.querySelector('.hide-scrollbar');
+        if (chipsWrap) {
+          chipsWrap.innerHTML = preset.listingConditions.map((c, i) =>
+            `<span class="edit-chip ${i === 0 ? 'edit-chip-on' : 'edit-chip-off'}" onclick="selectSingleChip(this)">${escapeHtmlVm(c)}</span>`
+          ).join('');
+        }
+        condEl.style.display = '';
+      }
+    } else {
+      const chipsWrap = condEl.querySelector('.hide-scrollbar');
+      if (chipsWrap) {
+        chipsWrap.innerHTML =
+          '<span class="edit-chip edit-chip-on" onclick="selectSingleChip(this)">New w Tag</span>' +
+          '<span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">New w/out Tag</span>' +
+          '<span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">New w Defect</span>';
+      }
+      condEl.style.display = '';
+    }
+  }
+
+  const addMoreEl = document.getElementById('productAddMoreDetails');
+  if (addMoreEl) {
+    addMoreEl.style.display = (preset && preset.listingShowAddMore === false) ? 'none' : 'flex';
+  }
 }
 
 function refreshProductVariantsSummary() {
@@ -17373,11 +17430,12 @@ const VARIANT_STRESS_PRESETS = [
       groupBySize: 'Size',
       groupByColor: 'Color',
     },
+    listingTypes: ['Accessories', 'Activewear', 'Bags', 'Bottoms', 'Dresses', 'Jumpsuits', 'Outerwear', 'Sets', 'Sweaters', 'Tops'],
   },
   {
     key: 'sports_breaks',
     controlLabel: 'Sports cards',
-    category: 'Sports Cards',
+    category: 'Football Breaks',
     title: '2024 NFL Hobby Case — Random Team Slots',
     brandLine: 'Panini',
     weightLabel: '1lb – 2lb',
@@ -17390,11 +17448,13 @@ const VARIANT_STRESS_PRESETS = [
       colors: 'Teams',
       groupByColor: 'Team',
     },
+    listingConditions: [],
+    listingShowAddMore: false,
   },
   {
     key: 'electronics',
     controlLabel: 'Electronics',
-    category: 'Electronics',
+    category: 'Everyday Electronics',
     title: 'Wireless Earbuds Pro (2nd Gen)',
     brandLine: 'Sony',
     weightLabel: '8oz – 1lb',
@@ -17407,11 +17467,12 @@ const VARIANT_STRESS_PRESETS = [
     ],
     groupBy: 'custom:0',
     optionLabels: {},
+    listingConditions: ['Brand New', 'Open-Box', 'Refurbished - Excellent', 'Refurbished - Good', 'For Parts'],
   },
   {
     key: 'toys',
     controlLabel: 'Toys & blind box',
-    category: 'Toys & Hobbies',
+    category: 'Labubu & Blindboxes',
     title: 'Labubu Monster — Blind Box (Series 3)',
     brandLine: 'Pop Mart',
     weightLabel: '< 4oz',
@@ -17421,6 +17482,7 @@ const VARIANT_STRESS_PRESETS = [
     customRows: [],
     groupBy: 'colors',
     optionLabels: { colors: 'Styles', groupByColor: 'Style' },
+    listingConditions: [],
   },
   {
     key: 'sneakers',
@@ -17444,7 +17506,7 @@ const VARIANT_STRESS_PRESETS = [
   {
     key: 'home',
     controlLabel: 'Home',
-    category: 'Home & Kitchen',
+    category: 'Home Decor',
     title: 'Hand-Poured Soy Candle — Seasonal Scents',
     brandLine: 'P.F. Candle Co.',
     weightLabel: '1lb',
@@ -17454,6 +17516,7 @@ const VARIANT_STRESS_PRESETS = [
     customRows: [],
     groupBy: 'colors',
     optionLabels: { colors: 'Scents', groupByColor: 'Scent' },
+    listingConditions: ['New w Box', 'New w/out Box', 'New w Defects', 'Pre-owned', 'For Parts'],
   },
 ];
 
@@ -17467,8 +17530,12 @@ function stressPresetIndexForWhatnotCategory(whatnotCat) {
     Streetwear: 'fashion',
     Designer: 'fashion',
     'Toys & Collectibles': 'toys',
+    'Toys & Hobbies': 'toys',
     'Trading Cards': 'sports_breaks',
+    'Sports Cards': 'sports_breaks',
     'Home & Garden': 'home',
+    'Home & Kitchen': 'home',
+    Electronics: 'electronics',
     Shoes: 'sneakers',
     Sportswear: 'sneakers',
   };
@@ -17718,6 +17785,7 @@ function applyStressVariantPreset(preset, opts) {
   syncVmMorePopoverCustomLabel();
   syncProductListingMedia(null);
   vmSyncProductCategoryWrap();
+  applyProductListingSizeModeFromCategory(preset.category);
 
   if (document.getElementById('variantsManagerPage')?.classList.contains('active')) {
     refreshVariantsManagerUI();
@@ -17899,7 +17967,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 9:34am';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 10:52am';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
