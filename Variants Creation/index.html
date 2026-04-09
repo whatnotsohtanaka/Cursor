@@ -554,7 +554,25 @@
       body.proto-mobile {
         align-items: stretch;
         overflow-x: hidden;
-        overflow-y: auto;
+        overflow-y: hidden;
+        min-height: 100dvh;
+        height: 100dvh;
+        max-height: 100dvh;
+      }
+      /* Real phones show system status; hide mock overlay + layout spacers */
+      body.proto-mobile .global-status-bar {
+        display: none !important;
+      }
+      body.proto-mobile .proto-ios-status-spacer {
+        display: none !important;
+      }
+      /* Bottom bars: sit flush with viewport + home indicator safe area */
+      body.proto-mobile .edit-footer {
+        padding: 16px 16px max(12px, env(safe-area-inset-bottom, 0px));
+      }
+      body.proto-mobile .vm-sheet-footer,
+      body.proto-mobile .vm-sheet-footer.vm-sheet-footer-with-keyboard {
+        padding: 16px 16px max(12px, env(safe-area-inset-bottom, 0px));
       }
       /* Immersive chrome: header fixed, pulled down from strip below status / safe area */
       body.proto-mobile #protoHeader {
@@ -664,11 +682,8 @@
         width: 100% !important;
         max-width: none !important;
         height: auto !important;
-        flex: 1 1 auto;
-        min-height: calc(
-          100dvh - var(--mobile-proto-header-h, 0px) - env(safe-area-inset-top, 0px) -
-            env(safe-area-inset-bottom, 0px)
-        );
+        flex: 1 1 0;
+        min-height: 0;
         align-self: stretch;
       }
       body.proto-mobile .phone-bezel {
@@ -676,19 +691,19 @@
       }
       body.proto-mobile .phone-frame {
         width: 100%;
-        min-height: 100%;
+        min-height: 0;
         transform: none !important;
-        flex: 1;
+        flex: 1 1 0;
         align-self: stretch;
+        display: flex;
+        flex-direction: column;
       }
       body.proto-mobile .device.device-frame {
         width: 100% !important;
         max-width: none !important;
-        height: 100% !important;
-        min-height: calc(
-          100dvh - var(--mobile-proto-header-h, 0px) - env(safe-area-inset-top, 0px) -
-            env(safe-area-inset-bottom, 0px)
-        );
+        height: auto !important;
+        flex: 1 1 0;
+        min-height: 0 !important;
         border-radius: 0 !important;
         box-shadow: none !important;
       }
@@ -4738,7 +4753,7 @@
 
   <!-- ═══ ONBOARDING STEP 1 (New Sellers) ═══ -->
   <div id="onboardStep1" style="display:none;position:absolute;inset:0;z-index:15;background:white;flex-direction:column">
-    <div style="height:54px;flex-shrink:0"></div>
+    <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
     <!-- Nav -->
     <div style="height:44px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
       <button onclick="closeOnboarding()" style="position:absolute;left:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
@@ -4823,7 +4838,7 @@
 
   <!-- ═══ ONBOARDING STEP 2 (New Sellers) ═══ -->
   <div id="onboardStep2" style="display:none;position:absolute;inset:0;z-index:16;background:white;flex-direction:column">
-    <div style="height:54px;flex-shrink:0"></div>
+    <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
     <!-- Nav: Back + Title + Close -->
     <div style="height:44px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
       <button onclick="closeStep2()" style="position:absolute;left:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
@@ -4868,7 +4883,7 @@
 
   <!-- ═══ ONBOARDING STEP 3 (New Sellers) ═══ -->
   <div id="onboardStep3" style="display:none;position:absolute;inset:0;z-index:17;background:white;flex-direction:column">
-    <div style="height:54px;flex-shrink:0"></div>
+    <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
     <div style="height:44px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
       <button onclick="closeStep3()" style="position:absolute;left:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg>
@@ -4903,7 +4918,7 @@
 
   <!-- ═══ ONBOARDING STEP 4 (New Sellers) ═══ -->
   <div id="onboardStep4" style="display:none;position:absolute;inset:0;z-index:18;background:white;flex-direction:column">
-    <div style="height:54px;flex-shrink:0"></div>
+    <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
     <div style="height:44px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
       <button onclick="closeStep4()" style="position:absolute;left:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg>
@@ -4969,7 +4984,7 @@
 
   <!-- ═══ EDUCATION STEP 1 (Unique/Specific Items) ═══ -->
   <div id="eduStep1" style="display:none;position:absolute;inset:0;z-index:18;background:white;flex-direction:column">
-    <div style="height:54px;flex-shrink:0"></div>
+    <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
     <div style="height:44px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
       <button onclick="closeEduStep1()" style="position:absolute;left:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg>
@@ -5060,7 +5075,7 @@
 
   <!-- ═══ EDUCATION STEP 2 (Shipping Weight for Unique) ═══ -->
   <div id="eduStep2" style="display:none;position:absolute;inset:0;z-index:19;background:white;flex-direction:column">
-    <div style="height:54px;flex-shrink:0"></div>
+    <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
     <div style="height:44px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
       <button onclick="closeEduStep2()" style="position:absolute;left:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg>
@@ -5173,7 +5188,7 @@
 
   <!-- Generate Templates Page (full height, slides up over shop sheet) -->
   <div id="shopGenerateOverlay" style="display:none;position:absolute;inset:0;background:white;z-index:21;flex-direction:column">
-    <div style="height:54px;flex-shrink:0"></div>
+    <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
     <!-- Loader state -->
     <div id="shopGenLoader" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
       <div class="nux-loader-spinner"></div>
@@ -5211,7 +5226,7 @@
 
   <div class="page">
 
-    <div style="height:54px;flex-shrink:0"></div>
+    <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
 
     <!-- Header -->
     <div class="sh-header">
@@ -5480,7 +5495,7 @@
 
   <!-- ═══ INVENTORY PAGE ═══ -->
   <div class="page" id="inventoryPage" style="display:none;background:white;z-index:10">
-    <div style="height:54px;flex-shrink:0"></div>
+    <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
     <!-- Nav -->
     <div style="height:48px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;background:white">
       <button onclick="goHome()" style="position:absolute;left:8px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
@@ -5615,7 +5630,7 @@
 
   <!-- ═══ TEMPLATES L1 PAGE ═══ -->
   <div class="page" id="templatesL1Page" style="display:none;background:white;z-index:10">
-    <div style="height:54px;flex-shrink:0"></div>
+    <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
     <!-- Nav -->
     <div style="height:48px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;background:white">
       <button onclick="closeTemplatesL1()" style="position:absolute;left:8px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
@@ -5654,7 +5669,7 @@
 
   <!-- ═══ SELLER TOOLS PAGE ═══ -->
   <div class="menu-page" id="menuPage">
-    <div style="height:54px;flex-shrink:0"></div>
+    <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
     <div style="height:48px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
       <button onclick="closeMenu()" style="position:absolute;left:8px;width:32px;height:32px;border:none;background:none;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
         <img src="icons/menu-back.svg" alt="" style="width:20px;height:20px">
@@ -5790,7 +5805,7 @@
 
   <!-- ═══ TEMPLATE EDIT PAGE ═══ -->
   <div class="edit-page" id="editPage">
-    <div style="height:54px;flex-shrink:0"></div>
+    <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
     <div class="edit-nav">
       <button class="edit-nav-back" id="editBackBtn" onclick="closeEditPage()"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></button>
       <span class="edit-nav-title" id="editNavTitle">Templates</span>
@@ -5934,7 +5949,7 @@
 
   <!-- ═══ PRICE & FORMAT PAGE (Step 2) ═══ -->
   <div id="pricePage" style="position:absolute;inset:0;z-index:250;display:none;flex-direction:column;background:white;transform:translateX(100%);pointer-events:none">
-    <div style="height:54px;flex-shrink:0"></div>
+    <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
     <div class="edit-nav">
       <button class="edit-nav-back" onclick="pricePageNavBack()"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></button>
       <span class="edit-nav-title" id="priceMainNavTitle">Templates</span>
@@ -5997,7 +6012,7 @@
     </div>
 
     <div class="price-variant-drill-layer" id="priceVariantDrillLayer">
-      <div style="height:54px;flex-shrink:0"></div>
+      <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
       <div class="edit-nav">
         <button type="button" class="edit-nav-back" onclick="priceCloseVariantDrill()"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></button>
         <div style="text-align:center;flex:1;padding:0 8px">
@@ -6020,7 +6035,7 @@
 
   <!-- ═══ PRODUCT LISTING PAGE ═══ -->
   <div class="edit-page" id="productPage">
-    <div style="height:54px;flex-shrink:0"></div>
+    <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
     <div class="edit-nav">
       <button type="button" class="edit-nav-back" id="productBackBtn" onclick="closeProductPage()" style="display:none"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></button>
       <span class="edit-nav-title" id="productNavTitle">Listing Details</span>
@@ -6218,7 +6233,7 @@
 
   <!-- ═══ MANAGE VARIANTS / OPTIONS MANAGER ═══ -->
   <div class="edit-page" id="variantsManagerPage" style="z-index:210">
-    <div style="height:54px;flex-shrink:0"></div>
+    <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
     <div class="edit-nav vm-variants-edit-nav">
       <button type="button" class="edit-nav-back" id="variantsBackBtn" onclick="variantsManagerBackMaybePrompt()" aria-label="Back"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></button>
       <span class="edit-nav-title">Manage Variants</span>
@@ -6802,7 +6817,7 @@
 
   <!-- Consistent Template Type Picker -->
   <div id="tplTypePicker" style="display:none;position:absolute;inset:0;z-index:50;background:white;flex-direction:column">
-    <div style="height:54px;flex-shrink:0"></div>
+    <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
     <div style="height:44px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
       <span style="font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#161616">What You're Selling</span>
       <button onclick="closeTplTypePicker()" style="position:absolute;right:16px;width:32px;height:32px;border:none;background:white;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center">
@@ -7018,7 +7033,7 @@
 
   <!-- ═══ LISTING DETAIL PAGE ═══ -->
   <div id="listingDetailPage" class="edit-page" style="z-index:199">
-    <div style="height:54px;flex-shrink:0"></div>
+    <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
     <!-- Nav -->
     <div class="edit-nav">
       <button class="edit-nav-back" onclick="closeListingDetail()"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></button>
@@ -7362,7 +7377,7 @@
   <div id="importSheet" style="display:none;position:absolute;inset:0;z-index:50;background:white;border-radius:24px;overflow:hidden">
     <div id="importSheetInner" style="display:flex;flex-direction:column;height:100%;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)">
       <!-- Status Bar Spacer -->
-      <div style="height:54px;flex-shrink:0"></div>
+      <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
       <!-- Nav Bar -->
       <div style="height:48px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0">
         <span style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:#000">Import to Show</span>
@@ -15912,7 +15927,8 @@ function applyPhoneScale(s) {
       wrapper.style.width = '';
       wrapper.style.height = '';
     }
-    document.body.style.overflowY = 'auto';
+    /* Match CSS: one screen tall; scroll stays inside .device / sheets */
+    document.body.style.overflowY = 'hidden';
     document.body.style.overflowX = 'hidden';
     const zl = document.getElementById('protoZoomLabel');
     if (zl) zl.textContent = '100%';
