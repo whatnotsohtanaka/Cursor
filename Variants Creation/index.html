@@ -186,6 +186,136 @@
       opacity: 1;
       transform: translateY(0) scale(1);
     }
+
+    /* Notes overlay + panel (see pixel-perfect-frontend skill) */
+    .notes-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 200000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .notes-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .notes-panel {
+      position: fixed;
+      z-index: 200001;
+      width: 320px;
+      max-height: 50vh;
+      background: rgba(50, 50, 50, 0.95);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+      font-family: var(--font);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(-6px) scale(0.95);
+      transform-origin: top right;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .notes-panel.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+    .notes-panel-header {
+      padding: 10px 14px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .notes-panel-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .notes-panel-close {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      border: none;
+      transition: background 0.15s;
+    }
+    .notes-panel-close:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+    .notes-panel-body {
+      padding: 0 14px 14px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .notes-panel-content {
+      font-size: 14px;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.65);
+      word-break: break-word;
+    }
+    .notes-panel-content p {
+      margin: 0 0 12px;
+    }
+    .notes-panel-content h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.85);
+      margin: 14px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .notes-panel-content ul,
+    .notes-panel-content ol {
+      margin: 0 0 12px;
+      padding-left: 18px;
+    }
+    .notes-panel-content li {
+      margin-bottom: 6px;
+    }
+    .notes-panel-content ol {
+      padding-left: 22px;
+    }
+    .notes-panel-content strong {
+      color: rgba(255, 255, 255, 0.85);
+      font-weight: 600;
+    }
+    .notes-panel-footer {
+      padding: 10px 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .notes-panel-footer label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .notes-panel-footer input[type='checkbox'] {
+      accent-color: #ffe414;
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+      margin: 0;
+    }
+
     .proto-fab {
       position: fixed;
       top: 8px;
@@ -3961,14 +4091,18 @@
   <div class="proto-header-right">
     <span class="proto-timestamp" id="protoTimestamp"></span>
     <div class="proto-divider"></div>
-    <a class="proto-link-btn" href="https://www.figma.com/design/Efq06B5ZlyOhHXIKojFhFd/Product-Creation---Management?node-id=15647-103842&m=dev" target="_blank" rel="noopener">
+    <a class="proto-link-btn" href="https://www.figma.com/design/Efq06B5ZlyOhHXIKojFhFd/Product-Creation---Management?node-id=15647-103655&m=dev" target="_blank" rel="noopener">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M8 2H5a3 3 0 0 0-3 3v3a3 3 0 0 0 3 3h3a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Z" fill="currentColor" opacity="0.5"/><path d="M5 13H8a3 3 0 0 1 3 3v3a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-3a3 3 0 0 1 3-3Z" fill="currentColor" opacity="0.7"/><path d="M16 2h-3a3 3 0 0 0-3 3v3a3 3 0 0 0 3 3h3a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Z" fill="currentColor" opacity="0.6"/><path d="M19 13h-3a3 3 0 0 0-3 3v5h3a3 3 0 0 0 3-3v-5Z" fill="currentColor" opacity="0.8"/></svg>
       Figma
     </a>
-    <a class="proto-link-btn" href="https://docs.google.com/document/d/1XgTB1g1TN3eQT-mT_pGFhWmcdzeDAfr4oNBYjimfX1A/edit?tab=t.0#heading=h.uat7go897u7x" target="_blank" rel="noopener">
+    <a class="proto-link-btn" href="https://docs.google.com/document/d/1Hr9BI1rszc3mk-bpH511IIkmtbrsUhWMXqyGSzJ9DbY/edit?tab=t.0#heading=h.j5sk7xjejuu4" target="_blank" rel="noopener">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
       PRD
     </a>
+    <button type="button" class="proto-link-btn" id="protoNotesBtn" onclick="toggleNotesPanel()" title="Prototype notes" style="display:none">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Notes
+    </button>
     <button class="proto-link-btn" onclick="copyShareLink()" title="Copy share link">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
       Share
@@ -3977,6 +4111,22 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
     </button>
     <div class="proto-header-toast" id="protoHeaderToast">Link copied!</div>
+  </div>
+</div>
+
+<div class="notes-overlay" id="notesOverlay" onclick="toggleNotesPanel(false)"></div>
+<div class="notes-panel" id="notesPanel">
+  <div class="notes-panel-header">
+    <span class="notes-panel-title">Notes</span>
+    <button type="button" class="notes-panel-close" onclick="toggleNotesPanel(false)" aria-label="Close notes">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+  </div>
+  <div class="notes-panel-body">
+    <div class="notes-panel-content" id="notesPanelContent"></div>
+  </div>
+  <div class="notes-panel-footer">
+    <label><input type="checkbox" id="notesAutoOpenCb" onchange="saveNotesAutoOpen()">Don't show on load</label>
   </div>
 </div>
 
@@ -15939,27 +16089,102 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/2/26 @ 9:30pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/8/26 @ 5:33pm';
+
+const PROTO_NOTES_TITLE = 'Variants creation and pricing';
+const PROTO_NOTES_HTML = `
+  <p>This prototype shows how a seller can <strong>create variants</strong> for a listing, then <strong>manage pricing</strong>—including setting a <strong>specific price and format</strong> at the <strong>per-variant</strong> level.</p>
+  <h4>How to try it</h4>
+  <ol>
+    <li><strong>Create a product listing</strong> and move through the flow.</li>
+    <li><strong>Choose a category</strong> for the listing.</li>
+    <li><strong>Add variant options</strong> (sizes, colors, etc.) so variants are generated.</li>
+    <li><strong>Set the global price</strong> (default pricing for variants).</li>
+    <li>Open pricing and <strong>pick a few variants</strong> to give <strong>specific prices</strong> (and formats where applicable).</li>
+  </ol>
+`;
+
+const NOTES_STORAGE_KEY = 'proto-notes-autoopen-' + location.pathname;
+
+function saveNotesAutoOpen() {
+  const cb = document.getElementById('notesAutoOpenCb');
+  if (cb && cb.checked) {
+    localStorage.setItem(NOTES_STORAGE_KEY, 'no');
+  } else {
+    localStorage.removeItem(NOTES_STORAGE_KEY);
+  }
+}
+
+function shouldAutoOpenNotes() {
+  return localStorage.getItem(NOTES_STORAGE_KEY) !== 'no';
+}
+
+function positionNotesPanel() {
+  const btn = document.getElementById('protoNotesBtn');
+  const panel = document.getElementById('notesPanel');
+  if (!btn || !panel) return;
+  const r = btn.getBoundingClientRect();
+  panel.style.top = r.bottom + 8 + 'px';
+  panel.style.right = window.innerWidth - r.right + 'px';
+}
+
+function toggleNotesPanel(show) {
+  const panel = document.getElementById('notesPanel');
+  const overlay = document.getElementById('notesOverlay');
+  const content = document.getElementById('notesPanelContent');
+  if (!panel || !overlay || !content) return;
+  if (show === undefined) show = !panel.classList.contains('visible');
+  if (show) {
+    content.innerHTML =
+      '<div style="font-size:15px;font-weight:600;color:white;margin-bottom:10px">' +
+      PROTO_NOTES_TITLE +
+      '</div>' +
+      PROTO_NOTES_HTML;
+    const cb = document.getElementById('notesAutoOpenCb');
+    if (cb) cb.checked = !shouldAutoOpenNotes();
+    positionNotesPanel();
+    overlay.classList.add('visible');
+    requestAnimationFrame(() => panel.classList.add('visible'));
+  } else {
+    panel.classList.remove('visible');
+    overlay.classList.remove('visible');
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  const panel = document.getElementById('notesPanel');
+  if (e.key === 'Escape' && panel && panel.classList.contains('visible')) toggleNotesPanel(false);
+});
+
 document.getElementById('protoTimestamp').textContent = PROTO_TIMESTAMP;
 
-  const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/variants-creation/index.html';
-  let shareToastTimer = null;
-  function copyShareLink() {
-    navigator.clipboard.writeText(LIVE_URL).then(() => {
-      const toast = document.getElementById('protoHeaderToast');
-      clearTimeout(shareToastTimer);
-      toast.classList.add('visible');
-      shareToastTimer = setTimeout(() => toast.classList.remove('visible'), 2000);
-    });
+const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/variants-creation/index.html';
+let shareToastTimer = null;
+function copyShareLink() {
+  navigator.clipboard.writeText(LIVE_URL).then(() => {
+    const toast = document.getElementById('protoHeaderToast');
+    clearTimeout(shareToastTimer);
+    toast.classList.add('visible');
+    shareToastTimer = setTimeout(() => toast.classList.remove('visible'), 2000);
+  });
+}
+function collapseProtoHeader() {
+  document.getElementById('protoHeader').classList.add('collapsed');
+  setTimeout(() => document.getElementById('protoFab').classList.add('visible'), 150);
+}
+function expandProtoHeader() {
+  document.getElementById('protoFab').classList.remove('visible');
+  setTimeout(() => document.getElementById('protoHeader').classList.remove('collapsed'), 100);
+}
+
+(function initProtoNotes() {
+  if (PROTO_NOTES_HTML.trim()) {
+    const btn = document.getElementById('protoNotesBtn');
+    if (btn) btn.style.display = '';
+    if (shouldAutoOpenNotes()) setTimeout(() => toggleNotesPanel(true), 600);
   }
-  function collapseProtoHeader() {
-    document.getElementById('protoHeader').classList.add('collapsed');
-    setTimeout(() => document.getElementById('protoFab').classList.add('visible'), 150);
-  }
-  function expandProtoHeader() {
-    document.getElementById('protoFab').classList.remove('visible');
-    setTimeout(() => document.getElementById('protoHeader').classList.remove('collapsed'), 100);
-  }
+})();
+
   (function() {
     const NARROW_BP = 720;
     let wasNarrow = window.innerWidth < NARROW_BP;
@@ -15969,6 +16194,8 @@ document.getElementById('protoTimestamp').textContent = PROTO_TIMESTAMP;
       if (narrow && !wasNarrow) collapseProtoHeader();
       else if (!narrow && wasNarrow) expandProtoHeader();
       wasNarrow = narrow;
+      const notesPanel = document.getElementById('notesPanel');
+      if (notesPanel && notesPanel.classList.contains('visible')) positionNotesPanel();
     });
     const fab = document.getElementById('protoFab');
     let dragging = false, fabX, fabY, sX, sY, moved;
