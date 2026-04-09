@@ -6267,11 +6267,10 @@
       <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
       <div class="edit-nav">
         <button type="button" class="edit-nav-back" onclick="priceCloseVariantDrill()"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></button>
-        <div style="text-align:center;flex:1;padding:0 8px">
+        <div style="text-align:center;flex:1">
           <span class="edit-nav-title" id="priceVariantDrillTitle" style="display:block">Variants</span>
           <span style="font-size:12px;font-weight:400;color:#6f6f6f;display:block;margin-top:2px" id="priceVariantDrillSub">0 Variants</span>
         </div>
-        <span style="width:40px;flex-shrink:0"></span>
       </div>
       <div class="price-drill-filter-wrap" id="priceDrillOverrideFilterRow" style="display:none" aria-label="Variant price filters">
         <div class="price-override-filter-row">
@@ -9924,6 +9923,10 @@ function ensureVmQtyDefaults() {
   const listingQty = productQty || 1;
   let firstL1Set = false;
 
+  const preL1 = Object.assign({}, variantMgr.l1Qty);
+  const sizesHadQty = variantMgr.sizes.some(sz => preL1[sz] != null);
+  const colorsHadQty = variantMgr.colors.some(c => preL1[c] != null);
+
   variantMgr.sizes.forEach((sz) => {
     if (variantMgr.l1Qty[sz] == null) {
       variantMgr.l1Qty[sz] = firstL1Set ? 0 : listingQty;
@@ -9946,13 +9949,21 @@ function ensureVmQtyDefaults() {
 
   let firstChildSet = false;
   if (variantMgr.sizes.length && variantMgr.colors.length) {
-    variantMgr.sizes.forEach((sz) => {
-      variantMgr.colors.forEach((c) => {
+    variantMgr.sizes.forEach((sz, si) => {
+      variantMgr.colors.forEach((c, ci) => {
         condList.forEach((cond) => {
           const k = vmChildStorageKey(sz, c, cond);
           if (variantMgr.childQty[k] == null) {
-            variantMgr.childQty[k] = firstChildSet ? 0 : listingQty;
-            firstChildSet = true;
+            if (sizesHadQty && ci === 0) {
+              variantMgr.childQty[k] = preL1[sz] ?? 0;
+            } else if (!sizesHadQty && colorsHadQty && si === 0) {
+              variantMgr.childQty[k] = preL1[c] ?? 0;
+            } else if (!sizesHadQty && !colorsHadQty) {
+              variantMgr.childQty[k] = firstChildSet ? 0 : listingQty;
+              firstChildSet = true;
+            } else {
+              variantMgr.childQty[k] = 0;
+            }
           }
         });
       });
@@ -9963,11 +9974,18 @@ function ensureVmQtyDefaults() {
     variantMgr.conditionSelections.length
   ) {
     variantMgr.sizes.forEach((sz) => {
+      let firstCondForSz = true;
+      const szHadQty = preL1[sz] != null;
       condList.forEach((cond) => {
         const k = vmChildStorageKey(sz, '', cond);
         if (variantMgr.childQty[k] == null) {
-          variantMgr.childQty[k] = firstChildSet ? 0 : listingQty;
-          firstChildSet = true;
+          if (szHadQty && firstCondForSz) {
+            variantMgr.childQty[k] = preL1[sz] ?? 0;
+            firstCondForSz = false;
+          } else {
+            variantMgr.childQty[k] = firstChildSet ? 0 : listingQty;
+            firstChildSet = true;
+          }
         }
       });
     });
@@ -9978,11 +9996,18 @@ function ensureVmQtyDefaults() {
         firstL1Set = true;
       }
       if (variantMgr.customRows.length > 0) {
+        let firstChildForCol = true;
+        const colHadQty = preL1[c] != null;
         condList.forEach((cond) => {
           const k = vmChildStorageKey('', c, cond);
           if (variantMgr.childQty[k] == null) {
-            variantMgr.childQty[k] = firstChildSet ? 0 : listingQty;
-            firstChildSet = true;
+            if (colHadQty && firstChildForCol) {
+              variantMgr.childQty[k] = preL1[c] ?? 0;
+              firstChildForCol = false;
+            } else {
+              variantMgr.childQty[k] = firstChildSet ? 0 : listingQty;
+              firstChildSet = true;
+            }
           }
         });
       }
@@ -9996,12 +10021,21 @@ function ensureVmQtyDefaults() {
     variantMgr.customRows.length > 1
   ) {
     const combos = vmNestedCustomPartLists();
+    const _r0Used = {};
     combos.forEach((partsRaw) => {
       const parts = partsRaw === null ? [] : partsRaw;
       const k = vmExpandedChildKey('', '', null, parts);
       if (variantMgr.childQty[k] == null) {
-        variantMgr.childQty[k] = firstChildSet ? 0 : listingQty;
-        firstChildSet = true;
+        const p0 = parts.find(p => p.cri === 0);
+        const l1Val = p0 ? String(p0.val) : '';
+        const l1Key = vmCustomL1QtyKey(0, l1Val);
+        if (!_r0Used[l1Val] && preL1[l1Key] != null) {
+          variantMgr.childQty[k] = preL1[l1Key];
+          _r0Used[l1Val] = true;
+        } else {
+          variantMgr.childQty[k] = firstChildSet ? 0 : listingQty;
+          firstChildSet = true;
+        }
       }
     });
     const row0 = variantMgr.customRows[0];
@@ -10208,7 +10242,7 @@ function refreshVariantsManagerUI() {
           ${cam}
           <div class="vm-row-main"><div class="vm-row-title">${label}</div><div class="vm-row-sub">${n} Variants</div></div>
           <div class="vm-stepper"><div class="vm-stepper-val muted">${q}</div></div>
-          <div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"/></svg></div>
+          <div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div>
         </div>`
           );
           if (i < custRow.values.length - 1) parts.push('<div class="vm-list-divider"></div>');
@@ -10227,7 +10261,7 @@ function refreshVariantsManagerUI() {
           ${cam}
           <div class="vm-row-main"><div class="vm-row-title">${label}</div><div class="vm-row-sub">${n} Variants</div></div>
           <div class="vm-stepper"><div class="vm-stepper-val muted">${q}</div></div>
-          <div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"/></svg></div>
+          <div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div>
         </div>`
         );
         if (i < variantMgr.conditionSelections.length - 1) parts.push('<div class="vm-list-divider"></div>');
@@ -10243,7 +10277,7 @@ function refreshVariantsManagerUI() {
           ${cam}
           <div class="vm-row-main"><div class="vm-row-title">${label}</div><div class="vm-row-sub">${n} Variants</div></div>
           <div class="vm-stepper"><div class="vm-stepper-val muted">${q}</div></div>
-          <div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"/></svg></div>
+          <div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div>
         </div>`
         );
         if (i < variantMgr.colors.length - 1) parts.push('<div class="vm-list-divider"></div>');
@@ -10259,7 +10293,7 @@ function refreshVariantsManagerUI() {
           ${cam}
           <div class="vm-row-main"><div class="vm-row-title">${label}</div><div class="vm-row-sub">${n} Variants</div></div>
           <div class="vm-stepper"><div class="vm-stepper-val muted">${q}</div></div>
-          <div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"/></svg></div>
+          <div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div>
         </div>`
         );
         if (i < variantMgr.sizes.length - 1) parts.push('<div class="vm-list-divider"></div>');
@@ -10364,7 +10398,7 @@ function refreshVariantsManagerUI() {
           ${cam}
           <div class="vm-row-main"><div class="vm-row-title">${label}</div><div class="vm-row-sub">${nL2} Variants</div></div>
           <div class="vm-stepper"><div class="vm-stepper-val muted">${q}</div></div>
-          <div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"/></svg></div>
+          <div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div>
         </div>`
           );
         });
@@ -11128,7 +11162,7 @@ function priceRefreshVariantTree() {
   const nSub = vmL1RowSubtitleCount();
   const cam = vmThumbCamHtml();
   const chev =
-    '<div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"/></svg></div>';
+    '<div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div>';
   /** @type {{ childKeys: string[], html: string }[]} */
   const l1Blocks = [];
 
@@ -18015,7 +18049,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 1:03pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 2:27pm';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
