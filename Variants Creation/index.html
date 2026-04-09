@@ -2438,24 +2438,14 @@
     }
     .vm-options-toolbar {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       width: 100%;
       min-width: 0;
       min-height: 28px;
-      /* Badge on ⋯ sits outside the circle; chip row still clips in .vm-options-chips-scroll only. */
       overflow: visible;
-      padding-right: 10px;
       box-sizing: border-box;
-    }
-    .vm-options-toolbar-label {
-      flex: 0 0 auto;
-      font-size: 13px;
-      font-weight: 600;
-      line-height: 18px;
-      letter-spacing: -0.08px;
-      color: #7f7f7f;
-      white-space: nowrap;
     }
     /* Custom / color value rows: tapping padded area focuses field (label is pointer-events: none). */
     .vm-color-input-row .vm-input-wrap,
@@ -2480,28 +2470,24 @@
       padding: 8px 0 24px;
       box-sizing: border-box;
     }
-    .vm-options-chips-scroll {
-      flex: 1 1 0%;
-      min-width: 0;
-      max-width: 100%;
-      overflow-x: hidden;
-      overflow-y: hidden;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .vm-options-chips-scroll::-webkit-scrollbar {
-      display: none;
-    }
     .vm-options-chips-inner {
+      display: contents;
+    }
+    .vm-option-chip-create {
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      padding: 0;
       display: flex;
-      flex-wrap: nowrap;
       align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
-      min-height: 28px;
-      width: 100%;
-      min-width: 0;
-      box-sizing: border-box;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #1c1c1c;
+      gap: 4px;
+    }
+    .vm-option-chip-create.vm-create-expanded {
+      width: auto;
+      padding: 0 12px 0 8px;
     }
     .vm-more-type-badge {
       display: none;
@@ -6507,15 +6493,13 @@
     <div style="flex:1;display:flex;flex-direction:column;min-height:0;background:var(--bg-default,white)">
       <div style="padding:24px 16px 0;display:flex;flex-direction:column;gap:16px;flex-shrink:0;min-width:0;width:100%;box-sizing:border-box">
         <div class="vm-options-toolbar">
-          <span class="vm-options-toolbar-label">Options</span>
-          <div class="vm-options-chips-scroll hide-scrollbar">
-            <div class="vm-options-chips-inner">
-              <button type="button" class="vm-option-chip" id="vmChipSizes" onclick="openVmSizesSheet()">Sizes</button>
-              <button type="button" class="vm-option-chip" id="vmChipColors" onclick="openVmColorsSheet()">Colors</button>
-              <button type="button" class="vm-option-chip" id="vmChipCustomQuick" style="display: none" onclick="openVmCustomSheetFromMenu()">Custom</button>
-            </div>
+          <div class="vm-options-chips-inner">
+            <button type="button" class="vm-option-chip" id="vmChipSizes" onclick="openVmSizesSheet()">Sizes</button>
+            <button type="button" class="vm-option-chip" id="vmChipColors" onclick="openVmColorsSheet()">Colors</button>
+            <button type="button" class="vm-option-chip" id="vmChipCondition" onclick="openVmConditionSheetFromChip()">Condition</button>
+            <button type="button" class="vm-option-chip" id="vmChipCustomQuick" style="display: none" onclick="openVmCustomSheetFromMenu()">Custom</button>
           </div>
-          <button type="button" class="vm-option-more" id="vmBtnMore" aria-label="More options" onclick="vmOnToolbarOverflowClick(event)"><span id="vmMoreTypeBadge" class="vm-more-type-badge" aria-hidden="true">0</span><span id="vmMoreCreateShortcut" class="vm-more-create-shortcut" style="display:none"><span id="vmMoreCreateText" class="vm-more-create-text">Create Custom</span><span class="vm-more-create-plus" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.75" stroke-linecap="round"><path d="M10 4v12M4 10h12"/></svg></span></span><span id="vmMoreIconEllipsis" class="vm-more-btn-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="#1c1c1c"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg></span></button>
+          <button type="button" class="vm-option-chip vm-option-chip-create" id="vmBtnCreateCustom" aria-label="Create custom option" onclick="openVmCustomSheetFromMenu()"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 4v12M4 10h12"/></svg><span id="vmCreateCustomLabel" style="display:none">Create Option</span></button>
         </div>
         <div id="vmOptionSortOrderRow" class="vm-group-by-wrap" style="display: none">
           <button
@@ -6569,27 +6553,6 @@
           <button type="button" class="vm-unsaved-save" id="vmUnsavedSaveBtn" onclick="vmUnsavedSave()">Save</button>
           <button type="button" class="vm-unsaved-discard" onclick="vmUnsavedDiscard()">Discard</button>
           <button type="button" class="vm-unsaved-cancel" onclick="vmUnsavedCancel()">Cancel</button>
-        </div>
-      </div>
-    </div>
-    <div
-      id="vmDiscardOptionsOverlay"
-      class="vm-discard-options-overlay"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="vmDiscardOptionsTitle"
-      aria-describedby="vmDiscardOptionsBody"
-      onclick="if(event.target===this)vmDiscardOptionsCancel()"
-    >
-      <div class="vm-unsaved-panel" onclick="event.stopPropagation()">
-        <div class="vm-unsaved-spacer" aria-hidden="true"></div>
-        <div class="vm-unsaved-content">
-          <h2 id="vmDiscardOptionsTitle">Discard options?</h2>
-          <p id="vmDiscardOptionsBody">These options will be removed. You can add them again later.</p>
-        </div>
-        <div class="vm-unsaved-actions">
-          <button type="button" class="vm-unsaved-discard" onclick="vmDiscardOptionsConfirm()">Discard</button>
-          <button type="button" class="vm-unsaved-cancel" onclick="vmDiscardOptionsCancel()">Cancel</button>
         </div>
       </div>
     </div>
@@ -6684,11 +6647,9 @@
     </div>
   </div>
 
-  <div class="vm-popover-dismiss" id="vmPopoverDismiss" onclick="closeVmMoreMenu()"></div>
-  <div class="vm-popover" id="vmMorePopover" role="menu" onclick="event.stopPropagation()">
-    <button type="button" class="vm-popover-row" id="vmChipCondition" onclick="openVmConditionSheetFromChip()">Condition</button>
+  <div class="vm-popover-dismiss" id="vmPopoverDismiss" onclick="closeVmMoreMenu()" style="display:none"></div>
+  <div class="vm-popover" id="vmMorePopover" role="menu" onclick="event.stopPropagation()" style="display:none">
     <div id="vmMorePopoverCustomMount" class="vm-more-popover-custom-mount" aria-live="polite"></div>
-    <button type="button" class="vm-popover-row vm-popover-row-create" onclick="openVmCustomSheetFromMenu()"><span id="vmMorePopoverCustomLabel">Create Custom</span><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5"><path d="M10 4v12M4 10h12"/></svg></button>
   </div>
 
   <!-- Variant manager: Manage Conditions -->
@@ -6717,7 +6678,7 @@
       <div class="vm-sheet-nav">
         <span class="vm-sheet-nav-spacer"></span>
         <div class="vm-sheet-nav-mid">
-          <div class="vm-sheet-h1">Custom</div>
+          <div class="vm-sheet-h1">Create</div>
           <div class="vm-sheet-sub">Name your option and add its values.</div>
         </div>
         <button type="button" class="vm-icon-btn" aria-label="Close" onclick="closeVmCustomSheet()"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
@@ -6750,6 +6711,29 @@
     </div>
   </div>
 
+  <!-- Variant manager: Discard options confirmation -->
+  <div
+    id="vmDiscardOptionsOverlay"
+    class="vm-discard-options-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="vmDiscardOptionsTitle"
+    aria-describedby="vmDiscardOptionsBody"
+    onclick="if(event.target===this)vmDiscardOptionsCancel()"
+  >
+    <div class="vm-unsaved-panel" onclick="event.stopPropagation()">
+      <div class="vm-unsaved-spacer" aria-hidden="true"></div>
+      <div class="vm-unsaved-content">
+        <h2 id="vmDiscardOptionsTitle">Discard options?</h2>
+        <p id="vmDiscardOptionsBody">These options will be removed. You can add them again later.</p>
+      </div>
+      <div class="vm-unsaved-actions">
+        <button type="button" class="vm-unsaved-discard" onclick="vmDiscardOptionsConfirm()">Discard</button>
+        <button type="button" class="vm-unsaved-cancel" onclick="vmDiscardOptionsCancel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Variant manager: nested children (L1 expanded) -->
   <div class="vm-overlay" id="vmNestedOverlay" onclick="closeVmNestedSheet()">
     <div class="vm-sheet-panel" onclick="event.stopPropagation()">
@@ -6764,7 +6748,7 @@
       </div>
       <div class="vm-sheet-body vm-nested-list-mount" id="vmNestedListMount"></div>
       <div class="vm-sheet-footer">
-        <button type="button" class="vm-done-btn" onclick="closeVmNestedSheet()">Done</button>
+        <button type="button" class="vm-done-btn" onclick="closeVmNestedSheet()">Save</button>
       </div>
     </div>
   </div>
@@ -6803,7 +6787,7 @@
       </div>
       <div class="vm-sheet-body" id="vmGroupByListMount"></div>
       <div class="vm-sheet-footer">
-        <button type="button" class="vm-done-btn vm-done-btn-secondary" onclick="closeVmGroupBySheet()">Done</button>
+        <button type="button" class="vm-done-btn vm-done-btn-secondary" onclick="closeVmGroupBySheet()">Save</button>
       </div>
     </div>
   </div>
@@ -7324,7 +7308,7 @@
       <div class="bottom-sheet-handle"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px">
         <span class="bottom-sheet-title" style="padding:0">Sizes</span>
-        <button onclick="applySizesFromSheet()" style="border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;color:#005ae1;cursor:pointer">Done</button>
+        <button onclick="applySizesFromSheet()" style="border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;color:#005ae1;cursor:pointer">Save</button>
       </div>
       <div class="bottom-sheet-list" id="sizesList" style="padding-bottom:34px"></div>
     </div>
@@ -7345,7 +7329,7 @@
       <div class="bottom-sheet-handle"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px">
         <span class="bottom-sheet-title" style="padding:0">Brand(s)</span>
-        <button onclick="applyBrands()" style="border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;color:#005ae1;cursor:pointer">Done</button>
+        <button onclick="applyBrands()" style="border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;color:#005ae1;cursor:pointer">Save</button>
       </div>
       <div class="bottom-sheet-list" id="brandsList" style="padding-bottom:34px"></div>
     </div>
@@ -9472,7 +9456,6 @@ function vmCustomFlatLeafMode() {
   );
 }
 
-/** Toolbar chip slots only (Sizes / Colors / custom). Condition lives in the ··· menu, not as a chip. */
 function vmChipsToolbarSlotCount() {
   const slots = vmToolbarChipSlotsForProductCategory();
   let n = 0;
@@ -9482,116 +9465,9 @@ function vmChipsToolbarSlotCount() {
   return n;
 }
 
-/** Option chips in bar DOM order (left → right) eligible for layout (category + data). */
-function vmGetToolbarChipsForLayout() {
-  const inner = document.querySelector('#variantsManagerPage .vm-options-chips-inner');
-  if (!inner) return [];
-  const slots = vmToolbarChipSlotsForProductCategory();
-  const out = [];
-  inner.querySelectorAll(':scope > .vm-option-chip').forEach((el) => {
-    if (el.id === 'vmChipSizes' && !slots.sizes) return;
-    if (el.id === 'vmChipColors' && !slots.colors) return;
-    if (
-      (el.id === 'vmChipCustomQuick' || el.classList.contains('vm-option-chip-custom-extra')) &&
-      variantMgr.customRows.length === 0
-    ) {
-      return;
-    }
-    out.push(el);
-  });
-  return out;
-}
-
-function vmToolbarTuckedChipCountForBadge() {
-  const inner = document.querySelector('#variantsManagerPage .vm-options-chips-inner');
-  if (!inner) return 0;
-  return inner.querySelectorAll('.vm-option-chip[data-vm-tucked="1"]').length;
-}
-
-function vmMeasureAndApplyToolbarChips() {
-  const page = document.getElementById('variantsManagerPage');
-  const scroll = document.querySelector('#variantsManagerPage .vm-options-chips-scroll');
-  const inner = document.querySelector('#variantsManagerPage .vm-options-chips-inner');
-  if (!page?.classList.contains('active') || !scroll || !inner) return;
-
-  const chips = vmGetToolbarChipsForLayout();
-  chips.forEach((c) => {
-    c.removeAttribute('data-vm-tucked');
-    c.style.display = '';
-  });
-
-  if (chips.length === 0) {
-    vmSyncToolbarMoreButton(0);
-    rebuildVmMorePopoverCustomSection();
-    return;
-  }
-
-  const measurePass = () => {
-    void scroll.offsetHeight;
-    void inner.offsetHeight;
-    const maxW = Math.max(0, Math.floor(scroll.getBoundingClientRect().width));
-
-    /* Bar uses flex-end: keep the *suffix* (chips nearest ⋯), tuck from the left. */
-    const fitsSuffix = (v) => {
-      const start = chips.length - v;
-      for (let i = 0; i < chips.length; i++) {
-        chips[i].style.display = i >= start ? '' : 'none';
-      }
-      void inner.offsetHeight;
-      return inner.scrollWidth <= maxW + 1;
-    };
-
-    let best = chips.length;
-    if (maxW <= 0) {
-      best = chips.length;
-    } else if (!fitsSuffix(chips.length)) {
-      best = 0;
-      for (let v = chips.length - 1; v >= 0; v--) {
-        if (fitsSuffix(v)) {
-          best = v;
-          break;
-        }
-      }
-    }
-
-    const start = chips.length - best;
-    for (let i = 0; i < chips.length; i++) {
-      if (i >= start) {
-        chips[i].style.display = '';
-        chips[i].removeAttribute('data-vm-tucked');
-      } else {
-        chips[i].style.display = 'none';
-        chips[i].setAttribute('data-vm-tucked', '1');
-      }
-    }
-
-    vmSyncToolbarMoreButton(vmToolbarTuckedChipCountForBadge());
-    rebuildVmMorePopoverCustomSection();
-  };
-
-  measurePass();
-  /* ⋯ button may switch create vs icon width after first pass — re-measure once layout settles */
-  requestAnimationFrame(measurePass);
-}
-
-let vmOptionsToolbarResizeObserver = null;
-
-function vmEnsureOptionsToolbarResizeObserver() {
-  const scroll = document.querySelector('#variantsManagerPage .vm-options-chips-scroll');
-  const toolbar = document.querySelector('#variantsManagerPage .vm-options-toolbar');
-  if ((!scroll && !toolbar) || vmOptionsToolbarResizeObserver) return;
-  vmOptionsToolbarResizeObserver = new ResizeObserver(() => {
-    vmMeasureAndApplyToolbarChips();
-  });
-  if (scroll) vmOptionsToolbarResizeObserver.observe(scroll);
-  if (toolbar) vmOptionsToolbarResizeObserver.observe(toolbar);
-}
-
-function vmScheduleOptionsToolbarChipLayout() {
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => vmMeasureAndApplyToolbarChips());
-  });
-}
+function vmMeasureAndApplyToolbarChips() {}
+function vmEnsureOptionsToolbarResizeObserver() {}
+function vmScheduleOptionsToolbarChipLayout() {}
 
 function vmConditionFlatRowSubtitleCount() {
   if (variantMgr.sizes.length && variantMgr.colors.length) {
@@ -9717,20 +9593,24 @@ function vmReorderOptionToolbarChips() {
   const chipsInner = document.querySelector('#variantsManagerPage .vm-options-chips-inner');
   const chipS = document.getElementById('vmChipSizes');
   const chipC = document.getElementById('vmChipColors');
+  const chipCond = document.getElementById('vmChipCondition');
   const chipCustomQ = document.getElementById('vmChipCustomQuick');
-  if (!chipsInner || !chipS || !chipC || !chipCustomQ) return;
+  if (!chipsInner) return;
   const slot = [];
-  if (chipS.style.display !== 'none') {
+  if (chipS && chipS.style.display !== 'none') {
     slot.push({ el: chipS, active: variantMgr.sizes.length > 0, order: 0 });
   }
-  if (chipC.style.display !== 'none') {
+  if (chipC && chipC.style.display !== 'none') {
     slot.push({ el: chipC, active: variantMgr.colors.length > 0, order: 1 });
   }
-  if (chipCustomQ.style.display !== 'none') {
-    slot.push({ el: chipCustomQ, active: variantMgr.customRows.length > 0, order: 2 });
+  if (chipCond && chipCond.style.display !== 'none') {
+    slot.push({ el: chipCond, active: variantMgr.conditionSelections.length > 0, order: 2 });
+  }
+  if (chipCustomQ && chipCustomQ.style.display !== 'none') {
+    slot.push({ el: chipCustomQ, active: variantMgr.customRows.length > 0, order: 3 });
   }
   chipsInner.querySelectorAll('.vm-option-chip-custom-extra').forEach((el, idx) => {
-    slot.push({ el, active: true, order: 3 + idx });
+    slot.push({ el, active: true, order: 4 + idx });
   });
   slot.sort((a, b) => {
     if (a.active !== b.active) return a.active ? -1 : 1;
@@ -9739,67 +9619,8 @@ function vmReorderOptionToolbarChips() {
   slot.forEach((s) => chipsInner.appendChild(s.el));
 }
 
-function vmPopoverConditionRowVisible() {
-  const chipCond = document.getElementById('vmChipCondition');
-  return !!(chipCond && chipCond.style.display !== 'none');
-}
+function vmSyncToolbarMoreButton() {}
 
-function vmSyncToolbarMoreButton(tuckedChipCount) {
-  const moreBtn = document.getElementById('vmBtnMore');
-  const typeBadge = document.getElementById('vmMoreTypeBadge');
-  const ell = document.getElementById('vmMoreIconEllipsis');
-  const createLbl = document.getElementById('vmMoreCreateShortcut');
-  const createText = document.getElementById('vmMoreCreateText');
-  if (!moreBtn) return;
-  /* ⋯ would only be “Create Custom” (no tucked chips, no Condition row) → + opens sheet directly. */
-  const createShortcut =
-    tuckedChipCount === 0 && !vmPopoverConditionRowVisible();
-  const nCond = variantMgr.conditionSelections.length;
-  /* Badge = how many option *types* sit behind ⋯, not values (e.g. one “Condition” row, not two condition picks). */
-  const condMenuBadge =
-    vmPopoverConditionRowVisible() && nCond > 0 ? 1 : 0;
-  const badgeTotal = tuckedChipCount + condMenuBadge;
-  if (typeBadge) {
-    if (badgeTotal > 0) {
-      typeBadge.textContent = String(badgeTotal);
-      typeBadge.classList.add('show');
-      typeBadge.setAttribute('aria-hidden', 'false');
-    } else {
-      typeBadge.classList.remove('show');
-      typeBadge.setAttribute('aria-hidden', 'true');
-    }
-  }
-  if (createShortcut) {
-    moreBtn.dataset.mode = 'create';
-    moreBtn.classList.remove('vm-option-more--create');
-    moreBtn.classList.add('vm-option-more--create-compact');
-    moreBtn.setAttribute('aria-label', 'Create custom option');
-    if (createLbl) createLbl.style.display = 'flex';
-    if (createText) createText.style.display = 'none';
-    if (ell) ell.style.display = 'none';
-  } else {
-    moreBtn.dataset.mode = 'menu';
-    moreBtn.classList.remove('vm-option-more--create');
-    moreBtn.classList.remove('vm-option-more--create-compact');
-    moreBtn.setAttribute(
-      'aria-label',
-      badgeTotal > 0 ? `More options, ${badgeTotal} in menu` : 'More options'
-    );
-    if (createLbl) createLbl.style.display = 'none';
-    if (createText) createText.style.display = '';
-    if (ell) ell.style.display = '';
-  }
-}
-
-function vmOnToolbarOverflowClick(ev) {
-  const moreBtn = document.getElementById('vmBtnMore');
-  if (moreBtn && moreBtn.dataset.mode === 'create') {
-    if (ev) ev.stopPropagation();
-    openVmCustomSheetFromMenu();
-    return;
-  }
-  openVmMoreMenu(ev);
-}
 
 function vmGetSizesShoeLabels() {
   const labels = [];
@@ -10215,7 +10036,6 @@ function refreshVariantsManagerUI() {
     if (vmIsSportsBreaksPreset()) {
       chipCond.style.display = 'none';
     } else if (vmIsFashionOrSneakersProductCategory()) {
-      /* Condition stays in ⋯ menu (not a chip); show as soon as category supports it */
       chipCond.style.display = '';
     } else {
       chipCond.style.display = 'none';
@@ -10257,8 +10077,6 @@ function refreshVariantsManagerUI() {
     }
   }
   vmReorderOptionToolbarChips();
-  vmEnsureOptionsToolbarResizeObserver();
-  vmScheduleOptionsToolbarChipLayout();
 
   const showOptionSort = variantMgr.customRows.length >= 2;
   const sortRow = document.getElementById('vmOptionSortOrderRow');
@@ -10282,6 +10100,14 @@ function refreshVariantsManagerUI() {
     variantMgr.colors.length > 0 ||
     variantMgr.customRows.length > 0 ||
     variantMgr.conditionSelections.length > 0;
+
+  const createBtn = document.getElementById('vmBtnCreateCustom');
+  const createLbl = document.getElementById('vmCreateCustomLabel');
+  const isCustomOnlyCat = !chipSlots.sizes && !chipSlots.colors;
+  const showCreateLabel = isCustomOnlyCat && !hasRows;
+  if (createBtn) createBtn.classList.toggle('vm-create-expanded', showCreateLabel);
+  if (createLbl) createLbl.style.display = showCreateLabel ? '' : 'none';
+
   vmSyncVariantsSaveButtonEnabled();
   if (!hasRows) {
     nullEl.style.display = '';
@@ -12513,19 +12339,7 @@ function initVmSoftKeyboard() {
   );
 }
 
-function positionVmPopover() {
-  const btn = document.getElementById('vmBtnMore');
-  const pop = document.getElementById('vmMorePopover');
-  const device = btn ? btn.closest('.device') : null;
-  if (!btn || !pop || !device) return;
-  const br = btn.getBoundingClientRect();
-  const dr = device.getBoundingClientRect();
-  const top = br.bottom - dr.top + 8;
-  const right = dr.right - br.right;
-  pop.style.top = `${Math.round(top)}px`;
-  pop.style.right = `${Math.round(right)}px`;
-  pop.style.left = 'auto';
-}
+function positionVmPopover() {}
 
 function renderVmSortCustomOptionsList() {
   const mount = document.getElementById('vmSortCustomOptionsListMount');
@@ -12569,45 +12383,8 @@ function closeVmSortCustomOptionsSheet() {
   document.getElementById('vmSortCustomOptionsOverlay')?.classList.remove('open');
 }
 
-function rebuildVmMorePopoverCustomSection() {
-  const mount = document.getElementById('vmMorePopoverCustomMount');
-  if (!mount) return;
-  mount.innerHTML = '';
-  const inner = document.querySelector('#variantsManagerPage .vm-options-chips-inner');
-  if (inner) {
-    inner.querySelectorAll('.vm-option-chip[data-vm-tucked="1"]').forEach((el) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'vm-popover-row';
-      b.textContent = el.textContent.trim();
-      if (el.id === 'vmChipSizes') {
-        b.addEventListener('click', () => {
-          closeVmMoreMenu();
-          openVmSizesSheet();
-        });
-      } else if (el.id === 'vmChipColors') {
-        b.addEventListener('click', () => {
-          closeVmMoreMenu();
-          openVmColorsSheet();
-        });
-      } else {
-        const idx = parseInt(el.getAttribute('data-custom-row-index') || '0', 10);
-        b.addEventListener('click', () => {
-          closeVmMoreMenu();
-          openVmCustomSheetEdit(idx);
-        });
-      }
-      mount.appendChild(b);
-    });
-  }
-  syncVmMorePopoverCustomLabel();
-}
-
-function syncVmMorePopoverCustomLabel() {
-  const el = document.getElementById('vmMorePopoverCustomLabel');
-  if (!el) return;
-  el.textContent = 'Create Custom';
-}
+function rebuildVmMorePopoverCustomSection() {}
+function syncVmMorePopoverCustomLabel() {}
 
 function vmSyncCustomSheetHeader() {
   const h1 = document.querySelector('#vmCustomOverlay .vm-sheet-h1');
@@ -12617,7 +12394,7 @@ function vmSyncCustomSheetHeader() {
     h1.textContent = variantMgr.customRows[vmEditingCustomIndex].title || 'Custom';
     if (sub) sub.style.display = 'none';
   } else {
-    h1.textContent = 'Custom';
+    h1.textContent = 'Create';
     if (sub) {
       sub.style.display = '';
       sub.textContent = 'Name your option and add its values.';
@@ -12655,20 +12432,8 @@ function vmDeleteEntireCustomOption() {
   showToastMessage('Option removed');
 }
 
-function openVmMoreMenu(ev) {
-  if (ev) ev.stopPropagation();
-  rebuildVmMorePopoverCustomSection();
-  positionVmPopover();
-  document.getElementById('vmPopoverDismiss')?.classList.add('open');
-  requestAnimationFrame(() => {
-    document.getElementById('vmMorePopover')?.classList.add('open');
-  });
-}
-
-function closeVmMoreMenu() {
-  document.getElementById('vmPopoverDismiss')?.classList.remove('open');
-  document.getElementById('vmMorePopover')?.classList.remove('open');
-}
+function openVmMoreMenu() {}
+function closeVmMoreMenu() {}
 
 const VM_CONDITION_CHECK_SVG =
   '<svg class="vm-check-mark" width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1 4.5L4.2 7.2L11 1" stroke="#fff" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -18102,7 +17867,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 8:29am';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 8:49am';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
