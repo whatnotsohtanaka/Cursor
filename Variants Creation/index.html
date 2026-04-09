@@ -8718,11 +8718,12 @@ function vmCustomL1QtyKey(cri, val) {
   return '__c' + cri + '::' + String(val);
 }
 
-function vmActiveDimensionCount() {
+/** Toolbar chip slots only (Sizes / Colors / custom). Condition lives in the ··· menu, not as a chip. */
+function vmChipsToolbarSlotCount() {
+  const slots = vmToolbarChipSlotsForProductCategory();
   let n = 0;
-  if (variantMgr.sizes.length) n += 1;
-  if (variantMgr.colors.length) n += 1;
-  if (variantMgr.conditionSelections.length) n += 1;
+  if (slots.sizes) n++;
+  if (slots.colors) n++;
   n += variantMgr.customRows.length;
   return n;
 }
@@ -8869,9 +8870,13 @@ function vmSyncToolbarMoreButton(tuckedChipCount) {
     tuckedChipCount === 0 &&
     !vmPopoverConditionRowVisible() &&
     variantMgr.customRows.length === 0;
+  const nCond = variantMgr.conditionSelections.length;
+  const condMenuBadge =
+    vmPopoverConditionRowVisible() && nCond > 0 ? nCond : 0;
+  const badgeTotal = tuckedChipCount + condMenuBadge;
   if (typeBadge) {
-    if (tuckedChipCount > 0) {
-      typeBadge.textContent = String(tuckedChipCount);
+    if (badgeTotal > 0) {
+      typeBadge.textContent = String(badgeTotal);
       typeBadge.classList.add('show');
       typeBadge.setAttribute('aria-hidden', 'false');
     } else {
@@ -8904,7 +8909,7 @@ function vmSyncToolbarMoreButton(tuckedChipCount) {
     moreBtn.classList.remove('vm-option-more--create-compact');
     moreBtn.setAttribute(
       'aria-label',
-      tuckedChipCount > 0 ? `More options, ${tuckedChipCount} tucked away` : 'More options'
+      badgeTotal > 0 ? `More options, ${badgeTotal} in menu` : 'More options'
     );
     if (createLbl) createLbl.style.display = 'none';
     if (createText) createText.style.display = '';
@@ -9087,8 +9092,10 @@ function refreshVariantsManagerUI() {
     chipCond.textContent = nCond ? `Condition (${nCond})` : 'Condition';
   }
 
-  const dimN = vmActiveDimensionCount();
-  const tuckedChipCount = Math.max(0, dimN - VM_TOOLBAR_MAX_VISIBLE_CHIPS);
+  const tuckedChipCount = Math.max(
+    0,
+    vmChipsToolbarSlotCount() - VM_TOOLBAR_MAX_VISIBLE_CHIPS
+  );
   vmSyncToolbarMoreButton(tuckedChipCount);
 
   const groupRow = document.getElementById('vmGroupByRow');
@@ -16212,7 +16219,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/8/26 @ 5:42pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/8/26 @ 5:44pm';
 
 const PROTO_NOTES_TITLE = 'Variants creation and pricing';
 const PROTO_NOTES_HTML = `
