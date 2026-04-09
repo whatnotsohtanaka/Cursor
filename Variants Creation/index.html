@@ -4496,7 +4496,7 @@
     <div class="notes-panel-content" id="notesPanelContent"></div>
   </div>
   <div class="notes-panel-footer">
-    <label><input type="checkbox" id="notesAutoOpenCb" onchange="saveNotesAutoOpen()">Don't show on load</label>
+    <label><input type="checkbox" id="notesAutoOpenCb" checked onchange="saveNotesAutoOpen()">Don't show on load</label>
   </div>
 </div>
 
@@ -16857,15 +16857,16 @@ const NOTES_STORAGE_KEY = 'proto-notes-autoopen-' + location.pathname;
 
 function saveNotesAutoOpen() {
   const cb = document.getElementById('notesAutoOpenCb');
-  if (cb && cb.checked) {
+  if (!cb) return;
+  if (cb.checked) {
     localStorage.setItem(NOTES_STORAGE_KEY, 'no');
   } else {
-    localStorage.removeItem(NOTES_STORAGE_KEY);
+    localStorage.setItem(NOTES_STORAGE_KEY, 'yes');
   }
 }
 
 function shouldAutoOpenNotes() {
-  return localStorage.getItem(NOTES_STORAGE_KEY) !== 'no';
+  return localStorage.getItem(NOTES_STORAGE_KEY) === 'yes';
 }
 
 function positionNotesPanel() {
