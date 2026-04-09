@@ -2961,8 +2961,70 @@
       color: #1c1c1c;
     }
     .vm-size-cell-on {
-      background: #1c1c1c;
+      background: #2d2d2d;
       color: #fff;
+    }
+    .vm-shoe-accordion {
+      width: 100%;
+    }
+    .vm-shoe-accordion-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 48px;
+      padding: 12px 16px;
+      cursor: pointer;
+      position: relative;
+      background: none;
+      border: none;
+      width: 100%;
+      box-sizing: border-box;
+      font-family: var(--font);
+    }
+    .vm-shoe-accordion-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(0,0,0,0.1);
+    }
+    .vm-shoe-accordion-label {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 590;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #1c1c1c;
+      text-align: left;
+    }
+    .vm-shoe-accordion-chevron {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      transition: transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+    .vm-shoe-accordion.open .vm-shoe-accordion-chevron {
+      transform: rotate(180deg);
+    }
+    .vm-shoe-accordion-body {
+      display: none;
+      padding: 16px 16px 8px;
+    }
+    .vm-shoe-accordion.open .vm-shoe-accordion-body {
+      display: block;
+    }
+    .vm-shoe-accordion-body .vm-size-grid {
+      padding: 0;
+      gap: 8px;
+    }
+    .vm-shoe-accordion-body .vm-size-cell {
+      min-height: 44px;
+      font-size: 14px;
+      font-weight: 590;
+      letter-spacing: -0.15px;
+      line-height: 19px;
     }
     .vm-popover-dismiss {
       position: absolute;
@@ -6657,6 +6719,7 @@
           <div class="vm-section-label" id="vmSizesSectionLabelNumeric">Numeric sizes (00 – 24)</div>
           <div class="vm-size-grid" id="vmSizesGridNumeric"></div>
         </div>
+        <div id="vmSizesShoeAccordionMount" style="display:none"></div>
       </div>
       <div class="vm-sheet-footer">
         <button type="button" class="vm-done-btn" id="vmSizesDoneBtn" onclick="applyVmSizes()">Save</button>
@@ -9258,9 +9321,18 @@ function escapeHtmlVm(s) {
 function vmL1Display(s) {
   if (!s) return '';
   const str = String(s);
+  if (vmSizesGridUsesShoeSizes()) {
+    const shoeMatch = /^([WYU]?)(\d+(?:\.\d+)?)$/.exec(str);
+    if (shoeMatch) {
+      const prefix = shoeMatch[1];
+      const num = shoeMatch[2];
+      if (prefix === 'Y') return num + 'Y';
+      if (prefix === 'W') return num + 'W';
+      if (prefix === 'U') return num + 'U';
+      return num;
+    }
+  }
   if (/^W\d+(\.\d+)?$/i.test(str)) return str.slice(1) + '\u2033';
-  if (/m$/i.test(str)) return str;
-  if (vmSizesGridUsesShoeSizes() && /^\d+(\.\d+)?$/.test(str)) return str + 'M';
   return str;
 }
 
@@ -9730,6 +9802,23 @@ function vmGetSizesShoeLabels() {
   return labels;
 }
 
+const VM_SHOE_CATEGORIES = [
+  { id: 'men', label: 'Men', prefix: '', min: 3.5, max: 14, step: 0.5 },
+  { id: 'womens', label: 'Womens', prefix: 'W', min: 3.5, max: 14, step: 0.5 },
+  { id: 'youth', label: 'Youth', prefix: 'Y', min: 3.5, max: 14, step: 0.5 },
+  { id: 'unisex', label: 'Unisex', prefix: 'U', min: 3.5, max: 14, step: 0.5 },
+];
+
+function vmGetShoeCategorySizes(cat) {
+  const labels = [];
+  for (let v = cat.min; v <= cat.max + 0.001; v += cat.step) {
+    const num = Number.isInteger(v) ? String(v) : v.toFixed(1);
+    const key = cat.prefix + num;
+    labels.push({ key, label: num });
+  }
+  return labels;
+}
+
 function vmGetSizesPantsLabels() {
   if (vmSizesGridUsesShoeSizes()) return [];
   const inch = '\u2033';
@@ -9742,9 +9831,16 @@ function vmPantsWaistSortIndex(storageKey) {
   return VM_PANTS_WAIST_GRID.indexOf(m[1]);
 }
 
+function vmShoeSortOrder(key) {
+  const m = /^([WYU]?)(\d+(?:\.\d+)?)$/.exec(String(key));
+  if (!m) return 9999;
+  const prefixOrder = { '': 0, 'W': 1000, 'Y': 2000, 'U': 3000 };
+  return (prefixOrder[m[1]] || 0) + parseFloat(m[2]);
+}
+
 function vmSizeSortKey(a, b) {
   if (vmSizesGridUsesShoeSizes()) {
-    return parseFloat(a) - parseFloat(b);
+    return vmShoeSortOrder(a) - vmShoeSortOrder(b);
   }
   const letters = VM_TOPS_LETTER_SIZES;
   const nums = VM_TOPS_NUMERIC_SIZES;
@@ -11812,20 +11908,72 @@ function vmFillSizesGridEl(grid, items) {
   });
 }
 
-function buildVmSizesGrid() {
-  const gridLetters = document.getElementById('vmSizesGridLetters');
-  const gridNumeric = document.getElementById('vmSizesGridNumeric');
-  const blockNumeric = document.getElementById('vmSizesBlockNumeric');
-  const shoe = vmSizesGridUsesShoeSizes();
-  if (shoe) {
-    vmFillSizesGridEl(gridLetters, vmGetSizesShoeLabels());
-    vmFillSizesGridEl(gridNumeric, []);
-    if (blockNumeric) blockNumeric.style.display = 'none';
-  } else {
-    vmFillSizesGridEl(gridLetters, VM_TOPS_LETTER_SIZES.slice());
-    vmFillSizesGridEl(gridNumeric, VM_TOPS_NUMERIC_SIZES.slice());
-    if (blockNumeric) blockNumeric.style.display = '';
+const VM_CLOTHING_SIZE_CATEGORIES = [
+  { id: 'alpha', label: 'Alpha sizes (OS – 5XL)', items: () => VM_TOPS_LETTER_SIZES.slice() },
+  { id: 'numeric', label: 'Numeric sizes (00 – 24)', items: () => VM_TOPS_NUMERIC_SIZES.slice() },
+];
+
+function vmGetSizeAccordionSections() {
+  if (vmSizesGridUsesShoeSizes()) {
+    return VM_SHOE_CATEGORIES.map((cat) => ({
+      id: cat.id,
+      label: cat.label,
+      items: vmGetShoeCategorySizes(cat),
+    }));
   }
+  return VM_CLOTHING_SIZE_CATEGORIES.map((cat) => ({
+    id: cat.id,
+    label: cat.label,
+    items: cat.items().map((s) => typeof s === 'string' ? { key: s, label: s } : s),
+  }));
+}
+
+function buildVmSizesGrid() {
+  const blockLetters = document.getElementById('vmSizesBlockLetters');
+  const blockNumeric = document.getElementById('vmSizesBlockNumeric');
+  const accordionMount = document.getElementById('vmSizesShoeAccordionMount');
+  if (blockLetters) blockLetters.style.display = 'none';
+  if (blockNumeric) blockNumeric.style.display = 'none';
+  if (accordionMount) {
+    accordionMount.style.display = '';
+    vmBuildSizeAccordions(accordionMount);
+  }
+}
+
+function vmBuildSizeAccordions(mount) {
+  const pendingSet = new Set(variantMgr.pendingSizes);
+  const sections = vmGetSizeAccordionSections();
+  const chevronSvg = '<svg class="vm-shoe-accordion-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg>';
+
+  const sectionHasActive = sections.map((sec) =>
+    sec.items.some((s) => pendingSet.has(s.key))
+  );
+  const anyActive = sectionHasActive.some(Boolean);
+
+  mount.innerHTML = sections.map((sec, i) => {
+    const shouldOpen = anyActive ? sectionHasActive[i] : i === 0;
+    const openClass = shouldOpen ? ' open' : '';
+    return '<div class="vm-shoe-accordion' + openClass + '" data-size-cat="' + sec.id + '">'
+      + '<button type="button" class="vm-shoe-accordion-header" onclick="vmToggleShoeAccordion(this)">'
+      + '<span class="vm-shoe-accordion-label">' + sec.label + '</span>'
+      + chevronSvg
+      + '</button>'
+      + '<div class="vm-shoe-accordion-body">'
+      + '<div class="vm-size-grid" id="vmSizeAccGrid_' + sec.id + '"></div>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+
+  sections.forEach((sec) => {
+    const grid = document.getElementById('vmSizeAccGrid_' + sec.id);
+    vmFillSizesGridEl(grid, sec.items);
+  });
+}
+
+function vmToggleShoeAccordion(headerBtn) {
+  const accordion = headerBtn.closest('.vm-shoe-accordion');
+  if (!accordion) return;
+  accordion.classList.toggle('open');
 }
 
 function vmTogglePendingSize(s) {
@@ -11850,22 +11998,10 @@ function vmSyncSizesSheetChrome() {
     : 'Sizes';
   const h1 = document.querySelector('#vmSizesOverlay .vm-sheet-h1');
   const sub = document.querySelector('#vmSizesOverlay .vm-sheet-sub');
-  const secLet = document.getElementById('vmSizesSectionLabelLetters');
-  const secNum = document.getElementById('vmSizesSectionLabelNumeric');
-  const secPants = document.getElementById('vmSizesSectionLabelPants');
   if (h1) h1.textContent = 'Manage ' + label;
   if (sub) {
     const low = label.charAt(0).toLowerCase() + label.slice(1);
-    sub.textContent = 'Select the ' + low + ' available for this listing.';
-  }
-  if (vmSizesGridUsesShoeSizes()) {
-    if (secLet) secLet.textContent = "Men's shoes · US men's (4.5 – 14)";
-    if (secNum) secNum.textContent = '';
-    if (secPants) secPants.textContent = '';
-  } else {
-    if (secLet) secLet.textContent = 'Alpha sizes (OS – 5XL)';
-    if (secNum) secNum.textContent = 'Numeric sizes (00 – 24)';
-    if (secPants) secPants.textContent = 'Pants · waist (inches)';
+    sub.textContent = 'Select the ' + low + ' available for this product.';
   }
 }
 
@@ -18129,7 +18265,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 3:21pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 4:16pm';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
