@@ -10136,7 +10136,8 @@ function refreshVariantsManagerUI() {
 
   const createBtn = document.getElementById('vmBtnCreateCustom');
   const createLbl = document.getElementById('vmCreateCustomLabel');
-  const showCreateLabel = !hasRows;
+  const hasPresetChips = (isFashSnk) || chipSlots.sizes || chipSlots.colors;
+  const showCreateLabel = !hasRows && !hasPresetChips;
   if (createBtn) createBtn.classList.toggle('vm-create-expanded', showCreateLabel);
   if (createLbl) createLbl.style.display = showCreateLabel ? '' : 'none';
 
@@ -11717,10 +11718,13 @@ function vmSyncSizesSheetChrome() {
 function vmSyncColorsSheetChrome() {
   const label = variantMgr.optionLabels.colors || 'Colors';
   const nameInput = document.getElementById('vmColorsName');
+  const nameWrap = document.getElementById('vmColorsNameWrap');
+  const isPresetCat = vmIsFashionOrSneakersProductCategory();
   if (nameInput) nameInput.value = label;
+  if (nameWrap) nameWrap.style.display = isPresetCat ? 'none' : '';
   const h1 = document.querySelector('#vmColorsOverlay .vm-sheet-h1');
   const sub = document.querySelector('#vmColorsOverlay .vm-sheet-sub');
-  if (variantMgr.colors.length > 0) {
+  if (isPresetCat || variantMgr.colors.length > 0) {
     if (h1) h1.textContent = label;
     if (sub) sub.style.display = 'none';
   } else {
@@ -12042,7 +12046,10 @@ function vmSyncColorDoneState() {
   const mount = document.getElementById('vmColorInputsMount');
   const inputs = mount ? [...mount.querySelectorAll('.vm-color-row-input')] : [];
   const vals = inputs.map((i) => i.value.trim()).filter(Boolean);
-  const optName = (document.getElementById('vmColorsName')?.value || '').trim();
+  const isPresetCat = vmIsFashionOrSneakersProductCategory();
+  const optName = isPresetCat
+    ? (variantMgr.optionLabels.colors || 'Colors')
+    : (document.getElementById('vmColorsName')?.value || '').trim();
   btn.disabled = vals.length === 0 || !optName;
 }
 
@@ -12055,7 +12062,10 @@ function applyVmColors(e) {
   if (doneBtn && doneBtn.disabled) return;
   vmSyncPendingColorsFromInputs();
   const vals = variantMgr.pendingColorsDraft.map((s) => String(s).trim()).filter(Boolean);
-  const optName = (document.getElementById('vmColorsName')?.value || '').trim();
+  const isPresetCat = vmIsFashionOrSneakersProductCategory();
+  const optName = isPresetCat
+    ? (variantMgr.optionLabels.colors || 'Colors')
+    : (document.getElementById('vmColorsName')?.value || '').trim();
   if (vals.length === 0 || !optName) return;
   variantMgr.colors = vals;
   variantMgr.optionLabels.colors = optName;
@@ -17967,7 +17977,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 10:14am';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 10:59am';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
