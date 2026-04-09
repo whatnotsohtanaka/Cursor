@@ -9921,24 +9921,39 @@ function vmFinishCustomRowReorderUi() {
 
 function ensureVmQtyDefaults() {
   const condList = variantMgr.conditionSelections.length ? variantMgr.conditionSelections.slice() : [null];
+  const listingQty = productQty || 1;
+  let firstL1Set = false;
 
   variantMgr.sizes.forEach((sz) => {
-    if (variantMgr.l1Qty[sz] == null) variantMgr.l1Qty[sz] = 1;
+    if (variantMgr.l1Qty[sz] == null) {
+      variantMgr.l1Qty[sz] = firstL1Set ? 0 : listingQty;
+      firstL1Set = true;
+    }
   });
   variantMgr.colors.forEach((c) => {
-    if (variantMgr.l1Qty[c] == null) variantMgr.l1Qty[c] = 1;
+    if (variantMgr.l1Qty[c] == null) {
+      variantMgr.l1Qty[c] = firstL1Set ? 0 : listingQty;
+      firstL1Set = true;
+    }
   });
   variantMgr.conditionSelections.forEach((cond) => {
-    if (variantMgr.l1Qty[cond] == null) variantMgr.l1Qty[cond] = 1;
-    if (variantMgr.conditionQty[cond] == null) variantMgr.conditionQty[cond] = 1;
+    if (variantMgr.l1Qty[cond] == null) variantMgr.l1Qty[cond] = 0;
+    if (variantMgr.conditionQty[cond] == null) {
+      variantMgr.conditionQty[cond] = firstL1Set ? 0 : listingQty;
+      firstL1Set = true;
+    }
   });
 
+  let firstChildSet = false;
   if (variantMgr.sizes.length && variantMgr.colors.length) {
     variantMgr.sizes.forEach((sz) => {
       variantMgr.colors.forEach((c) => {
         condList.forEach((cond) => {
           const k = vmChildStorageKey(sz, c, cond);
-          if (variantMgr.childQty[k] == null) variantMgr.childQty[k] = 1;
+          if (variantMgr.childQty[k] == null) {
+            variantMgr.childQty[k] = firstChildSet ? 0 : listingQty;
+            firstChildSet = true;
+          }
         });
       });
     });
@@ -9950,16 +9965,25 @@ function ensureVmQtyDefaults() {
     variantMgr.sizes.forEach((sz) => {
       condList.forEach((cond) => {
         const k = vmChildStorageKey(sz, '', cond);
-        if (variantMgr.childQty[k] == null) variantMgr.childQty[k] = 1;
+        if (variantMgr.childQty[k] == null) {
+          variantMgr.childQty[k] = firstChildSet ? 0 : listingQty;
+          firstChildSet = true;
+        }
       });
     });
   } else if (!variantMgr.sizes.length && variantMgr.colors.length) {
     variantMgr.colors.forEach((c) => {
-      if (variantMgr.l1Qty[c] == null) variantMgr.l1Qty[c] = 1;
+      if (variantMgr.l1Qty[c] == null) {
+        variantMgr.l1Qty[c] = firstL1Set ? 0 : listingQty;
+        firstL1Set = true;
+      }
       if (variantMgr.customRows.length > 0) {
         condList.forEach((cond) => {
           const k = vmChildStorageKey('', c, cond);
-          if (variantMgr.childQty[k] == null) variantMgr.childQty[k] = 1;
+          if (variantMgr.childQty[k] == null) {
+            variantMgr.childQty[k] = firstChildSet ? 0 : listingQty;
+            firstChildSet = true;
+          }
         });
       }
     });
@@ -9975,7 +9999,10 @@ function ensureVmQtyDefaults() {
     combos.forEach((partsRaw) => {
       const parts = partsRaw === null ? [] : partsRaw;
       const k = vmExpandedChildKey('', '', null, parts);
-      if (variantMgr.childQty[k] == null) variantMgr.childQty[k] = 1;
+      if (variantMgr.childQty[k] == null) {
+        variantMgr.childQty[k] = firstChildSet ? 0 : listingQty;
+        firstChildSet = true;
+      }
     });
     const row0 = variantMgr.customRows[0];
     if (row0) {
@@ -9992,9 +10019,12 @@ function ensureVmQtyDefaults() {
     variantMgr.customRows.length === 1
   ) {
     variantMgr.customRows.forEach((row, cri) => {
-      row.values.forEach((val) => {
+      row.values.forEach((val, vi) => {
         const k = vmCustomL1QtyKey(cri, val);
-        if (variantMgr.l1Qty[k] == null) variantMgr.l1Qty[k] = 1;
+        if (variantMgr.l1Qty[k] == null) {
+          variantMgr.l1Qty[k] = (!firstL1Set && vi === 0) ? listingQty : 0;
+          if (vi === 0) firstL1Set = true;
+        }
       });
     });
   }
@@ -11598,14 +11628,14 @@ function pricePageNavBack() {
 }
 
 function vmDeltaConditionQty(cond, d) {
-  const cur = variantMgr.conditionQty[cond] ?? 1;
-  variantMgr.conditionQty[cond] = Math.max(1, cur + d);
+  const cur = variantMgr.conditionQty[cond] ?? 0;
+  variantMgr.conditionQty[cond] = Math.max(0, cur + d);
   refreshVariantsManagerUI();
 }
 
 function vmDeltaL1Qty(sz, d) {
-  const cur = variantMgr.l1Qty[sz] ?? 1;
-  variantMgr.l1Qty[sz] = Math.max(1, cur + d);
+  const cur = variantMgr.l1Qty[sz] ?? 0;
+  variantMgr.l1Qty[sz] = Math.max(0, cur + d);
   refreshVariantsManagerUI();
 }
 
@@ -17985,7 +18015,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 12:56pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 1:03pm';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
