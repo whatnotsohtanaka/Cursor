@@ -1801,9 +1801,9 @@
 
     .toast {
       position: absolute;
-      bottom: 56px;
+      bottom: 102px;
       left: 50%;
-      transform: translateX(-50%) translateY(20px);
+      transform: translateX(-50%) translateY(16px);
       background: #404040;
       border-radius: 999px;
       padding: 8px 16px;
@@ -1811,24 +1811,37 @@
       gap: 8px;
       align-items: center;
       justify-content: center;
-      box-shadow: 0px 3px 6px rgba(0,0,0,0.08), 0px 6px 12px rgba(0,0,0,0.08);
-      z-index: 50;
+      max-width: min(343px, calc(100% - 32px));
+      min-width: 0;
+      box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.08), 0px 6px 12px rgba(0, 0, 0, 0.08);
+      z-index: 520;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
-      white-space: nowrap;
+    }
+    .toast.app-toast-global {
+      z-index: 600;
     }
     .toast.visible {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
-    .toast svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .toast .app-toast-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
     .toast span {
       font-size: 13px;
       font-weight: 600;
       line-height: 18px;
       letter-spacing: -0.08px;
-      color: white;
+      color: #fff;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+      flex: 1 1 auto;
     }
 
     .home-indicator {
@@ -3626,6 +3639,52 @@
     .price-variant-tree-mount .vm-list-divider {
       margin-left: 0;
       margin-right: 0;
+    }
+    /* Price drill: filter sits under nav (not on main price/format list) */
+    .price-drill-filter-wrap {
+      flex-shrink: 0;
+      padding: 4px 16px 8px;
+    }
+    .price-drill-filter-wrap .price-override-filter-row {
+      margin-bottom: 0;
+    }
+    /* Price overrides: filter chip (Figma filter chip 15647:100705 — large, opaque unselected) */
+    .price-override-filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .price-override-filter-chip {
+      border: none;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 16px;
+      letter-spacing: -0.2px;
+      color: #1c1c1c;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: #e3e3e3;
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      transition: background 0.15s ease, color 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .price-override-filter-chip--on {
+      background: #1c1c1c;
+      color: #fff;
+    }
+    .price-variant-filter-empty {
+      padding: 20px 0;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 19px;
+      letter-spacing: -0.08px;
+      color: #7f7f7f;
     }
     .price-variant-row-meta {
       font-size: 13px;
@@ -5639,9 +5698,9 @@
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center;min-height:84px"><div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#161616">Skims Soft Lounge Dress</div><div style="font-size:13px;color:#7f7f7f;line-height:18px;letter-spacing:-0.08px">Auction <span style="color:#ccc">•</span> Size S</div><div style="font-size:12px;font-weight:600;line-height:16px;color:#1c1c1c">$52</div></div>
       </div>
     </div>
-    <!-- Toast -->
+    <!-- Toast (inventory; superseded by appToast when present) -->
     <div class="toast" id="publishToast">
-      <svg viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-6.5"/></svg>
+      <svg class="app-toast-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="8" cy="8" r="6.25" stroke="white" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span>Template published</span>
     </div>
     <!-- FAB -->
@@ -6045,6 +6104,11 @@
         </div>
         <span style="width:40px;flex-shrink:0"></span>
       </div>
+      <div class="price-drill-filter-wrap" id="priceDrillOverrideFilterRow" style="display:none" aria-label="Variant price filters">
+        <div class="price-override-filter-row">
+          <button type="button" class="price-override-filter-chip" id="priceDrillCustomPriceFilterChip" aria-pressed="false" onclick="priceToggleDrillCustomPriceFilter()">Custom Price</button>
+        </div>
+      </div>
       <div class="edit-scroll" id="priceVariantDrillScroll" style="flex:1;min-height:0"></div>
     </div>
 
@@ -6055,6 +6119,12 @@
       </div>
       <button id="priceFooterEdit" class="edit-btn-publish" onclick="pricePageSave()" style="display:none;flex:1">Save</button>
     </div>
+  </div>
+
+  <!-- Toast above full-screen steps (price z-index 250, variants 210) — Figma 15647:103853 -->
+  <div class="toast app-toast-global" id="appToast" aria-live="polite">
+    <svg class="app-toast-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="8" cy="8" r="6.25" stroke="white" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span></span>
   </div>
 
   <!-- ═══ PRODUCT LISTING PAGE ═══ -->
@@ -8796,7 +8866,6 @@ function variantsManagerSave() {
   syncProductFormFieldsFromSavedVariants();
   refreshProductVariantsSummary();
   closeVariantsManagerPage();
-  setTimeout(() => showToastMessage('Variants saved'), 350);
 }
 
 /* ═══ Variant manager: options, sheets, nested variants ═══ */
@@ -8951,6 +9020,50 @@ function vmNestedCustomPartLists() {
   return lists;
 }
 
+/**
+ * Options list uses L1 rows + nested sheet when size×color exists, or size×condition
+ * (conditions belong under each size, not as top-level peers).
+ */
+function vmUsesNestedVariantList() {
+  if (variantMgr.sizes.length > 0 && variantMgr.colors.length > 0) return true;
+  if (
+    variantMgr.sizes.length > 0 &&
+    variantMgr.conditionSelections.length > 0 &&
+    variantMgr.colors.length === 0
+  ) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Color column for nested grids: real colors, or one placeholder row when only size×condition.
+ */
+function vmColorsIterForNested() {
+  if (variantMgr.colors.length > 0) return variantMgr.colors.slice();
+  if (variantMgr.sizes.length > 0 && variantMgr.conditionSelections.length > 0) return [''];
+  return [];
+}
+
+/**
+ * Group-by keys for Manage Variants (must match nested sheet axes).
+ * Condition is allowed with sizes alone (size×condition without colors), not only when colors exist.
+ */
+function vmValidGroupByKeys() {
+  const keys = [];
+  if (variantMgr.sizes.length) keys.push('sizes');
+  if (variantMgr.colors.length) keys.push('colors');
+  if (variantMgr.conditionSelections.length && variantMgr.sizes.length) {
+    keys.push('condition');
+  }
+  if (variantMgr.sizes.length && variantMgr.colors.length && variantMgr.customRows.length) {
+    variantMgr.customRows.forEach((row, cri) => {
+      keys.push('custom:' + cri);
+    });
+  }
+  return keys;
+}
+
 /** Extends size|color(|cond) key with |c0:0|c1:1… for custom permutations. */
 function vmExpandedChildKey(sizeVal, colorVal, conditionVal, parts) {
   let k = vmChildStorageKey(sizeVal, colorVal, conditionVal);
@@ -8978,13 +9091,16 @@ function vmFormatNestedVariantTitle(r, parts) {
   const hasCond = variantMgr.conditionSelections.length > 0;
   const hasCustom = variantMgr.customRows.length > 0;
   const plist = parts == null || !parts.length ? [] : parts;
-  const color = String(r.c ?? '').trim() || '—';
+  const rawC = String(r.c ?? '').trim();
+  /* Size×condition without a real color axis uses ''; don’t show a “—” placeholder before condition. */
+  const skipColorSeg = !variantMgr.colors.length && rawC === '';
+  const color = rawC || '—';
 
   const segs = [];
 
   if (vmIsCustomGroupBy()) {
     segs.push(escapeHtmlVm(vmL1Display(r.sz)));
-    segs.push(escapeHtmlVm(color));
+    if (!skipColorSeg) segs.push(escapeHtmlVm(color));
     if (hasCond) {
       segs.push(escapeHtmlVm(String(r.cond ?? '').trim() || '—'));
     }
@@ -8994,15 +9110,15 @@ function vmFormatNestedVariantTitle(r, parts) {
       segs.push(escapeHtmlVm(String(r.cond ?? '').trim() || '—'));
     }
   } else if (variantMgr.groupBy === 'sizes') {
-    segs.push(escapeHtmlVm(color));
+    if (!skipColorSeg) segs.push(escapeHtmlVm(color));
     if (hasCond) {
       segs.push(escapeHtmlVm(String(r.cond ?? '').trim() || '—'));
     }
   } else if (variantMgr.groupBy === 'condition') {
     segs.push(escapeHtmlVm(vmL1Display(r.sz)));
-    segs.push(escapeHtmlVm(color));
+    if (!skipColorSeg) segs.push(escapeHtmlVm(color));
   } else {
-    segs.push(escapeHtmlVm(color));
+    if (!skipColorSeg) segs.push(escapeHtmlVm(color));
     if (hasCond) {
       segs.push(escapeHtmlVm(String(r.cond ?? '').trim() || '—'));
     }
@@ -9083,8 +9199,9 @@ function vmL1RowSubtitleCountFor(groupBy) {
     );
   }
   if (groupBy === 'condition') {
-    if (!variantMgr.sizes.length || !variantMgr.colors.length) return 0;
-    return variantMgr.sizes.length * variantMgr.colors.length;
+    if (!variantMgr.sizes.length) return 0;
+    if (variantMgr.colors.length) return variantMgr.sizes.length * variantMgr.colors.length;
+    return variantMgr.sizes.length;
   }
   const mult = variantMgr.conditionSelections.length ? variantMgr.conditionSelections.length : 1;
   if (groupBy === 'colors') {
@@ -9092,8 +9209,9 @@ function vmL1RowSubtitleCountFor(groupBy) {
     if (!variantMgr.colors.length) return 0;
     return mult;
   }
-  if (!variantMgr.colors.length) return 0;
-  return variantMgr.colors.length * mult;
+  if (variantMgr.colors.length) return variantMgr.colors.length * mult;
+  if (variantMgr.conditionSelections.length) return mult;
+  return 0;
 }
 
 /** Tops: letter sizing through 5XL, then numeric dress / misses 00–24. */
@@ -9197,8 +9315,9 @@ function vmSyncToolbarMoreButton(tuckedChipCount) {
     !vmPopoverConditionRowVisible() &&
     variantMgr.customRows.length === 0;
   const nCond = variantMgr.conditionSelections.length;
+  /* Badge = how many option *types* sit behind ⋯, not values (e.g. one “Condition” row, not two condition picks). */
   const condMenuBadge =
-    vmPopoverConditionRowVisible() && nCond > 0 ? nCond : 0;
+    vmPopoverConditionRowVisible() && nCond > 0 ? 1 : 0;
   const badgeTotal = tuckedChipCount + condMenuBadge;
   if (typeBadge) {
     if (badgeTotal > 0) {
@@ -9328,6 +9447,17 @@ function ensureVmQtyDefaults() {
         });
       });
     });
+  } else if (
+    variantMgr.sizes.length &&
+    !variantMgr.colors.length &&
+    variantMgr.conditionSelections.length
+  ) {
+    variantMgr.sizes.forEach((sz) => {
+      condList.forEach((cond) => {
+        const k = vmChildStorageKey(sz, '', cond);
+        if (variantMgr.childQty[k] == null) variantMgr.childQty[k] = 1;
+      });
+    });
   } else if (!variantMgr.sizes.length && variantMgr.colors.length) {
     variantMgr.colors.forEach((c) => {
       if (variantMgr.l1Qty[c] == null) variantMgr.l1Qty[c] = 1;
@@ -9361,21 +9491,7 @@ function refreshVariantsManagerUI() {
   const chipCond = document.getElementById('vmChipCondition');
   if (!nullEl || !listEl) return;
 
-  const validGroupBy = [];
-  if (variantMgr.sizes.length) validGroupBy.push('sizes');
-  if (variantMgr.colors.length) validGroupBy.push('colors');
-  if (
-    variantMgr.conditionSelections.length &&
-    variantMgr.sizes.length &&
-    variantMgr.colors.length
-  ) {
-    validGroupBy.push('condition');
-  }
-  if (variantMgr.sizes.length && variantMgr.colors.length && variantMgr.customRows.length) {
-    variantMgr.customRows.forEach((row, cri) => {
-      validGroupBy.push('custom:' + cri);
-    });
-  }
+  const validGroupBy = vmValidGroupByKeys();
   if (!validGroupBy.includes(variantMgr.groupBy)) {
     variantMgr.groupBy = validGroupBy[0] || 'sizes';
   }
@@ -9409,10 +9525,11 @@ function refreshVariantsManagerUI() {
   if (chipCond) {
     if (vmIsSportsBreaksPreset()) {
       chipCond.style.display = 'none';
+    } else if (vmIsFashionOrSneakersProductCategory()) {
+      /* Condition stays in ⋯ menu (not a chip); show as soon as category supports it */
+      chipCond.style.display = '';
     } else {
-      const canShowCond =
-        variantMgr.sizes.length > 0 && variantMgr.colors.length > 0;
-      chipCond.style.display = canShowCond ? '' : 'none';
+      chipCond.style.display = 'none';
     }
     const nCond = variantMgr.conditionSelections.length;
     chipCond.textContent = nCond ? `Condition (${nCond})` : 'Condition';
@@ -9447,7 +9564,7 @@ function refreshVariantsManagerUI() {
   nullEl.style.display = 'none';
   listEl.classList.add('visible');
 
-  const nested = variantMgr.sizes.length > 0 && variantMgr.colors.length > 0;
+  const nested = vmUsesNestedVariantList();
   const parts = [];
   const cam = vmThumbCamHtml();
 
@@ -9601,6 +9718,7 @@ function refreshVariantsManagerUI() {
 /** Sum child SKU qtys under one L1 key (matches nested sheet rows). */
 function vmSumChildQtyForNestedL1(l1Key, groupBy) {
   const gb = groupBy || variantMgr.groupBy;
+  const colorsIter = vmColorsIterForNested();
   const condList = variantMgr.conditionSelections.length
     ? variantMgr.conditionSelections.slice()
     : [null];
@@ -9619,7 +9737,7 @@ function vmSumChildQtyForNestedL1(l1Key, groupBy) {
     const cri = parseInt(gb.slice(7), 10);
     if (variantMgr.customRows[cri] == null) return 0;
     variantMgr.sizes.forEach((sz) => {
-      variantMgr.colors.forEach((c) => {
+      colorsIter.forEach((c) => {
         condList.forEach((cond) => {
           combos.forEach((pr) => {
             const parts = pr === null ? [] : pr;
@@ -9634,7 +9752,7 @@ function vmSumChildQtyForNestedL1(l1Key, groupBy) {
   }
   if (gb === 'condition') {
     variantMgr.sizes.forEach((sz) => {
-      variantMgr.colors.forEach((c) => {
+      colorsIter.forEach((c) => {
         combos.forEach((pr) => {
           add(sz, c, l1Key, pr === null ? [] : pr);
         });
@@ -9649,7 +9767,7 @@ function vmSumChildQtyForNestedL1(l1Key, groupBy) {
       });
     });
   } else {
-    variantMgr.colors.forEach((c) => {
+    colorsIter.forEach((c) => {
       condList.forEach((cond) => {
         combos.forEach((pr) => {
           add(l1Key, c, cond, pr === null ? [] : pr);
@@ -9665,33 +9783,21 @@ function vmSumChildQtyForNestedL1(l1Key, groupBy) {
  */
 function vmGetProductVariantsSummaryRows() {
   ensureVmQtyDefaults();
-  const validGroupBy = [];
-  if (variantMgr.sizes.length) validGroupBy.push('sizes');
-  if (variantMgr.colors.length) validGroupBy.push('colors');
-  if (
-    variantMgr.conditionSelections.length &&
-    variantMgr.sizes.length &&
-    variantMgr.colors.length
-  ) {
-    validGroupBy.push('condition');
-  }
-  if (variantMgr.sizes.length && variantMgr.colors.length && variantMgr.customRows.length) {
-    variantMgr.customRows.forEach((row, cri) => {
-      validGroupBy.push('custom:' + cri);
-    });
-  }
+  const validGroupBy = vmValidGroupByKeys();
   let groupBy = variantMgr.groupBy;
   if (!validGroupBy.includes(groupBy)) {
     groupBy = validGroupBy[0] || 'sizes';
   }
 
-  const nested = variantMgr.sizes.length > 0 && variantMgr.colors.length > 0;
+  const nested = vmUsesNestedVariantList();
   const rows = [];
   const nSub = vmL1RowSubtitleCountFor(groupBy);
 
   if (nested) {
     const nBase =
-      nSub > 0 ? nSub : variantMgr.sizes.length * variantMgr.colors.length;
+      nSub > 0
+        ? nSub
+        : Math.max(1, variantMgr.sizes.length) * Math.max(1, variantMgr.colors.length);
     const n = nBase * vmNestedCustomMultiplier();
     if (typeof groupBy === 'string' && groupBy.startsWith('custom:')) {
       const cri = parseInt(groupBy.slice(7), 10);
@@ -9873,6 +9979,8 @@ function refreshProductVariantsSummary() {
 let priceUniquePerVariantEnabled = false;
 /** @type {Record<string, {format:string,startingPrice:string,suddenDeath:boolean,featuredIn:string}>} */
 let priceVariantOverrides = {};
+/** When true, price variant drill list shows only SKUs with a custom (overridden) price. */
+let priceVariantFilterOverridesOnly = false;
 let priceDrillL1Key = null;
 /** @type {'nested'|'size'|'color'|'condition'|null} */
 let priceDrillKind = null;
@@ -9905,21 +10013,7 @@ function priceUnparkPricePageMainChrome(immediate) {
 }
 
 function priceResolveVmGroupBy() {
-  const validGroupBy = [];
-  if (variantMgr.sizes.length) validGroupBy.push('sizes');
-  if (variantMgr.colors.length) validGroupBy.push('colors');
-  if (
-    variantMgr.conditionSelections.length &&
-    variantMgr.sizes.length &&
-    variantMgr.colors.length
-  ) {
-    validGroupBy.push('condition');
-  }
-  if (variantMgr.sizes.length && variantMgr.colors.length && variantMgr.customRows.length) {
-    variantMgr.customRows.forEach((row, cri) => {
-      validGroupBy.push('custom:' + cri);
-    });
-  }
+  const validGroupBy = vmValidGroupByKeys();
   if (!validGroupBy.includes(variantMgr.groupBy)) {
     variantMgr.groupBy = validGroupBy[0] || 'sizes';
   }
@@ -10041,7 +10135,9 @@ function priceL1RowSubHtml(nVariants, childKeys) {
 }
 
 function priceGetNestedChildrenForL1(l1Key) {
-  if (!variantMgr.sizes.length || !variantMgr.colors.length) return [];
+  if (!variantMgr.sizes.length) return [];
+  const colorsIter = vmColorsIterForNested();
+  if (!colorsIter.length) return [];
   const hasCond = variantMgr.conditionSelections.length > 0;
   const condList = hasCond ? variantMgr.conditionSelections.slice() : [null];
   const combos = vmNestedCustomPartLists();
@@ -10051,7 +10147,7 @@ function priceGetNestedChildrenForL1(l1Key) {
     const cri = vmCustomGroupCri();
     if (cri == null) return [];
     variantMgr.sizes.forEach((sz) => {
-      variantMgr.colors.forEach((c) => {
+      colorsIter.forEach((c) => {
         condList.forEach((cond) => {
           combos.forEach((partsRaw) => {
             const parts = partsRaw === null ? [] : partsRaw;
@@ -10070,7 +10166,7 @@ function priceGetNestedChildrenForL1(l1Key) {
   const rows = [];
   if (variantMgr.groupBy === 'condition') {
     variantMgr.sizes.forEach((sz) => {
-      variantMgr.colors.forEach((c) => {
+      colorsIter.forEach((c) => {
         rows.push({ sz, c, cond: l1Key });
       });
     });
@@ -10081,7 +10177,7 @@ function priceGetNestedChildrenForL1(l1Key) {
       });
     });
   } else {
-    variantMgr.colors.forEach((c) => {
+    colorsIter.forEach((c) => {
       condList.forEach((cond) => {
         rows.push({ sz: l1Key, c, cond });
       });
@@ -10163,29 +10259,121 @@ function priceGetCustomValueChild(rowIndex, valIndex, val) {
   return { key, titleHtml: escapeHtmlVm(String(val)) };
 }
 
+function priceSyncDrillCustomPriceFilterUI() {
+  const row = document.getElementById('priceDrillOverrideFilterRow');
+  const chip = document.getElementById('priceDrillCustomPriceFilterChip');
+  if (!row || !chip) return;
+  const layerOpen = document.getElementById('priceVariantDrillLayer')?.classList.contains('open');
+  const ch = priceGetDrillChildrenForL1();
+  const hasAnyInList = ch.some((c) =>
+    Object.prototype.hasOwnProperty.call(priceVariantOverrides, c.key)
+  );
+  const show =
+    layerOpen &&
+    priceUniquePerVariantEnabled &&
+    pricePageSource === 'product' &&
+    ch.length > 1 &&
+    hasAnyInList;
+  row.style.display = show ? '' : 'none';
+  if (!show) priceVariantFilterOverridesOnly = false;
+  chip.classList.toggle('price-override-filter-chip--on', priceVariantFilterOverridesOnly);
+  chip.setAttribute('aria-pressed', priceVariantFilterOverridesOnly ? 'true' : 'false');
+}
+
+function priceToggleDrillCustomPriceFilter() {
+  const ch = priceGetDrillChildrenForL1();
+  if (ch.length <= 1) return;
+  if (!ch.some((c) => Object.prototype.hasOwnProperty.call(priceVariantOverrides, c.key))) return;
+  priceVariantFilterOverridesOnly = !priceVariantFilterOverridesOnly;
+  priceRenderDrillVariantList();
+}
+
+/** Build drill list from current L1 drill context; applies Custom Price filter when active. */
+function priceRenderDrillVariantList() {
+  const scroll = document.getElementById('priceVariantDrillScroll');
+  const subEl = document.getElementById('priceVariantDrillSub');
+  if (!scroll || priceDrillKind == null || priceDrillL1Key == null) return;
+
+  const children = priceGetDrillChildrenForL1();
+  if (!children.length) {
+    scroll.innerHTML = '';
+    if (subEl) subEl.textContent = '0 Variants';
+    priceSyncDrillCustomPriceFilterUI();
+    return;
+  }
+
+  children.forEach((c) => {
+    priceDrillItemsByKey[c.key] = priceTextFromHtml(c.titleHtml);
+  });
+
+  priceSyncDrillCustomPriceFilterUI();
+
+  const hasOv = (k) => Object.prototype.hasOwnProperty.call(priceVariantOverrides, k);
+  let display = children;
+  if (priceVariantFilterOverridesOnly) {
+    display = children.filter((c) => hasOv(c.key));
+  }
+
+  if (priceVariantFilterOverridesOnly && display.length === 0) {
+    scroll.innerHTML =
+      '<div class="price-variant-filter-empty">No variants match this filter.</div>';
+    if (subEl) subEl.textContent = '0 Variants';
+    return;
+  }
+
+  const thumb = vmThumbPlainHtml();
+  const chev =
+    '<div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div>';
+  const htmlParts = [];
+  display.forEach((c, idx) => {
+    const k = c.key;
+    const safeK = encodeURIComponent(k);
+    const subLine = priceFormatChildSubHtml(k);
+    const titleInner = c.titleHtml;
+    htmlParts.push(
+      `<div class="vm-l1-row vm-flat-row" role="button" tabindex="0" onclick="priceOpenOverrideSheetFromEncoded('${safeK}')" onkeydown="if(event.key==='Enter'||eve` +
+      `nt.key===' '){event.preventDefault();priceOpenOverrideSheetFromEncoded('${safeK}')}">` +
+      thumb +
+      `<div class="vm-row-main"><div class="vm-row-title">${titleInner}</div>` +
+      `<div class="price-variant-child-sub">${subLine}</div></div>` +
+      chev +
+      `</div>`
+    );
+    if (idx < display.length - 1) htmlParts.push('<div class="vm-list-divider"></div>');
+  });
+  scroll.innerHTML = htmlParts.join('');
+  if (subEl) subEl.textContent = `${display.length} Variants`;
+}
+
 function priceRefreshVariantTree() {
   const mount = document.getElementById('priceVariantTreeMount');
-  if (!mount || !priceUniquePerVariantEnabled || pricePageSource !== 'product') return;
+  if (!mount || !priceUniquePerVariantEnabled || pricePageSource !== 'product') {
+    if (document.getElementById('priceVariantDrillLayer')?.classList.contains('open')) {
+      priceSyncDrillCustomPriceFilterUI();
+    }
+    return;
+  }
   ensureVmQtyDefaults();
   priceResolveVmGroupBy();
 
-  const nested = variantMgr.sizes.length > 0 && variantMgr.colors.length > 0;
+  const nested = vmUsesNestedVariantList();
   const nSub = vmL1RowSubtitleCount();
   const cam = vmThumbCamHtml();
   const chev =
     '<div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"/></svg></div>';
-  const parts = [];
+  /** @type {{ childKeys: string[], html: string }[]} */
+  const l1Blocks = [];
 
   const pushL1 = (labelHtml, nVariants, childKeys, onClickAttr) => {
     const subHtml = priceL1RowSubHtml(nVariants, childKeys);
-    parts.push(
+    const html =
       `<div class="vm-l1-row" role="button" tabindex="0" ${onClickAttr}>` +
-        cam +
-        `<div class="vm-row-main"><div class="vm-row-title">${labelHtml}</div>` +
-        `<div class="vm-row-sub">${subHtml}</div></div>` +
-        chev +
-        `</div>`
-    );
+      cam +
+      `<div class="vm-row-main"><div class="vm-row-title">${labelHtml}</div>` +
+      `<div class="vm-row-sub">${subHtml}</div></div>` +
+      chev +
+      `</div>`;
+    l1Blocks.push({ childKeys, html });
   };
 
   if (nested) {
@@ -10194,7 +10382,7 @@ function priceRefreshVariantTree() {
       if (cri != null) {
         const custRow = variantMgr.customRows[cri];
         const n = vmL1RowSubtitleCountFor(variantMgr.groupBy);
-        custRow.values.forEach((val, i) => {
+        custRow.values.forEach((val) => {
           const label = escapeHtmlVm(val);
           const ck = priceGetNestedChildrenForL1(val).map((x) => x.key);
           const safe = encodeURIComponent(String(val));
@@ -10204,11 +10392,10 @@ function priceRefreshVariantTree() {
             ck,
             `onclick="priceOpenNestedVariantPriceDrill(decodeURIComponent('${safe}'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceOpenNestedVariantPriceDrill(decodeURIComponent('${safe}'));}"`
           );
-          if (i < custRow.values.length - 1) parts.push('<div class="vm-list-divider"></div>');
         });
       }
     } else if (variantMgr.groupBy === 'condition') {
-      variantMgr.conditionSelections.forEach((cond, i) => {
+      variantMgr.conditionSelections.forEach((cond) => {
         const label = escapeHtmlVm(cond);
         const n =
           (nSub || variantMgr.sizes.length * variantMgr.colors.length) *
@@ -10221,12 +10408,9 @@ function priceRefreshVariantTree() {
           ck,
           `onclick="priceOpenNestedVariantPriceDrill(decodeURIComponent('${safe}'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceOpenNestedVariantPriceDrill(decodeURIComponent('${safe}'));}"`
         );
-        if (i < variantMgr.conditionSelections.length - 1) {
-          parts.push('<div class="vm-list-divider"></div>');
-        }
       });
     } else if (variantMgr.groupBy === 'colors') {
-      variantMgr.colors.forEach((col, i) => {
+      variantMgr.colors.forEach((col) => {
         const label = escapeHtmlVm(col);
         const n = (nSub || variantMgr.sizes.length) * vmNestedCustomMultiplier();
         const ck = priceGetNestedChildrenForL1(col).map((x) => x.key);
@@ -10237,10 +10421,9 @@ function priceRefreshVariantTree() {
           ck,
           `onclick="priceOpenNestedVariantPriceDrill(decodeURIComponent('${safe}'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceOpenNestedVariantPriceDrill(decodeURIComponent('${safe}'));}"`
         );
-        if (i < variantMgr.colors.length - 1) parts.push('<div class="vm-list-divider"></div>');
       });
     } else {
-      variantMgr.sizes.forEach((sz, i) => {
+      variantMgr.sizes.forEach((sz) => {
         const label = escapeHtmlVm(vmL1Display(sz));
         const n = (nSub || variantMgr.colors.length) * vmNestedCustomMultiplier();
         const ck = priceGetNestedChildrenForL1(sz).map((x) => x.key);
@@ -10251,11 +10434,10 @@ function priceRefreshVariantTree() {
           ck,
           `onclick="priceOpenNestedVariantPriceDrill(decodeURIComponent('${safe}'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceOpenNestedVariantPriceDrill(decodeURIComponent('${safe}'));}"`
         );
-        if (i < variantMgr.sizes.length - 1) parts.push('<div class="vm-list-divider"></div>');
       });
     }
   } else if (variantMgr.sizes.length > 0) {
-    variantMgr.sizes.forEach((sz, i) => {
+    variantMgr.sizes.forEach((sz) => {
       const label = escapeHtmlVm(vmL1Display(sz));
       const ch = priceGetFlatSizeChildren(sz);
       const ck = ch.map((x) => x.key);
@@ -10266,10 +10448,9 @@ function priceRefreshVariantTree() {
         ck,
         `onclick="priceHandleFlatSizePriceRow('${safeSz}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceHandleFlatSizePriceRow('${safeSz}');}"`
       );
-      if (i < variantMgr.sizes.length - 1) parts.push('<div class="vm-list-divider"></div>');
     });
   } else if (variantMgr.colors.length > 0) {
-    variantMgr.colors.forEach((col, i) => {
+    variantMgr.colors.forEach((col) => {
       const label = escapeHtmlVm(col);
       const ch = priceGetFlatColorChildren(col);
       const ck = ch.map((x) => x.key);
@@ -10280,13 +10461,11 @@ function priceRefreshVariantTree() {
         ck,
         `onclick="priceHandleFlatColorPriceRow('${safeCol}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceHandleFlatColorPriceRow('${safeCol}');}"`
       );
-      if (i < variantMgr.colors.length - 1) parts.push('<div class="vm-list-divider"></div>');
     });
   }
 
   if (!nested && variantMgr.conditionSelections.length) {
-    variantMgr.conditionSelections.forEach((cond, j) => {
-      if (parts.length) parts.push('<div class="vm-list-divider"></div>');
+    variantMgr.conditionSelections.forEach((cond) => {
       const label = escapeHtmlVm(cond);
       const ch = priceGetConditionBranchChildren(cond);
       const ck = ch.map((x) => x.key);
@@ -10309,7 +10488,6 @@ function priceRefreshVariantTree() {
   ) {
     variantMgr.customRows.forEach((row, ri) => {
       row.values.forEach((val, vi) => {
-        if (parts.length) parts.push('<div class="vm-list-divider"></div>');
         const c = priceGetCustomValueChild(ri, vi, val);
         const label = escapeHtmlVm(row.title + ': ' + val);
         pushL1(
@@ -10322,46 +10500,42 @@ function priceRefreshVariantTree() {
     });
   }
 
+  const parts = [];
+  l1Blocks.forEach((b, i) => {
+    if (i > 0) parts.push('<div class="vm-list-divider"></div>');
+    parts.push(b.html);
+  });
   mount.innerHTML = parts.join('');
+
+  if (document.getElementById('priceVariantDrillLayer')?.classList.contains('open')) {
+    priceRenderDrillVariantList();
+  }
 }
 
 function priceOpenNestedVariantPriceDrill(l1Key) {
   const children = priceGetNestedChildrenForL1(l1Key);
   if (!children.length) return;
-  if (children.length === 1) {
-    priceOpenOverrideSheet(children[0].key, priceTextFromHtml(children[0].titleHtml));
-    return;
-  }
   priceShowVariantDrill(l1Key, 'nested', children);
 }
 
 function priceHandleFlatSizePriceRow(szEnc) {
   const sz = decodeURIComponent(szEnc);
   const ch = priceGetFlatSizeChildren(sz);
-  if (ch.length === 1) {
-    priceOpenOverrideSheet(ch[0].key, priceTextFromHtml(ch[0].titleHtml));
-    return;
-  }
+  if (!ch.length) return;
   priceShowVariantDrill(sz, 'size', ch);
 }
 
 function priceHandleFlatColorPriceRow(colEnc) {
   const col = decodeURIComponent(colEnc);
   const ch = priceGetFlatColorChildren(col);
-  if (ch.length === 1) {
-    priceOpenOverrideSheet(ch[0].key, priceTextFromHtml(ch[0].titleHtml));
-    return;
-  }
+  if (!ch.length) return;
   priceShowVariantDrill(col, 'color', ch);
 }
 
 function priceHandleConditionPriceRow(condEnc) {
   const cond = decodeURIComponent(condEnc);
   const ch = priceGetConditionBranchChildren(cond);
-  if (ch.length === 1) {
-    priceOpenOverrideSheet(ch[0].key, priceTextFromHtml(ch[0].titleHtml));
-    return;
-  }
+  if (!ch.length) return;
   priceShowVariantDrill(cond, 'condition', ch);
 }
 
@@ -10380,10 +10554,9 @@ function priceShowVariantDrill(l1Key, kind, children) {
   });
   priceDrillL1Key = l1Key;
   priceDrillKind = kind;
+  priceVariantFilterOverridesOnly = false;
 
   const titleEl = document.getElementById('priceVariantDrillTitle');
-  const subEl = document.getElementById('priceVariantDrillSub');
-  const scroll = document.getElementById('priceVariantDrillScroll');
 
   let displayTitle = String(l1Key);
   if (kind === 'nested') {
@@ -10395,29 +10568,6 @@ function priceShowVariantDrill(l1Key, kind, children) {
   }
 
   if (titleEl) titleEl.textContent = displayTitle;
-  if (subEl) subEl.textContent = `${children.length} Variants`;
-
-  const thumb = vmThumbPlainHtml();
-  const chev =
-    '<div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div>';
-  const htmlParts = [];
-  children.forEach((c, idx) => {
-    const k = c.key;
-    const safeK = encodeURIComponent(k);
-    const subLine = priceFormatChildSubHtml(k);
-    const titleInner = c.titleHtml;
-    htmlParts.push(
-      `<div class="vm-l1-row vm-flat-row" role="button" tabindex="0" onclick="priceOpenOverrideSheetFromEncoded('${safeK}')" onkeydown="if(event.key==='Enter'||eve` +
-      `nt.key===' '){event.preventDefault();priceOpenOverrideSheetFromEncoded('${safeK}')}">` +
-      thumb +
-      `<div class="vm-row-main"><div class="vm-row-title">${titleInner}</div>` +
-      `<div class="price-variant-child-sub">${subLine}</div></div>` +
-      chev +
-      `</div>`
-    );
-    if (idx < children.length - 1) htmlParts.push('<div class="vm-list-divider"></div>');
-  });
-  if (scroll) scroll.innerHTML = htmlParts.join('');
 
   const layer = document.getElementById('priceVariantDrillLayer');
   if (layer) layer.classList.add('open');
@@ -10427,6 +10577,8 @@ function priceShowVariantDrill(l1Key, kind, children) {
   if (mainNav) mainNav.classList.add('price-page-main-parked');
   if (mainScroll) mainScroll.classList.add('price-page-main-parked');
   if (footer) footer.classList.add('price-page-main-parked');
+
+  priceRenderDrillVariantList();
 }
 
 function priceOpenOverrideSheetFromEncoded(safeK) {
@@ -10441,6 +10593,8 @@ function priceCloseVariantDrill() {
   priceDrillL1Key = null;
   priceDrillKind = null;
   priceDrillItemsByKey = {};
+  priceVariantFilterOverridesOnly = false;
+  priceSyncDrillCustomPriceFilterUI();
   priceUnparkPricePageMainChrome(false);
 }
 
@@ -10586,11 +10740,13 @@ function priceToggleUniquePerVariant() {
   t.classList.toggle('on', on);
   t.setAttribute('aria-checked', on ? 'true' : 'false');
   priceUniquePerVariantEnabled = on;
+  if (!on) priceVariantFilterOverridesOnly = false;
   const details = document.getElementById('priceOverrideDetailsBlock');
   const tree = document.getElementById('priceVariantTreeMount');
   if (details) details.style.display = on ? '' : 'none';
   if (tree) tree.style.display = on ? '' : 'none';
   if (on) priceRefreshVariantTree();
+  else priceSyncDrillCustomPriceFilterUI();
 }
 
 function priceOnMainPriceFieldChanged() {
@@ -10627,9 +10783,11 @@ function syncPricePageChrome() {
       if (details) details.style.display = priceUniquePerVariantEnabled ? '' : 'none';
       if (tree) tree.style.display = priceUniquePerVariantEnabled ? '' : 'none';
       if (priceUniquePerVariantEnabled) priceRefreshVariantTree();
+      else priceSyncDrillCustomPriceFilterUI();
     } else if (!show && tree) {
       tree.style.display = 'none';
       if (details) details.style.display = 'none';
+      priceSyncDrillCustomPriceFilterUI();
     }
   }
 }
@@ -10640,6 +10798,8 @@ function priceResetVariantPricingNavState() {
   priceDrillL1Key = null;
   priceDrillKind = null;
   priceDrillItemsByKey = {};
+  priceVariantFilterOverridesOnly = false;
+  priceSyncDrillCustomPriceFilterUI();
   document.getElementById('priceVariantOverrideOverlay')?.classList.remove('open');
   priceOverrideEditingKey = null;
 }
@@ -11715,7 +11875,9 @@ function applyVmCustom() {
 }
 
 function openVmNestedSheet(l1Key) {
-  if (!variantMgr.sizes.length || !variantMgr.colors.length) return;
+  if (!variantMgr.sizes.length) return;
+  const colorsIter = vmColorsIterForNested();
+  if (!colorsIter.length) return;
   const mount = document.getElementById('vmNestedListMount');
   if (!mount) return;
   mount.innerHTML = '';
@@ -11732,7 +11894,7 @@ function openVmNestedSheet(l1Key) {
     if (cri == null) return;
     title = String(l1Key);
     variantMgr.sizes.forEach((sz) => {
-      variantMgr.colors.forEach((c) => {
+      colorsIter.forEach((c) => {
         condList.forEach((cond) => {
           combos.forEach((partsRaw) => {
             const parts = partsRaw === null ? [] : partsRaw;
@@ -11748,7 +11910,7 @@ function openVmNestedSheet(l1Key) {
     if (variantMgr.groupBy === 'condition') {
       title = String(l1Key);
       variantMgr.sizes.forEach((sz) => {
-        variantMgr.colors.forEach((c) => {
+        colorsIter.forEach((c) => {
           rows.push({ sz, c, cond: l1Key });
         });
       });
@@ -11761,7 +11923,7 @@ function openVmNestedSheet(l1Key) {
       });
     } else {
       title = vmL1Display(l1Key);
-      variantMgr.colors.forEach((c) => {
+      colorsIter.forEach((c) => {
         condList.forEach((cond) => {
           rows.push({ sz: l1Key, c, cond });
         });
@@ -11816,22 +11978,8 @@ function openVmNestedSheet(l1Key) {
 }
 
 function vmSyncL1QtyFromNestedChildren() {
-  if (!variantMgr.sizes.length || !variantMgr.colors.length) return;
-  const validGroupBy = [];
-  if (variantMgr.sizes.length) validGroupBy.push('sizes');
-  if (variantMgr.colors.length) validGroupBy.push('colors');
-  if (
-    variantMgr.conditionSelections.length &&
-    variantMgr.sizes.length &&
-    variantMgr.colors.length
-  ) {
-    validGroupBy.push('condition');
-  }
-  if (variantMgr.sizes.length && variantMgr.colors.length && variantMgr.customRows.length) {
-    variantMgr.customRows.forEach((row, cri) => {
-      validGroupBy.push('custom:' + cri);
-    });
-  }
+  if (!vmUsesNestedVariantList()) return;
+  const validGroupBy = vmValidGroupByKeys();
   let groupBy = variantMgr.groupBy;
   if (!validGroupBy.includes(groupBy)) {
     groupBy = validGroupBy[0] || 'sizes';
@@ -11875,32 +12023,28 @@ function openVmGroupBySheet(e) {
   if (!mount) return;
   mount.innerHTML = '';
   const opts = [];
-  const nested = variantMgr.sizes.length && variantMgr.colors.length;
   const ax = variantMgr.optionLabels;
-  if (variantMgr.sizes.length) {
-    opts.push({ key: 'sizes', label: `${ax.groupBySize} (${variantMgr.sizes.length})` });
-  }
-  if (variantMgr.colors.length) {
-    opts.push({ key: 'colors', label: `${ax.groupByColor} (${variantMgr.colors.length})` });
-  }
-  if (
-    variantMgr.conditionSelections.length &&
-    variantMgr.sizes.length &&
-    variantMgr.colors.length
-  ) {
-    opts.push({
-      key: 'condition',
-      label: `Condition (${variantMgr.conditionSelections.length})`,
-    });
-  }
-  if (nested && variantMgr.customRows.length) {
-    variantMgr.customRows.forEach((row, cri) => {
+  vmValidGroupByKeys().forEach((key) => {
+    if (key === 'sizes') {
+      opts.push({ key: 'sizes', label: `${ax.groupBySize} (${variantMgr.sizes.length})` });
+    } else if (key === 'colors') {
+      opts.push({ key: 'colors', label: `${ax.groupByColor} (${variantMgr.colors.length})` });
+    } else if (key === 'condition') {
       opts.push({
-        key: 'custom:' + cri,
-        label: `${row.title} (${row.values.length})`,
+        key: 'condition',
+        label: `Condition (${variantMgr.conditionSelections.length})`,
       });
-    });
-  }
+    } else if (key.startsWith('custom:')) {
+      const cri = parseInt(key.slice(7), 10);
+      const row = variantMgr.customRows[cri];
+      if (row) {
+        opts.push({
+          key,
+          label: `${row.title} (${row.values.length})`,
+        });
+      }
+    }
+  });
   opts.forEach((o) => {
     const b = document.createElement('button');
     b.type = 'button';
@@ -13377,8 +13521,10 @@ function showPublishToast() {
 }
 
 function showToastMessage(msg) {
-  const toast = document.getElementById('publishToast');
-  toast.querySelector('span').textContent = msg;
+  const toast = document.getElementById('appToast') || document.getElementById('publishToast');
+  if (!toast) return;
+  const span = toast.querySelector('span');
+  if (span) span.textContent = msg;
   requestAnimationFrame(() => {
     toast.classList.add('visible');
     setTimeout(() => {
@@ -16487,6 +16633,7 @@ function clearStressVariantData() {
   variantMgr.childQty = {};
   variantMgr.conditionQty = {};
   if (typeof priceVariantOverrides !== 'undefined') priceVariantOverrides = {};
+  if (typeof priceVariantFilterOverridesOnly !== 'undefined') priceVariantFilterOverridesOnly = false;
 
   const titleInput = document.getElementById('productTitleInput');
   if (titleInput) titleInput.value = '';
@@ -16541,6 +16688,7 @@ function vmResetVariantMgrToEmptyDefaults() {
   variantMgr.childQty = {};
   variantMgr.conditionQty = {};
   if (typeof priceVariantOverrides !== 'undefined') priceVariantOverrides = {};
+  if (typeof priceVariantFilterOverridesOnly !== 'undefined') priceVariantFilterOverridesOnly = false;
   priceResolveVmGroupBy();
   ensureVmQtyDefaults();
   refreshProductVariantsSummary();
@@ -16588,6 +16736,7 @@ function applyStressVariantPreset(preset, opts) {
     variantMgr.childQty = {};
     variantMgr.conditionQty = {};
     if (typeof priceVariantOverrides !== 'undefined') priceVariantOverrides = {};
+    if (typeof priceVariantFilterOverridesOnly !== 'undefined') priceVariantFilterOverridesOnly = false;
     const olDef = {
       sizes: 'Sizes',
       colors: 'Colors',
@@ -16809,7 +16958,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/8/26 @ 7:18pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/8/26 @ 8:28pm';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
