@@ -6603,8 +6603,17 @@
         <button type="button" class="vm-icon-btn" aria-label="Close" onclick="closeVmColorsSheet()"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
       </div>
       <div class="vm-sheet-body">
+        <div class="vm-input-wrap" id="vmColorsNameWrap">
+          <div class="vm-input-label">Option Name <span class="req">*</span></div>
+          <div class="vm-input-control-row">
+            <input type="text" class="vm-input-field" id="vmColorsName" placeholder="" inputmode="none" autocomplete="off" oninput="vmSyncColorDoneState()" />
+            <button type="button" class="vm-input-clear" aria-label="Clear text">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 6l8 8M14 6l-8 8"/></svg>
+            </button>
+          </div>
+        </div>
         <div class="vm-row-head">
-          <span>Colors</span>
+          <span>Values</span>
         </div>
         <div id="vmColorInputsMount"></div>
       </div>
@@ -8933,12 +8942,7 @@ function openProductPage(title, attrs, isNew) {
   if (isNew && !controlProductListingNullEnabled) {
     const seedPreset = VARIANT_STRESS_PRESETS[stressPresetIndex];
     if (seedPreset) {
-      if (stressPresetKeyHasBuiltInVariantOptions(seedPreset.key)) {
-        applyStressVariantPreset(seedPreset);
-      } else {
-        applyStressVariantPreset(seedPreset, { listingOnly: true });
-        vmResetVariantMgrToEmptyDefaults();
-      }
+      applyStressVariantPreset(seedPreset);
     }
   } else if (isNew && controlProductListingNullEnabled) {
     syncProductListingMedia(null);
@@ -9256,12 +9260,19 @@ function vmNestedCustomPartLists() {
  * (conditions belong under each size, not as top-level peers).
  */
 function vmUsesNestedVariantList() {
-  if (vmVariantMgrIsCustomDimensionOnlyCategory()) return false;
   if (variantMgr.sizes.length > 0 && variantMgr.colors.length > 0) return true;
   if (
     variantMgr.sizes.length > 0 &&
     variantMgr.conditionSelections.length > 0 &&
     variantMgr.colors.length === 0
+  ) {
+    return true;
+  }
+  if (
+    variantMgr.colors.length > 0 &&
+    variantMgr.sizes.length === 0 &&
+    variantMgr.customRows.length > 0 &&
+    variantMgr.customRows.some((r) => r.values.length > 0)
   ) {
     return true;
   }
@@ -9288,7 +9299,10 @@ function vmValidGroupByKeys() {
   if (variantMgr.conditionSelections.length && variantMgr.sizes.length) {
     keys.push('condition');
   }
-  if (variantMgr.sizes.length && variantMgr.colors.length && variantMgr.customRows.length) {
+  const hasNestableAxes =
+    (variantMgr.sizes.length && variantMgr.colors.length) ||
+    (variantMgr.colors.length > 0 && !variantMgr.sizes.length);
+  if (hasNestableAxes && variantMgr.customRows.length) {
     variantMgr.customRows.forEach((row, cri) => {
       keys.push('custom:' + cri);
     });
@@ -9331,13 +9345,15 @@ function vmFormatNestedVariantTitle(r, parts) {
   const segs = [];
 
   if (vmIsCustomGroupBy()) {
-    segs.push(escapeHtmlVm(vmL1Display(r.sz)));
+    const rawSzCg = String(r.sz ?? '').trim();
+    if (rawSzCg) segs.push(escapeHtmlVm(vmL1Display(r.sz)));
     if (!skipColorSeg) segs.push(escapeHtmlVm(color));
     if (hasCond) {
       segs.push(escapeHtmlVm(String(r.cond ?? '').trim() || '—'));
     }
   } else if (variantMgr.groupBy === 'colors') {
-    segs.push(escapeHtmlVm(vmL1Display(r.sz)));
+    const rawSz = String(r.sz ?? '').trim();
+    if (rawSz) segs.push(escapeHtmlVm(vmL1Display(r.sz)));
     if (hasCond) {
       segs.push(escapeHtmlVm(String(r.cond ?? '').trim() || '—'));
     }
@@ -9446,9 +9462,6 @@ function vmFormatCustomOnlyNestedL2Title(parts) {
 
 /** Custom-only listing: one flat row per value only when there is a single custom option row. */
 function vmCustomFlatLeafMode() {
-  if (vmVariantMgrIsCustomDimensionOnlyCategory()) {
-    return variantMgr.customRows.length === 1;
-  }
   return (
     !variantMgr.sizes.length &&
     !variantMgr.colors.length &&
@@ -9485,11 +9498,12 @@ function vmL1RowSubtitleCount() {
 function vmL1RowSubtitleCountFor(groupBy) {
   if (typeof groupBy === 'string' && groupBy.startsWith('custom:')) {
     const cri = parseInt(groupBy.slice(7), 10);
-    if (!variantMgr.customRows[cri] || !variantMgr.sizes.length || !variantMgr.colors.length) return 0;
+    if (!variantMgr.customRows[cri]) return 0;
+    if (!variantMgr.sizes.length && !variantMgr.colors.length) return 0;
     const condMult = variantMgr.conditionSelections.length ? variantMgr.conditionSelections.length : 1;
     return (
-      variantMgr.sizes.length *
-      variantMgr.colors.length *
+      Math.max(1, variantMgr.sizes.length) *
+      Math.max(1, variantMgr.colors.length) *
       condMult *
       vmNestedMultiplierExcludingCustomRow(cri)
     );
@@ -9570,7 +9584,13 @@ function stressPresetKeyHasBuiltInVariantOptions(key) {
  */
 function vmToolbarChipSlotsForProductCategory() {
   if (vmIsFashionOrSneakersProductCategory()) return { sizes: true, colors: true };
-  return { sizes: false, colors: false };
+  const idx = vmStressPresetIndexFromProductCategory();
+  if (idx < 0) return { sizes: false, colors: false };
+  const preset = VARIANT_STRESS_PRESETS[idx];
+  return {
+    sizes: !!(preset.sizes && preset.sizes.length),
+    colors: !!(preset.colors && preset.colors.length),
+  };
 }
 
 function vmIsSportsBreaksPreset() {
@@ -9924,6 +9944,12 @@ function ensureVmQtyDefaults() {
   } else if (!variantMgr.sizes.length && variantMgr.colors.length) {
     variantMgr.colors.forEach((c) => {
       if (variantMgr.l1Qty[c] == null) variantMgr.l1Qty[c] = 1;
+      if (variantMgr.customRows.length > 0) {
+        condList.forEach((cond) => {
+          const k = vmChildStorageKey('', c, cond);
+          if (variantMgr.childQty[k] == null) variantMgr.childQty[k] = 1;
+        });
+      }
     });
   }
 
@@ -10019,7 +10045,7 @@ function refreshVariantsManagerUI() {
       chipS.style.display = '';
       chipS.textContent = variantMgr.sizes.length
         ? `${ol.sizes} (${variantMgr.sizes.length})`
-        : 'Sizes';
+        : (ol.sizes || 'Sizes');
     }
   }
   if (chipC) {
@@ -10029,17 +10055,13 @@ function refreshVariantsManagerUI() {
       chipC.style.display = '';
       chipC.textContent = variantMgr.colors.length
         ? `${ol.colors} (${variantMgr.colors.length})`
-        : 'Colors';
+        : (ol.colors || 'Colors');
     }
   }
   if (chipCond) {
-    if (vmIsSportsBreaksPreset()) {
-      chipCond.style.display = 'none';
-    } else if (vmIsFashionOrSneakersProductCategory()) {
-      chipCond.style.display = '';
-    } else {
-      chipCond.style.display = 'none';
-    }
+    const presetIdx = vmStressPresetIndexFromProductCategory();
+    const presetHasCond = presetIdx >= 0 && VARIANT_STRESS_PRESETS[presetIdx].conditionSelections && VARIANT_STRESS_PRESETS[presetIdx].conditionSelections.length > 0;
+    chipCond.style.display = presetHasCond ? '' : 'none';
     const nCond = variantMgr.conditionSelections.length;
     chipCond.textContent = nCond ? `Condition (${nCond})` : 'Condition';
   }
@@ -10194,7 +10216,7 @@ function refreshVariantsManagerUI() {
         if (i < variantMgr.sizes.length - 1) parts.push('<div class="vm-list-divider"></div>');
       });
     }
-  } else if (variantMgr.sizes.length > 0 && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
+  } else if (variantMgr.sizes.length > 0) {
     variantMgr.sizes.forEach((sz, i) => {
       const label = escapeHtmlVm(vmL1Display(sz));
       const q = variantMgr.l1Qty[sz] ?? 1;
@@ -10212,7 +10234,7 @@ function refreshVariantsManagerUI() {
       );
       if (i < variantMgr.sizes.length - 1) parts.push('<div class="vm-list-divider"></div>');
     });
-  } else if (variantMgr.colors.length > 0 && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
+  } else if (variantMgr.colors.length > 0) {
     variantMgr.colors.forEach((col, i) => {
       const label = escapeHtmlVm(col);
       const q = variantMgr.l1Qty[col] ?? 1;
@@ -10232,7 +10254,7 @@ function refreshVariantsManagerUI() {
     });
   }
 
-  if (!nested && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
+  if (!nested) {
     variantMgr.conditionSelections.forEach((cond) => {
       if (parts.length) parts.push('<div class="vm-list-divider"></div>');
       const q = variantMgr.conditionQty[cond] ?? 1;
@@ -10254,8 +10276,7 @@ function refreshVariantsManagerUI() {
 
   if (!nested) {
     const customOnly =
-      (vmVariantMgrIsCustomDimensionOnlyCategory() ||
-        (!variantMgr.sizes.length && !variantMgr.colors.length)) &&
+      !variantMgr.sizes.length && !variantMgr.colors.length &&
       variantMgr.customRows.length > 0;
     const customFlatLeaf = vmCustomFlatLeafMode();
     const customMultiL1 = customOnly && variantMgr.customRows.length > 1;
@@ -10338,7 +10359,8 @@ function vmSumChildQtyForNestedL1(l1Key, groupBy) {
   if (typeof gb === 'string' && gb.startsWith('custom:')) {
     const cri = parseInt(gb.slice(7), 10);
     if (variantMgr.customRows[cri] == null) return 0;
-    variantMgr.sizes.forEach((sz) => {
+    const sizesIter = variantMgr.sizes.length > 0 ? variantMgr.sizes : [''];
+    sizesIter.forEach((sz) => {
       colorsIter.forEach((c) => {
         condList.forEach((cond) => {
           combos.forEach((pr) => {
@@ -10361,7 +10383,8 @@ function vmSumChildQtyForNestedL1(l1Key, groupBy) {
       });
     });
   } else if (gb === 'colors') {
-    variantMgr.sizes.forEach((sz) => {
+    const sizesIter = variantMgr.sizes.length > 0 ? variantMgr.sizes : [''];
+    sizesIter.forEach((sz) => {
       condList.forEach((cond) => {
         combos.forEach((pr) => {
           add(sz, l1Key, cond, pr === null ? [] : pr);
@@ -10439,7 +10462,7 @@ function vmGetProductVariantsSummaryRows() {
         });
       });
     }
-  } else if (variantMgr.sizes.length > 0 && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
+  } else if (variantMgr.sizes.length > 0) {
     variantMgr.sizes.forEach((sz) => {
       rows.push({
         label: vmL1Display(sz),
@@ -10447,7 +10470,7 @@ function vmGetProductVariantsSummaryRows() {
         qty: variantMgr.l1Qty[sz] ?? 1,
       });
     });
-  } else if (variantMgr.colors.length > 0 && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
+  } else if (variantMgr.colors.length > 0) {
     variantMgr.colors.forEach((c) => {
       rows.push({
         label: String(c),
@@ -10457,7 +10480,7 @@ function vmGetProductVariantsSummaryRows() {
     });
   }
 
-  if (!nested && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
+  if (!nested) {
     variantMgr.conditionSelections.forEach((cond) => {
       const nCond = vmConditionFlatRowSubtitleCount();
       rows.push({
@@ -10470,8 +10493,7 @@ function vmGetProductVariantsSummaryRows() {
 
   if (!nested) {
     const customOnly =
-      (vmVariantMgrIsCustomDimensionOnlyCategory() ||
-        (!variantMgr.sizes.length && !variantMgr.colors.length)) &&
+      !variantMgr.sizes.length && !variantMgr.colors.length &&
       variantMgr.customRows.length > 0;
     const customFlatLeaf = vmCustomFlatLeafMode();
     const customMultiL1 = customOnly && variantMgr.customRows.length > 1;
@@ -10769,9 +10791,8 @@ function priceL1RowSubHtml(nVariants, childKeys) {
 }
 
 function priceGetNestedChildrenForL1(l1Key) {
-  if (!variantMgr.sizes.length) return [];
   const colorsIter = vmColorsIterForNested();
-  if (!colorsIter.length) return [];
+  if (!variantMgr.sizes.length && !colorsIter.length) return [];
   const hasCond = variantMgr.conditionSelections.length > 0;
   const condList = hasCond ? variantMgr.conditionSelections.slice() : [null];
   const combos = vmNestedCustomPartLists();
@@ -10780,7 +10801,8 @@ function priceGetNestedChildrenForL1(l1Key) {
   if (vmIsCustomGroupBy()) {
     const cri = vmCustomGroupCri();
     if (cri == null) return [];
-    variantMgr.sizes.forEach((sz) => {
+    const sizesIter = variantMgr.sizes.length > 0 ? variantMgr.sizes : [''];
+    sizesIter.forEach((sz) => {
       colorsIter.forEach((c) => {
         condList.forEach((cond) => {
           combos.forEach((partsRaw) => {
@@ -10805,7 +10827,8 @@ function priceGetNestedChildrenForL1(l1Key) {
       });
     });
   } else if (variantMgr.groupBy === 'colors') {
-    variantMgr.sizes.forEach((sz) => {
+    const sizesIter = variantMgr.sizes.length > 0 ? variantMgr.sizes : [''];
+    sizesIter.forEach((sz) => {
       condList.forEach((cond) => {
         rows.push({ sz, c: l1Key, cond });
       });
@@ -11085,7 +11108,7 @@ function priceRefreshVariantTree() {
         );
       });
     }
-  } else if (variantMgr.sizes.length > 0 && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
+  } else if (variantMgr.sizes.length > 0) {
     variantMgr.sizes.forEach((sz) => {
       const label = escapeHtmlVm(vmL1Display(sz));
       const ch = priceGetFlatSizeChildren(sz);
@@ -11098,7 +11121,7 @@ function priceRefreshVariantTree() {
         `onclick="priceHandleFlatSizePriceRow('${safeSz}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceHandleFlatSizePriceRow('${safeSz}');}"`
       );
     });
-  } else if (variantMgr.colors.length > 0 && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
+  } else if (variantMgr.colors.length > 0) {
     variantMgr.colors.forEach((col) => {
       const label = escapeHtmlVm(col);
       const ch = priceGetFlatColorChildren(col);
@@ -11113,7 +11136,7 @@ function priceRefreshVariantTree() {
     });
   }
 
-  if (!nested && variantMgr.conditionSelections.length && !vmVariantMgrIsCustomDimensionOnlyCategory()) {
+  if (!nested && variantMgr.conditionSelections.length) {
     variantMgr.conditionSelections.forEach((cond) => {
       const label = escapeHtmlVm(cond);
       const ch = priceGetConditionBranchChildren(cond);
@@ -11130,8 +11153,7 @@ function priceRefreshVariantTree() {
   }
 
   const customPriceAxesClear =
-    vmVariantMgrIsCustomDimensionOnlyCategory() ||
-    (!variantMgr.sizes.length && !variantMgr.colors.length);
+    !variantMgr.sizes.length && !variantMgr.colors.length;
   if (!nested && customPriceAxesClear && variantMgr.customRows.length) {
     if (variantMgr.customRows.length === 1) {
       const row = variantMgr.customRows[0];
@@ -11636,18 +11658,22 @@ function vmSyncSizesSheetChrome() {
 }
 
 function vmSyncColorsSheetChrome() {
-  const label = variantMgr.colors.length
-    ? variantMgr.optionLabels.colors
-    : 'Colors';
+  const label = variantMgr.optionLabels.colors || 'Colors';
+  const nameInput = document.getElementById('vmColorsName');
+  if (nameInput) nameInput.value = label;
   const h1 = document.querySelector('#vmColorsOverlay .vm-sheet-h1');
   const sub = document.querySelector('#vmColorsOverlay .vm-sheet-sub');
-  const rowHead = document.querySelector('#vmColorsOverlay .vm-row-head span');
-  if (h1) h1.textContent = 'Manage ' + label;
-  if (sub) {
-    const low = label.charAt(0).toLowerCase() + label.slice(1);
-    sub.textContent = 'Add the ' + low + ' available for this listing.';
+  if (variantMgr.colors.length > 0) {
+    if (h1) h1.textContent = label;
+    if (sub) sub.style.display = 'none';
+  } else {
+    if (h1) h1.textContent = 'Create';
+    if (sub) {
+      sub.style.display = '';
+      sub.textContent = 'Name your option and add its values.';
+    }
   }
-  if (rowHead) rowHead.textContent = label;
+  vmSyncWdsWrapForFieldId('vmColorsName');
 }
 
 function openVmSizesSheet() {
@@ -11757,6 +11783,8 @@ function openVmColorsSheet() {
   renderVmColorRows();
   vmSyncColorDoneState();
   vmSyncColorsSheetFooter();
+  const cnw = document.getElementById('vmColorsNameWrap');
+  if (cnw) vmBindWdsTextWrap(cnw);
   vmOpenOverlay('vmColorsOverlay');
   const first = document.querySelector('#vmColorInputsMount .vm-color-row-input');
   vmRafFocusSheetInput(first);
@@ -11868,7 +11896,8 @@ function createVmColorRowEl(val, idx, totalRows) {
   wrap.style.cssText = 'flex:1;margin:0';
   const lab = document.createElement('div');
   lab.className = 'vm-input-label';
-  lab.innerHTML = 'Color <span class="req">*</span>';
+  const colorInputLabel = variantMgr.optionLabels.groupByColor || 'Color';
+  lab.innerHTML = colorInputLabel + ' <span class="req">*</span>';
   const ctrlRow = document.createElement('div');
   ctrlRow.className = 'vm-input-control-row';
   const input = document.createElement('input');
@@ -11956,7 +11985,8 @@ function vmSyncColorDoneState() {
   const mount = document.getElementById('vmColorInputsMount');
   const inputs = mount ? [...mount.querySelectorAll('.vm-color-row-input')] : [];
   const vals = inputs.map((i) => i.value.trim()).filter(Boolean);
-  btn.disabled = vals.length === 0;
+  const optName = (document.getElementById('vmColorsName')?.value || '').trim();
+  btn.disabled = vals.length === 0 || !optName;
 }
 
 function applyVmColors(e) {
@@ -11968,8 +11998,11 @@ function applyVmColors(e) {
   if (doneBtn && doneBtn.disabled) return;
   vmSyncPendingColorsFromInputs();
   const vals = variantMgr.pendingColorsDraft.map((s) => String(s).trim()).filter(Boolean);
-  if (vals.length === 0) return;
+  const optName = (document.getElementById('vmColorsName')?.value || '').trim();
+  if (vals.length === 0 || !optName) return;
   variantMgr.colors = vals;
+  variantMgr.optionLabels.colors = optName;
+  variantMgr.optionLabels.groupByColor = optName.replace(/s$/, '');
   ensureVmQtyDefaults();
   const ae = document.activeElement;
   if (ae instanceof HTMLElement && ae.closest('#vmColorsOverlay')) {
@@ -12164,7 +12197,7 @@ function vmRafFocusSheetInput(el) {
         el.focus({ preventScroll: true });
         scrollVmSheetInputIntoView(el);
         if (
-          el.matches('.vm-color-row-input, .vm-player-row-input, #vmCustomName, .vm-custom-val-input') &&
+          el.matches('.vm-color-row-input, .vm-player-row-input, #vmCustomName, #vmColorsName, .vm-custom-val-input') &&
           (el.closest('#vmColorsOverlay') ||
             el.closest('#vmPlayersOverlay') ||
             el.closest('#vmCustomOverlay'))
@@ -12281,7 +12314,7 @@ function initVmSoftKeyboard() {
     (e) => {
       const t = e.target;
       if (!(t instanceof HTMLInputElement)) return;
-      if (!t.matches('.vm-color-row-input, .vm-player-row-input, #vmCustomName, .vm-custom-val-input'))
+      if (!t.matches('.vm-color-row-input, .vm-player-row-input, #vmCustomName, #vmColorsName, .vm-custom-val-input'))
         return;
       if (
         !t.closest('#vmColorsOverlay') &&
@@ -12309,7 +12342,7 @@ function initVmSoftKeyboard() {
         }
         if (
           a instanceof HTMLInputElement &&
-          a.matches('.vm-color-row-input, .vm-player-row-input, #vmCustomName, .vm-custom-val-input')
+          a.matches('.vm-color-row-input, .vm-player-row-input, #vmCustomName, #vmColorsName, .vm-custom-val-input')
         ) {
           if (
             a.closest('#vmColorsOverlay') ||
@@ -12715,9 +12748,8 @@ function vmDeltaCustomOnlyNestedChildQty(l1Val, partsEnc, d) {
 }
 
 function openVmNestedSheet(l1Key) {
-  if (!variantMgr.sizes.length) return;
   const colorsIter = vmColorsIterForNested();
-  if (!colorsIter.length) return;
+  if (!variantMgr.sizes.length && !colorsIter.length) return;
   const mount = document.getElementById('vmNestedListMount');
   if (!mount) return;
   mount.innerHTML = '';
@@ -12733,7 +12765,8 @@ function openVmNestedSheet(l1Key) {
     const cri = vmCustomGroupCri();
     if (cri == null) return;
     title = String(l1Key);
-    variantMgr.sizes.forEach((sz) => {
+    const sizesIter = variantMgr.sizes.length > 0 ? variantMgr.sizes : [''];
+    sizesIter.forEach((sz) => {
       colorsIter.forEach((c) => {
         condList.forEach((cond) => {
           combos.forEach((partsRaw) => {
@@ -12756,7 +12789,8 @@ function openVmNestedSheet(l1Key) {
       });
     } else if (variantMgr.groupBy === 'colors') {
       title = String(l1Key);
-      variantMgr.sizes.forEach((sz) => {
+      const sizesIter = variantMgr.sizes.length > 0 ? variantMgr.sizes : [''];
+      sizesIter.forEach((sz) => {
         condList.forEach((cond) => {
           rows.push({ sz, c: l1Key, cond });
         });
@@ -14039,7 +14073,7 @@ function selectCategory(cat) {
     if (controlProductListingNullEnabled) {
       if (pIdx >= 0) {
         const preset = VARIANT_STRESS_PRESETS[pIdx];
-        if (preset && stressPresetKeyHasBuiltInVariantOptions(preset.key)) {
+        if (preset) {
           applyStressVariantPreset(preset, { variantsOnly: true, labelsOnly: true });
         } else {
           vmResetVariantMgrToEmptyDefaults();
@@ -17365,11 +17399,14 @@ const VARIANT_STRESS_PRESETS = [
     brandLine: 'Sony',
     weightLabel: '8oz – 1lb',
     sizes: [],
-    colors: ['128GB · Space Gray', '256GB · Silver', '512GB · White'],
+    colors: [],
     conditionSelections: [],
-    customRows: [],
-    groupBy: 'colors',
-    optionLabels: { colors: 'Models', groupByColor: 'Model' },
+    customRows: [
+      { title: 'Storage', values: ['128GB', '256GB', '512GB'] },
+      { title: 'Color', values: ['Space Gray', 'Silver', 'White'] },
+    ],
+    groupBy: 'custom:0',
+    optionLabels: {},
   },
   {
     key: 'toys',
@@ -17693,12 +17730,7 @@ function scheduleVariantsStressDeepLink() {
   stressPresetIndex = Math.max(0, Math.min(stressPresetIndex, VARIANT_STRESS_PRESETS.length - 1));
   const preset = VARIANT_STRESS_PRESETS[stressPresetIndex];
   if (!preset) return;
-  if (stressPresetKeyHasBuiltInVariantOptions(preset.key)) {
-    applyStressVariantPreset(preset);
-  } else {
-    applyStressVariantPreset(preset, { listingOnly: true });
-    vmResetVariantMgrToEmptyDefaults();
-  }
+  applyStressVariantPreset(preset);
 }
 
 requestAnimationFrame(() => {
@@ -17867,7 +17899,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 8:49am';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 9:29am';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
