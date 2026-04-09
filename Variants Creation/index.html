@@ -2833,7 +2833,7 @@
       border-top-color: rgba(0, 0, 0, 0.06);
     }
     .vm-sheet-footer.vm-sheet-footer-with-keyboard {
-      padding: 12px 16px 16px;
+      padding: 12px 16px 34px;
       border-top: 1px solid transparent;
     }
     .vm-sheet-footer.vm-sheet-footer-with-keyboard.vm-footer-scrolled {
@@ -6721,8 +6721,11 @@
         </div>
         <div id="vmSizesShoeAccordionMount" style="display:none"></div>
       </div>
-      <div class="vm-sheet-footer">
-        <button type="button" class="vm-done-btn" id="vmSizesDoneBtn" onclick="applyVmSizes()">Save</button>
+      <div class="vm-sheet-footer vm-sheet-footer-with-keyboard">
+        <div class="vm-sheet-footer-actions" id="vmSizesFooterRow">
+          <button type="button" class="vm-footer-pill-destructive" id="vmSizesDiscardBtn" style="display:none;flex:1;min-width:0" onclick="vmPromptDiscardAllSizes()">Discard</button>
+          <button type="button" class="vm-footer-pill-primary" id="vmSizesDoneBtn" style="flex:1;min-width:0" onclick="applyVmSizes()">Save</button>
+        </div>
       </div>
     </div>
   </div>
@@ -6812,8 +6815,11 @@
         <button type="button" class="vm-icon-btn" aria-label="Close" onclick="closeVmConditionSheet()"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
       </div>
       <div class="vm-sheet-body vm-condition-list" id="vmConditionList"></div>
-      <div class="vm-sheet-footer">
-        <button type="button" class="vm-done-btn" onclick="applyVmConditions()">Save</button>
+      <div class="vm-sheet-footer vm-sheet-footer-with-keyboard">
+        <div class="vm-sheet-footer-actions" id="vmConditionFooterRow">
+          <button type="button" class="vm-footer-pill-destructive" id="vmConditionDiscardBtn" style="display:none;flex:1;min-width:0" onclick="vmPromptDiscardAllConditions()">Discard</button>
+          <button type="button" class="vm-footer-pill-primary" style="flex:1;min-width:0" onclick="applyVmConditions()">Save</button>
+        </div>
       </div>
     </div>
   </div>
@@ -10915,10 +10921,14 @@ function refreshProductVariantsSummary() {
       </div>`
     );
   });
+  parts.push('<div class="product-variants-summary-divider" aria-hidden="true"></div>');
   if (moreN > 0) {
-    parts.push('<div class="product-variants-summary-divider" aria-hidden="true"></div>');
     parts.push(
       `<div class="product-variants-summary-more"><span class="product-variants-summary-more-label">+${moreN} More</span><span class="product-variants-summary-more-total">Total: ${totalQty}</span></div>`
+    );
+  } else {
+    parts.push(
+      `<div class="product-variants-summary-more"><span class="product-variants-summary-more-label"></span><span class="product-variants-summary-more-total">Total: ${totalQty}</span></div>`
     );
   }
 
@@ -12033,6 +12043,8 @@ function openVmSizesSheet() {
   buildVmSizesGrid();
   variantMgr.pendingSizes = variantMgr.sizes.slice();
   vmSyncPendingSizesUi();
+  const discard = document.getElementById('vmSizesDiscardBtn');
+  if (discard) discard.style.display = variantMgr.sizes.length > 0 ? '' : 'none';
   vmOpenOverlay('vmSizesOverlay');
 }
 
@@ -12100,15 +12112,70 @@ function vmPromptDiscardCustomOption() {
   );
 }
 
+function vmPromptDiscardAllSizes() {
+  vmOpenDiscardOptionsDialog(
+    'Discard all sizes?',
+    'This clears every size selection. You can add sizes again later.',
+    'sizes'
+  );
+}
+
+function vmPromptDiscardAllConditions() {
+  vmOpenDiscardOptionsDialog(
+    'Discard all conditions?',
+    'This clears every condition selection. You can add conditions again later.',
+    'conditions'
+  );
+}
+
 function vmDiscardOptionsConfirm() {
   const kind = vmDiscardOptionsKind;
   vmCloseDiscardOptionsDialog();
   if (kind === 'colors') vmDeleteAllColorsFromSheet();
   else if (kind === 'custom') vmDeleteEntireCustomOption();
+  else if (kind === 'sizes') vmDiscardAllSizes();
+  else if (kind === 'conditions') vmDiscardAllConditions();
 }
 
 function vmDiscardOptionsCancel() {
   vmCloseDiscardOptionsDialog();
+}
+
+function vmDiscardAllSizes() {
+  variantMgr.sizes.forEach((sz) => {
+    delete variantMgr.l1Qty[sz];
+  });
+  Object.keys(variantMgr.childQty).forEach((k) => {
+    if (variantMgr.sizes.some((sz) => k.startsWith(sz + '|'))) delete variantMgr.childQty[k];
+  });
+  variantMgr.sizes = [];
+  variantMgr.pendingSizes = [];
+  ensureVmQtyDefaults();
+  closeVmSizesSheet();
+  requestAnimationFrame(() => {
+    refreshVariantsManagerUI();
+    refreshProductVariantsSummary();
+    syncProductFormFieldsFromSavedVariants();
+    showToastMessage('Sizes cleared');
+  });
+}
+
+function vmDiscardAllConditions() {
+  variantMgr.conditionSelections.forEach((c) => {
+    delete variantMgr.conditionQty[c];
+  });
+  Object.keys(variantMgr.childQty).forEach((k) => {
+    if (variantMgr.conditionSelections.some((c) => k.endsWith('|' + c))) delete variantMgr.childQty[k];
+  });
+  variantMgr.conditionSelections = [];
+  ensureVmQtyDefaults();
+  closeVmConditionSheet();
+  requestAnimationFrame(() => {
+    refreshVariantsManagerUI();
+    refreshProductVariantsSummary();
+    syncProductFormFieldsFromSavedVariants();
+    showToastMessage('Conditions cleared');
+  });
 }
 
 function vmDeleteAllColorsFromSheet() {
@@ -12858,6 +12925,8 @@ function openVmConditionSheetFromChip() {
     });
     list.appendChild(b);
   });
+  const discard = document.getElementById('vmConditionDiscardBtn');
+  if (discard) discard.style.display = variantMgr.conditionSelections.length > 0 ? '' : 'none';
   vmOpenOverlay('vmConditionOverlay');
 }
 
@@ -18265,7 +18334,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 4:20pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 4:27pm';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
