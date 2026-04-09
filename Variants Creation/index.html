@@ -181,9 +181,6 @@
     }
     .proto-header-toast {
       position: fixed;
-      top: calc(56px + 8px + env(safe-area-inset-top, 0px));
-      left: 50%;
-      right: auto;
       padding: 10px 18px;
       border-radius: 10px;
       background: #f9dc00;
@@ -192,7 +189,6 @@
       font-weight: 600;
       font-family: var(--font);
       opacity: 0;
-      transform: translateX(-50%) translateY(-8px) scale(0.96);
       pointer-events: none;
       z-index: 200020;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
@@ -201,7 +197,6 @@
     }
     .proto-header-toast.visible {
       opacity: 1;
-      transform: translateX(-50%) translateY(0) scale(1);
     }
     .proto-link-btn.proto-share-btn--flash {
       background: rgba(249, 220, 0, 0.22);
@@ -768,7 +763,12 @@
         display: flex !important;
       }
       body.proto-mobile .proto-header-toast {
-        top: calc(var(--mobile-proto-header-h, 56px) + 10px + env(safe-area-inset-top, 0px));
+        left: 50% !important;
+        top: calc(var(--mobile-proto-header-h, 56px) + 10px + env(safe-area-inset-top, 0px)) !important;
+        transform: translateX(-50%) translateY(-8px) scale(0.96) !important;
+      }
+      body.proto-mobile .proto-header-toast.visible {
+        transform: translateX(-50%) translateY(0) scale(1) !important;
       }
       body.proto-mobile #protoZoom {
         display: none !important;
@@ -18265,7 +18265,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 4:16pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 4:20pm';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -18398,14 +18398,7 @@ let shareToastTimer = null;
 let shareBtnFlashTimer = null;
 
 function copyShareLinkGetUrl() {
-  try {
-    const u = new URL(window.location.href);
-    u.hash = '';
-    if (u.protocol === 'file:' || u.protocol === 'about:') return LIVE_URL;
-    return u.href;
-  } catch {
-    return LIVE_URL;
-  }
+  return LIVE_URL;
 }
 
 function copyShareLinkShowToast(message, flashButton) {
@@ -18413,8 +18406,18 @@ function copyShareLinkShowToast(message, flashButton) {
   if (!toast) return;
   clearTimeout(shareToastTimer);
   toast.textContent = message || 'Link copied!';
+
+  const panel = document.getElementById('controlPanel');
+  if (panel) {
+    const r = panel.getBoundingClientRect();
+    toast.style.left = (r.left + r.width / 2) + 'px';
+    toast.style.top = (r.top - 12) + 'px';
+    toast.style.transform = 'translate(-50%, -100%) translateY(-8px) scale(0.96)';
+  }
+
   toast.classList.add('visible');
   void toast.offsetWidth;
+  if (panel) toast.style.transform = 'translate(-50%, -100%) translateY(0) scale(1)';
   shareToastTimer = setTimeout(() => toast.classList.remove('visible'), 2600);
 
   if (flashButton !== false) {
