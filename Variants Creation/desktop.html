@@ -74,6 +74,17 @@
     .pf-setting-text { flex: 1; display: flex; flex-direction: column; gap: 8px; }
     .pf-setting-label { font-size: 16px; font-weight: 600; line-height: 24px; letter-spacing: -0.16px; color: var(--text-primary); }
     .pf-setting-desc { font-size: 14px; line-height: 20px; letter-spacing: -0.14px; color: #6a6a6a; }
+    .pf-shows-field { margin-top: 0; }
+    .pf-flash-details, .flash-details { display: flex; flex-direction: column; gap: 12px; padding: 4px 0 8px; }
+    .pf-flash-details .input-field, .flash-details .input-field { margin: 0; }
+    .flash-info { display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 18px; color: #6a6a6a; padding: 0 4px; }
+    .flash-strike { text-decoration: line-through; color: #999; }
+    .input-field.flash-required { border-color: #e53935; box-shadow: 0 0 0 1px #e53935; }
+    .flash-details.disabled { opacity: 0.4; pointer-events: none; }
+    .pf-flash-details.disabled { opacity: 0.4; pointer-events: none; }
+    .pf-inline-select { cursor: pointer; }
+    .pf-flash-info { display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 18px; color: #6a6a6a; padding: 0 4px; }
+    .pf-flash-strike { text-decoration: line-through; color: #999; }
     .pf-tab { display: flex; flex-direction: column; gap: 16px; }
     .pf-actions { display: flex; gap: 8px; }
     .pf-btn { flex: 1; height: 44px; border: none; border-radius: 999px; font-size: 18px; font-weight: 600; line-height: 24px; letter-spacing: -0.18px; cursor: pointer; transition: opacity 0.15s; }
@@ -126,7 +137,8 @@
     .app-bar-icon { width: 40px; height: 40px; border-radius: 100px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; transition: background 0.15s; }
     .app-bar-icon:hover { background: #f5f5f5; }
     .app-bar-icon svg { color: #121212; }
-    .app-bar-avatar { width: 32px; height: 32px; border-radius: 50%; background: #e0c87a; }
+    .app-bar-avatar { width: 32px; height: 32px; border-radius: 50%; background: #e0c87a; overflow: hidden; }
+    .app-bar-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .app-bar-badge { position: absolute; top: 8px; right: 6.5px; width: 6px; height: 6px; border-radius: 50%; background: #ef233c; border: 1px solid white; }
 
     /* ═══ MAIN LAYOUT ═══ */
@@ -292,7 +304,7 @@
     .pricing-tab { display: flex; flex-direction: column; gap: 16px; }
 
     /* ═══ SAVE FOOTER ═══ */
-    .save-footer { position: fixed; bottom: 0; left: 0; right: 0; height: 76px; background: var(--bg-base); border-top: 1px solid #fafafa; display: flex; align-items: center; justify-content: flex-end; padding: 0 24px; gap: 10px; z-index: 9999; }
+    .save-footer { position: fixed; bottom: 0; left: 0; right: 0; height: 76px; background: var(--bg-base); border-top: 1px solid #e0e0e0; display: flex; align-items: center; justify-content: flex-end; padding: 0 24px; gap: 10px; z-index: 9999; }
     .btn-footer { height: 44px; padding: 0 20px; border-radius: 999px; border: none; font-family: var(--font); font-size: 18px; font-weight: 600; line-height: 24px; letter-spacing: -0.18px; cursor: pointer; transition: background 0.15s, transform 0.1s; }
     .btn-footer:active { transform: scale(0.97); }
     .btn-cancel { background: var(--chip-unselected); color: var(--text-primary); }
@@ -424,7 +436,7 @@
     <div class="app-bar-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 6C11.5523 6 12 6.44772 12 7V10H15C15.5523 10 16 10.4477 16 11C16 11.5523 15.5523 12 15 12H12V15C12 15.5523 11.5523 16 11 16C10.4477 16 10 15.5523 10 15V12H7C6.44772 12 6 11.5523 6 11C6 10.4477 6.44772 10 7 10H10V7C10 6.44772 10.4477 6 11 6Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M22 11C22 17.0751 17.0751 22 11 22C4.92487 22 0 17.0751 0 11C0 4.92487 4.92487 0 11 0C17.0751 0 22 4.92487 22 11ZM11 20C15.9706 20 20 15.9706 20 11C20 6.02944 15.9706 2 11 2C6.02944 2 2 6.02944 2 11C2 15.9706 6.02944 20 11 20Z" fill="currentColor"/></svg></div>
     <div class="app-bar-icon"><svg width="22" height="22" viewBox="0 0 22 22.0037" fill="none"><path d="M5 7C5 6.44772 5.44772 6 6 6H16C16.5523 6 17 6.44772 17 7C17 7.55228 16.5523 8 16 8H6C5.44772 8 5 7.55228 5 7Z" fill="currentColor"/><path d="M6 10C5.44772 10 5 10.4477 5 11C5 11.5523 5.44772 12 6 12H13C13.5523 12 14 11.5523 14 11C14 10.4477 13.5523 10 13 10H6Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0 5C0 2.23858 2.23858 0 5 0H17C19.7614 0 22 2.23858 22 5V13C22 15.7614 19.7614 18 17 18H13.8281L10.4142 21.4139C9.15436 22.6738 7.00024 21.7816 7 20V18H5C2.23858 18 0 15.7614 0 13V5ZM9 16L9 19.9997L12.9997 16H17C18.6569 16 20 14.6569 20 13V5C20 3.34315 18.6569 2 17 2H5C3.34315 2 2 3.34315 2 5V13C2 14.6569 3.34315 16 5 16H9Z" fill="currentColor"/></svg><div class="app-bar-badge"></div></div>
     <div class="app-bar-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.737246 14.7322L3.99999 11.4695V7C3.99999 3.13401 7.134 0 11 0C14.866 0 18 3.13401 18 7V11.4695L21.2627 14.7322C22.8376 16.3071 21.7222 19 19.495 19H14.874C14.4299 20.7252 12.8638 22 11 22C9.13616 22 7.57006 20.7252 7.12602 19H2.50501C0.277748 19 -0.837667 16.3071 0.737246 14.7322ZM16 12.2979L19.8485 16.1464C20.1635 16.4614 19.9404 17 19.495 17H2.50501C2.05956 17 1.83647 16.4614 2.15146 16.1464L5.99999 12.2979V7C5.99999 4.23858 8.23857 2 11 2C13.7614 2 16 4.23858 16 7V12.2979ZM9.26756 19C9.61337 19.5978 10.2597 20 11 20C11.7403 20 12.3866 19.5978 12.7324 19H9.26756Z" fill="currentColor"/></svg><div class="app-bar-badge"></div></div>
-    <div class="app-bar-icon"><div class="app-bar-avatar"></div></div>
+    <div class="app-bar-icon"><div class="app-bar-avatar"><img src="icons/avatar.png" alt="Avatar"></div></div>
   </div>
 </div>
 
@@ -493,7 +505,6 @@
           <!-- FILLED STATE -->
           <div id="mediaFilledState" style="display:none;">
             <div class="media-grid">
-              <img class="media-thumb" src="icons/create-shoe.png" alt="Product">
               <div class="media-add" onclick="addMediaImage(this)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
             </div>
           </div>
@@ -593,16 +604,64 @@
               <div class="input-content"><div class="input-label">Price <span class="req">*</span></div><div class="input-value" contenteditable="true" onfocus="onPriceFocus(this)" oninput="onPriceInput(this)" onkeydown="onPriceKeydown(event)" onblur="onPriceBlur(this)">$65</div></div>
             </div>
             <div class="setting">
-              <div class="setting-row"><span class="setting-label">Flash Sale</span><div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
+              <div class="setting-row"><span class="setting-label">Flash Sale</span><div class="toggle" onclick="toggleSwitch(this); toggleMainFlashSale(this)"><div class="toggle-knob"></div></div></div>
               <div class="setting-desc">Turn this on to enable flash sales on this product</div>
             </div>
-            <div class="setting">
+            <div class="flash-details" id="mainFlashDetails" style="display:none;">
+              <div class="input-field select-field" onclick="toggleSelect(this)">
+                <div class="input-content"><div class="input-label">Discount Type <span class="req">*</span></div><div class="input-value">Percentage Off</div></div>
+                <div class="input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+                <div class="select-popover">
+                  <div class="select-option selected" data-value="Percentage Off" onclick="selectOption(null,this,event)">Percentage Off</div>
+                  <div class="select-option" data-value="Amount Off" onclick="selectOption(null,this,event)">Amount Off</div>
+                </div>
+              </div>
+              <div class="input-field select-field" onclick="toggleSelect(this)">
+                <div class="input-content"><div class="input-label">Percentage Discount Amount <span class="req">*</span></div><div class="input-value">25%</div></div>
+                <div class="input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+                <div class="select-popover">
+                  <div class="select-option" data-value="10%" onclick="selectOption(null,this,event)">10%</div>
+                  <div class="select-option selected" data-value="25%" onclick="selectOption(null,this,event)">25%</div>
+                  <div class="select-option" data-value="50%" onclick="selectOption(null,this,event)">50%</div>
+                  <div class="select-option" data-value="75%" onclick="selectOption(null,this,event)">75%</div>
+                </div>
+              </div>
+              <div class="flash-info" id="mainFlashInfo"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#999" stroke-width="1.2"/><text x="8" y="11.5" text-anchor="middle" font-size="10" font-weight="600" fill="#999">i</text></svg> <span class="flash-info-text">$-- Off · Price: <span class="flash-strike">$--</span> $--</span></div>
+              <div class="input-field select-field" onclick="toggleSelect(this)">
+                <div class="input-content"><div class="input-label">Sale Duration <span class="req">*</span></div><div class="input-value">30s</div></div>
+                <div class="input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+                <div class="select-popover">
+                  <div class="select-option" data-value="15s" onclick="selectOption(null,this,event)">15s</div>
+                  <div class="select-option selected" data-value="30s" onclick="selectOption(null,this,event)">30s</div>
+                  <div class="select-option" data-value="60s" onclick="selectOption(null,this,event)">60s</div>
+                  <div class="select-option" data-value="120s" onclick="selectOption(null,this,event)">120s</div>
+                </div>
+              </div>
+              <div class="setting">
+                <div class="setting-row"><span class="setting-label">Available for Full Price</span><div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
+                <div class="setting-desc">Make this product available for full price outside of the flash sale.</div>
+              </div>
+              <div class="setting">
+                <div class="setting-row"><span class="setting-label">Set Max Purchase Limit</span><div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
+              </div>
+            </div>
+            <div class="setting" id="mainAcceptOffers">
               <div class="setting-row"><span class="setting-label">Accept Offers</span><div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
               <div class="setting-desc">Turn this on to accept offers. You can accept, counter or decline the offers.</div>
             </div>
             <div class="setting">
-              <div class="setting-row"><span class="setting-label">Reserve for Live</span><div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
+              <div class="setting-row"><span class="setting-label">Reserve for Live</span><div class="toggle" onclick="toggleSwitch(this); toggleMainBinShows(this)"><div class="toggle-knob"></div></div></div>
               <div class="setting-desc">Turn this on to make this product only purchasable within a show.</div>
+            </div>
+            <div class="input-field select-field" id="mainBinShows" style="display:none;" onclick="toggleSelect(this)">
+              <div class="input-content"><div class="input-label">Featured in</div><div class="input-value">All Shows</div></div>
+              <div class="input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+              <div class="select-popover">
+                <div class="select-option active" data-value="All Shows" onclick="selectOption('mainBinShows',this,event)">All Shows</div>
+                <div class="select-option" data-value="Weekend Drop" onclick="selectOption('mainBinShows',this,event)">Weekend Drop</div>
+                <div class="select-option" data-value="Heat Check" onclick="selectOption('mainBinShows',this,event)">Heat Check</div>
+                <div class="select-option" data-value="Grail Sale" onclick="selectOption('mainBinShows',this,event)">Grail Sale</div>
+              </div>
             </div>
           </div>
           <!-- AUCTION TAB -->
@@ -614,17 +673,14 @@
               <div class="setting-row"><span class="setting-label">Sudden Death 💀</span><div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
               <div class="setting-desc">This means when you're down to 00:01, the last person to bid wins!</div>
             </div>
-            <div class="setting">
-              <div class="setting-row"><span class="setting-label">Reserve for Live</span><div class="toggle on" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
-              <div class="setting-desc">Turn this on to make this product only purchasable within a show.</div>
-            </div>
-            <div class="input-field select-field null" id="selectShows" onclick="toggleSelect(this)">
-              <div class="input-content"><div class="input-label">Shows <span class="req">*</span></div><div class="input-value"></div></div>
+            <div class="input-field select-field" id="mainAuctionShows" onclick="toggleSelect(this)">
+              <div class="input-content"><div class="input-label">Featured in</div><div class="input-value">All Shows</div></div>
               <div class="input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
               <div class="select-popover">
-                <div class="select-option" data-value="Weekend Drop" onclick="selectOption('selectShows',this,event)">Weekend Drop</div>
-                <div class="select-option" data-value="Heat Check" onclick="selectOption('selectShows',this,event)">Heat Check</div>
-                <div class="select-option" data-value="Grail Sale" onclick="selectOption('selectShows',this,event)">Grail Sale</div>
+                <div class="select-option active" data-value="All Shows" onclick="selectOption('mainAuctionShows',this,event)">All Shows</div>
+                <div class="select-option" data-value="Weekend Drop" onclick="selectOption('mainAuctionShows',this,event)">Weekend Drop</div>
+                <div class="select-option" data-value="Heat Check" onclick="selectOption('mainAuctionShows',this,event)">Heat Check</div>
+                <div class="select-option" data-value="Grail Sale" onclick="selectOption('mainAuctionShows',this,event)">Grail Sale</div>
               </div>
             </div>
           </div>
@@ -737,12 +793,15 @@
         </div>
         <div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
       </div>
-      <div class="pf-setting">
-        <div class="pf-setting-text">
-          <div class="pf-setting-label">Reserve for Live</div>
-          <div class="pf-setting-desc">Turn this on to make this product only purchasable within a show.</div>
+      <div class="input-field select-field pf-shows-field" id="pfAuctionShows" onclick="toggleSelect(this)">
+        <div class="input-content"><div class="input-label">Featured in</div><div class="input-value">All Shows</div></div>
+        <div class="input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <div class="select-popover">
+          <div class="select-option active" data-value="All Shows" onclick="selectOption('pfAuctionShows',this,event)">All Shows</div>
+          <div class="select-option" data-value="Weekend Drop" onclick="selectOption('pfAuctionShows',this,event)">Weekend Drop</div>
+          <div class="select-option" data-value="Heat Check" onclick="selectOption('pfAuctionShows',this,event)">Heat Check</div>
+          <div class="select-option" data-value="Grail Sale" onclick="selectOption('pfAuctionShows',this,event)">Grail Sale</div>
         </div>
-        <div class="toggle on" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
       </div>
     </div>
     <!-- BUY IT NOW TAB -->
@@ -755,9 +814,53 @@
           <div class="pf-setting-label">Flash Sale</div>
           <div class="pf-setting-desc">Turn this on to enable flash sales on this product.</div>
         </div>
-        <div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+        <div class="toggle" onclick="toggleSwitch(this); togglePfFlashSale(this)"><div class="toggle-knob"></div></div>
       </div>
-      <div class="pf-setting">
+      <div class="pf-flash-details" id="pfFlashDetails" style="display:none;">
+        <div class="input-field select-field pf-inline-select" onclick="toggleSelect(this)">
+          <div class="input-content"><div class="input-label">Discount Type <span class="req">*</span></div><div class="input-value">Percentage Off</div></div>
+          <div class="input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="select-popover">
+            <div class="select-option selected" data-value="Percentage Off" onclick="selectOption(null,this,event)">Percentage Off</div>
+            <div class="select-option" data-value="Amount Off" onclick="selectOption(null,this,event)">Amount Off</div>
+          </div>
+        </div>
+        <div class="input-field select-field pf-inline-select" onclick="toggleSelect(this)">
+          <div class="input-content"><div class="input-label">Percentage Discount Amount <span class="req">*</span></div><div class="input-value">25%</div></div>
+          <div class="input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="select-popover">
+            <div class="select-option" data-value="10%" onclick="selectOption(null,this,event)">10%</div>
+            <div class="select-option selected" data-value="25%" onclick="selectOption(null,this,event)">25%</div>
+            <div class="select-option" data-value="50%" onclick="selectOption(null,this,event)">50%</div>
+            <div class="select-option" data-value="75%" onclick="selectOption(null,this,event)">75%</div>
+          </div>
+        </div>
+        <div class="pf-flash-info" id="pfFlashInfo"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#999" stroke-width="1.2"/><text x="8" y="11.5" text-anchor="middle" font-size="10" font-weight="600" fill="#999">i</text></svg> <span class="pf-flash-info-text">$-- Off · Price: <span class="pf-flash-strike">$--</span> $--</span></div>
+        <div class="input-field select-field pf-inline-select" onclick="toggleSelect(this)">
+          <div class="input-content"><div class="input-label">Sale Duration <span class="req">*</span></div><div class="input-value">30s</div></div>
+          <div class="input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="select-popover">
+            <div class="select-option" data-value="15s" onclick="selectOption(null,this,event)">15s</div>
+            <div class="select-option selected" data-value="30s" onclick="selectOption(null,this,event)">30s</div>
+            <div class="select-option" data-value="60s" onclick="selectOption(null,this,event)">60s</div>
+            <div class="select-option" data-value="120s" onclick="selectOption(null,this,event)">120s</div>
+          </div>
+        </div>
+        <div class="pf-setting">
+          <div class="pf-setting-text">
+            <div class="pf-setting-label">Available for Full Price</div>
+            <div class="pf-setting-desc">Make this product available for full price outside of the flash sale.</div>
+          </div>
+          <div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="pf-setting">
+          <div class="pf-setting-text">
+            <div class="pf-setting-label">Set Max Purchase Limit</div>
+          </div>
+          <div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+        </div>
+      </div>
+      <div class="pf-setting" id="pfAcceptOffers">
         <div class="pf-setting-text">
           <div class="pf-setting-label">Accept Offers</div>
           <div class="pf-setting-desc">Turn this on to accept offers. You can accept, counter or decline the offers.</div>
@@ -769,7 +872,17 @@
           <div class="pf-setting-label">Reserve for Live</div>
           <div class="pf-setting-desc">Turn this on to make this product only purchasable within a show.</div>
         </div>
-        <div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+        <div class="toggle" onclick="toggleSwitch(this); togglePfBinShows(this)"><div class="toggle-knob"></div></div>
+      </div>
+      <div class="input-field select-field pf-shows-field" id="pfBinShows" style="display:none;" onclick="toggleSelect(this)">
+        <div class="input-content"><div class="input-label">Featured in</div><div class="input-value">All Shows</div></div>
+        <div class="input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <div class="select-popover">
+          <div class="select-option active" data-value="All Shows" onclick="selectOption('pfBinShows',this,event)">All Shows</div>
+          <div class="select-option" data-value="Weekend Drop" onclick="selectOption('pfBinShows',this,event)">Weekend Drop</div>
+          <div class="select-option" data-value="Heat Check" onclick="selectOption('pfBinShows',this,event)">Heat Check</div>
+          <div class="select-option" data-value="Grail Sale" onclick="selectOption('pfBinShows',this,event)">Grail Sale</div>
+        </div>
       </div>
     </div>
     <div class="pf-actions">
@@ -780,7 +893,7 @@
 </div>
 
 <script>
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 11:40pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/10/26 @ 12:15am';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -932,6 +1045,7 @@ function applyNullForm() {
 
   document.getElementById('mediaNullState').classList.remove('hidden');
   document.getElementById('mediaFilledState').style.display = 'none';
+  document.querySelectorAll('.media-grid .media-thumb').forEach(t => t.remove());
 
   mainQty = 1;
   const qtyEl = document.getElementById('mainQtyValue');
@@ -984,6 +1098,14 @@ function applyFilledForm() {
 
   document.getElementById('mediaNullState').classList.add('hidden');
   document.getElementById('mediaFilledState').style.display = '';
+  const mediaGrid = document.querySelector('.media-grid');
+  const mediaAdd = mediaGrid.querySelector('.media-add');
+  mediaGrid.querySelectorAll('.media-thumb').forEach(t => t.remove());
+  const heroImg = document.createElement('img');
+  heroImg.className = 'media-thumb';
+  heroImg.src = 'icons/create-shoe.png';
+  heroImg.alt = 'Product';
+  mediaGrid.insertBefore(heroImg, mediaAdd);
 
   mainQty = 10;
   const qtyEl = document.getElementById('mainQtyValue');
@@ -1051,6 +1173,7 @@ function renderCategoryChips() {
 function selectCategory(cat) {
   selectedCategory = cat;
   renderCategoryChips();
+  setSelectValue('selectCategory', cat);
 }
 
 function addOptionRow(name, values, preset) {
@@ -1517,6 +1640,21 @@ function buildVariantKey(groupVal, combo, groupRow) {
   return full.join('|');
 }
 
+function onQtyKeydown(e) {
+  if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); }
+}
+function onQtyFocus(el) {
+  setTimeout(() => {
+    const sel = window.getSelection();
+    const range = document.createRange();
+    const textNode = el.firstChild;
+    if (textNode && textNode.length) {
+      range.selectNodeContents(el);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  }, 0);
+}
 function onChildQtyChange(key, el) {
   const val = parseInt(el.textContent.trim()) || 0;
   variantQty[key] = Math.max(0, val);
@@ -1609,7 +1747,7 @@ function renderProductTable() {
             <img class="pt-thumb" src="icons/create-shoe.png" alt="">
             <div class="pt-child-name">${formattedName}</div>
           </div></td>
-          <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Quantity</div><div class="pt-input-value" contenteditable="true" onblur="onChildQtyChange('${vKey.replace(/'/g,"\\'")}',this)">${childQty}</div></div></div></td>
+          <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Quantity</div><div class="pt-input-value" contenteditable="true" onfocus="onQtyFocus(this)" onkeydown="onQtyKeydown(event)" onblur="onChildQtyChange('${vKey.replace(/'/g,"\\'")}',this)">${childQty}</div></div></div></td>
           ${buildPriceCell(vKey)}
         </tr>`;
       });
@@ -1653,7 +1791,7 @@ function buildFlatTable(values) {
         <img class="pt-thumb" src="icons/create-shoe.png" alt="">
         <div class="pt-child-name">${c}</div>
       </div></td>
-      <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Quantity</div><div class="pt-input-value" contenteditable="true" onblur="onChildQtyChange('${c.replace(/'/g,"\\'")}',this)">${qty}</div></div></div></td>
+      <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Quantity</div><div class="pt-input-value" contenteditable="true" onfocus="onQtyFocus(this)" onkeydown="onQtyKeydown(event)" onblur="onChildQtyChange('${c.replace(/'/g,"\\'")}',this)">${qty}</div></div></div></td>
       ${buildPriceCell(c)}
     </tr>`;
   });
@@ -1733,8 +1871,8 @@ function onPriceFocus(el) {
     const range = document.createRange();
     const textNode = el.firstChild;
     if (textNode) {
-      range.setStart(textNode, textNode.length);
-      range.collapse(true);
+      if (textNode.length > 1) { range.setStart(textNode, 1); range.setEnd(textNode, textNode.length); }
+      else { range.setStart(textNode, 1); range.collapse(true); }
       sel.removeAllRanges();
       sel.addRange(range);
     }
@@ -1770,6 +1908,8 @@ function onPriceBlur(el) {
   el.textContent = raw ? '$' + raw : '$';
   el.closest('.input-field').classList.toggle('null', !raw);
   renderProductTable();
+  const flashDetails = document.getElementById('mainFlashDetails');
+  if (flashDetails && flashDetails.style.display !== 'none') updateMainFlashInfo();
 }
 function onStartPriceFocus(el) {
   let raw = el.textContent.replace(/[^0-9.]/g, '');
@@ -1778,7 +1918,12 @@ function onStartPriceFocus(el) {
     const sel = window.getSelection();
     const range = document.createRange();
     const textNode = el.firstChild;
-    if (textNode) { range.setStart(textNode, textNode.length); range.collapse(true); sel.removeAllRanges(); sel.addRange(range); }
+    if (textNode) {
+      if (textNode.length > 1) { range.setStart(textNode, 1); range.setEnd(textNode, textNode.length); }
+      else { range.setStart(textNode, 1); range.collapse(true); }
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
   }, 0);
 }
 function onStartPriceInput(el) {
@@ -1955,7 +2100,12 @@ function onPfPriceFocus(el) {
     const sel = window.getSelection();
     const range = document.createRange();
     const textNode = el.firstChild;
-    if (textNode) { range.setStart(textNode, textNode.length); range.collapse(true); sel.removeAllRanges(); sel.addRange(range); }
+    if (textNode) {
+      if (textNode.length > 1) { range.setStart(textNode, 1); range.setEnd(textNode, textNode.length); }
+      else { range.setStart(textNode, 1); range.collapse(true); }
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
   }, 0);
 }
 function onPfPriceInput(el) {
@@ -1976,6 +2126,8 @@ function onPfPriceBlur(el) {
   let raw = el.textContent.replace(/[^0-9.]/g, '');
   el.textContent = raw ? '$' + raw : '$';
   el.closest('.input-field').classList.toggle('null', !raw);
+  const flashDetails = document.getElementById('pfFlashDetails');
+  if (flashDetails && flashDetails.style.display !== 'none') updatePfFlashInfo();
 }
 
 function savePriceFormat() {
@@ -2007,24 +2159,147 @@ function cancelPriceFormat() {
   document.getElementById('priceFormatDialog').classList.remove('open');
 }
 
+function toggleMainFlashSale(toggle) {
+  const isOn = toggle.classList.contains('on');
+  const details = document.getElementById('mainFlashDetails');
+  if (details) details.style.display = isOn ? '' : 'none';
+  const acceptOffers = document.getElementById('mainAcceptOffers');
+  if (acceptOffers) acceptOffers.style.display = isOn ? 'none' : '';
+  const priceField = document.getElementById('priceField');
+  if (isOn) {
+    const hasPrice = !!mainPrice;
+    if (!hasPrice) {
+      priceField.classList.add('flash-required');
+      if (details) details.classList.add('disabled');
+      const priceInput = priceField.querySelector('[contenteditable]');
+      if (priceInput) setTimeout(() => priceInput.focus(), 50);
+    }
+    updateMainFlashInfo();
+  } else {
+    priceField.classList.remove('flash-required');
+    if (details) details.classList.remove('disabled');
+  }
+}
+
+function updateMainFlashInfo() {
+  const details = document.getElementById('mainFlashDetails');
+  const priceField = document.getElementById('priceField');
+  const infoText = document.querySelector('#mainFlashInfo .flash-info-text');
+  if (!mainPrice) {
+    if (priceField) priceField.classList.add('flash-required');
+    if (details) details.classList.add('disabled');
+    if (infoText) infoText.innerHTML = '$-- Off · Price: <span class="flash-strike">$--</span> $--';
+  } else {
+    if (priceField) priceField.classList.remove('flash-required');
+    if (details) details.classList.remove('disabled');
+    const base = parseFloat(mainPrice);
+    const discount = base * 0.25;
+    const sale = base - discount;
+    if (infoText) infoText.innerHTML = `$${discount.toFixed(2)} Off · Price: <span class="flash-strike">$${base.toFixed(2)}</span> $${sale.toFixed(2)}`;
+  }
+}
+
+function toggleMainBinShows(toggle) {
+  const shows = document.getElementById('mainBinShows');
+  if (shows) shows.style.display = toggle.classList.contains('on') ? '' : 'none';
+}
+
+function togglePfFlashSale(toggle) {
+  const isOn = toggle.classList.contains('on');
+  const details = document.getElementById('pfFlashDetails');
+  if (details) details.style.display = isOn ? '' : 'none';
+  const acceptOffers = document.getElementById('pfAcceptOffers');
+  if (acceptOffers) acceptOffers.style.display = isOn ? 'none' : '';
+  const priceField = document.getElementById('pfPriceField');
+  if (isOn) {
+    const raw = document.getElementById('pfPriceValue').textContent.replace(/[^0-9.]/g, '');
+    if (!raw) {
+      priceField.classList.add('flash-required');
+      if (details) details.classList.add('disabled');
+      setTimeout(() => document.getElementById('pfPriceValue').focus(), 50);
+    }
+    updatePfFlashInfo();
+  } else {
+    priceField.classList.remove('flash-required');
+    if (details) details.classList.remove('disabled');
+  }
+}
+
+function updatePfFlashInfo() {
+  const details = document.getElementById('pfFlashDetails');
+  const priceField = document.getElementById('pfPriceField');
+  const infoText = document.querySelector('#pfFlashInfo .pf-flash-info-text');
+  const raw = document.getElementById('pfPriceValue').textContent.replace(/[^0-9.]/g, '');
+  if (!raw) {
+    if (priceField) priceField.classList.add('flash-required');
+    if (details) details.classList.add('disabled');
+    if (infoText) infoText.innerHTML = '$-- Off · Price: <span class="pf-flash-strike">$--</span> $--';
+  } else {
+    if (priceField) priceField.classList.remove('flash-required');
+    if (details) details.classList.remove('disabled');
+    const base = parseFloat(raw);
+    const discount = base * 0.25;
+    const sale = base - discount;
+    if (infoText) infoText.innerHTML = `$${discount.toFixed(2)} Off · Price: <span class="pf-flash-strike">$${base.toFixed(2)}</span> $${sale.toFixed(2)}`;
+  }
+}
+
+function togglePfBinShows(toggle) {
+  const shows = document.getElementById('pfBinShows');
+  if (shows) shows.style.display = toggle.classList.contains('on') ? '' : 'none';
+}
+
 function setPfTab(btn, type) {
   btn.parentElement.querySelectorAll('.pf-seg-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('pfAuction').style.display = type === 'auction' ? '' : 'none';
   document.getElementById('pfBin').style.display = type === 'bin' ? '' : 'none';
+  const priceEl = type === 'auction'
+    ? document.getElementById('pfStartPriceValue')
+    : document.getElementById('pfPriceValue');
+  if (priceEl) setTimeout(() => priceEl.focus(), 0);
 }
 
 function addMediaFromZone() {
-  document.getElementById('mediaNullState').classList.add('hidden');
-  document.getElementById('mediaFilledState').style.display = '';
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.multiple = true;
+  input.onchange = function() {
+    if (!input.files.length) return;
+    document.getElementById('mediaNullState').classList.add('hidden');
+    document.getElementById('mediaFilledState').style.display = '';
+    const grid = document.querySelector('.media-grid');
+    const addBtn = grid.querySelector('.media-add');
+    const existingThumb = grid.querySelector('.media-thumb');
+    if (existingThumb) existingThumb.remove();
+    Array.from(input.files).forEach((file, i) => {
+      const img = document.createElement('img');
+      img.className = 'media-thumb';
+      img.src = URL.createObjectURL(file);
+      img.alt = file.name;
+      grid.insertBefore(img, addBtn);
+    });
+  };
+  input.click();
 }
 
 function addMediaImage(addBtn) {
-  const img = document.createElement('img');
-  img.className = 'media-thumb';
-  img.src = 'icons/create-shoe.png';
-  img.alt = 'Product';
-  addBtn.parentElement.insertBefore(img, addBtn);
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.multiple = true;
+  input.onchange = function() {
+    if (!input.files.length) return;
+    Array.from(input.files).forEach(file => {
+      const img = document.createElement('img');
+      img.className = 'media-thumb';
+      img.src = URL.createObjectURL(file);
+      img.alt = file.name;
+      addBtn.parentElement.insertBefore(img, addBtn);
+    });
+  };
+  input.click();
 }
 
 function focusInput(el) {
