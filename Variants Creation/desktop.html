@@ -50,6 +50,22 @@
     .proto-header-toast { position: fixed; padding: 10px 18px; border-radius: 10px; background: #f9dc00; color: #1d1d1d; font-size: 13px; font-weight: 600; font-family: var(--font); opacity: 0; pointer-events: none; z-index: 200020; box-shadow: 0 8px 32px rgba(0,0,0,0.4); transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.32,0.72,0,1); white-space: nowrap; }
     .proto-header-toast.visible { opacity: 1; }
     .proto-link-btn.proto-share-btn--flash { background: rgba(249,220,0,0.22); border-color: rgba(249,220,0,0.45); color: #f9dc00; }
+    .proto-btn-label { transition: width 0.15s, opacity 0.15s; }
+
+    @media (max-width: 1100px) {
+      .proto-header-meta { display: none; }
+    }
+    @media (max-width: 900px) {
+      .proto-btn-label { display: none; }
+      .proto-link-btn { padding: 6px; }
+      .proto-breadcrumb .current { overflow: hidden; text-overflow: ellipsis; max-width: 160px; display: inline-block; vertical-align: middle; }
+    }
+    @media (max-width: 640px) {
+      .proto-breadcrumb a, .proto-breadcrumb .sep:not(:last-of-type), .proto-breadcrumb span:not(.current):not(.seg-active) { display: none; }
+      .proto-breadcrumb .sep:last-of-type { display: none; }
+      .proto-segment { margin-left: 0; }
+      .proto-header { padding: 0 10px; }
+    }
 
     /* ═══ PRICE & FORMAT DIALOG ═══ */
     .pf-panel { padding: 24px; gap: 16px; display: flex; flex-direction: column; width: 360px; }
@@ -61,6 +77,7 @@
     .pf-setting-text { flex: 1; display: flex; flex-direction: column; gap: 8px; }
     .pf-setting-label { font-size: 16px; font-weight: 600; line-height: 24px; letter-spacing: -0.16px; color: var(--text-primary); }
     .pf-setting-desc { font-size: 14px; line-height: 20px; letter-spacing: -0.14px; color: #6a6a6a; }
+    .pf-tab { display: flex; flex-direction: column; gap: 16px; }
     .pf-actions { display: flex; gap: 8px; }
     .pf-btn { flex: 1; height: 44px; border: none; border-radius: 999px; font-size: 18px; font-weight: 600; line-height: 24px; letter-spacing: -0.18px; cursor: pointer; transition: opacity 0.15s; }
     .pf-btn:active { opacity: 0.8; }
@@ -125,7 +142,7 @@
     .nav-item svg { width: 20px; height: 20px; }
     .nav-bottom { display: flex; flex-direction: column; gap: 4px; padding: 0 16px; }
 
-    .content-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; padding-bottom: 76px; min-height: 0; }
+    .content-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; padding-bottom: 260px; min-height: 0; }
     .content-header { display: flex; align-items: center; justify-content: space-between; padding: 48px 24px 32px; }
     .content-header-left { display: flex; align-items: center; gap: 12px; }
     .back-btn { width: 32px; height: 32px; border-radius: 999px; border: 1px solid rgba(0,0,0,0.2); background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.15s; flex-shrink: 0; }
@@ -135,8 +152,8 @@
     /* ═══ BANNER ═══ */
 
     /* ═══ CREATION LAYOUT ═══ */
-    .creation { display: flex; gap: 32px; padding: 24px; flex: 1; align-items: flex-start; }
-    .creation-left { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 32px; }
+    .creation { display: flex; flex-wrap: wrap; gap: 32px; padding: 0 24px 24px; flex: 1; align-items: flex-start; }
+    .creation-left { flex: 1; min-width: 560px; display: flex; flex-direction: column; gap: 32px; }
     .creation-right { width: 360px; flex-shrink: 0; display: flex; flex-direction: column; gap: 32px; }
 
     /* ═══ CARDS ═══ */
@@ -212,7 +229,7 @@
     .option-delete:hover { opacity: 0.8; background: #f5f5f5; }
     @keyframes shake { 0%,100% { transform: translateX(0); } 15%,45%,75% { transform: translateX(-4px); } 30%,60%,90% { transform: translateX(4px); } }
     .option-row.shake { animation: shake 0.4s ease; }
-    .typeahead-dropdown { position: absolute; top: 100%; left: 0; right: 0; z-index: 100; background: white; border: 1px solid var(--stroke-strong); border-radius: 12px; box-shadow: 0 8px 16px -4px rgba(0,0,0,0.08), 0 2px 6px -2px rgba(0,0,0,0.04); margin-top: 4px; max-height: 240px; overflow-y: auto; display: none; }
+    .typeahead-dropdown { position: absolute; top: 100%; left: 0; right: 0; z-index: 10000; background: white; border: 1px solid var(--stroke-strong); border-radius: 12px; box-shadow: 0 8px 16px -4px rgba(0,0,0,0.08), 0 2px 6px -2px rgba(0,0,0,0.04); margin-top: 4px; max-height: 240px; overflow-y: auto; display: none; }
     .typeahead-dropdown.open { display: block; }
     .typeahead-option { padding: 10px 12px; font-size: 14px; line-height: 20px; letter-spacing: -0.14px; color: var(--text-primary); cursor: pointer; transition: background 0.1s; }
     .typeahead-option:first-child { border-radius: 12px 12px 0 0; }
@@ -252,7 +269,7 @@
     .pt-child-name { font-size: 14px; font-weight: 400; line-height: 20px; letter-spacing: -0.14px; color: var(--text-secondary); }
     .pt-child-name .pt-child-sep { font-weight: 600; }
     .pt-child-row .pt-input { background: var(--bg-base); }
-    .pt-label-cell { padding: 16px 12px; vertical-align: middle; text-align: left; }
+    .product-table td.pt-label-cell { padding: 16px 12px; vertical-align: middle; text-align: left; }
     .pt-label-text { font-size: 14px; line-height: 20px; letter-spacing: -0.14px; color: var(--text-secondary); }
     .pt-child-row .pt-input-label { color: #1c1c1c; }
     .pt-child-row .pt-input-value { color: #1c1c1c; }
@@ -328,8 +345,9 @@
     .media-mobile-btn { height: 36px; padding: 0 20px; border: none; border-radius: 999px; background: #121212; color: white; font-size: 14px; font-weight: 600; cursor: pointer; flex-shrink: 0; }
 
     /* ═══ RESPONSIVE ═══ */
-    @media (max-width: 1200px) {
+    @media (max-width: 1280px) {
       .creation { flex-direction: column; }
+      .creation-left { min-width: 0; width: 100%; }
       .creation-right { width: 100%; }
     }
     @media (max-width: 900px) {
@@ -372,15 +390,15 @@
     </div>
     <a class="proto-link-btn" href="https://www.figma.com/design/Efq06B5ZlyOhHXIKojFhFd/Product-Creation---Management?node-id=19889-301778&m=dev" target="_blank" rel="noopener">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M8 2H5a3 3 0 0 0-3 3v3a3 3 0 0 0 3 3h3a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Z" fill="currentColor" opacity="0.5"/><path d="M5 13H8a3 3 0 0 1 3 3v3a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-3a3 3 0 0 1 3-3Z" fill="currentColor" opacity="0.7"/><path d="M16 2h-3a3 3 0 0 0-3 3v3a3 3 0 0 0 3 3h3a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Z" fill="currentColor" opacity="0.6"/><path d="M19 13h-3a3 3 0 0 0-3 3v5h3a3 3 0 0 0 3-3v-5Z" fill="currentColor" opacity="0.8"/></svg>
-      <span>Figma</span>
+      <span class="proto-btn-label">Figma</span>
     </a>
     <a class="proto-link-btn" href="https://docs.google.com/document/d/1Hr9BI1rszc3mk-bpH511IIkmtbrsUhWMXqyGSzJ9DbY/edit?tab=t.0#heading=h.j5sk7xjejuu4" target="_blank" rel="noopener">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
-      <span>PRD</span>
+      <span class="proto-btn-label">PRD</span>
     </a>
     <button type="button" class="proto-link-btn" id="protoShareBtn" onclick="copyShareLink()" title="Copy share link">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-      <span>Share</span>
+      <span class="proto-btn-label">Share</span>
     </button>
     <div class="proto-header-toast" id="protoHeaderToast" role="status" aria-live="polite" aria-atomic="true">Link copied!</div>
   </div>
@@ -706,18 +724,55 @@
   <div class="dialog-panel pf-panel" onclick="event.stopPropagation()">
     <div class="pf-title">Price &amp; Format</div>
     <div class="pf-seg">
-      <button class="pf-seg-btn active" onclick="setPfTab(this,'bin')">Buy It Now</button>
-      <button class="pf-seg-btn" onclick="setPfTab(this,'auction')">Auction</button>
+      <button class="pf-seg-btn active" onclick="setPfTab(this,'auction')">Auction</button>
+      <button class="pf-seg-btn" onclick="setPfTab(this,'bin')">Buy It Now</button>
     </div>
-    <div class="input-field" id="pfPriceField" onclick="focusInput(this)">
-      <div class="input-content"><div class="input-label">Price</div><div class="input-value" id="pfPriceValue" contenteditable="true" onfocus="onPfPriceFocus(this)" oninput="onPfPriceInput(this)" onkeydown="onPfPriceKeydown(event)" onblur="onPfPriceBlur(this)">$</div></div>
-    </div>
-    <div class="pf-setting">
-      <div class="pf-setting-text">
-        <div class="pf-setting-label">Accept Offers</div>
-        <div class="pf-setting-desc">Turn this on to accept offers. You can accept, counter or decline the offers.</div>
+    <!-- AUCTION TAB -->
+    <div class="pf-tab" id="pfAuction">
+      <div class="input-field" id="pfStartPriceField" onclick="focusInput(this)">
+        <div class="input-content"><div class="input-label">Starting Price (USD)</div><div class="input-value" id="pfStartPriceValue" contenteditable="true" onfocus="onPfPriceFocus(this)" oninput="onPfPriceInput(this)" onkeydown="onPfPriceKeydown(event)" onblur="onPfPriceBlur(this)">$1</div></div>
       </div>
-      <div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+      <div class="pf-setting">
+        <div class="pf-setting-text">
+          <div class="pf-setting-label">Sudden Death 💀</div>
+          <div class="pf-setting-desc">This means when you're down to 00:01, the last person to bid wins!</div>
+        </div>
+        <div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+      </div>
+      <div class="pf-setting">
+        <div class="pf-setting-text">
+          <div class="pf-setting-label">Reserve for Live</div>
+          <div class="pf-setting-desc">Turn this on to make this product only purchasable within a show.</div>
+        </div>
+        <div class="toggle on" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+      </div>
+    </div>
+    <!-- BUY IT NOW TAB -->
+    <div class="pf-tab" id="pfBin" style="display:none;">
+      <div class="input-field" id="pfPriceField" onclick="focusInput(this)">
+        <div class="input-content"><div class="input-label">Price</div><div class="input-value" id="pfPriceValue" contenteditable="true" onfocus="onPfPriceFocus(this)" oninput="onPfPriceInput(this)" onkeydown="onPfPriceKeydown(event)" onblur="onPfPriceBlur(this)">$</div></div>
+      </div>
+      <div class="pf-setting">
+        <div class="pf-setting-text">
+          <div class="pf-setting-label">Flash Sale</div>
+          <div class="pf-setting-desc">Turn this on to enable flash sales on this product.</div>
+        </div>
+        <div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+      </div>
+      <div class="pf-setting">
+        <div class="pf-setting-text">
+          <div class="pf-setting-label">Accept Offers</div>
+          <div class="pf-setting-desc">Turn this on to accept offers. You can accept, counter or decline the offers.</div>
+        </div>
+        <div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+      </div>
+      <div class="pf-setting">
+        <div class="pf-setting-text">
+          <div class="pf-setting-label">Reserve for Live</div>
+          <div class="pf-setting-desc">Turn this on to make this product only purchasable within a show.</div>
+        </div>
+        <div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+      </div>
     </div>
     <div class="pf-actions">
       <button class="pf-btn pf-btn-cancel" onclick="cancelPriceFormat()">Cancel</button>
@@ -727,13 +782,17 @@
 </div>
 
 <script>
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 8:03pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 9:52pm';
+const PROTO_TIMESTAMP_SHORT = (() => {
+  const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
+  return m ? m[1].trim() : PROTO_TIMESTAMP;
+})();
 const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/variants-creation/desktop.html';
 
 const SNEAKER_PRESETS = [
   { key: 'size', label: 'Size', values: ['10M', '10.5M', '11M', '11.5M'], allowCustom: false },
   { key: 'color', label: 'Color', values: ['White / Black', 'White / Brown'], allowCustom: true },
-  { key: 'condition', label: 'Condition', values: ['New', 'New w Defects'], allowCustom: true }
+  { key: 'condition', label: 'Condition', values: ['New', 'New w Defects'], allowCustom: false }
 ];
 const PRESET_SUGGESTIONS = {
   size: ['3.5M','4M','4.5M','5M','5.5M','6M','6.5M','7M','7.5M','8M','8.5M','9M','9.5M','10M','10.5M','11M','11.5M','12M','12.5M','13M','14M','15M','16M','17M','18M','3.5W','4W','4.5W','5W','5.5W','6W','6.5W','7W','7.5W','8W','8.5W','9W','9.5W','10W','10.5W','11W','11.5W','12W','3.5Y','4Y','4.5Y','5Y','5.5Y','6Y','6.5Y','7Y'],
@@ -766,10 +825,44 @@ const FILLED_DATA = {
   sku: ''
 };
 
+function protoBreadcrumbContentRight(crumb) {
+  let maxRight = 0;
+  Array.from(crumb.children).forEach(ch => {
+    if (ch.classList.contains('sep')) return;
+    const r = ch.getBoundingClientRect();
+    if (r.right > maxRight) maxRight = r.right;
+  });
+  return maxRight;
+}
+
+function syncProtoTimestampCompact() {
+  const crumb = document.querySelector('.proto-breadcrumb');
+  const meta = document.querySelector('.proto-header-meta');
+  const ts = document.getElementById('protoTimestamp');
+  if (!crumb || !meta || !ts) return;
+  meta.classList.remove('proto-header-meta--hidden');
+  ts.textContent = PROTO_TIMESTAMP;
+  ts.removeAttribute('title');
+  const crumbRight = protoBreadcrumbContentRight(crumb);
+  const metaLeft = meta.getBoundingClientRect().left;
+  if (crumbRight > metaLeft - 10) {
+    ts.textContent = PROTO_TIMESTAMP_SHORT;
+    ts.setAttribute('title', PROTO_TIMESTAMP);
+  }
+  const crumbRight2 = protoBreadcrumbContentRight(crumb);
+  const metaLeft2 = meta.getBoundingClientRect().left;
+  if (crumbRight2 > metaLeft2 - 10) {
+    meta.classList.add('proto-header-meta--hidden');
+  }
+}
+
 function init() {
   document.getElementById('protoTimestamp').textContent = PROTO_TIMESTAMP;
+  syncProtoTimestampCompact();
   applyFormState();
 }
+
+window.addEventListener('resize', syncProtoTimestampCompact);
 
 function applyFormState() {
   optionRows = [];
@@ -783,7 +876,7 @@ function applyFormState() {
     applyFilledForm();
   }
   const content = document.getElementById('contentArea');
-  if (content) content.style.paddingBottom = isNullState ? '156px' : '76px';
+  if (content) content.style.paddingBottom = '260px';
   renderCategoryChips();
   renderAll();
 }
@@ -829,9 +922,9 @@ function applyNullForm() {
   document.getElementById('mediaNullState').classList.remove('hidden');
   document.getElementById('mediaFilledState').style.display = 'none';
 
-  mainQty = 0;
+  mainQty = 1;
   const qtyEl = document.getElementById('mainQtyValue');
-  if (qtyEl) qtyEl.value = '';
+  if (qtyEl) qtyEl.value = 1;
 }
 
 function applyFilledForm() {
@@ -927,6 +1020,9 @@ document.addEventListener('click', (e) => {
     body.classList.add('collapsed');
     document.getElementById('cpCollapseChevron')?.classList.add('collapsed');
   }
+  if (!e.target.closest('.option-values')) {
+    document.querySelectorAll('.typeahead-dropdown.open').forEach(dd => closeTypeahead(dd));
+  }
 });
 
 function renderCategoryChips() {
@@ -947,7 +1043,7 @@ let pendingDeleteId = null;
 function removeOptionRow(id) {
   const row = optionRows.find(r => r.id === id);
   if (!row) return;
-  if (!row.name && row.values.length === 0) {
+  if (row.values.length === 0) {
     optionRows = optionRows.filter(r => r.id !== id);
     renderAll();
     return;
@@ -974,6 +1070,7 @@ function removeChipFromRow(rowId, idx) {
   const row = optionRows.find(r => r.id === rowId);
   if (row) { row.values.splice(idx, 1); renderAll(); }
 }
+
 
 function getUsedPresetKeys() {
   return optionRows.filter(r => r.name).map(r => r.name.toLowerCase());
@@ -1028,6 +1125,7 @@ function onOptionNameBlur(id, el) {
   renderProductTable();
 }
 let typeaheadHighlight = -1;
+let typeaheadCloseTimer = null;
 function onOptionValuesKeydown(id, e) {
   const row = optionRows.find(r => r.id === id);
   if (!row) return;
@@ -1035,19 +1133,41 @@ function onOptionValuesKeydown(id, e) {
   const isPreset = row.preset && row.name;
   const dropdown = input.closest('.option-values')?.querySelector('.typeahead-dropdown');
 
+  if (e.key === 'Backspace' && !input.value && row.values.length > 0) {
+    e.preventDefault();
+    row.values.pop();
+    renderAll();
+    requestAnimationFrame(() => {
+      const mount = document.getElementById('optionRowsMount');
+      const rowEl = mount?.querySelector(`.option-row:nth-child(${optionRows.indexOf(row) + 1})`);
+      const newInput = rowEl?.querySelector('.option-values input');
+      if (newInput) { newInput.focus(); if (isPreset) onOptionValuesInput(id, newInput); }
+    });
+    return;
+  }
+
   if (isPreset && dropdown && dropdown.classList.contains('open')) {
     const items = dropdown.querySelectorAll('.typeahead-option');
     if (e.key === 'ArrowDown') { e.preventDefault(); typeaheadHighlight = Math.min(typeaheadHighlight + 1, items.length - 1); updateTypeaheadHighlight(items); return; }
     if (e.key === 'ArrowUp') { e.preventDefault(); typeaheadHighlight = Math.max(typeaheadHighlight - 1, -1); updateTypeaheadHighlight(items); return; }
-    if (e.key === 'Escape') { e.preventDefault(); closeTypeahead(dropdown); return; }
+    if (e.key === 'Escape') { e.preventDefault(); closeTypeahead(dropdown); input.blur(); return; }
+    if (e.key === 'Tab') { closeTypeahead(dropdown); return; }
     if (e.key === 'Enter') {
       e.preventDefault();
-      if (typeaheadHighlight >= 0 && typeaheadHighlight < items.length) {
+      const query = input.value.trim();
+      if (query && typeaheadHighlight >= 0 && typeaheadHighlight < items.length) {
         selectTypeaheadOption(id, items[typeaheadHighlight].dataset.value, input);
+        const dd = input.closest('.option-values')?.querySelector('.typeahead-dropdown');
+        closeTypeahead(dd || dropdown);
+        requestAnimationFrame(() => {
+          const mount = document.getElementById('optionRowsMount');
+          const rowEl = mount?.querySelector(`.option-row:nth-child(${optionRows.indexOf(row) + 1})`);
+          const inp = rowEl?.querySelector('.option-values input');
+          if (inp) inp.focus();
+        });
       }
       return;
     }
-    return;
   }
 
   if (e.key === 'Enter') {
@@ -1109,18 +1229,27 @@ function onOptionValuesInput(id, input) {
     typeaheadHighlight = -1;
     dropdown.innerHTML = '<div class="typeahead-empty">No matching options</div>';
   } else {
+    let startIdx = 0;
+    if (!query && row.values.length > 0) {
+      const lastVal = row.values[row.values.length - 1];
+      const lastPos = allSuggestions.indexOf(lastVal);
+      if (lastPos !== -1) {
+        const nextIdx = filtered.findIndex(v => allSuggestions.indexOf(v) > lastPos);
+        if (nextIdx !== -1) startIdx = nextIdx;
+      }
+    }
     let html = '';
-    let idx = 0;
     if (showCustom) {
       const customVal = input.value.trim();
       html += `<div class="typeahead-option typeahead-custom${filtered.length === 0 ? ' highlighted' : ''}" data-value="${customVal.replace(/"/g,'&quot;')}" onmousedown="selectTypeaheadOption(${id},'${customVal.replace(/'/g,"\\'")}',this.closest('.option-values').querySelector('input'))">Add "<strong>${customVal}</strong>"</div>`;
-      idx++;
     }
     html += filtered.map((v, i) =>
-      `<div class="typeahead-option${!showCustom && i === 0 ? ' highlighted' : ''}" data-value="${v}" onmousedown="selectTypeaheadOption(${id},'${v.replace(/'/g,"\\'")}',this.closest('.option-values').querySelector('input'))">${highlightMatch(v, query)}</div>`
+      `<div class="typeahead-option${!showCustom && i === startIdx ? ' highlighted' : ''}" data-value="${v}" onmousedown="event.preventDefault();selectTypeaheadOption(${id},'${v.replace(/'/g,"\\'")}',this.closest('.option-values').querySelector('input'))">${highlightMatch(v, query)}</div>`
     ).join('');
-    typeaheadHighlight = 0;
+    typeaheadHighlight = showCustom ? 0 : startIdx;
     dropdown.innerHTML = html;
+    const highlightedEl = dropdown.querySelector('.typeahead-option.highlighted');
+    if (highlightedEl) requestAnimationFrame(() => highlightedEl.scrollIntoView({ block: 'nearest' }));
   }
   dropdown.classList.add('open');
 }
@@ -1134,17 +1263,58 @@ function highlightMatch(text, query) {
 
 function selectTypeaheadOption(rowId, value, input) {
   const row = optionRows.find(r => r.id === rowId);
-  if (row && !row.values.includes(value)) { row.values.push(value); }
+  if (!row) return;
+  if (!row.values.includes(value)) { row.values.push(value); }
   if (input) input.value = '';
   typeaheadHighlight = -1;
-  renderAll();
-  requestAnimationFrame(() => {
-    const mount = document.getElementById('optionRowsMount');
-    const rowEl = mount?.querySelector(`.option-row:nth-child(${optionRows.indexOf(row) + 1})`);
-    const newInput = rowEl?.querySelector('.option-values input');
-    if (newInput) { newInput.focus(); onOptionValuesInput(rowId, newInput); }
-  });
+
+  const valuesEl = input?.closest('.option-values');
+  const dropdown = valuesEl?.querySelector('.typeahead-dropdown');
+  const scrollPos = dropdown ? dropdown.scrollTop : 0;
+
+  if (row.values.length === 1 && valuesEl) {
+    clearTimeout(typeaheadCloseTimer);
+    valuesEl.classList.remove('null');
+    valuesEl.style.height = 'auto';
+    valuesEl.style.minHeight = '52px';
+    const content = valuesEl.querySelector('.input-content');
+    const label = content.querySelector('.input-label');
+    if (label) label.remove();
+    const existingInput = content.querySelector('input');
+    const chipList = document.createElement('div');
+    chipList.className = 'chip-sm-list';
+    const chip = document.createElement('div');
+    chip.className = 'chip-sm';
+    chip.innerHTML = `${value}<span class="chip-x" onclick="removeChipFromRow(${rowId},0)">${svgX}</span>`;
+    chipList.appendChild(chip);
+    if (existingInput) {
+      existingInput.className = 'chip-input';
+      chipList.appendChild(existingInput);
+    }
+    content.appendChild(chipList);
+    clearTimeout(typeaheadCloseTimer);
+  } else {
+    const chipList = valuesEl?.querySelector('.chip-sm-list');
+    if (chipList && input) {
+      const chip = document.createElement('div');
+      chip.className = 'chip-sm';
+      chip.innerHTML = `${value}<span class="chip-x" onclick="removeChipFromRow(${rowId},${row.values.length - 1})">${svgX}</span>`;
+      chipList.insertBefore(chip, input);
+    }
+  }
+
+  const dd = valuesEl?.querySelector('.typeahead-dropdown');
+  if (dd) {
+    const item = Array.from(dd.querySelectorAll('.typeahead-option')).find(el => el.dataset.value === value);
+    if (item) item.remove();
+    dd.scrollTop = scrollPos;
+  }
+
+  renderProductTable();
+  syncMainQtyState();
+  syncCustomizeToggleVisibility();
 }
+
 
 function updateTypeaheadHighlight(items) {
   items.forEach((el, i) => el.classList.toggle('highlighted', i === typeaheadHighlight));
@@ -1174,7 +1344,7 @@ function onCustomValueBlur(id, input) {
 
 function onOptionValuesBlur(id, input) {
   const dropdown = input.closest('.option-values')?.querySelector('.typeahead-dropdown');
-  setTimeout(() => closeTypeahead(dropdown), 150);
+  typeaheadCloseTimer = setTimeout(() => closeTypeahead(dropdown), 150);
 }
 
 const svgTrash = `<svg width="20" height="20" viewBox="0 0 16.664 20" fill="currentColor"><path d="M6.665 9.167a.833.833 0 01.834.833v6.667a.833.833 0 11-1.667 0V10a.833.833 0 01.833-.833z"/><path d="M9.999 9.167a.833.833 0 01.833.833v6.667a.833.833 0 11-1.667 0V10a.833.833 0 01.833-.833z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M4.999 2.5A2.5 2.5 0 017.499 0h1.666a2.5 2.5 0 012.5 2.5h.744c.892 0 1.747.357 2.373.992l1.277 1.295c1.196 1.212.5 3.198-1.06 3.506v7.54A4.167 4.167 0 0110.832 20H5.832a4.167 4.167 0 01-4.167-4.167V8.293C.104 7.985-.591 6 .604 4.787l1.277-1.295A3.333 3.333 0 014.255 2.5h.744zm1.666 0a.833.833 0 01.834-.833h1.666c.46 0 .834.373.834.833H6.665zM3.068 4.663L1.791 5.957c-.26.263-.073.71.297.71h12.49c.37 0 .556-.447.296-.71L13.596 4.663a1.667 1.667 0 00-1.187-.496H4.255c-.446 0-.873.179-1.187.496zm10.264 3.67v7.5a2.5 2.5 0 01-2.5 2.5H5.832a2.5 2.5 0 01-2.5-2.5v-7.5h9.999z"/></svg>`;
@@ -1264,17 +1434,15 @@ function ensureVariantQty() {
   const filledRows = optionRows.filter(r => r.name && r.values.length);
   if (filledRows.length === 0) return;
   const allKeys = getAllVariantKeys(filledRows);
-  let firstAssigned = Object.values(variantQty).some(v => v > 0);
+  const anyHasQty = allKeys.some(k => variantQty[k] > 0);
   allKeys.forEach((key, i) => {
     if (variantQty[key] == null) {
-      if (!firstAssigned && i === 0) {
-        variantQty[key] = mainQty;
-        firstAssigned = true;
-      } else {
-        variantQty[key] = 0;
-      }
+      variantQty[key] = (!anyHasQty && i === 0) ? mainQty : 0;
     }
   });
+  if (!anyHasQty && allKeys.length > 0) {
+    variantQty[allKeys[0]] = mainQty;
+  }
 }
 
 function getAllVariantKeys(filledRows) {
@@ -1474,6 +1642,7 @@ function adjustMainQty(delta) {
   mainQty = Math.max(0, mainQty + delta);
   const el = document.getElementById('mainQtyValue');
   if (el) el.value = mainQty;
+  syncFirstVariantQty();
 }
 function onMainQtyInput(el) {
   el.value = el.value.replace(/[^0-9]/g, '');
@@ -1482,6 +1651,19 @@ function onMainQtyInput(el) {
 function onMainQtyBlur(el) {
   mainQty = Math.max(0, parseInt(el.value) || 0);
   el.value = mainQty;
+  syncFirstVariantQty();
+}
+
+function syncFirstVariantQty() {
+  const filledRows = optionRows.filter(r => r.name && r.values.length);
+  if (filledRows.length === 0) return;
+  const allKeys = getAllVariantKeys(filledRows);
+  if (allKeys.length === 0) return;
+  const totalOthers = allKeys.slice(1).reduce((s, k) => s + (variantQty[k] || 0), 0);
+  if (totalOthers === 0) {
+    variantQty[allKeys[0]] = mainQty;
+    renderProductTable();
+  }
 }
 
 function syncCustomizeToggleVisibility() {
@@ -1650,6 +1832,8 @@ function cancelPriceFormat() {
 function setPfTab(btn, type) {
   btn.parentElement.querySelectorAll('.pf-seg-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  document.getElementById('pfAuction').style.display = type === 'auction' ? '' : 'none';
+  document.getElementById('pfBin').style.display = type === 'bin' ? '' : 'none';
 }
 
 function addMediaFromZone() {
