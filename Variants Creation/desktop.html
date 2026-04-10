@@ -51,6 +51,17 @@
     .proto-header-toast.visible { opacity: 1; }
     .proto-link-btn.proto-share-btn--flash { background: rgba(249,220,0,0.22); border-color: rgba(249,220,0,0.45); color: #f9dc00; }
 
+    /* ═══ QUANTITY ROW ═══ */
+    .qty-row { display: flex; align-items: center; justify-content: space-between; height: 52px; border: 1px solid var(--stroke-strong); border-radius: var(--input-radius); padding: 0 12px; background: var(--bg-base); }
+    .qty-label { font-size: 14px; line-height: 20px; letter-spacing: -0.14px; color: var(--text-secondary); }
+    .qty-label .req { color: var(--attention); }
+    .qty-stepper { display: flex; align-items: center; gap: 0; }
+    .qty-btn { width: 32px; height: 32px; border: none; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: var(--text-primary); transition: background 0.15s; padding: 0; }
+    .qty-btn:hover { background: #f0f0f0; }
+    .qty-btn:active { background: #e4e4e4; }
+    .qty-pill { min-width: 48px; height: 32px; border-radius: 8px; background: #f3f3f3; display: flex; align-items: center; justify-content: center; }
+    .qty-pill span { font-size: 14px; font-weight: 600; line-height: 20px; color: var(--text-primary); }
+
     /* ═══ CONTROL PANEL ═══ */
     #controlPanel { position: relative; display: flex; align-items: center; margin-left: 12px; }
     #controlPanelHandle { display: flex; align-items: center; gap: 5px; cursor: pointer; padding: 4px 10px; border-radius: 999px; background: #f0f0f0; transition: background 0.15s; height: 28px; }
@@ -487,8 +498,16 @@
             <button class="seg-tab active" onclick="setPricingTab(this)">Buy It Now</button>
             <button class="seg-tab" onclick="setPricingTab(this)">Auction</button>
           </div>
-          <div class="input-field" onclick="focusInput(this)">
-            <div class="input-content"><div class="input-label">Price <span class="req">*</span></div><div class="input-value" contenteditable="true" oninput="this.closest('.input-field').classList.toggle('null',!this.textContent.trim())" onblur="this.closest('.input-field').classList.toggle('null',!this.textContent.trim())">$65</div></div>
+          <div class="input-field" id="priceField" onclick="focusInput(this)">
+            <div class="input-content"><div class="input-label">Price <span class="req">*</span></div><div class="input-value" contenteditable="true" oninput="onPriceInput(this)" onblur="onPriceBlur(this)">$65</div></div>
+          </div>
+          <div class="qty-row" id="mainQtyRow">
+            <div class="qty-label">Quantity Available <span class="req">*</span></div>
+            <div class="qty-stepper">
+              <button class="qty-btn" onclick="adjustMainQty(-1)"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 10h10"/></svg></button>
+              <div class="qty-pill"><span id="mainQtyValue">1</span></div>
+              <button class="qty-btn" onclick="adjustMainQty(1)"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 5v10M5 10h10"/></svg></button>
+            </div>
           </div>
           <div class="setting">
             <div class="setting-row"><span class="setting-label">Flash Sale</span><div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
@@ -503,7 +522,7 @@
             <div class="setting-desc">Turn this on to make this product only purchasable within a show.</div>
           </div>
           <div class="setting">
-            <div class="setting-row"><span class="setting-label">Customize Each Variant</span><div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
+            <div class="setting-row"><span class="setting-label">Customize Each Variant</span><div class="toggle" id="customizeVariantToggle" onclick="toggleCustomizeVariant(this)"><div class="toggle-knob"></div></div></div>
             <div class="setting-desc">Turn this on to set different price, format, and show placement for each variant.</div>
           </div>
         </div>
@@ -574,8 +593,25 @@
   </div>
 </div>
 
+<!-- ═══ RESET VARIANT PRICES DIALOG ═══ -->
+<div class="dialog-overlay" id="resetPricesDialog" onclick="cancelResetPrices()">
+  <div class="dialog-panel" onclick="event.stopPropagation()">
+    <div class="dialog-header">
+      <div class="dialog-header-row">
+        <span class="dialog-title">Reset variant prices?</span>
+        <button class="dialog-close" onclick="cancelResetPrices()"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg></button>
+      </div>
+    </div>
+    <div class="dialog-body" id="resetPricesDialogBody"></div>
+    <div class="dialog-actions">
+      <button class="dialog-btn dialog-btn-cancel" onclick="cancelResetPrices()">Cancel</button>
+      <button class="dialog-btn dialog-btn-destructive" onclick="confirmResetPrices()">Reset</button>
+    </div>
+  </div>
+</div>
+
 <script>
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/10/26 @ 12:00am';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 6:47pm';
 const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/variants-creation/desktop.html';
 
 const SNEAKER_PRESETS = [
@@ -595,8 +631,10 @@ let optionRows = [];
 let nextOptionId = 1;
 let groupByName = 'Size';
 let isNullState = true;
-const LISTING_QTY = 10;
+let mainQty = 1;
 let variantQty = {};
+let variantPrice = {};
+let mainPrice = '';
 
 const FILLED_DATA = {
   category: 'Sneakers',
@@ -621,6 +659,8 @@ function applyFormState() {
   optionRows = [];
   nextOptionId = 1;
   variantQty = {};
+  variantPrice = {};
+  mainPrice = '';
   if (isNullState) {
     applyNullForm();
   } else {
@@ -640,12 +680,22 @@ function applyNullForm() {
   setSelectValue('selectBrand', '');
 
   document.querySelectorAll('#productDetailsCard .input-field:not(.select-field)').forEach(f => {
+    const label = f.querySelector('.input-label');
     const val = f.querySelector('.input-value');
-    if (val) { val.textContent = ''; f.classList.add('null'); }
+    if (!val) return;
+    const labelText = label ? label.textContent.trim().replace(/\s*\*\s*$/, '') : '';
+    const isCurrency = labelText === 'MSRP';
+    val.textContent = isCurrency ? '$' : '';
+    f.classList.add('null');
   });
   document.querySelectorAll('.creation-right .input-field:not(.select-field)').forEach(f => {
+    const label = f.querySelector('.input-label');
     const val = f.querySelector('.input-value');
-    if (val) { val.textContent = ''; f.classList.add('null'); }
+    if (!val) return;
+    const labelText = label ? label.textContent.trim().replace(/\s*\*\s*$/, '') : '';
+    const isCurrency = ['Price', 'Cost Per Item'].includes(labelText);
+    val.textContent = isCurrency ? '$' : '';
+    f.classList.add('null');
   });
 
   setSelectValue('selectShipping', '');
@@ -660,6 +710,10 @@ function applyNullForm() {
 
   const media = document.querySelector('.media-thumb');
   if (media) media.style.display = 'none';
+
+  mainQty = 1;
+  const qtyEl = document.getElementById('mainQtyValue');
+  if (qtyEl) qtyEl.textContent = mainQty;
 }
 
 function applyFilledForm() {
@@ -687,7 +741,7 @@ function applyFilledForm() {
     const val = f.querySelector('.input-value');
     if (!label || !val) return;
     const labelText = label.textContent.trim().replace(/\s*\*\s*$/, '');
-    if (labelText === 'Price') { val.textContent = FILLED_DATA.price; f.classList.remove('null'); }
+    if (labelText === 'Price') { val.textContent = FILLED_DATA.price; f.classList.remove('null'); mainPrice = FILLED_DATA.price.replace(/[^0-9.]/g, ''); }
     else if (labelText === 'Cost Per Item') { val.textContent = FILLED_DATA.costPerItem; f.classList.remove('null'); }
     else if (labelText === 'SKU') { val.textContent = FILLED_DATA.sku; f.classList.toggle('null', !FILLED_DATA.sku); }
   });
@@ -702,6 +756,10 @@ function applyFilledForm() {
 
   const media = document.querySelector('.media-thumb');
   if (media) media.style.display = '';
+
+  mainQty = 10;
+  const qtyEl = document.getElementById('mainQtyValue');
+  if (qtyEl) qtyEl.textContent = mainQty;
 
   SNEAKER_PRESETS.forEach(p => addOptionRow(p.label, p.values, true));
   addOptionRow('', [], false);
@@ -1009,6 +1067,7 @@ function renderAll() {
   renderOptionRows();
   renderToolbar();
   renderProductTable();
+  syncMainQtyVisibility();
 }
 
 function renderOptionRows() {
@@ -1090,7 +1149,7 @@ function ensureVariantQty() {
   allKeys.forEach((key, i) => {
     if (variantQty[key] == null) {
       if (!firstAssigned && i === 0) {
-        variantQty[key] = LISTING_QTY;
+        variantQty[key] = mainQty;
         firstAssigned = true;
       } else {
         variantQty[key] = 0;
@@ -1211,7 +1270,7 @@ function renderProductTable() {
         <div class="pt-product-info"><div class="pt-product-name">${val}</div><div class="pt-product-sub">${variantCount} Variant${variantCount > 1 ? 's' : ''}</div></div>
       </div></td>
       <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Quantity</div><div class="pt-input-value">${parentTotal}</div></div></div></td>
-      <td class="pt-input-cell"><div class="pt-input" style="cursor:pointer;"><div class="pt-input-content"><div class="pt-input-label">Buy Now</div><div class="pt-input-value">$65</div></div><div class="pt-input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div></div></td>
+      <td class="pt-input-cell"><div class="pt-input" style="cursor:pointer;"><div class="pt-input-content"><div class="pt-input-label">Buy Now</div><div class="pt-input-value">${getVariantPriceDisplay()}</div></div><div class="pt-input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div></div></td>
     </tr>`;
     if (childCombos.length) {
       childCombos.forEach(combo => {
@@ -1226,7 +1285,7 @@ function renderProductTable() {
             <div class="pt-child-name">${formattedName}</div>
           </div></td>
           <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Quantity</div><div class="pt-input-value" contenteditable="true" onblur="onChildQtyChange('${vKey.replace(/'/g,"\\'")}',this)">${childQty}</div></div></div></td>
-          <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Buy Now</div><div class="pt-input-value">$65</div></div><div class="pt-input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div></div></td>
+          <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Buy Now</div><div class="pt-input-value" contenteditable="true" onfocus="onVariantPriceFocus(this)" onblur="onVariantPriceBlur('${vKey.replace(/'/g,"\\'")}',this)">${getVariantPriceDisplay(vKey)}</div></div><div class="pt-input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div></div></td>
         </tr>`;
       });
     }
@@ -1259,12 +1318,11 @@ function buildFlatTable(values) {
     const qty = variantQty[c] ?? 0;
     html += `<tr class="pt-child-row">
       <td><div class="pt-product-cell">
-        <div class="pt-chevron hidden"></div>
         <img class="pt-thumb" src="icons/create-shoe.png" alt="">
         <div class="pt-child-name">${c}</div>
       </div></td>
       <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Quantity</div><div class="pt-input-value" contenteditable="true" onblur="onChildQtyChange('${c}',this)">${qty}</div></div></div></td>
-      <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Buy Now</div><div class="pt-input-value">$65</div></div><div class="pt-input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div></div></td>
+      <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Buy Now</div><div class="pt-input-value" contenteditable="true" onfocus="onVariantPriceFocus(this)" onblur="onVariantPriceBlur('${c}',this)">${getVariantPriceDisplay(c)}</div></div><div class="pt-input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div></div></td>
     </tr>`;
   });
   html += `</tbody></table>`;
@@ -1277,6 +1335,62 @@ function toggleTableRow(rowId) {
   const isOpen = chev?.classList.contains('open');
   children.forEach(el => el.style.display = isOpen ? 'none' : '');
   chev?.classList.toggle('open');
+}
+
+function adjustMainQty(delta) {
+  mainQty = Math.max(0, mainQty + delta);
+  const el = document.getElementById('mainQtyValue');
+  if (el) el.textContent = mainQty;
+}
+
+function syncMainQtyVisibility() {
+  const row = document.getElementById('mainQtyRow');
+  if (!row) return;
+  const hasVariants = optionRows.some(r => r.name && r.values.length);
+  row.style.display = hasVariants ? 'none' : '';
+}
+
+function onPriceInput(el) {
+  let raw = el.textContent.replace(/[^0-9.]/g, '');
+  mainPrice = raw;
+  el.closest('.input-field').classList.toggle('null', !raw);
+  renderProductTable();
+}
+function onPriceBlur(el) {
+  let raw = el.textContent.replace(/[^0-9.]/g, '');
+  mainPrice = raw;
+  if (raw) {
+    el.textContent = '$' + raw;
+  } else {
+    el.textContent = '';
+  }
+  el.closest('.input-field').classList.toggle('null', !raw);
+  renderProductTable();
+}
+function getVariantPriceDisplay(key) {
+  if (key && variantPrice[key] != null) return '$' + variantPrice[key];
+  if (!mainPrice) return '$';
+  return '$' + mainPrice;
+}
+
+function onVariantPriceBlur(key, el) {
+  let raw = el.textContent.replace(/[^0-9.]/g, '');
+  if (raw && !isNaN(parseFloat(raw))) {
+    variantPrice[key] = raw;
+    el.textContent = '$' + raw;
+  } else {
+    delete variantPrice[key];
+    el.textContent = getVariantPriceDisplay(key);
+  }
+  const toggle = document.getElementById('customizeVariantToggle');
+  if (toggle && !toggle.classList.contains('on') && Object.keys(variantPrice).length > 0) {
+    toggle.classList.add('on');
+  }
+}
+
+function onVariantPriceFocus(el) {
+  let raw = el.textContent.replace(/[^0-9.]/g, '');
+  el.textContent = raw;
 }
 
 function addMediaImage(addBtn) {
@@ -1327,6 +1441,33 @@ function selectStatusOption(optEl, e) {
 
 function toggleSwitch(el) {
   el.classList.toggle('on');
+}
+
+function toggleCustomizeVariant(el) {
+  const turningOff = el.classList.contains('on');
+  if (turningOff) {
+    const uniqueCount = Object.keys(variantPrice).length;
+    if (uniqueCount > 0) {
+      const noun = uniqueCount === 1 ? 'variant has a unique price' : 'variants have unique prices';
+      document.getElementById('resetPricesDialogBody').textContent =
+        uniqueCount + ' ' + noun + ' that will be reset to the main price.';
+      document.getElementById('resetPricesDialog').classList.add('open');
+      return;
+    }
+  }
+  el.classList.toggle('on');
+}
+
+function confirmResetPrices() {
+  variantPrice = {};
+  const toggle = document.getElementById('customizeVariantToggle');
+  if (toggle) toggle.classList.remove('on');
+  document.getElementById('resetPricesDialog').classList.remove('open');
+  renderAll();
+}
+
+function cancelResetPrices() {
+  document.getElementById('resetPricesDialog').classList.remove('open');
 }
 
 function setPricingTab(el) {
