@@ -51,16 +51,41 @@
     .proto-header-toast.visible { opacity: 1; }
     .proto-link-btn.proto-share-btn--flash { background: rgba(249,220,0,0.22); border-color: rgba(249,220,0,0.45); color: #f9dc00; }
 
+    /* ═══ PRICE & FORMAT DIALOG ═══ */
+    .pf-panel { padding: 24px; gap: 16px; display: flex; flex-direction: column; width: 360px; }
+    .pf-title { font-size: 18px; font-weight: 600; line-height: 24px; letter-spacing: -0.18px; color: var(--text-primary); }
+    .pf-seg { background: #f4f4f4; border-radius: 999px; padding: 4px; display: flex; gap: 4px; height: 52px; box-sizing: border-box; }
+    .pf-seg-btn { flex: 1; border: none; background: transparent; border-radius: 999px; font-size: 14px; font-weight: 600; line-height: 20px; letter-spacing: -0.14px; color: var(--text-primary); cursor: pointer; transition: background 0.2s, color 0.2s; }
+    .pf-seg-btn.active { background: #121212; color: white; }
+    .pf-setting { display: flex; gap: 12px; align-items: flex-start; }
+    .pf-setting-text { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .pf-setting-label { font-size: 16px; font-weight: 600; line-height: 24px; letter-spacing: -0.16px; color: var(--text-primary); }
+    .pf-setting-desc { font-size: 14px; line-height: 20px; letter-spacing: -0.14px; color: #6a6a6a; }
+    .pf-actions { display: flex; gap: 8px; }
+    .pf-btn { flex: 1; height: 44px; border: none; border-radius: 999px; font-size: 18px; font-weight: 600; line-height: 24px; letter-spacing: -0.18px; cursor: pointer; transition: opacity 0.15s; }
+    .pf-btn:active { opacity: 0.8; }
+    .pf-btn-cancel { background: #f2f2f2; color: var(--text-primary); }
+    .pf-btn-save { background: #ffe414; color: var(--text-primary); }
+    .pt-price-cell { cursor: pointer; position: relative; }
+    .pt-price-cell.disabled { cursor: default; opacity: 0.5; pointer-events: none; }
+    .pt-price-wrap { position: relative; }
+    .pt-price-wrap.disabled .pt-price-cell { cursor: default; opacity: 0.5; }
+    .pt-price-tooltip { position: absolute; bottom: calc(100% + 8px); right: 0; background: #121212; color: white; font-size: 14px; line-height: 20px; letter-spacing: -0.14px; padding: 12px; border-radius: 8px; width: max-content; max-width: 280px; opacity: 0; pointer-events: none; transition: opacity 0.15s; z-index: 100; }
+    .pt-price-wrap.disabled:hover .pt-price-tooltip { opacity: 1; }
+
     /* ═══ QUANTITY ROW ═══ */
     .qty-row { display: flex; align-items: center; justify-content: space-between; height: 52px; border: 1px solid var(--stroke-strong); border-radius: var(--input-radius); padding: 0 12px; background: var(--bg-base); }
     .qty-label { font-size: 14px; line-height: 20px; letter-spacing: -0.14px; color: var(--text-secondary); }
     .qty-label .req { color: var(--attention); }
-    .qty-stepper { display: flex; align-items: center; gap: 0; }
+    .qty-stepper { display: flex; align-items: center; gap: 4px; }
     .qty-btn { width: 32px; height: 32px; border: none; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: var(--text-primary); transition: background 0.15s; padding: 0; }
     .qty-btn:hover { background: #f0f0f0; }
     .qty-btn:active { background: #e4e4e4; }
-    .qty-pill { min-width: 48px; height: 32px; border-radius: 8px; background: #f3f3f3; display: flex; align-items: center; justify-content: center; }
-    .qty-pill span { font-size: 14px; font-weight: 600; line-height: 20px; color: var(--text-primary); }
+    .qty-input { width: 56px; height: 36px; border: 1px solid var(--stroke-strong); border-radius: var(--input-radius); background: var(--bg-base); font-size: 14px; font-weight: 600; line-height: 20px; color: var(--text-primary); text-align: center; outline: none; padding: 0; transition: border-color 0.15s, box-shadow 0.15s; }
+    .qty-input:focus { border-color: #121212; box-shadow: 0 0 0 1px #121212; }
+    .qty-row.disabled { background: #f5f5f5; cursor: default; }
+    .qty-row.disabled .qty-btn { opacity: 0.3; pointer-events: none; }
+    .qty-row.disabled .qty-input { background: #f5f5f5; color: var(--text-secondary); pointer-events: none; border-color: var(--stroke-strong); }
 
     /* ═══ CONTROL PANEL ═══ */
     #controlPanel { position: relative; display: flex; align-items: center; margin-left: 12px; }
@@ -176,7 +201,8 @@
     /* ═══ VARIANT MANAGER ═══ */
     .vm-table-wrapper { border: 1px solid var(--stroke-subtle); border-radius: 16px; overflow: hidden; }
     .vm-section { display: flex; flex-direction: column; gap: 12px; }
-    .vm-title { font-size: 16px; font-weight: 600; line-height: 24px; letter-spacing: -0.16px; color: var(--text-primary); }
+    .vm-title { font-size: 16px; font-weight: 600; line-height: 24px; letter-spacing: -0.16px; color: var(--text-primary); height: auto; }
+    #optionRowsMount:empty { display: none; }
     #optionRowsMount { display: flex; flex-direction: column; gap: 12px; }
     .option-row { display: flex; gap: 12px; align-items: center; }
     .option-name { width: 233px; flex-shrink: 0; }
@@ -470,6 +496,14 @@
               <div class="select-option" data-value="Converse" onclick="selectOption('selectBrand',this,event)">Converse</div>
             </div>
           </div>
+          <div class="qty-row" id="mainQtyRow">
+            <div class="qty-label">Quantity Available <span class="req">*</span></div>
+            <div class="qty-stepper">
+              <button class="qty-btn" onclick="adjustMainQty(-1)"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 10h10"/></svg></button>
+              <input type="text" class="qty-input" id="mainQtyValue" value="1" inputmode="numeric" onfocus="this.select()" oninput="onMainQtyInput(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}" onblur="onMainQtyBlur(this)">
+              <button class="qty-btn" onclick="adjustMainQty(1)"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 5v10M5 10h10"/></svg></button>
+            </div>
+          </div>
           <div class="input-field null" onclick="focusInput(this)">
             <div class="input-content"><div class="input-label">MSRP</div><div class="input-value" contenteditable="true" oninput="this.closest('.input-field').classList.toggle('null',!this.textContent.trim())" onblur="this.closest('.input-field').classList.toggle('null',!this.textContent.trim())"></div></div>
           </div>
@@ -499,15 +533,7 @@
             <button class="seg-tab" onclick="setPricingTab(this)">Auction</button>
           </div>
           <div class="input-field" id="priceField" onclick="focusInput(this)">
-            <div class="input-content"><div class="input-label">Price <span class="req">*</span></div><div class="input-value" contenteditable="true" oninput="onPriceInput(this)" onblur="onPriceBlur(this)">$65</div></div>
-          </div>
-          <div class="qty-row" id="mainQtyRow">
-            <div class="qty-label">Quantity Available <span class="req">*</span></div>
-            <div class="qty-stepper">
-              <button class="qty-btn" onclick="adjustMainQty(-1)"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 10h10"/></svg></button>
-              <div class="qty-pill"><span id="mainQtyValue">1</span></div>
-              <button class="qty-btn" onclick="adjustMainQty(1)"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 5v10M5 10h10"/></svg></button>
-            </div>
+            <div class="input-content"><div class="input-label">Price <span class="req">*</span></div><div class="input-value" contenteditable="true" onfocus="onPriceFocus(this)" oninput="onPriceInput(this)" onkeydown="onPriceKeydown(event)" onblur="onPriceBlur(this)">$65</div></div>
           </div>
           <div class="setting">
             <div class="setting-row"><span class="setting-label">Flash Sale</span><div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
@@ -610,8 +636,33 @@
   </div>
 </div>
 
+<!-- ═══ PRICE & FORMAT DIALOG ═══ -->
+<div class="dialog-overlay" id="priceFormatDialog" onclick="cancelPriceFormat()">
+  <div class="dialog-panel pf-panel" onclick="event.stopPropagation()">
+    <div class="pf-title">Price &amp; Format</div>
+    <div class="pf-seg">
+      <button class="pf-seg-btn active" onclick="setPfTab(this,'bin')">Buy It Now</button>
+      <button class="pf-seg-btn" onclick="setPfTab(this,'auction')">Auction</button>
+    </div>
+    <div class="input-field" id="pfPriceField" onclick="focusInput(this)">
+      <div class="input-content"><div class="input-label">Price</div><div class="input-value" id="pfPriceValue" contenteditable="true" onfocus="onPfPriceFocus(this)" oninput="onPfPriceInput(this)" onkeydown="onPfPriceKeydown(event)" onblur="onPfPriceBlur(this)">$</div></div>
+    </div>
+    <div class="pf-setting">
+      <div class="pf-setting-text">
+        <div class="pf-setting-label">Accept Offers</div>
+        <div class="pf-setting-desc">Turn this on to accept offers. You can accept, counter or decline the offers.</div>
+      </div>
+      <div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+    </div>
+    <div class="pf-actions">
+      <button class="pf-btn pf-btn-cancel" onclick="cancelPriceFormat()">Cancel</button>
+      <button class="pf-btn pf-btn-save" onclick="savePriceFormat()">Save</button>
+    </div>
+  </div>
+</div>
+
 <script>
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 6:47pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 7:13pm';
 const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/variants-creation/desktop.html';
 
 const SNEAKER_PRESETS = [
@@ -711,9 +762,9 @@ function applyNullForm() {
   const media = document.querySelector('.media-thumb');
   if (media) media.style.display = 'none';
 
-  mainQty = 1;
+  mainQty = 0;
   const qtyEl = document.getElementById('mainQtyValue');
-  if (qtyEl) qtyEl.textContent = mainQty;
+  if (qtyEl) qtyEl.value = '';
 }
 
 function applyFilledForm() {
@@ -759,7 +810,7 @@ function applyFilledForm() {
 
   mainQty = 10;
   const qtyEl = document.getElementById('mainQtyValue');
-  if (qtyEl) qtyEl.textContent = mainQty;
+  if (qtyEl) qtyEl.value = mainQty;
 
   SNEAKER_PRESETS.forEach(p => addOptionRow(p.label, p.values, true));
   addOptionRow('', [], false);
@@ -1067,7 +1118,7 @@ function renderAll() {
   renderOptionRows();
   renderToolbar();
   renderProductTable();
-  syncMainQtyVisibility();
+  syncMainQtyState();
 }
 
 function renderOptionRows() {
@@ -1215,6 +1266,7 @@ function onChildQtyChange(key, el) {
   const parentRow = el.closest('tr');
   const parentId = parentRow?.dataset?.parent;
   if (parentId) updateParentQtyDisplay(parentId);
+  syncMainQtyState();
 }
 
 function updateParentQtyDisplay(rowId) {
@@ -1229,6 +1281,25 @@ function updateParentQtyDisplay(rowId) {
     const parentQtyEl = parentTr.querySelector('.pt-input-cell .pt-input-value');
     if (parentQtyEl) parentQtyEl.textContent = total;
   }
+}
+
+function isCustomizeOn() {
+  const t = document.getElementById('customizeVariantToggle');
+  return t && t.classList.contains('on');
+}
+
+function buildPriceCell(key) {
+  const price = getVariantPriceDisplay(key);
+  const customizeOn = isCustomizeOn();
+  const escapedKey = key ? key.replace(/'/g, "\\'") : '';
+  if (key !== null && !customizeOn) {
+    return `<td class="pt-input-cell"><div class="pt-price-wrap disabled">
+      <div class="pt-price-tooltip">Enable Customize Each Variant in the Pricing module to edit pricing.</div>
+      <div class="pt-input pt-price-cell"><div class="pt-input-content"><div class="pt-input-label">Buy Now</div><div class="pt-input-value">${price}</div></div><div class="pt-input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+    </div></td>`;
+  }
+  const onclickKey = key !== null ? `'${escapedKey}'` : 'null';
+  return `<td class="pt-input-cell"><div class="pt-input pt-price-cell" onclick="openPriceFormatDialog(${onclickKey},this)"><div class="pt-input-content"><div class="pt-input-label">Buy Now</div><div class="pt-input-value">${price}</div></div><div class="pt-input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div></div></td>`;
 }
 
 function renderProductTable() {
@@ -1270,7 +1341,7 @@ function renderProductTable() {
         <div class="pt-product-info"><div class="pt-product-name">${val}</div><div class="pt-product-sub">${variantCount} Variant${variantCount > 1 ? 's' : ''}</div></div>
       </div></td>
       <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Quantity</div><div class="pt-input-value">${parentTotal}</div></div></div></td>
-      <td class="pt-input-cell"><div class="pt-input" style="cursor:pointer;"><div class="pt-input-content"><div class="pt-input-label">Buy Now</div><div class="pt-input-value">${getVariantPriceDisplay()}</div></div><div class="pt-input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div></div></td>
+      ${buildPriceCell(null)}
     </tr>`;
     if (childCombos.length) {
       childCombos.forEach(combo => {
@@ -1285,7 +1356,7 @@ function renderProductTable() {
             <div class="pt-child-name">${formattedName}</div>
           </div></td>
           <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Quantity</div><div class="pt-input-value" contenteditable="true" onblur="onChildQtyChange('${vKey.replace(/'/g,"\\'")}',this)">${childQty}</div></div></div></td>
-          <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Buy Now</div><div class="pt-input-value" contenteditable="true" onfocus="onVariantPriceFocus(this)" onblur="onVariantPriceBlur('${vKey.replace(/'/g,"\\'")}',this)">${getVariantPriceDisplay(vKey)}</div></div><div class="pt-input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div></div></td>
+          ${buildPriceCell(vKey)}
         </tr>`;
       });
     }
@@ -1322,7 +1393,7 @@ function buildFlatTable(values) {
         <div class="pt-child-name">${c}</div>
       </div></td>
       <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Quantity</div><div class="pt-input-value" contenteditable="true" onblur="onChildQtyChange('${c}',this)">${qty}</div></div></div></td>
-      <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Buy Now</div><div class="pt-input-value" contenteditable="true" onfocus="onVariantPriceFocus(this)" onblur="onVariantPriceBlur('${c}',this)">${getVariantPriceDisplay(c)}</div></div><div class="pt-input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div></div></td>
+      ${buildPriceCell(c)}
     </tr>`;
   });
   html += `</tbody></table>`;
@@ -1340,30 +1411,74 @@ function toggleTableRow(rowId) {
 function adjustMainQty(delta) {
   mainQty = Math.max(0, mainQty + delta);
   const el = document.getElementById('mainQtyValue');
-  if (el) el.textContent = mainQty;
+  if (el) el.value = mainQty;
+}
+function onMainQtyInput(el) {
+  el.value = el.value.replace(/[^0-9]/g, '');
+  mainQty = parseInt(el.value) || 0;
+}
+function onMainQtyBlur(el) {
+  mainQty = Math.max(0, parseInt(el.value) || 0);
+  el.value = mainQty;
 }
 
-function syncMainQtyVisibility() {
+function syncMainQtyState() {
   const row = document.getElementById('mainQtyRow');
   if (!row) return;
   const hasVariants = optionRows.some(r => r.name && r.values.length);
-  row.style.display = hasVariants ? 'none' : '';
+  const valEl = document.getElementById('mainQtyValue');
+  if (hasVariants) {
+    row.classList.add('disabled');
+    const total = Object.values(variantQty).reduce((s, v) => s + (v || 0), 0);
+    if (valEl) valEl.value = total;
+  } else {
+    row.classList.remove('disabled');
+    if (valEl) valEl.value = mainQty;
+  }
 }
 
-function onPriceInput(el) {
+function onPriceFocus(el) {
   let raw = el.textContent.replace(/[^0-9.]/g, '');
+  el.textContent = '$' + raw;
+  setTimeout(() => {
+    const sel = window.getSelection();
+    const range = document.createRange();
+    const textNode = el.firstChild;
+    if (textNode) {
+      range.setStart(textNode, textNode.length);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  }, 0);
+}
+function onPriceInput(el) {
+  let raw = el.textContent.replace(/[^0-9.$]/g, '');
+  raw = raw.replace(/\$/g, '');
   mainPrice = raw;
+  const caretAtEnd = window.getSelection().focusOffset;
+  el.textContent = '$' + raw;
+  try {
+    const sel = window.getSelection();
+    const range = document.createRange();
+    const textNode = el.firstChild;
+    if (textNode) {
+      range.setStart(textNode, Math.min(caretAtEnd + 1, textNode.length));
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  } catch(e) {}
   el.closest('.input-field').classList.toggle('null', !raw);
   renderProductTable();
+}
+function onPriceKeydown(e) {
+  if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); }
 }
 function onPriceBlur(el) {
   let raw = el.textContent.replace(/[^0-9.]/g, '');
   mainPrice = raw;
-  if (raw) {
-    el.textContent = '$' + raw;
-  } else {
-    el.textContent = '';
-  }
+  el.textContent = raw ? '$' + raw : '$';
   el.closest('.input-field').classList.toggle('null', !raw);
   renderProductTable();
 }
@@ -1388,9 +1503,80 @@ function onVariantPriceBlur(key, el) {
   }
 }
 
-function onVariantPriceFocus(el) {
+let pfVariantKey = null;
+
+function openPriceFormatDialog(key, el) {
+  pfVariantKey = key;
+  const priceVal = document.getElementById('pfPriceValue');
+  const field = document.getElementById('pfPriceField');
+  let current = '';
+  if (key && variantPrice[key] != null) {
+    current = variantPrice[key];
+  } else {
+    current = mainPrice;
+  }
+  priceVal.textContent = current ? '$' + current : '$';
+  field.classList.toggle('null', !current);
+  document.getElementById('priceFormatDialog').classList.add('open');
+}
+
+function onPfPriceFocus(el) {
   let raw = el.textContent.replace(/[^0-9.]/g, '');
-  el.textContent = raw;
+  el.textContent = '$' + raw;
+  setTimeout(() => {
+    const sel = window.getSelection();
+    const range = document.createRange();
+    const textNode = el.firstChild;
+    if (textNode) { range.setStart(textNode, textNode.length); range.collapse(true); sel.removeAllRanges(); sel.addRange(range); }
+  }, 0);
+}
+function onPfPriceInput(el) {
+  let raw = el.textContent.replace(/[^0-9.$]/g, '').replace(/\$/g, '');
+  el.textContent = '$' + raw;
+  try {
+    const sel = window.getSelection();
+    const range = document.createRange();
+    const textNode = el.firstChild;
+    if (textNode) { range.setStart(textNode, textNode.length); range.collapse(true); sel.removeAllRanges(); sel.addRange(range); }
+  } catch(e) {}
+  el.closest('.input-field').classList.toggle('null', !raw);
+}
+function onPfPriceKeydown(e) {
+  if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); }
+}
+function onPfPriceBlur(el) {
+  let raw = el.textContent.replace(/[^0-9.]/g, '');
+  el.textContent = raw ? '$' + raw : '$';
+  el.closest('.input-field').classList.toggle('null', !raw);
+}
+
+function savePriceFormat() {
+  const raw = document.getElementById('pfPriceValue').textContent.replace(/[^0-9.]/g, '');
+  if (pfVariantKey) {
+    if (raw && raw !== mainPrice) {
+      variantPrice[pfVariantKey] = raw;
+      const toggle = document.getElementById('customizeVariantToggle');
+      if (toggle && !toggle.classList.contains('on')) toggle.classList.add('on');
+    } else {
+      delete variantPrice[pfVariantKey];
+    }
+  } else if (raw) {
+    mainPrice = raw;
+    const priceField = document.querySelector('#priceField .input-value');
+    if (priceField) { priceField.textContent = '$' + raw; }
+    document.getElementById('priceField').classList.remove('null');
+  }
+  document.getElementById('priceFormatDialog').classList.remove('open');
+  renderProductTable();
+}
+
+function cancelPriceFormat() {
+  document.getElementById('priceFormatDialog').classList.remove('open');
+}
+
+function setPfTab(btn, type) {
+  btn.parentElement.querySelectorAll('.pf-seg-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
 }
 
 function addMediaImage(addBtn) {
@@ -1456,6 +1642,7 @@ function toggleCustomizeVariant(el) {
     }
   }
   el.classList.toggle('on');
+  renderProductTable();
 }
 
 function confirmResetPrices() {
