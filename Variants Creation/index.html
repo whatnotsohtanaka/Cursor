@@ -106,6 +106,34 @@
       color: rgba(255,255,255,0.8);
       font-weight: 600;
     }
+    .proto-segment {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255,255,255,0.06);
+      border-radius: 6px;
+      padding: 2px;
+      gap: 1px;
+      margin-left: 2px;
+    }
+    .proto-segment a, .proto-segment span {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      text-decoration: none;
+      color: rgba(255,255,255,0.35);
+      transition: background 0.15s, color 0.15s;
+      cursor: pointer;
+    }
+    .proto-segment a:hover { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.04); }
+    .proto-segment .seg-active {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.85);
+      font-weight: 600;
+      cursor: default;
+    }
     .proto-divider {
       width: 1px;
       height: 16px;
@@ -4814,7 +4842,11 @@
       <span class="sep">›</span>
       <span>st</span>
       <span class="sep">›</span>
-      <a href="index.html" class="current" style="cursor:pointer">Variants Creation - Mobile</a>
+      <span class="current">Variants Creation</span>
+      <div class="proto-segment">
+        <span class="seg-active">Mobile</span>
+        <a href="desktop.html">Desktop</a>
+      </div>
     </div>
   </div>
   <div class="proto-header-right">
@@ -18321,7 +18353,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 4:40pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 11:50pm';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
