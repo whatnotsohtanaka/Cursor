@@ -80,6 +80,8 @@
     .flash-info { display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 18px; color: #6a6a6a; padding: 0 4px; }
     .flash-strike { text-decoration: line-through; color: #999; }
     .input-field.flash-required { border-color: #e53935; box-shadow: 0 0 0 1px #e53935; }
+    #fashionFields { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+    #fashionFields .input-field { margin-top: 0; }
     .flash-details.disabled { opacity: 0.4; pointer-events: none; }
     .pf-flash-details.disabled { opacity: 0.4; pointer-events: none; }
     .pf-inline-select { cursor: pointer; }
@@ -193,7 +195,7 @@
     .input-field.null:focus-within .input-value, .input-field.null:focus-within .input-val { max-height: 24px; opacity: 1; }
 
     /* Chip inline input */
-    .chip-input { border: none; outline: none; font-family: var(--font); font-size: 12px; font-weight: 600; line-height: 16px; min-width: 60px; flex: 1; background: transparent; padding: 8px 0; color: var(--text-secondary); }
+    .chip-input { border: none; outline: none; font-family: var(--font); font-size: 12px; font-weight: 600; line-height: 16px; min-width: 60px; flex: 0 0 auto; width: 60px; background: transparent; padding: 8px 0; color: var(--text-secondary); }
 
     /* Select field + popover */
     .select-field { cursor: pointer; }
@@ -220,7 +222,7 @@
     .chip.selected { background: var(--chip-selected); color: white; }
     .chip.unselected { background: var(--chip-unselected); color: var(--text-primary); }
     .chip.unselected:hover { background: #e8e8e8; }
-    .chip-sm { height: 32px; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; line-height: 16px; background: var(--chip-unselected); color: var(--text-primary); display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+    .chip-sm { height: 32px; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; line-height: 16px; background: var(--chip-unselected); color: var(--text-primary); display: flex; align-items: center; gap: 4px; white-space: nowrap; flex-shrink: 0; }
     .chip-sm .chip-x { width: 12px; height: 12px; cursor: pointer; opacity: 0.5; transition: opacity 0.15s; display: flex; align-items: center; justify-content: center; }
     .chip-sm .chip-x:hover { opacity: 1; }
 
@@ -233,7 +235,9 @@
     .option-row { display: flex; gap: 12px; align-items: center; }
     .option-name { width: 233px; flex-shrink: 0; }
     .option-values { flex: 1; min-width: 0; position: relative; }
-    .option-values .chip-sm-list { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .option-values .input-content { overflow: visible; }
+    .option-values .chip-sm-list { display: flex; gap: 8px; flex-wrap: nowrap; align-items: center; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+    .option-values .chip-sm-list::-webkit-scrollbar { display: none; }
     .option-delete { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0.4; transition: opacity 0.15s; flex-shrink: 0; border-radius: 6px; }
     .option-delete:hover { opacity: 0.8; background: #f5f5f5; }
     @keyframes shake { 0%,100% { transform: translateX(0); } 15%,45%,75% { transform: translateX(-4px); } 30%,60%,90% { transform: translateX(4px); } }
@@ -265,6 +269,8 @@
     .pt-chevron.open { transform: rotate(180deg); }
     .pt-chevron.hidden { opacity: 0; pointer-events: none; }
     .pt-thumb { width: 56px; height: 56px; border-radius: 8px; object-fit: cover; background: #e8e8e8; flex-shrink: 0; }
+    .pt-thumb-null { width: 56px; height: 56px; border-radius: 8px; background: #e8e8e8; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .pt-thumb-null svg { opacity: 0.3; }
     .pt-product-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
     .pt-product-name { font-size: 14px; font-weight: 600; line-height: 20px; letter-spacing: -0.14px; color: var(--text-secondary); }
     .pt-product-sub { font-size: 13px; line-height: 18px; letter-spacing: -0.13px; color: var(--text-secondary); }
@@ -315,7 +321,7 @@
     /* ═══ DIALOG ═══ */
     .dialog-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 20000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
     .dialog-overlay.open { opacity: 1; pointer-events: auto; }
-    .dialog-panel { background: white; border-radius: 12px; width: 480px; max-width: calc(100vw - 32px); box-shadow: 0 16px 24px -4px rgba(0,0,0,0.06), 0 4px 8px -2px rgba(0,0,0,0.04); overflow: hidden; transform: scale(0.96) translateY(8px); transition: transform 0.2s cubic-bezier(0.32,0.72,0,1); }
+    .dialog-panel { background: white; border-radius: 12px; width: 480px; max-width: calc(100vw - 32px); box-shadow: 0 16px 24px -4px rgba(0,0,0,0.06), 0 4px 8px -2px rgba(0,0,0,0.04); overflow: visible; transform: scale(0.96) translateY(8px); transition: transform 0.2s cubic-bezier(0.32,0.72,0,1); }
     .dialog-overlay.open .dialog-panel { transform: scale(1) translateY(0); }
     .dialog-header { padding: 24px 24px 0; }
     .dialog-header-row { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; }
@@ -560,6 +566,36 @@
               <div class="select-option" data-value="Puma" onclick="selectOption('selectBrand',this,event)">Puma</div>
               <div class="select-option" data-value="Vans" onclick="selectOption('selectBrand',this,event)">Vans</div>
               <div class="select-option" data-value="Converse" onclick="selectOption('selectBrand',this,event)">Converse</div>
+            </div>
+          </div>
+          <div id="fashionFields" style="display:none;">
+            <div class="input-field select-field null" id="selectType" onclick="toggleSelect(this)">
+              <div class="input-content"><div class="input-label">Type <span class="req">*</span></div><div class="input-value"></div></div>
+              <div class="input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+              <div class="select-popover">
+                <div class="select-option" data-value="Tops" onclick="selectOption('selectType',this,event)">Tops</div>
+                <div class="select-option" data-value="Bottoms" onclick="selectOption('selectType',this,event)">Bottoms</div>
+                <div class="select-option" data-value="Outerwear" onclick="selectOption('selectType',this,event)">Outerwear</div>
+                <div class="select-option" data-value="Hoodies & Sweatshirts" onclick="selectOption('selectType',this,event)">Hoodies & Sweatshirts</div>
+                <div class="select-option" data-value="Accessories" onclick="selectOption('selectType',this,event)">Accessories</div>
+                <div class="select-option" data-value="Hats" onclick="selectOption('selectType',this,event)">Hats</div>
+              </div>
+            </div>
+            <div class="input-field select-field null" id="selectSize" onclick="toggleSelect(this)">
+              <div class="input-content"><div class="input-label">Size <span class="req">*</span></div><div class="input-value"></div></div>
+              <div class="input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+              <div class="select-popover">
+                <div class="select-option" data-value="XXS" onclick="selectOption('selectSize',this,event)">XXS</div>
+                <div class="select-option" data-value="XS" onclick="selectOption('selectSize',this,event)">XS</div>
+                <div class="select-option" data-value="S" onclick="selectOption('selectSize',this,event)">S</div>
+                <div class="select-option" data-value="M" onclick="selectOption('selectSize',this,event)">M</div>
+                <div class="select-option" data-value="L" onclick="selectOption('selectSize',this,event)">L</div>
+                <div class="select-option" data-value="XL" onclick="selectOption('selectSize',this,event)">XL</div>
+                <div class="select-option" data-value="XXL" onclick="selectOption('selectSize',this,event)">XXL</div>
+                <div class="select-option" data-value="3XL" onclick="selectOption('selectSize',this,event)">3XL</div>
+                <div class="select-option" data-value="4XL" onclick="selectOption('selectSize',this,event)">4XL</div>
+                <div class="select-option" data-value="One Size" onclick="selectOption('selectSize',this,event)">One Size</div>
+              </div>
             </div>
           </div>
           <div class="qty-row" id="mainQtyRow">
@@ -893,7 +929,7 @@
 </div>
 
 <script>
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/10/26 @ 12:15am';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/10/26 @ 7:56am';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -905,11 +941,21 @@ const SNEAKER_PRESETS = [
   { key: 'color', label: 'Color', values: ['White / Black', 'White / Brown'], allowCustom: true },
   { key: 'condition', label: 'Condition', values: ['New', 'New w Defects'], allowCustom: false }
 ];
+const FASHION_PRESETS = [
+  { key: 'size', label: 'Size', values: ['M', 'L', 'XL'], allowCustom: false },
+  { key: 'color', label: 'Color', values: ['Black', 'White', 'Navy'], allowCustom: true },
+  { key: 'condition', label: 'Condition', values: ['New', 'New w Defects'], allowCustom: false }
+];
+const SNEAKER_SIZES = ['3.5M','4M','4.5M','5M','5.5M','6M','6.5M','7M','7.5M','8M','8.5M','9M','9.5M','10M','10.5M','11M','11.5M','12M','12.5M','13M','14M','15M','16M','17M','18M','3.5W','4W','4.5W','5W','5.5W','6W','6.5W','7W','7.5W','8W','8.5W','9W','9.5W','10W','10.5W','11W','11.5W','12W','3.5Y','4Y','4.5Y','5Y','5.5Y','6Y','6.5Y','7Y'];
+const FASHION_SIZES = ['XXS','XS','S','M','L','XL','XXL','3XL','4XL','One Size'];
 const PRESET_SUGGESTIONS = {
-  size: ['3.5M','4M','4.5M','5M','5.5M','6M','6.5M','7M','7.5M','8M','8.5M','9M','9.5M','10M','10.5M','11M','11.5M','12M','12.5M','13M','14M','15M','16M','17M','18M','3.5W','4W','4.5W','5W','5.5W','6W','6.5W','7W','7.5W','8W','8.5W','9W','9.5W','10W','10.5W','11W','11.5W','12W','3.5Y','4Y','4.5Y','5Y','5.5Y','6Y','6.5Y','7Y'],
+  get size() { return selectedCategory === 'Sneakers' ? SNEAKER_SIZES : FASHION_SIZES; },
   color: ['White','Black','Red','Blue','Green','Grey','Brown','Pink','Navy','Orange','Yellow','Purple','Cream','Beige','Tan','Olive','Teal','Burgundy','Maroon','Gold','Silver','White / Black','White / Brown','White / Red','White / Blue','White / Green','White / Grey','White / Pink','White / Navy','Black / White','Black / Red','Black / Gold','Black / Grey','Red / White','Blue / White','Green / White','Grey / White','Triple White','Triple Black','University Red','University Blue','Royal Blue','Bred','Chicago','Shadow','Panda','Photon Dust','Sail','Bone','Off-White'],
   condition: ['New','New w Defects','Used - Excellent','Used - Good','Used - Fair']
 };
+function getActivePresets() {
+  return selectedCategory === 'Sneakers' ? SNEAKER_PRESETS : FASHION_PRESETS;
+}
 const CATEGORIES = ['Sneakers', 'Streetwear', 'Mens Fashion'];
 let selectedCategory = 'Sneakers';
 
@@ -1007,6 +1053,10 @@ function applyNullForm() {
   if (desc) desc.value = '';
   setSelectValue('selectCondition', '');
   setSelectValue('selectBrand', '');
+  const fashionFields = document.getElementById('fashionFields');
+  if (fashionFields) fashionFields.style.display = 'none';
+  setSelectValue('selectType', '');
+  setSelectValue('selectSize', '');
 
   document.querySelectorAll('#productDetailsCard .input-field:not(.select-field)').forEach(f => {
     const label = f.querySelector('.input-label');
@@ -1103,7 +1153,7 @@ function applyFilledForm() {
   mediaGrid.querySelectorAll('.media-thumb').forEach(t => t.remove());
   const heroImg = document.createElement('img');
   heroImg.className = 'media-thumb';
-  heroImg.src = 'icons/create-shoe.png';
+  heroImg.src = 'icons/create-listing.png';
   heroImg.alt = 'Product';
   mediaGrid.insertBefore(heroImg, mediaAdd);
 
@@ -1111,7 +1161,7 @@ function applyFilledForm() {
   const qtyEl = document.getElementById('mainQtyValue');
   if (qtyEl) qtyEl.value = mainQty;
 
-  SNEAKER_PRESETS.forEach(p => addOptionRow(p.label, p.values, true));
+  getActivePresets().forEach(p => addOptionRow(p.label, p.values, true));
   addOptionRow('', [], false);
 }
 
@@ -1174,6 +1224,8 @@ function selectCategory(cat) {
   selectedCategory = cat;
   renderCategoryChips();
   setSelectValue('selectCategory', cat);
+  const fashionFields = document.getElementById('fashionFields');
+  if (fashionFields) fashionFields.style.display = (cat === 'Sneakers') ? 'none' : '';
 }
 
 function addOptionRow(name, values, preset) {
@@ -1217,7 +1269,7 @@ function getUsedPresetKeys() {
 }
 
 function addPresetOption(key) {
-  const preset = SNEAKER_PRESETS.find(p => p.key === key);
+  const preset = getActivePresets().find(p => p.key === key);
   if (!preset) return;
   const emptyRow = optionRows.find(r => !r.name && r.values.length === 0);
   if (emptyRow) {
@@ -1362,7 +1414,7 @@ function onOptionValuesInput(id, input) {
   const filtered = query ? unused.filter(v => v.toLowerCase().includes(query)) : unused;
   const dropdown = input.closest('.option-values')?.querySelector('.typeahead-dropdown');
   if (!dropdown) return;
-  const preset = SNEAKER_PRESETS.find(p => p.label.toLowerCase() === key);
+  const preset = getActivePresets().find(p => p.label.toLowerCase() === key);
   const canCustom = preset ? preset.allowCustom !== false : true;
   const exactMatch = query && filtered.some(v => v.toLowerCase() === query);
   const showCustom = canCustom && query && !exactMatch && !row.values.some(v => v.toLowerCase() === query);
@@ -1441,6 +1493,7 @@ function selectTypeaheadOption(rowId, value, input) {
       chip.className = 'chip-sm';
       chip.innerHTML = `${value}<span class="chip-x" onclick="removeChipFromRow(${rowId},${row.values.length - 1})">${svgX}</span>`;
       chipList.insertBefore(chip, input);
+      chipList.scrollLeft = chipList.scrollWidth;
     }
   }
 
@@ -1491,6 +1544,16 @@ function onOptionValuesBlur(id, input) {
 const svgTrash = `<svg width="20" height="20" viewBox="0 0 16.664 20" fill="currentColor"><path d="M6.665 9.167a.833.833 0 01.834.833v6.667a.833.833 0 11-1.667 0V10a.833.833 0 01.833-.833z"/><path d="M9.999 9.167a.833.833 0 01.833.833v6.667a.833.833 0 11-1.667 0V10a.833.833 0 01.833-.833z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M4.999 2.5A2.5 2.5 0 017.499 0h1.666a2.5 2.5 0 012.5 2.5h.744c.892 0 1.747.357 2.373.992l1.277 1.295c1.196 1.212.5 3.198-1.06 3.506v7.54A4.167 4.167 0 0110.832 20H5.832a4.167 4.167 0 01-4.167-4.167V8.293C.104 7.985-.591 6 .604 4.787l1.277-1.295A3.333 3.333 0 014.255 2.5h.744zm1.666 0a.833.833 0 01.834-.833h1.666c.46 0 .834.373.834.833H6.665zM3.068 4.663L1.791 5.957c-.26.263-.073.71.297.71h12.49c.37 0 .556-.447.296-.71L13.596 4.663a1.667 1.667 0 00-1.187-.496H4.255c-.446 0-.873.179-1.187.496zm10.264 3.67v7.5a2.5 2.5 0 01-2.5 2.5H5.832a2.5 2.5 0 01-2.5-2.5v-7.5h9.999z"/></svg>`;
 const svgX = `<svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="1" y1="1" x2="7" y2="7"/><line x1="7" y1="1" x2="1" y2="7"/></svg>`;
 const svgPlus = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`;
+const nullThumb = `<div class="pt-thumb-null"><svg width="28" height="28" viewBox="0 0 80 80" fill="none"><path d="M80 40C80 70.9265 70.9265 80 40 80C9.07348 80 0 70.9265 0 40C0 9.07347 9.07348 0 40 0C70.9265 0 80 9.07347 80 40Z" fill="#ccc"/><path transform="translate(12.12,22.94)" d="M18.7312 34.1275C21.6005 34.1275 23.703 31.9154 24.1473 29.3869C24.4668 27.6799 24.2751 24.838 23.5722 22.0569C23.2527 20.6664 24.3359 20.0335 25.3552 21.5518L27.4578 24.7741C32.8739 32.8647 35.1712 34.1275 37.2737 34.1275C39.3762 34.1275 41.7344 33.242 47.9811 24.269L49.5755 21.993C55.1194 14.094 55.7584 10.8687 55.7584 8.97307C55.7584 3.91602 51.9337 0 46.8371 0C43.0123 0 40.8459 2.08428 38.9989 5.81469L38.2991 7.20523C37.724 8.34322 36.8964 8.34322 36.2605 7.20523L35.4967 5.75079C33.522 1.95952 31.4803 0 27.8503 0C24.2203 0 22.1786 1.83173 20.3286 5.62604L19.5649 7.20523C18.9898 8.40712 18.0344 8.46797 17.4623 7.20523L16.7625 5.68993C14.9156 1.64611 12.7461 0 8.86049 0C3.88863 0 0 3.79431 0 8.97307C0 10.8687 0.702174 14.094 6.18225 21.993L7.77362 24.269C14.0233 33.242 16.3785 34.1275 18.481 34.1275" fill="white"/></svg></div>`;
+
+function getListingThumbSrc() {
+  const img = document.querySelector('.media-grid .media-thumb');
+  return img ? img.src : '';
+}
+function parentThumbHtml() {
+  const src = getListingThumbSrc();
+  return src ? `<img class="pt-thumb" src="${src}" alt="">` : nullThumb;
+}
 
 function renderAll() {
   const toggle = document.getElementById('customizeVariantToggle');
@@ -1533,7 +1596,7 @@ function renderOptionRows() {
       : ` onblur="onCustomValueBlur(${row.id}, this)"`;
 
     const valuesField = row.values.length
-      ? `<div class="input-field option-values" style="height:auto;min-height:52px;" onclick="focusInput(this)">
+      ? `<div class="input-field option-values" onclick="focusInput(this)">
           <div class="input-content">
             <div class="chip-sm-list">${chips}
               <input class="chip-input" onkeydown="onOptionValuesKeydown(${row.id}, event)"${extraHandlers}>
@@ -1560,7 +1623,7 @@ function renderOptionRows() {
 function renderToolbar() {
   const mount = document.getElementById('vmToolbar');
   const used = getUsedPresetKeys();
-  const available = SNEAKER_PRESETS.filter(p => !used.includes(p.key));
+  const available = getActivePresets().filter(p => !used.includes(p.key));
   const presets = available.map(p =>
     `<button class="btn-preset" onclick="addPresetOption('${p.key}')">${p.label}</button>`
   ).join('');
@@ -1729,7 +1792,7 @@ function renderProductTable() {
     html += `<tr class="pt-parent-row" onclick="toggleTableRow('${rowId}')">
       <td><div class="pt-product-cell">
         <div class="pt-chevron" id="chev_${rowId}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
-        <img class="pt-thumb" src="icons/create-shoe.png" alt="">
+        ${parentThumbHtml()}
         <div class="pt-product-info"><div class="pt-product-name">${val}</div><div class="pt-product-sub">${variantCount} Variant${variantCount > 1 ? 's' : ''}</div></div>
       </div></td>
       <td class="pt-label-cell"><span class="pt-label-text">Qty: ${parentTotal}</span></td>
@@ -1744,7 +1807,7 @@ function renderProductTable() {
         html += `<tr class="pt-child-row" data-parent="${rowId}" style="display:none;">
           <td><div class="pt-product-cell">
             <div class="pt-chevron hidden"></div>
-            <img class="pt-thumb" src="icons/create-shoe.png" alt="">
+            ${nullThumb}
             <div class="pt-child-name">${formattedName}</div>
           </div></td>
           <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Quantity</div><div class="pt-input-value" contenteditable="true" onfocus="onQtyFocus(this)" onkeydown="onQtyKeydown(event)" onblur="onChildQtyChange('${vKey.replace(/'/g,"\\'")}',this)">${childQty}</div></div></div></td>
@@ -1788,7 +1851,7 @@ function buildFlatTable(values) {
     const qty = variantQty[c] ?? 0;
     html += `<tr class="pt-child-row">
       <td><div class="pt-product-cell">
-        <img class="pt-thumb" src="icons/create-shoe.png" alt="">
+        ${nullThumb}
         <div class="pt-child-name">${c}</div>
       </div></td>
       <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Quantity</div><div class="pt-input-value" contenteditable="true" onfocus="onQtyFocus(this)" onkeydown="onQtyKeydown(event)" onblur="onChildQtyChange('${c.replace(/'/g,"\\'")}',this)">${qty}</div></div></div></td>
@@ -1838,14 +1901,7 @@ function syncFirstVariantQty() {
 
 function syncCustomizeToggleVisibility() {
   const setting = document.getElementById('customizeVariantSetting');
-  if (!setting) return;
-  const hasVariants = optionRows.some(r => r.name && r.values.length);
-  setting.style.display = hasVariants ? '' : 'none';
-  const toggle = document.getElementById('customizeVariantToggle');
-  if (!toggle) return;
-  if (hasVariants && Object.keys(variantPrice).length > 0) {
-    toggle.classList.add('on');
-  }
+  if (setting) setting.style.display = 'none';
 }
 
 function syncMainQtyState() {
