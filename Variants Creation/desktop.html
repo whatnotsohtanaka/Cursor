@@ -575,7 +575,7 @@
 </div>
 
 <script>
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 11:50pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/10/26 @ 12:00am';
 const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/variants-creation/desktop.html';
 
 const SNEAKER_PRESETS = [
@@ -987,6 +987,15 @@ function onOptionValuesFocus(id, input) {
   }
 }
 
+function onCustomValueBlur(id, input) {
+  const val = input.value.trim();
+  if (!val) return;
+  const row = optionRows.find(r => r.id === id);
+  if (row && !row.values.includes(val)) { row.values.push(val); }
+  input.value = '';
+  renderAll();
+}
+
 function onOptionValuesBlur(id, input) {
   const dropdown = input.closest('.option-values')?.querySelector('.typeahead-dropdown');
   setTimeout(() => closeTypeahead(dropdown), 150);
@@ -1027,15 +1036,15 @@ function renderOptionRows() {
         </div>`;
 
     const typeaheadHtml = isPreset ? '<div class="typeahead-dropdown"></div>' : '';
-    const presetHandlers = isPreset
+    const extraHandlers = isPreset
       ? ` oninput="onOptionValuesInput(${row.id}, this)" onfocus="onOptionValuesFocus(${row.id}, this)" onblur="onOptionValuesBlur(${row.id}, this)"`
-      : '';
+      : ` onblur="onCustomValueBlur(${row.id}, this)"`;
 
     const valuesField = row.values.length
       ? `<div class="input-field option-values" style="height:auto;min-height:52px;" onclick="focusInput(this)">
           <div class="input-content">
             <div class="chip-sm-list">${chips}
-              <input class="chip-input" onkeydown="onOptionValuesKeydown(${row.id}, event)"${presetHandlers}>
+              <input class="chip-input" onkeydown="onOptionValuesKeydown(${row.id}, event)"${extraHandlers}>
             </div>
           </div>
           ${typeaheadHtml}
@@ -1043,7 +1052,7 @@ function renderOptionRows() {
       : `<div class="input-field option-values null" onclick="focusInput(this)">
           <div class="input-content">
             <div class="input-label">Option Values <span class="req">*</span></div>
-            <input class="input-val" onkeydown="onOptionValuesKeydown(${row.id}, event)"${presetHandlers}>
+            <input class="input-val" onkeydown="onOptionValuesKeydown(${row.id}, event)"${extraHandlers}>
           </div>
           ${typeaheadHtml}
         </div>`;
