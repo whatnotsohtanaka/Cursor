@@ -60,11 +60,8 @@
       .proto-link-btn { padding: 6px; }
       .proto-breadcrumb .current { overflow: hidden; text-overflow: ellipsis; max-width: 160px; display: inline-block; vertical-align: middle; }
     }
-    @media (max-width: 640px) {
-      .proto-breadcrumb a, .proto-breadcrumb .sep:not(:last-of-type), .proto-breadcrumb span:not(.current):not(.seg-active) { display: none; }
-      .proto-breadcrumb .sep:last-of-type { display: none; }
-      .proto-segment { margin-left: 0; }
-      .proto-header { padding: 0 10px; }
+    @media (max-width: 768px) {
+      .proto-header { display: none; }
     }
 
     /* ═══ PRICE & FORMAT DIALOG ═══ */
@@ -271,6 +268,7 @@
     .pt-child-row .pt-input { background: var(--bg-base); }
     .product-table td.pt-label-cell { padding: 16px 12px; vertical-align: middle; text-align: left; }
     .pt-label-text { font-size: 14px; line-height: 20px; letter-spacing: -0.14px; color: var(--text-secondary); }
+    .pt-parent-format { display: block; font-size: 11px; line-height: 14px; letter-spacing: 0; color: var(--text-tertiary, #999); font-weight: 500; }
     .pt-child-row .pt-input-label { color: #1c1c1c; }
     .pt-child-row .pt-input-value { color: #1c1c1c; }
 
@@ -455,7 +453,7 @@
     <div class="content-header">
       <div class="content-header-left">
         <button class="back-btn"><svg width="10" height="16" viewBox="0 0 7.05719 13.3333" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.86193 0.195262C7.12228 0.455612 7.12228 0.877722 6.86193 1.13807L1.33333 6.66667L6.86193 12.1953C7.12228 12.4556 7.12228 12.8777 6.86193 13.1381C6.60158 13.3984 6.17947 13.3984 5.91912 13.1381L0.390525 7.60948C-0.130174 7.08878 -0.130176 6.24456 0.390525 5.72386L5.91912 0.195262C6.17947 -0.0650874 6.60158 -0.0650874 6.86193 0.195262Z" fill="currentColor"/></svg></button>
-        <h1 class="content-title">Edit Product</h1>
+        <h1 class="content-title">Create Listing</h1>
       </div>
       <div class="input-field select-field" id="selectStatus" style="width:188px;" onclick="toggleSelect(this)">
         <div class="input-content"><div class="input-value" style="font-weight:600;">Status: Active</div></div>
@@ -610,7 +608,7 @@
           <!-- AUCTION TAB -->
           <div class="pricing-tab" id="pricingAuction">
             <div class="input-field" onclick="focusInput(this)">
-              <div class="input-content"><div class="input-label">Starting Price (USD) <span class="req">*</span></div><div class="input-value" contenteditable="true" oninput="this.closest('.input-field').classList.toggle('null',!this.textContent.replace(/[^0-9.]/g,''))" onblur="let r=this.textContent.replace(/[^0-9.]/g,'');this.textContent=r?'$'+r:'$1';this.closest('.input-field').classList.toggle('null',!r)">$1</div></div>
+              <div class="input-content"><div class="input-label">Starting Price (USD) <span class="req">*</span></div><div class="input-value" contenteditable="true" onfocus="onStartPriceFocus(this)" oninput="onStartPriceInput(this)" onkeydown="onStartPriceKeydown(event)" onblur="onStartPriceBlur(this)">$1</div></div>
             </div>
             <div class="setting">
               <div class="setting-row"><span class="setting-label">Sudden Death 💀</span><div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
@@ -782,7 +780,7 @@
 </div>
 
 <script>
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 9:52pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 11:40pm';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -810,6 +808,9 @@ let mainQty = 1;
 let variantQty = {};
 let variantPrice = {};
 let mainPrice = '';
+let auctionStartPrice = '1';
+let activePricingFormat = 'auction';
+let priceCommitted = false;
 
 const FILLED_DATA = {
   category: 'Sneakers',
@@ -870,6 +871,10 @@ function applyFormState() {
   variantQty = {};
   variantPrice = {};
   mainPrice = '';
+  auctionStartPrice = '1';
+  activePricingFormat = 'auction';
+  priceCommitted = false;
+  openParentRows.clear();
   if (isNullState) {
     applyNullForm();
   } else {
@@ -919,6 +924,12 @@ function applyNullForm() {
 
   document.querySelectorAll('.creation .toggle.on').forEach(t => t.classList.remove('on'));
 
+  activePricingFormat = 'auction';
+  const nullSegTabs = document.querySelectorAll('#pricingSegControl .seg-tab');
+  nullSegTabs.forEach(t => t.classList.toggle('active', t.textContent.trim() === 'Auction'));
+  document.getElementById('pricingAuction').style.display = '';
+  document.getElementById('pricingBin').style.display = 'none';
+
   document.getElementById('mediaNullState').classList.remove('hidden');
   document.getElementById('mediaFilledState').style.display = 'none';
 
@@ -952,7 +963,7 @@ function applyFilledForm() {
     const val = f.querySelector('.input-value');
     if (!label || !val) return;
     const labelText = label.textContent.trim().replace(/\s*\*\s*$/, '');
-    if (labelText === 'Price') { val.textContent = FILLED_DATA.price; f.classList.remove('null'); mainPrice = FILLED_DATA.price.replace(/[^0-9.]/g, ''); }
+    if (labelText === 'Price') { val.textContent = FILLED_DATA.price; f.classList.remove('null'); mainPrice = FILLED_DATA.price.replace(/[^0-9.]/g, ''); priceCommitted = true; }
     else if (labelText === 'Cost Per Item') { val.textContent = FILLED_DATA.costPerItem; f.classList.remove('null'); }
     else if (labelText === 'SKU') { val.textContent = FILLED_DATA.sku; f.classList.toggle('null', !FILLED_DATA.sku); }
   });
@@ -964,6 +975,12 @@ function applyFilledForm() {
   if (statusVal) statusVal.textContent = 'Status: Active';
   const statusOpts = document.querySelectorAll('#selectStatus .select-option');
   statusOpts.forEach(o => o.classList.toggle('active', o.dataset.value === 'Active'));
+
+  activePricingFormat = 'auction';
+  const segTabs = document.querySelectorAll('#pricingSegControl .seg-tab');
+  segTabs.forEach(t => t.classList.toggle('active', t.textContent.trim() === 'Auction'));
+  document.getElementById('pricingAuction').style.display = '';
+  document.getElementById('pricingBin').style.display = 'none';
 
   document.getElementById('mediaNullState').classList.add('hidden');
   document.getElementById('mediaFilledState').style.display = '';
@@ -1126,6 +1143,7 @@ function onOptionNameBlur(id, el) {
 }
 let typeaheadHighlight = -1;
 let typeaheadCloseTimer = null;
+const openParentRows = new Set();
 function onOptionValuesKeydown(id, e) {
   const row = optionRows.find(r => r.id === id);
   if (!row) return;
@@ -1352,11 +1370,14 @@ const svgX = `<svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="cu
 const svgPlus = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`;
 
 function renderAll() {
+  const toggle = document.getElementById('customizeVariantToggle');
+  const wasOn = toggle && toggle.classList.contains('on');
   renderOptionRows();
   renderToolbar();
   renderProductTable();
   syncMainQtyState();
   syncCustomizeToggleVisibility();
+  if (wasOn && toggle) toggle.classList.add('on');
 }
 
 function renderOptionRows() {
@@ -1514,8 +1535,8 @@ function updateParentQtyDisplay(rowId) {
   });
   const parentTr = document.querySelector(`tr.pt-parent-row[onclick*="${rowId}"]`);
   if (parentTr) {
-    const parentQtyEl = parentTr.querySelector('.pt-input-cell .pt-input-value');
-    if (parentQtyEl) parentQtyEl.textContent = total;
+    const labelEl = parentTr.querySelector('.pt-label-cell .pt-label-text');
+    if (labelEl) labelEl.textContent = `Qty: ${total}`;
   }
 }
 
@@ -1526,9 +1547,13 @@ function isCustomizeOn() {
 
 function buildPriceCell(key) {
   const price = getVariantPriceDisplay(key);
+  const label = getActivePriceFormatLabel(key);
+  const hasPrice = variantHasPrice(key);
   const escapedKey = key ? key.replace(/'/g, "\\'") : '';
   const onclickKey = key !== null ? `'${escapedKey}'` : 'null';
-  return `<td class="pt-input-cell"><div class="pt-input pt-price-cell" onclick="openPriceFormatDialog(${onclickKey},this)"><div class="pt-input-content"><div class="pt-input-label">Buy Now</div><div class="pt-input-value">${price}</div></div><div class="pt-input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div></div></td>`;
+  const labelHtml = hasPrice ? `<div class="pt-input-label">${label}</div>` : '';
+  const nullClass = hasPrice ? '' : ' null';
+  return `<td class="pt-input-cell"><div class="pt-input pt-price-cell${nullClass}" onclick="openPriceFormatDialog(${onclickKey},this)"><div class="pt-input-content">${labelHtml}<div class="pt-input-value">${price}</div></div><div class="pt-input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div></div></td>`;
 }
 
 function renderProductTable() {
@@ -1549,7 +1574,7 @@ function renderProductTable() {
 
   const groupOpts = renderGroupByOptions(filledRows);
   const groupByHeader = groupOpts
-    ? `Product <select class="pt-group-select" onchange="setGroupBy(this.value)">${groupOpts}</select>`
+    ? `Group by: <select class="pt-group-select" onchange="setGroupBy(this.value)">${groupOpts}</select>`
     : `Product <span class="sort-icon">⇅</span>`;
 
   const childCombos = otherRows.length ? generateCombinations(otherRows) : [];
@@ -1570,7 +1595,7 @@ function renderProductTable() {
         <div class="pt-product-info"><div class="pt-product-name">${val}</div><div class="pt-product-sub">${variantCount} Variant${variantCount > 1 ? 's' : ''}</div></div>
       </div></td>
       <td class="pt-label-cell"><span class="pt-label-text">Qty: ${parentTotal}</span></td>
-      <td class="pt-label-cell"><span class="pt-label-text">${getVariantPriceDisplay()}</span></td>
+      ${(() => { const pp = getParentPriceLabel(val, childCombos, groupRow); return pp.format ? `<td class="pt-label-cell"><span class="pt-label-text"><span class="pt-parent-format">${pp.format}</span>${pp.price}</span></td>` : `<td class="pt-label-cell"><span class="pt-label-text">${pp.price}</span></td>`; })()}
     </tr>`;
     if (childCombos.length) {
       childCombos.forEach(combo => {
@@ -1593,6 +1618,13 @@ function renderProductTable() {
 
   html += `</tbody></table>`;
   mount.innerHTML = html;
+
+  openParentRows.forEach(rowId => {
+    const chev = document.getElementById(`chev_${rowId}`);
+    if (!chev) return;
+    chev.classList.add('open');
+    document.querySelectorAll(`[data-parent="${rowId}"]`).forEach(el => el.style.display = '');
+  });
 }
 
 function generateCombinations(rows) {
@@ -1616,14 +1648,13 @@ function buildFlatTable(values) {
   </tr></thead><tbody>`;
   values.forEach(c => {
     const qty = variantQty[c] ?? 0;
-    const price = getVariantPriceDisplay(c);
     html += `<tr class="pt-child-row">
       <td><div class="pt-product-cell">
         <img class="pt-thumb" src="icons/create-shoe.png" alt="">
         <div class="pt-child-name">${c}</div>
       </div></td>
-      <td class="pt-label-cell"><span class="pt-label-text">Qty: ${qty}</span></td>
-      <td class="pt-label-cell"><span class="pt-label-text">${price}</span></td>
+      <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Quantity</div><div class="pt-input-value" contenteditable="true" onblur="onChildQtyChange('${c.replace(/'/g,"\\'")}',this)">${qty}</div></div></div></td>
+      ${buildPriceCell(c)}
     </tr>`;
   });
   html += `</tbody></table>`;
@@ -1636,6 +1667,7 @@ function toggleTableRow(rowId) {
   const isOpen = chev?.classList.contains('open');
   children.forEach(el => el.style.display = isOpen ? 'none' : '');
   chev?.classList.toggle('open');
+  if (isOpen) { openParentRows.delete(rowId); } else { openParentRows.add(rowId); }
 }
 
 function adjustMainQty(delta) {
@@ -1671,9 +1703,10 @@ function syncCustomizeToggleVisibility() {
   if (!setting) return;
   const hasVariants = optionRows.some(r => r.name && r.values.length);
   setting.style.display = hasVariants ? '' : 'none';
+  const toggle = document.getElementById('customizeVariantToggle');
+  if (!toggle) return;
   if (hasVariants && Object.keys(variantPrice).length > 0) {
-    const toggle = document.getElementById('customizeVariantToggle');
-    if (toggle && !toggle.classList.contains('on')) toggle.classList.add('on');
+    toggle.classList.add('on');
   }
 }
 
@@ -1733,14 +1766,116 @@ function onPriceKeydown(e) {
 function onPriceBlur(el) {
   let raw = el.textContent.replace(/[^0-9.]/g, '');
   mainPrice = raw;
+  if (raw) priceCommitted = true;
   el.textContent = raw ? '$' + raw : '$';
   el.closest('.input-field').classList.toggle('null', !raw);
   renderProductTable();
 }
+function onStartPriceFocus(el) {
+  let raw = el.textContent.replace(/[^0-9.]/g, '');
+  el.textContent = '$' + raw;
+  setTimeout(() => {
+    const sel = window.getSelection();
+    const range = document.createRange();
+    const textNode = el.firstChild;
+    if (textNode) { range.setStart(textNode, textNode.length); range.collapse(true); sel.removeAllRanges(); sel.addRange(range); }
+  }, 0);
+}
+function onStartPriceInput(el) {
+  let raw = el.textContent.replace(/[^0-9.$]/g, '').replace(/\$/g, '');
+  auctionStartPrice = raw;
+  el.textContent = '$' + raw;
+  el.closest('.input-field').classList.toggle('null', !raw);
+  try {
+    const sel = window.getSelection();
+    const range = document.createRange();
+    const textNode = el.firstChild;
+    if (textNode) { range.setStart(textNode, textNode.length); range.collapse(true); sel.removeAllRanges(); sel.addRange(range); }
+  } catch(e) {}
+}
+function onStartPriceKeydown(e) {
+  if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); }
+}
+function onStartPriceBlur(el) {
+  let raw = el.textContent.replace(/[^0-9.]/g, '');
+  auctionStartPrice = raw || '1';
+  if (raw) priceCommitted = true;
+  el.textContent = raw ? '$' + raw : '$1';
+  el.closest('.input-field').classList.toggle('null', !raw);
+  renderProductTable();
+}
+function getParentPriceLabel(groupVal, childCombos, groupRow) {
+  const keys = childCombos.length
+    ? childCombos.map(c => buildVariantKey(groupVal, c, groupRow))
+    : [groupVal];
+
+  const prices = [];
+  const formats = new Set();
+  let anySet = false;
+
+  keys.forEach(k => {
+    const vp = variantPrice[k];
+    if (vp != null) {
+      anySet = true;
+      const p = typeof vp === 'object' ? parseFloat(vp.price) : parseFloat(vp);
+      if (!isNaN(p)) prices.push(p);
+      const f = typeof vp === 'object' ? vp.format : activePricingFormat;
+      formats.add(f);
+    } else if (priceCommitted) {
+      const p = activePricingFormat === 'auction'
+        ? parseFloat(auctionStartPrice)
+        : parseFloat(mainPrice);
+      if (!isNaN(p)) prices.push(p);
+      formats.add(activePricingFormat);
+    }
+  });
+
+  if (prices.length === 0) return { format: '', price: '$--' };
+
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  const priceStr = min === max ? `$${min}` : `$${min} – $${max}`;
+
+  let formatStr = '';
+  if (formats.size > 1) formatStr = 'Multiple Formats';
+  else if (formats.has('auction')) formatStr = 'Auction';
+  else if (formats.has('bin')) formatStr = 'Buy Now';
+
+  return { format: formatStr, price: priceStr };
+}
+
+function variantHasPrice(key) {
+  if (key && variantPrice[key] != null) return true;
+  return priceCommitted;
+}
+
 function getVariantPriceDisplay(key) {
-  if (key && variantPrice[key] != null) return '$' + variantPrice[key];
-  if (!mainPrice) return '$--';
-  return '$' + mainPrice;
+  if (key && variantPrice[key] != null) {
+    const vp = variantPrice[key];
+    if (typeof vp === 'object') return '$' + vp.price;
+    return '$' + vp;
+  }
+  if (!priceCommitted) return '$--';
+  if (activePricingFormat === 'auction') {
+    return auctionStartPrice ? '$' + auctionStartPrice : '$--';
+  }
+  if (activePricingFormat === 'bin') {
+    if (!mainPrice) return '$--';
+    return '$' + mainPrice;
+  }
+  return '$--';
+}
+
+function getActivePriceFormatLabel(key) {
+  if (key && variantPrice[key] != null) {
+    const vp = variantPrice[key];
+    if (typeof vp === 'object') return vp.format === 'auction' ? 'Auction' : 'Buy Now';
+    return activePricingFormat === 'auction' ? 'Auction' : 'Buy Now';
+  }
+  if (!priceCommitted) return 'Price & Format';
+  if (activePricingFormat === 'auction') return 'Auction';
+  if (activePricingFormat === 'bin') return 'Buy Now';
+  return 'Price & Format';
 }
 
 function onVariantPriceBlur(key, el) {
@@ -1762,17 +1897,55 @@ let pfVariantKey = null;
 
 function openPriceFormatDialog(key, el) {
   pfVariantKey = key;
+  const vp = key ? variantPrice[key] : null;
+  const vpFormat = vp && typeof vp === 'object' ? vp.format : activePricingFormat || 'auction';
+
+  const pfSegBtns = document.querySelectorAll('.pf-seg-btn');
+  pfSegBtns.forEach(b => b.classList.toggle('active',
+    (vpFormat === 'auction' && b.textContent.trim() === 'Auction') ||
+    (vpFormat === 'bin' && b.textContent.trim() === 'Buy It Now')
+  ));
+  document.getElementById('pfAuction').style.display = vpFormat !== 'bin' ? '' : 'none';
+  document.getElementById('pfBin').style.display = vpFormat === 'bin' ? '' : 'none';
+
+  const startVal = document.getElementById('pfStartPriceValue');
+  const startPrice = vp && typeof vp === 'object' && vp.format === 'auction' ? vp.price : auctionStartPrice;
+  if (startVal) {
+    startVal.textContent = startPrice ? '$' + startPrice : '$1';
+    document.getElementById('pfStartPriceField').classList.toggle('null', !startPrice);
+  }
+
   const priceVal = document.getElementById('pfPriceValue');
   const field = document.getElementById('pfPriceField');
   let current = '';
-  if (key && variantPrice[key] != null) {
-    current = variantPrice[key];
+  if (vp && typeof vp === 'object' && vp.format === 'bin') {
+    current = vp.price;
+  } else if (vp && typeof vp !== 'object') {
+    current = vp;
   } else {
     current = mainPrice;
   }
   priceVal.textContent = current ? '$' + current : '$';
   field.classList.toggle('null', !current);
+
+  if (key) {
+    const toggle = document.getElementById('customizeVariantToggle');
+    if (toggle && !toggle.classList.contains('on')) toggle.classList.add('on');
+  }
+
   document.getElementById('priceFormatDialog').classList.add('open');
+
+  requestAnimationFrame(() => {
+    const activeTab = activePricingFormat === 'bin' ? 'pfBin' : 'pfAuction';
+    const focusField = activeTab === 'pfAuction' ? startVal : priceVal;
+    if (focusField) {
+      focusField.focus();
+      const sel = window.getSelection();
+      const range = document.createRange();
+      const textNode = focusField.firstChild;
+      if (textNode) { range.setStart(textNode, textNode.length); range.collapse(true); sel.removeAllRanges(); sel.addRange(range); }
+    }
+  });
 }
 
 function onPfPriceFocus(el) {
@@ -1806,23 +1979,28 @@ function onPfPriceBlur(el) {
 }
 
 function savePriceFormat() {
-  const raw = document.getElementById('pfPriceValue').textContent.replace(/[^0-9.]/g, '');
-  if (pfVariantKey) {
-    if (raw && raw !== mainPrice) {
-      variantPrice[pfVariantKey] = raw;
-      const toggle = document.getElementById('customizeVariantToggle');
-      if (toggle && !toggle.classList.contains('on')) toggle.classList.add('on');
-    } else {
-      delete variantPrice[pfVariantKey];
-    }
-  } else if (raw) {
-    mainPrice = raw;
-    const priceField = document.querySelector('#priceField .input-value');
-    if (priceField) { priceField.textContent = '$' + raw; }
-    document.getElementById('priceField').classList.remove('null');
+  if (!pfVariantKey) { cancelPriceFormat(); return; }
+
+  const pfAuctionVisible = document.getElementById('pfAuction').style.display !== 'none';
+  const pfFormat = pfAuctionVisible ? 'auction' : 'bin';
+
+  let raw;
+  if (pfFormat === 'auction') {
+    raw = document.getElementById('pfStartPriceValue').textContent.replace(/[^0-9.]/g, '') || '1';
+  } else {
+    raw = document.getElementById('pfPriceValue').textContent.replace(/[^0-9.]/g, '');
   }
+
+  if (raw) {
+    variantPrice[pfVariantKey] = { format: pfFormat, price: raw };
+    const toggle = document.getElementById('customizeVariantToggle');
+    if (toggle && !toggle.classList.contains('on')) toggle.classList.add('on');
+  }
+
   document.getElementById('priceFormatDialog').classList.remove('open');
   renderProductTable();
+  const toggle = document.getElementById('customizeVariantToggle');
+  if (toggle && Object.keys(variantPrice).length > 0) toggle.classList.add('on');
 }
 
 function cancelPriceFormat() {
@@ -1923,6 +2101,8 @@ function setPricingTab(el, tab) {
   el.classList.add('active');
   document.getElementById('pricingBin').style.display = tab === 'bin' ? '' : 'none';
   document.getElementById('pricingAuction').style.display = tab === 'auction' ? '' : 'none';
+  activePricingFormat = tab;
+  renderProductTable();
 }
 
 /* ═══ Share ═══ */
