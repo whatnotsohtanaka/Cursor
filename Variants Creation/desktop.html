@@ -74,7 +74,7 @@
     .pt-price-wrap.disabled:hover .pt-price-tooltip { opacity: 1; }
 
     /* ═══ QUANTITY ROW ═══ */
-    .qty-row { display: flex; align-items: center; justify-content: space-between; height: 52px; border: 1px solid var(--stroke-strong); border-radius: var(--input-radius); padding: 0 12px; background: var(--bg-base); }
+    .qty-row { display: flex; align-items: center; justify-content: space-between; height: 52px; padding: 0; background: transparent; }
     .qty-label { font-size: 14px; line-height: 20px; letter-spacing: -0.14px; color: var(--text-secondary); }
     .qty-label .req { color: var(--attention); }
     .qty-stepper { display: flex; align-items: center; gap: 4px; }
@@ -83,7 +83,7 @@
     .qty-btn:active { background: #e4e4e4; }
     .qty-input { width: 56px; height: 36px; border: 1px solid var(--stroke-strong); border-radius: var(--input-radius); background: var(--bg-base); font-size: 14px; font-weight: 600; line-height: 20px; color: var(--text-primary); text-align: center; outline: none; padding: 0; transition: border-color 0.15s, box-shadow 0.15s; }
     .qty-input:focus { border-color: #121212; box-shadow: 0 0 0 1px #121212; }
-    .qty-row.disabled { background: #f5f5f5; cursor: default; }
+    .qty-row.disabled { cursor: default; opacity: 0.5; }
     .qty-row.disabled .qty-btn { opacity: 0.3; pointer-events: none; }
     .qty-row.disabled .qty-input { background: #f5f5f5; color: var(--text-secondary); pointer-events: none; border-color: var(--stroke-strong); }
 
@@ -252,6 +252,8 @@
     .pt-child-name { font-size: 14px; font-weight: 400; line-height: 20px; letter-spacing: -0.14px; color: var(--text-secondary); }
     .pt-child-name .pt-child-sep { font-weight: 600; }
     .pt-child-row .pt-input { background: var(--bg-base); }
+    .pt-label-cell { padding: 16px 12px; vertical-align: middle; text-align: left; }
+    .pt-label-text { font-size: 14px; line-height: 20px; letter-spacing: -0.14px; color: var(--text-secondary); }
     .pt-child-row .pt-input-label { color: #1c1c1c; }
     .pt-child-row .pt-input-value { color: #1c1c1c; }
 
@@ -272,6 +274,7 @@
     .setting-row { display: flex; align-items: center; gap: 16px; }
     .setting-label { flex: 1; font-size: 14px; font-weight: 600; line-height: 20px; letter-spacing: -0.14px; color: black; }
     .setting-desc { font-size: 14px; line-height: 20px; letter-spacing: -0.14px; color: var(--text-tertiary); }
+    .pricing-tab { display: flex; flex-direction: column; gap: 16px; }
 
     /* ═══ SAVE FOOTER ═══ */
     .save-footer { position: fixed; bottom: 0; left: 0; right: 0; height: 76px; background: var(--bg-base); border-top: 1px solid #fafafa; display: flex; align-items: center; justify-content: flex-end; padding: 0 24px; gap: 10px; z-index: 9999; }
@@ -308,6 +311,19 @@
     .media-thumb { width: 100px; height: 100px; border-radius: 12px; object-fit: cover; background: #e8e8e8; }
     .media-add { width: 100px; height: 100px; border-radius: 12px; border: 2px dashed #d0d0d0; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.15s; color: #999; }
     .media-add:hover { border-color: #999; }
+    .media-upload-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 40px 24px; background: #f7f7f7; border-radius: 12px; border: 1px dashed #d0d0d0; cursor: pointer; transition: border-color 0.15s; }
+    .media-upload-zone:hover { border-color: #999; }
+    .media-upload-icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; color: #999; }
+    .media-upload-text { text-align: center; }
+    .media-upload-text .upload-link { color: #2563eb; font-weight: 500; }
+    .media-upload-text p { font-size: 14px; line-height: 20px; letter-spacing: -0.14px; color: var(--text-primary); margin: 0; }
+    .media-upload-text .upload-sub { color: var(--text-tertiary); font-size: 13px; margin-top: 4px; }
+    .media-mobile-row { display: flex; align-items: center; gap: 12px; padding: 16px; border: 1px solid var(--stroke-subtle); border-radius: 12px; }
+    .media-mobile-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); flex-shrink: 0; }
+    .media-mobile-text { flex: 1; }
+    .media-mobile-text .mobile-title { font-size: 14px; font-weight: 600; line-height: 20px; color: var(--text-primary); }
+    .media-mobile-text .mobile-sub { font-size: 13px; line-height: 18px; color: var(--text-tertiary); }
+    .media-mobile-btn { height: 36px; padding: 0 20px; border: none; border-radius: 999px; background: #121212; color: white; font-size: 14px; font-weight: 600; cursor: pointer; flex-shrink: 0; }
 
     /* ═══ RESPONSIVE ═══ */
     @media (max-width: 1200px) {
@@ -438,9 +454,30 @@
         <!-- MEDIA -->
         <div class="card media-card">
           <div class="card-header"><span class="card-title" style="font-size:18px;line-height:24px;">Media</span></div>
-          <div class="media-grid">
-            <img class="media-thumb" src="icons/create-shoe.png" alt="Product">
-            <div class="media-add" onclick="addMediaImage(this)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          <!-- NULL STATE -->
+          <div id="mediaNullState" style="display:flex;flex-direction:column;gap:16px;">
+            <div class="media-upload-zone" onclick="addMediaFromZone()">
+              <div class="media-upload-icon"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#999" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="10" width="28" height="22" rx="3"/><path d="M14 6h12"/><line x1="20" y1="17" x2="20" y2="27"/><line x1="15" y1="22" x2="25" y2="22"/></svg></div>
+              <div class="media-upload-text">
+                <p><span class="upload-link">Click to upload</span> or drag and drop your media</p>
+                <p class="upload-sub">Choose your product's main photo first.</p>
+              </div>
+            </div>
+            <div class="media-mobile-row">
+              <div class="media-mobile-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg></div>
+              <div class="media-mobile-text">
+                <div class="mobile-title">Mobile Upload</div>
+                <div class="mobile-sub">Upload photos and video directly from your phone.</div>
+              </div>
+              <button class="media-mobile-btn">Try It</button>
+            </div>
+          </div>
+          <!-- FILLED STATE -->
+          <div id="mediaFilledState" style="display:none;">
+            <div class="media-grid">
+              <img class="media-thumb" src="icons/create-shoe.png" alt="Product">
+              <div class="media-add" onclick="addMediaImage(this)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+            </div>
           </div>
         </div>
 
@@ -529,25 +566,51 @@
         <div class="card">
           <span class="card-title card-title-sm">Pricing</span>
           <div class="seg-control" id="pricingSegControl">
-            <button class="seg-tab active" onclick="setPricingTab(this)">Buy It Now</button>
-            <button class="seg-tab" onclick="setPricingTab(this)">Auction</button>
+            <button class="seg-tab active" onclick="setPricingTab(this,'auction')">Auction</button>
+            <button class="seg-tab" onclick="setPricingTab(this,'bin')">Buy It Now</button>
           </div>
-          <div class="input-field" id="priceField" onclick="focusInput(this)">
-            <div class="input-content"><div class="input-label">Price <span class="req">*</span></div><div class="input-value" contenteditable="true" onfocus="onPriceFocus(this)" oninput="onPriceInput(this)" onkeydown="onPriceKeydown(event)" onblur="onPriceBlur(this)">$65</div></div>
+          <!-- BUY IT NOW TAB -->
+          <div class="pricing-tab" id="pricingBin" style="display:none;">
+            <div class="input-field" id="priceField" onclick="focusInput(this)">
+              <div class="input-content"><div class="input-label">Price <span class="req">*</span></div><div class="input-value" contenteditable="true" onfocus="onPriceFocus(this)" oninput="onPriceInput(this)" onkeydown="onPriceKeydown(event)" onblur="onPriceBlur(this)">$65</div></div>
+            </div>
+            <div class="setting">
+              <div class="setting-row"><span class="setting-label">Flash Sale</span><div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
+              <div class="setting-desc">Turn this on to enable flash sales on this product</div>
+            </div>
+            <div class="setting">
+              <div class="setting-row"><span class="setting-label">Accept Offers</span><div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
+              <div class="setting-desc">Turn this on to accept offers. You can accept, counter or decline the offers.</div>
+            </div>
+            <div class="setting">
+              <div class="setting-row"><span class="setting-label">Reserve for Live</span><div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
+              <div class="setting-desc">Turn this on to make this product only purchasable within a show.</div>
+            </div>
           </div>
-          <div class="setting">
-            <div class="setting-row"><span class="setting-label">Flash Sale</span><div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
-            <div class="setting-desc">Turn this on to enable flash sales on this product</div>
+          <!-- AUCTION TAB -->
+          <div class="pricing-tab" id="pricingAuction">
+            <div class="input-field" onclick="focusInput(this)">
+              <div class="input-content"><div class="input-label">Starting Price (USD) <span class="req">*</span></div><div class="input-value" contenteditable="true" oninput="this.closest('.input-field').classList.toggle('null',!this.textContent.replace(/[^0-9.]/g,''))" onblur="let r=this.textContent.replace(/[^0-9.]/g,'');this.textContent=r?'$'+r:'$1';this.closest('.input-field').classList.toggle('null',!r)">$1</div></div>
+            </div>
+            <div class="setting">
+              <div class="setting-row"><span class="setting-label">Sudden Death 💀</span><div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
+              <div class="setting-desc">This means when you're down to 00:01, the last person to bid wins!</div>
+            </div>
+            <div class="setting">
+              <div class="setting-row"><span class="setting-label">Reserve for Live</span><div class="toggle on" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
+              <div class="setting-desc">Turn this on to make this product only purchasable within a show.</div>
+            </div>
+            <div class="input-field select-field null" id="selectShows" onclick="toggleSelect(this)">
+              <div class="input-content"><div class="input-label">Shows <span class="req">*</span></div><div class="input-value"></div></div>
+              <div class="input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+              <div class="select-popover">
+                <div class="select-option" data-value="Weekend Drop" onclick="selectOption('selectShows',this,event)">Weekend Drop</div>
+                <div class="select-option" data-value="Heat Check" onclick="selectOption('selectShows',this,event)">Heat Check</div>
+                <div class="select-option" data-value="Grail Sale" onclick="selectOption('selectShows',this,event)">Grail Sale</div>
+              </div>
+            </div>
           </div>
-          <div class="setting">
-            <div class="setting-row"><span class="setting-label">Accept Offers</span><div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
-            <div class="setting-desc">Turn this on to accept offers. You can accept, counter or decline the offers.</div>
-          </div>
-          <div class="setting">
-            <div class="setting-row"><span class="setting-label">Reserve for Live</span><div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div></div>
-            <div class="setting-desc">Turn this on to make this product only purchasable within a show.</div>
-          </div>
-          <div class="setting">
+          <div class="setting" id="customizeVariantSetting" style="display:none;">
             <div class="setting-row"><span class="setting-label">Customize Each Variant</span><div class="toggle" id="customizeVariantToggle" onclick="toggleCustomizeVariant(this)"><div class="toggle-knob"></div></div></div>
             <div class="setting-desc">Turn this on to set different price, format, and show placement for each variant.</div>
           </div>
@@ -662,7 +725,7 @@
 </div>
 
 <script>
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 7:13pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/9/26 @ 8:01pm';
 const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/variants-creation/desktop.html';
 
 const SNEAKER_PRESETS = [
@@ -717,6 +780,8 @@ function applyFormState() {
   } else {
     applyFilledForm();
   }
+  const content = document.getElementById('contentArea');
+  if (content) content.style.paddingBottom = isNullState ? '156px' : '76px';
   renderCategoryChips();
   renderAll();
 }
@@ -759,8 +824,8 @@ function applyNullForm() {
 
   document.querySelectorAll('.creation .toggle.on').forEach(t => t.classList.remove('on'));
 
-  const media = document.querySelector('.media-thumb');
-  if (media) media.style.display = 'none';
+  document.getElementById('mediaNullState').style.display = '';
+  document.getElementById('mediaFilledState').style.display = 'none';
 
   mainQty = 0;
   const qtyEl = document.getElementById('mainQtyValue');
@@ -805,8 +870,8 @@ function applyFilledForm() {
   const statusOpts = document.querySelectorAll('#selectStatus .select-option');
   statusOpts.forEach(o => o.classList.toggle('active', o.dataset.value === 'Active'));
 
-  const media = document.querySelector('.media-thumb');
-  if (media) media.style.display = '';
+  document.getElementById('mediaNullState').style.display = 'none';
+  document.getElementById('mediaFilledState').style.display = '';
 
   mainQty = 10;
   const qtyEl = document.getElementById('mainQtyValue');
@@ -1119,6 +1184,7 @@ function renderAll() {
   renderToolbar();
   renderProductTable();
   syncMainQtyState();
+  syncCustomizeToggleVisibility();
 }
 
 function renderOptionRows() {
@@ -1290,14 +1356,7 @@ function isCustomizeOn() {
 
 function buildPriceCell(key) {
   const price = getVariantPriceDisplay(key);
-  const customizeOn = isCustomizeOn();
   const escapedKey = key ? key.replace(/'/g, "\\'") : '';
-  if (key !== null && !customizeOn) {
-    return `<td class="pt-input-cell"><div class="pt-price-wrap disabled">
-      <div class="pt-price-tooltip">Enable Customize Each Variant in the Pricing module to edit pricing.</div>
-      <div class="pt-input pt-price-cell"><div class="pt-input-content"><div class="pt-input-label">Buy Now</div><div class="pt-input-value">${price}</div></div><div class="pt-input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div></div>
-    </div></td>`;
-  }
   const onclickKey = key !== null ? `'${escapedKey}'` : 'null';
   return `<td class="pt-input-cell"><div class="pt-input pt-price-cell" onclick="openPriceFormatDialog(${onclickKey},this)"><div class="pt-input-content"><div class="pt-input-label">Buy Now</div><div class="pt-input-value">${price}</div></div><div class="pt-input-chevron"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div></div></td>`;
 }
@@ -1340,8 +1399,8 @@ function renderProductTable() {
         <img class="pt-thumb" src="icons/create-shoe.png" alt="">
         <div class="pt-product-info"><div class="pt-product-name">${val}</div><div class="pt-product-sub">${variantCount} Variant${variantCount > 1 ? 's' : ''}</div></div>
       </div></td>
-      <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Quantity</div><div class="pt-input-value">${parentTotal}</div></div></div></td>
-      ${buildPriceCell(null)}
+      <td class="pt-label-cell"><span class="pt-label-text">Qty: ${parentTotal}</span></td>
+      <td class="pt-label-cell"><span class="pt-label-text">${getVariantPriceDisplay()}</span></td>
     </tr>`;
     if (childCombos.length) {
       childCombos.forEach(combo => {
@@ -1387,13 +1446,14 @@ function buildFlatTable(values) {
   </tr></thead><tbody>`;
   values.forEach(c => {
     const qty = variantQty[c] ?? 0;
+    const price = getVariantPriceDisplay(c);
     html += `<tr class="pt-child-row">
       <td><div class="pt-product-cell">
         <img class="pt-thumb" src="icons/create-shoe.png" alt="">
         <div class="pt-child-name">${c}</div>
       </div></td>
-      <td class="pt-input-cell"><div class="pt-input"><div class="pt-input-content"><div class="pt-input-label">Quantity</div><div class="pt-input-value" contenteditable="true" onblur="onChildQtyChange('${c}',this)">${qty}</div></div></div></td>
-      ${buildPriceCell(c)}
+      <td class="pt-label-cell"><span class="pt-label-text">Qty: ${qty}</span></td>
+      <td class="pt-label-cell"><span class="pt-label-text">${price}</span></td>
     </tr>`;
   });
   html += `</tbody></table>`;
@@ -1420,6 +1480,17 @@ function onMainQtyInput(el) {
 function onMainQtyBlur(el) {
   mainQty = Math.max(0, parseInt(el.value) || 0);
   el.value = mainQty;
+}
+
+function syncCustomizeToggleVisibility() {
+  const setting = document.getElementById('customizeVariantSetting');
+  if (!setting) return;
+  const hasVariants = optionRows.some(r => r.name && r.values.length);
+  setting.style.display = hasVariants ? '' : 'none';
+  if (hasVariants && Object.keys(variantPrice).length > 0) {
+    const toggle = document.getElementById('customizeVariantToggle');
+    if (toggle && !toggle.classList.contains('on')) toggle.classList.add('on');
+  }
 }
 
 function syncMainQtyState() {
@@ -1484,7 +1555,7 @@ function onPriceBlur(el) {
 }
 function getVariantPriceDisplay(key) {
   if (key && variantPrice[key] != null) return '$' + variantPrice[key];
-  if (!mainPrice) return '$';
+  if (!mainPrice) return '$--';
   return '$' + mainPrice;
 }
 
@@ -1579,6 +1650,11 @@ function setPfTab(btn, type) {
   btn.classList.add('active');
 }
 
+function addMediaFromZone() {
+  document.getElementById('mediaNullState').style.display = 'none';
+  document.getElementById('mediaFilledState').style.display = '';
+}
+
 function addMediaImage(addBtn) {
   const img = document.createElement('img');
   img.className = 'media-thumb';
@@ -1642,7 +1718,6 @@ function toggleCustomizeVariant(el) {
     }
   }
   el.classList.toggle('on');
-  renderProductTable();
 }
 
 function confirmResetPrices() {
@@ -1657,9 +1732,11 @@ function cancelResetPrices() {
   document.getElementById('resetPricesDialog').classList.remove('open');
 }
 
-function setPricingTab(el) {
+function setPricingTab(el, tab) {
   el.parentElement.querySelectorAll('.seg-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
+  document.getElementById('pricingBin').style.display = tab === 'bin' ? '' : 'none';
+  document.getElementById('pricingAuction').style.display = tab === 'auction' ? '' : 'none';
 }
 
 /* ═══ Share ═══ */
