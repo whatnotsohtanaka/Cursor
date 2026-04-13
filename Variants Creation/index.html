@@ -7086,22 +7086,6 @@
           </div>
         </div>
 
-        <!-- Quantity (hidden when Manage Variants has options — qty lives on variants) -->
-        <div id="productQuantityRow" class="product-qty-row">
-          <div class="product-qty-label">Quantity Available <span style="color:#ce291a">*</span></div>
-          <div class="product-qty-stepper" aria-label="Adjust quantity">
-            <button type="button" onclick="adjustQty(-1)" aria-label="Decrease quantity">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M5 10h10"/></svg>
-            </button>
-            <div class="product-qty-pill">
-              <span id="productQty">1</span>
-            </div>
-            <button type="button" onclick="adjustQty(1)" aria-label="Increase quantity">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M10 5v10M5 10h10"/></svg>
-            </button>
-          </div>
-        </div>
-
         <!-- Brand — WDS-style floating label (same pattern as Category) -->
         <div
           class="vm-input-wrap product-listing-field product-brand-field"
@@ -7128,7 +7112,7 @@
         <!-- Condition -->
         <div id="productConditionSection" style="border:1px solid #d2d2d2;border-radius:8px;overflow:hidden;background:white">
           <div style="padding:12px 0 16px;display:flex;flex-direction:column;gap:8px">
-            <div style="font-size:14px;font-weight:590;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;padding:0 16px">Condition</div>
+            <div style="font-size:14px;font-weight:590;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;padding:0 16px">Condition <span style="color:#ce291a">*</span></div>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:0 16px" class="hide-scrollbar">
               <span class="edit-chip edit-chip-on" onclick="selectSingleChip(this)">New w Tag</span>
               <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">New w/out Tag</span>
@@ -7148,6 +7132,22 @@
             <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454">Add more product attributes to this item.</div>
           </div>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round" style="flex-shrink:0"><path d="M8 4l6 6-6 6"/></svg>
+        </div>
+
+        <!-- Quantity (hidden when Manage Variants has options — qty lives on variants) -->
+        <div id="productQuantityRow" class="product-qty-row">
+          <div class="product-qty-label">Quantity Available <span style="color:#ce291a">*</span></div>
+          <div class="product-qty-stepper" aria-label="Adjust quantity">
+            <button type="button" onclick="adjustQty(-1)" aria-label="Decrease quantity">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M5 10h10"/></svg>
+            </button>
+            <div class="product-qty-pill">
+              <span id="productQty">1</span>
+            </div>
+            <button type="button" onclick="adjustQty(1)" aria-label="Increase quantity">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round"><path d="M10 5v10M5 10h10"/></svg>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -8004,7 +8004,7 @@
     <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height:75%;padding-bottom:0">
       <div class="bottom-sheet-handle"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px">
-        <span class="bottom-sheet-title" style="padding:0">Brand(s)</span>
+        <span class="bottom-sheet-title" style="padding:0" id="brandsSheetTitle">Brand(s)</span>
         <button onclick="applyBrands()" style="border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;color:#005ae1;cursor:pointer">Save</button>
       </div>
       <div class="bottom-sheet-list" id="brandsList" style="padding-bottom:34px"></div>
@@ -9697,8 +9697,7 @@ function vmUnsavedCancel() {
 
 function vmUnsavedDiscard() {
   vmUnsavedCancel();
-  vmApplyVariantSnapshot(variantsManagerSnapshot);
-  closeVariantsManagerPage();
+  closeVariantsManagerPage(false);
 }
 
 function vmUnsavedSave() {
@@ -9715,6 +9714,8 @@ function openVariantsManagerPage() {
   const discardOv = document.getElementById('vmDiscardOptionsOverlay');
   if (discardOv) discardOv.style.display = 'none';
   vmDiscardOptionsKind = null;
+  variantsManagerSnapshot = vmSnapshotVariantState();
+  seedVariantsFromProductForm();
   productPage.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
   productPage.style.transform = 'translateX(-30%)';
   productPage.style.opacity = '0.3';
@@ -9723,16 +9724,41 @@ function openVariantsManagerPage() {
   vmEnsureOptionsToolbarResizeObserver();
   refreshVariantsManagerUI();
   renderVmNavPresetChips();
-  variantsManagerSnapshot = vmSnapshotVariantState();
 }
 
-function closeVariantsManagerPage() {
+function seedVariantsFromProductForm() {
+  if (productHasVariantOptionsConfigured()) return;
+  const qtyEl = document.getElementById('productQty');
+  const formQty = qtyEl ? parseInt(qtyEl.textContent, 10) || 0 : 0;
+  if (productListingSelectedSize && !variantMgr.sizes.length) {
+    variantMgr.sizes = [productListingSelectedSize];
+    variantMgr.l1Qty[productListingSelectedSize] = formQty;
+  }
+  const condEl = document.getElementById('productConditionSection');
+  if (condEl && !variantMgr.conditionSelections.length) {
+    const activeChip = condEl.querySelector('.edit-chip-on');
+    if (activeChip) {
+      variantMgr.conditionSelections = [activeChip.textContent.trim()];
+    }
+  }
+  if (formQty > 0 && variantMgr.sizes.length && variantMgr.conditionSelections.length) {
+    const sz = variantMgr.sizes[0];
+    const cond = variantMgr.conditionSelections[0];
+    const key = vmChildStorageKey(sz, null, cond);
+    variantMgr.childQty[key] = formQty;
+  }
+}
+
+function closeVariantsManagerPage(didSave) {
   closeAllVariantManagerSheets();
   const unsaved = document.getElementById('vmUnsavedOverlay');
   if (unsaved) unsaved.style.display = 'none';
   const discardOv = document.getElementById('vmDiscardOptionsOverlay');
   if (discardOv) discardOv.style.display = 'none';
   vmDiscardOptionsKind = null;
+  if (!didSave && variantsManagerSnapshot != null) {
+    vmApplyVariantSnapshot(variantsManagerSnapshot);
+  }
   const productPage = document.getElementById('productPage');
   const vm = document.getElementById('variantsManagerPage');
   if (!vm || !productPage) return;
@@ -9753,9 +9779,8 @@ function closeVariantsManagerPage() {
 function variantsManagerSave() {
   if (!vmHasSavableVariantOptions()) return;
   ensureVmQtyDefaults();
-  syncProductFormFieldsFromSavedVariants();
-  refreshProductVariantsSummary();
-  closeVariantsManagerPage();
+  variantsManagerSnapshot = vmSnapshotVariantState();
+  closeVariantsManagerPage(true);
 }
 
 /* ═══ Variant manager: options, sheets, nested variants ═══ */
@@ -10911,6 +10936,31 @@ function refreshVariantsManagerUI() {
   const parts = [];
   const cam = vmThumbCamHtml();
 
+  function vmNestedL1RowHtml(val, label, n, displayLabel) {
+    const q = vmSumChildQtyForNestedL1(val, variantMgr.groupBy);
+    const safeVal = encodeURIComponent(String(val));
+    if (n <= 1 && vmNestedCustomMultiplier() <= 1) {
+      const ck = vmGetSingleChildKeyForL1(val);
+      const cq = variantMgr.childQty[ck] ?? 0;
+      const safeCk = ck.replace(/'/g, "\\'");
+      return `<div class="vm-flat-row">
+        ${cam}
+        <div class="vm-row-main"><div class="vm-row-title">${displayLabel || label}</div><div class="vm-row-sub">${escapeHtmlVm(String(vmNestedL1SingleChildLabel(val)))}</div></div>
+        <div class="vm-stepper">
+          <button type="button" aria-label="Decrease" onclick="event.stopPropagation();vmDeltaSingleChildQty('${safeCk}',-1)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5"><path d="M5 10h10"/></svg></button>
+          <div class="vm-stepper-val">${cq}</div>
+          <button type="button" aria-label="Increase" onclick="event.stopPropagation();vmDeltaSingleChildQty('${safeCk}',1)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5"><path d="M10 5v10M5 10h10"/></svg></button>
+        </div>
+      </div>`;
+    }
+    return `<div class="vm-l1-row" role="button" tabindex="0" onclick="openVmNestedSheet(decodeURIComponent('${safeVal}'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openVmNestedSheet(decodeURIComponent('${safeVal}'));}">
+      ${cam}
+      <div class="vm-row-main"><div class="vm-row-title">${displayLabel || label}</div><div class="vm-row-sub">${n} Variants</div></div>
+      <div class="vm-stepper"><div class="vm-stepper-val muted">${q}</div></div>
+      <div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div>
+    </div>`;
+  }
+
   if (nested) {
     if (vmIsCustomGroupBy()) {
       const cri = vmCustomGroupCri();
@@ -10918,68 +10968,28 @@ function refreshVariantsManagerUI() {
         const custRow = variantMgr.customRows[cri];
         const n = vmL1RowSubtitleCountFor(variantMgr.groupBy);
         custRow.values.forEach((val, i) => {
-          const label = escapeHtmlVm(val);
-          const q = vmSumChildQtyForNestedL1(val, variantMgr.groupBy);
-          const safeVal = encodeURIComponent(String(val));
-          parts.push(
-            `<div class="vm-l1-row" role="button" tabindex="0" onclick="openVmNestedSheet(decodeURIComponent('${safeVal}'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openVmNestedSheet(decodeURIComponent('${safeVal}'));}">
-          ${cam}
-          <div class="vm-row-main"><div class="vm-row-title">${label}</div><div class="vm-row-sub">${n} Variants</div></div>
-          <div class="vm-stepper"><div class="vm-stepper-val muted">${q}</div></div>
-          <div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div>
-        </div>`
-          );
+          parts.push(vmNestedL1RowHtml(val, escapeHtmlVm(val), n));
           if (i < custRow.values.length - 1) parts.push('<div class="vm-list-divider"></div>');
         });
       }
     } else if (variantMgr.groupBy === 'condition') {
       variantMgr.conditionSelections.forEach((cond, i) => {
-        const label = escapeHtmlVm(cond);
         const n =
           (nSub || variantMgr.sizes.length * variantMgr.colors.length) *
           vmNestedCustomMultiplier();
-        const q = vmSumChildQtyForNestedL1(cond, variantMgr.groupBy);
-        const safeCond = encodeURIComponent(String(cond));
-        parts.push(
-          `<div class="vm-l1-row" role="button" tabindex="0" onclick="openVmNestedSheet(decodeURIComponent('${safeCond}'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openVmNestedSheet(decodeURIComponent('${safeCond}'));}">
-          ${cam}
-          <div class="vm-row-main"><div class="vm-row-title">${label}</div><div class="vm-row-sub">${n} Variants</div></div>
-          <div class="vm-stepper"><div class="vm-stepper-val muted">${q}</div></div>
-          <div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div>
-        </div>`
-        );
+        parts.push(vmNestedL1RowHtml(cond, escapeHtmlVm(cond), n));
         if (i < variantMgr.conditionSelections.length - 1) parts.push('<div class="vm-list-divider"></div>');
       });
     } else if (variantMgr.groupBy === 'colors') {
       variantMgr.colors.forEach((col, i) => {
-        const label = escapeHtmlVm(col);
         const n = (nSub || variantMgr.sizes.length) * vmNestedCustomMultiplier();
-        const q = vmSumChildQtyForNestedL1(col, variantMgr.groupBy);
-        const safeCol = encodeURIComponent(String(col));
-        parts.push(
-          `<div class="vm-l1-row" role="button" tabindex="0" onclick="openVmNestedSheet(decodeURIComponent('${safeCol}'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openVmNestedSheet(decodeURIComponent('${safeCol}'));}">
-          ${cam}
-          <div class="vm-row-main"><div class="vm-row-title">${label}</div><div class="vm-row-sub">${n} Variants</div></div>
-          <div class="vm-stepper"><div class="vm-stepper-val muted">${q}</div></div>
-          <div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div>
-        </div>`
-        );
+        parts.push(vmNestedL1RowHtml(col, escapeHtmlVm(col), n));
         if (i < variantMgr.colors.length - 1) parts.push('<div class="vm-list-divider"></div>');
       });
     } else {
       variantMgr.sizes.forEach((sz, i) => {
-        const label = escapeHtmlVm(vmL1Display(sz));
         const n = (nSub || variantMgr.colors.length || 1) * vmNestedCustomMultiplier();
-        const q = vmSumChildQtyForNestedL1(sz, variantMgr.groupBy);
-        const safeSz = encodeURIComponent(String(sz));
-        parts.push(
-          `<div class="vm-l1-row" role="button" tabindex="0" onclick="openVmNestedSheet(decodeURIComponent('${safeSz}'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openVmNestedSheet(decodeURIComponent('${safeSz}'));}">
-          ${cam}
-          <div class="vm-row-main"><div class="vm-row-title">${label}</div><div class="vm-row-sub">${n} Variants</div></div>
-          <div class="vm-stepper"><div class="vm-stepper-val muted">${q}</div></div>
-          <div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div>
-        </div>`
-        );
+        parts.push(vmNestedL1RowHtml(sz, escapeHtmlVm(vmL1Display(sz)), n));
         if (i < variantMgr.sizes.length - 1) parts.push('<div class="vm-list-divider"></div>');
       });
     }
@@ -11316,21 +11326,16 @@ function syncProductFashionBrandAndSizeVisibility() {
   const brandField = document.getElementById('productBrandField');
   const sizeEl = document.getElementById('productSizeSection');
   const showFs = vmIsFashionOrSneakersProductCategory();
+  const hasVariants = productHasVariantOptionsConfigured();
   if (brandField) {
-    /* Outer wrap is vm-input-wrap (column flex), not the old row flex. */
     brandField.style.display = showFs ? '' : 'none';
     brandField.setAttribute('aria-hidden', showFs ? 'false' : 'true');
     if (showFs) vmUpdateWdsInputWrapState(brandField);
   }
   if (sizeEl) {
-    if (!showFs) {
-      sizeEl.style.display = 'none';
-      sizeEl.setAttribute('aria-hidden', 'true');
-    } else {
-      const hideForVariants = productHasVariantOptionsConfigured();
-      sizeEl.style.display = hideForVariants ? 'none' : 'flex';
-      sizeEl.setAttribute('aria-hidden', hideForVariants ? 'true' : 'false');
-    }
+    const hideSize = !showFs || (hasVariants && variantMgr.sizes.length > 0);
+    sizeEl.style.display = hideSize ? 'none' : 'flex';
+    sizeEl.setAttribute('aria-hidden', hideSize ? 'true' : 'false');
   }
 }
 
@@ -11353,7 +11358,7 @@ function syncProductFormFieldsFromSavedVariants() {
     const types = preset && preset.listingTypes;
     if (types && types.length) {
       typeChips.innerHTML = types.map(t =>
-        `<span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">${escapeHtmlVm(t)}</span>`
+        `<span class="edit-chip edit-chip-off" onclick="selectSingleChip(this,true)">${escapeHtmlVm(t)}</span>`
       ).join('');
       typeEl.style.display = '';
     } else {
@@ -11625,7 +11630,7 @@ function priceNumericPrice(s) {
  * L1 subtitle: price range first, then variant count or "Multiple formats" when any child
  * uses a non-default buy format (Figma 19633:67274); red range when any child override exists.
  */
-function priceL1RowSubHtml(nVariants, childKeys) {
+function priceL1RowSubHtml(nVariants, childKeys, singleChildTitle) {
   if (!childKeys.length) return escapeHtmlVm(`${nVariants} Variants`);
 
   const b = priceGetBaseListingPriceState();
@@ -11669,12 +11674,16 @@ function priceL1RowSubHtml(nVariants, childKeys) {
       : escapeHtmlVm(priceLabel);
   }
 
-  const suffix =
-    formatDiffCount > 0
-      ? 'Multiple formats'
-      : `${nVariants} variant${nVariants !== 1 ? 's' : ''}`;
+  let suffix;
+  if (formatDiffCount > 0) {
+    suffix = escapeHtmlVm('Multiple formats');
+  } else if (singleChildTitle) {
+    suffix = singleChildTitle;
+  } else {
+    suffix = escapeHtmlVm(`${nVariants} variant${nVariants !== 1 ? 's' : ''}`);
+  }
 
-  return `${priceHtml}<span class="price-variant-meta-sep"> · </span>${escapeHtmlVm(suffix)}`;
+  return `${priceHtml}<span class="price-variant-meta-sep"> · </span>${suffix}`;
 }
 
 function priceGetNestedChildrenForL1(l1Key) {
@@ -11923,8 +11932,10 @@ function priceRefreshVariantTree() {
   /** @type {{ childKeys: string[], html: string }[]} */
   const l1Blocks = [];
 
-  const pushL1 = (labelHtml, nVariants, childKeys, onClickAttr) => {
-    const subHtml = priceL1RowSubHtml(nVariants, childKeys);
+  const pushL1 = (labelHtml, nVariants, children, onClickAttr) => {
+    const childKeys = children.map((c) => c.key);
+    const singleChildTitle = children.length === 1 ? children[0].titleHtml : null;
+    const subHtml = priceL1RowSubHtml(nVariants, childKeys, singleChildTitle);
     const html =
       `<div class="vm-l1-row" role="button" tabindex="0" ${onClickAttr}>` +
       cam +
@@ -11943,12 +11954,12 @@ function priceRefreshVariantTree() {
         const n = vmL1RowSubtitleCountFor(variantMgr.groupBy);
         custRow.values.forEach((val) => {
           const label = escapeHtmlVm(val);
-          const ck = priceGetNestedChildrenForL1(val).map((x) => x.key);
+          const ch = priceGetNestedChildrenForL1(val);
           const safe = encodeURIComponent(String(val));
           pushL1(
             label,
             n,
-            ck,
+            ch,
             `onclick="priceOpenNestedVariantPriceDrill(decodeURIComponent('${safe}'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceOpenNestedVariantPriceDrill(decodeURIComponent('${safe}'));}"`
           );
         });
@@ -11959,12 +11970,12 @@ function priceRefreshVariantTree() {
         const n =
           (nSub || variantMgr.sizes.length * variantMgr.colors.length) *
           vmNestedCustomMultiplier();
-        const ck = priceGetNestedChildrenForL1(cond).map((x) => x.key);
+        const ch = priceGetNestedChildrenForL1(cond);
         const safe = encodeURIComponent(String(cond));
         pushL1(
           label,
           n,
-          ck,
+          ch,
           `onclick="priceOpenNestedVariantPriceDrill(decodeURIComponent('${safe}'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceOpenNestedVariantPriceDrill(decodeURIComponent('${safe}'));}"`
         );
       });
@@ -11972,12 +11983,12 @@ function priceRefreshVariantTree() {
       variantMgr.colors.forEach((col) => {
         const label = escapeHtmlVm(col);
         const n = (nSub || variantMgr.sizes.length) * vmNestedCustomMultiplier();
-        const ck = priceGetNestedChildrenForL1(col).map((x) => x.key);
+        const ch = priceGetNestedChildrenForL1(col);
         const safe = encodeURIComponent(String(col));
         pushL1(
           label,
           n,
-          ck,
+          ch,
           `onclick="priceOpenNestedVariantPriceDrill(decodeURIComponent('${safe}'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceOpenNestedVariantPriceDrill(decodeURIComponent('${safe}'));}"`
         );
       });
@@ -11985,12 +11996,12 @@ function priceRefreshVariantTree() {
       variantMgr.sizes.forEach((sz) => {
         const label = escapeHtmlVm(vmL1Display(sz));
         const n = (nSub || variantMgr.colors.length) * vmNestedCustomMultiplier();
-        const ck = priceGetNestedChildrenForL1(sz).map((x) => x.key);
+        const ch = priceGetNestedChildrenForL1(sz);
         const safe = encodeURIComponent(String(sz));
         pushL1(
           label,
           n,
-          ck,
+          ch,
           `onclick="priceOpenNestedVariantPriceDrill(decodeURIComponent('${safe}'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceOpenNestedVariantPriceDrill(decodeURIComponent('${safe}'));}"`
         );
       });
@@ -11999,12 +12010,11 @@ function priceRefreshVariantTree() {
     variantMgr.sizes.forEach((sz) => {
       const label = escapeHtmlVm(vmL1Display(sz));
       const ch = priceGetFlatSizeChildren(sz);
-      const ck = ch.map((x) => x.key);
       const safeSz = encodeURIComponent(String(sz));
       pushL1(
         label,
         ch.length,
-        ck,
+        ch,
         `onclick="priceHandleFlatSizePriceRow('${safeSz}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceHandleFlatSizePriceRow('${safeSz}');}"`
       );
     });
@@ -12012,12 +12022,11 @@ function priceRefreshVariantTree() {
     variantMgr.colors.forEach((col) => {
       const label = escapeHtmlVm(col);
       const ch = priceGetFlatColorChildren(col);
-      const ck = ch.map((x) => x.key);
       const safeCol = encodeURIComponent(String(col));
       pushL1(
         label,
         ch.length,
-        ck,
+        ch,
         `onclick="priceHandleFlatColorPriceRow('${safeCol}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceHandleFlatColorPriceRow('${safeCol}');}"`
       );
     });
@@ -12027,13 +12036,12 @@ function priceRefreshVariantTree() {
     variantMgr.conditionSelections.forEach((cond) => {
       const label = escapeHtmlVm(cond);
       const ch = priceGetConditionBranchChildren(cond);
-      const ck = ch.map((x) => x.key);
       const nCond = vmConditionFlatRowSubtitleCount() * vmNestedCustomMultiplier();
       const safe = encodeURIComponent(String(cond));
       pushL1(
         label,
         Math.max(ch.length, nCond),
-        ck,
+        ch,
         `onclick="priceHandleConditionPriceRow(decodeURIComponent('${safe}'))" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceHandleConditionPriceRow(decodeURIComponent('${safe}'));}"`
       );
     });
@@ -12050,7 +12058,7 @@ function priceRefreshVariantTree() {
         pushL1(
           label,
           1,
-          [c.key],
+          [c],
           `onclick="priceOpenOverrideForCustomLeaf('${encodeURIComponent(c.key)}','${encodeURIComponent(String(val))}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceOpenOverrideForCustomLeaf('${encodeURIComponent(c.key)}','${encodeURIComponent(String(val))}');}"`
         );
       });
@@ -12060,13 +12068,12 @@ function priceRefreshVariantTree() {
       if (row0) {
         row0.values.forEach((val) => {
           const ch = priceGetCustomOnlyFirstRowChildren(val);
-          const ck = ch.map((x) => x.key);
           const label = escapeHtmlVm(String(val));
           const safeVal = encodeURIComponent(String(val));
           pushL1(
             label,
             Math.max(ch.length, nL2),
-            ck,
+            ch,
             `onclick="priceHandleCustomOnlyFirstRowVal('${safeVal}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();priceHandleCustomOnlyFirstRowVal('${safeVal}');}"`
           );
         });
@@ -12089,6 +12096,12 @@ function priceRefreshVariantTree() {
 function priceOpenNestedVariantPriceDrill(l1Key) {
   const children = priceGetNestedChildrenForL1(l1Key);
   if (!children.length) return;
+  if (children.length === 1) {
+    const l1Label = escapeHtmlVm(vmL1Display ? vmL1Display(l1Key) : String(l1Key));
+    const full = l1Label + ' · ' + children[0].titleHtml;
+    priceOpenOverrideSheet(children[0].key, full);
+    return;
+  }
   priceShowVariantDrill(l1Key, 'nested', children);
 }
 
@@ -12096,6 +12109,7 @@ function priceHandleFlatSizePriceRow(szEnc) {
   const sz = decodeURIComponent(szEnc);
   const ch = priceGetFlatSizeChildren(sz);
   if (!ch.length) return;
+  if (ch.length === 1) { priceOpenOverrideSheet(ch[0].key, ch[0].titleHtml); return; }
   priceShowVariantDrill(sz, 'size', ch);
 }
 
@@ -12103,6 +12117,7 @@ function priceHandleFlatColorPriceRow(colEnc) {
   const col = decodeURIComponent(colEnc);
   const ch = priceGetFlatColorChildren(col);
   if (!ch.length) return;
+  if (ch.length === 1) { priceOpenOverrideSheet(ch[0].key, ch[0].titleHtml); return; }
   priceShowVariantDrill(col, 'color', ch);
 }
 
@@ -12110,6 +12125,7 @@ function priceHandleConditionPriceRow(condEnc) {
   const cond = decodeURIComponent(condEnc);
   const ch = priceGetConditionBranchChildren(cond);
   if (!ch.length) return;
+  if (ch.length === 1) { priceOpenOverrideSheet(ch[0].key, ch[0].titleHtml); return; }
   priceShowVariantDrill(cond, 'condition', ch);
 }
 
@@ -12121,6 +12137,7 @@ function priceHandleCustomOnlyFirstRowVal(valEnc) {
   const val0 = decodeURIComponent(valEnc);
   const children = priceGetCustomOnlyFirstRowChildren(val0);
   if (!children.length) return;
+  if (children.length === 1) { priceOpenOverrideSheet(children[0].key, children[0].titleHtml); return; }
   priceShowVariantDrill(val0, 'customFirstMulti', children);
 }
 
@@ -12165,7 +12182,9 @@ function priceShowVariantDrill(l1Key, kind, children) {
 
 function priceOpenOverrideSheetFromEncoded(safeK) {
   const key = decodeURIComponent(safeK);
-  const title = priceDrillItemsByKey[key] || 'Variant';
+  const childTitle = priceDrillItemsByKey[key] || 'Variant';
+  const l1 = priceDrillL1Key != null ? escapeHtmlVm(vmL1Display(priceDrillL1Key)) : '';
+  const title = l1 ? l1 + ' · ' + childTitle : childTitle;
   priceOpenOverrideSheet(key, title);
 }
 
@@ -12509,7 +12528,7 @@ function priceOpenOverrideSheet(key, titleText) {
   const hasOverride = !!saved;
 
   const tEl = document.getElementById('priceOverrideSheetTitle');
-  if (tEl) tEl.textContent = titleText;
+  if (tEl) tEl.innerHTML = titleText;
 
   if (hasOverride) {
     const base = priceGetBaseListingPriceState();
@@ -12749,6 +12768,44 @@ function vmDeltaL1Qty(sz, d) {
   const cur = variantMgr.l1Qty[sz] ?? 0;
   variantMgr.l1Qty[sz] = Math.max(0, cur + d);
   refreshVariantsManagerUI();
+}
+
+function vmNestedL1SingleChildLabel(l1Val) {
+  const gb = variantMgr.groupBy;
+  const parts = [];
+  if (gb !== 'condition' && variantMgr.conditionSelections.length)
+    parts.push(variantMgr.conditionSelections[0]);
+  if (gb !== 'colors' && variantMgr.colors.length)
+    parts.push(variantMgr.colors[0]);
+  if (gb !== 'sizes' && variantMgr.sizes.length)
+    parts.push(vmL1Display(variantMgr.sizes[0]));
+  return parts.join(' · ') || '1 Variant';
+}
+
+function vmDeltaSingleChildQty(childKey, d) {
+  const cur = variantMgr.childQty[childKey] ?? 0;
+  variantMgr.childQty[childKey] = Math.max(0, cur + d);
+  vmSyncL1QtyFromNestedChildren();
+  refreshVariantsManagerUI();
+}
+
+function vmGetSingleChildKeyForL1(l1Val) {
+  const gb = variantMgr.groupBy;
+  let sz = null, col = null, cond = null;
+  if (gb === 'sizes') {
+    sz = l1Val;
+    col = variantMgr.colors.length ? variantMgr.colors[0] : null;
+    cond = variantMgr.conditionSelections.length ? variantMgr.conditionSelections[0] : null;
+  } else if (gb === 'colors') {
+    col = l1Val;
+    sz = variantMgr.sizes.length ? variantMgr.sizes[0] : null;
+    cond = variantMgr.conditionSelections.length ? variantMgr.conditionSelections[0] : null;
+  } else if (gb === 'condition') {
+    cond = l1Val;
+    sz = variantMgr.sizes.length ? variantMgr.sizes[0] : null;
+    col = variantMgr.colors.length ? variantMgr.colors[0] : null;
+  }
+  return vmChildStorageKey(sz, col, cond);
 }
 
 function vmOpenOverlay(id) {
@@ -14961,11 +15018,16 @@ function toggleChip(el) {
   el.classList.toggle('edit-chip-off');
 }
 
-function selectSingleChip(el) {
+function selectSingleChip(el, allowDeselect) {
+  const wasOn = el.classList.contains('edit-chip-on');
   el.parentElement.querySelectorAll('.edit-chip').forEach(c => {
     c.classList.remove('edit-chip-on');
     c.classList.add('edit-chip-off');
   });
+  if (wasOn && allowDeselect) {
+    productListingSelectedSize = null;
+    return;
+  }
   el.classList.remove('edit-chip-off');
   el.classList.add('edit-chip-on');
   const productSec = document.getElementById('productSizeSection');
@@ -15075,6 +15137,8 @@ function openBrandsSheetForTarget(target) {
   brandsSheetTarget = target;
   const sheet = document.getElementById('brandsSheet');
   const placeholder = target === 'product' ? 'Brand' : 'Brand(s)';
+  const titleEl = document.getElementById('brandsSheetTitle');
+  if (titleEl) titleEl.textContent = placeholder;
   const currentBrands =
     target === 'product'
       ? document.getElementById('productBrand').textContent
@@ -15100,9 +15164,16 @@ function openBrandsSheetForTarget(target) {
 
 function renderBrandsList() {
   const list = document.getElementById('brandsList');
+  const isRadio = brandsSheetTarget === 'product';
 
   list.innerHTML = brandsDisplayOrder.map(brand => {
     const isSelected = selectedBrands.has(brand);
+    if (isRadio) {
+      return `<div class="bottom-sheet-item" onclick="toggleBrand('${brand}')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer">
+        <span style="font-size:16px;font-weight:${isSelected ? '600' : '400'};color:#1c1c1c">${brand}</span>
+        <div style="width:22px;height:22px;border-radius:50%;${isSelected ? 'border:6px solid #1c1c1c' : 'border:1.5px solid #bbb'}"></div>
+      </div>`;
+    }
     return `<div class="bottom-sheet-item" onclick="toggleBrand('${brand}')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer">
       <span style="font-size:16px;font-weight:${isSelected ? '600' : '400'};color:#1c1c1c">${brand}</span>
       <div style="width:22px;height:22px;border-radius:4px;${isSelected ? 'background:#1c1c1c' : 'border:1.5px solid #bbb'};display:flex;align-items:center;justify-content:center">
@@ -15113,11 +15184,20 @@ function renderBrandsList() {
 }
 
 function toggleBrand(brand) {
-  if (selectedBrands.has(brand)) {
-    selectedBrands.delete(brand);
+  if (brandsSheetTarget === 'product') {
+    if (selectedBrands.has(brand)) {
+      selectedBrands.clear();
+    } else {
+      selectedBrands.clear();
+      selectedBrands.add(brand);
+    }
   } else {
-    if (selectedBrands.size >= 10) return;
-    selectedBrands.add(brand);
+    if (selectedBrands.has(brand)) {
+      selectedBrands.delete(brand);
+    } else {
+      if (selectedBrands.size >= 10) return;
+      selectedBrands.add(brand);
+    }
   }
   renderBrandsList();
 }
@@ -15314,7 +15394,7 @@ function renderProductPageSizeChips() {
   for (const s of sizes) {
     const isOn = productListingSelectedSize === s;
     parts.push(
-      `<span class="edit-chip ${isOn ? 'edit-chip-on' : 'edit-chip-off'}" onclick="selectSingleChip(this)">${escapeHtmlVm(
+      `<span class="edit-chip ${isOn ? 'edit-chip-on' : 'edit-chip-off'}" onclick="selectSingleChip(this,true)">${escapeHtmlVm(
         String(s)
       )}</span>`
     );
@@ -19223,7 +19303,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh on 4/13/26 @ 9:22am';
+const PROTO_TIMESTAMP = 'Updated by Soh on 4/13/26 @ 1:46pm';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
