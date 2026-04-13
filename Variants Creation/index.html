@@ -3731,6 +3731,9 @@
       align-items: center;
       justify-content: center;
     }
+    .vm-chevron-right {
+      transform: rotate(-90deg);
+    }
     .vm-list-divider {
       height: 1px;
       background: rgba(0, 0, 0, 0.1);
@@ -3996,6 +3999,205 @@
     .price-override-starting-value-row input {
       flex: 1;
       min-width: 0;
+    }
+    .po-format-panel { }
+    .po-setting {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .po-setting-title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 19px;
+      color: #1c1c1c;
+    }
+    .po-setting-desc {
+      font-size: 12px;
+      color: #6f6f6f;
+      margin-top: 2px;
+      line-height: 16px;
+    }
+    .po-featured-helper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      font-size: 12px;
+      line-height: 16px;
+      color: #1c1c1c;
+      background: #f3f3f3;
+      border-radius: 0 0 12px 12px;
+    }
+    .edit-field-with-helper,
+    .po-dropdown-with-helper {
+      position: relative;
+      z-index: 2;
+      margin-bottom: 0 !important;
+      background: #fff;
+      border-radius: 12px;
+    }
+    .edit-field-with-helper + .po-featured-helper,
+    .po-dropdown-with-helper + .po-featured-helper {
+      margin: -12px 16px 12px !important;
+      padding-top: 20px;
+      position: relative;
+      z-index: 1;
+      border-radius: 0 0 12px 12px;
+    }
+    .po-shows-picker {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .po-shows-menu {
+      background: #1c1c1c;
+      border-radius: 16px 16px 0 0;
+      width: 100%;
+      padding: 24px 24px calc(24px + env(safe-area-inset-bottom, 0px));
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .po-shows-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #1c1c1c;
+      cursor: pointer;
+      line-height: 22px;
+      padding: 14px 16px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+    }
+    .po-shows-option:active { background: #f5f5f5; }
+    .po-shows-option-create { color: #005ae1; cursor: default; }
+    .po-shows-option-create:active { background: transparent; }
+    .po-dropdown-field {
+      border: 1px solid #d2d2d2;
+      border-radius: 8px;
+      padding: 10px 16px;
+      min-height: 56px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      margin: 0 16px;
+      cursor: pointer;
+    }
+    .po-dropdown-field + .po-dropdown-field { margin-top: 12px; }
+    .po-dropdown-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .po-dropdown-label {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      color: #545454;
+    }
+    .po-dropdown-value {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #1c1c1c;
+    }
+    .po-dropdown-chevron {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      color: #545454;
+    }
+    .po-section-header {
+      font-size: 18px;
+      font-weight: 590;
+      line-height: 23px;
+      letter-spacing: -0.44px;
+      color: #121212;
+      padding: 0 16px 8px;
+    }
+    .po-radio-list {
+      display: flex;
+      flex-direction: column;
+      padding: 0 16px;
+    }
+    .po-radio-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px 0;
+      cursor: pointer;
+    }
+    .po-radio-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .po-radio-title {
+      font-size: 14px;
+      font-weight: 590;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #121212;
+    }
+    .po-radio-desc {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: #343434;
+    }
+    .po-radio-btn {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid #bbb;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      transition: border-color 0.15s;
+    }
+    .po-radio-btn.checked {
+      border-color: #282527;
+    }
+    .po-radio-btn.checked::after {
+      content: '';
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: #282527;
+    }
+    .po-disclosure-link {
+      font-size: 12px;
+      font-weight: 590;
+      line-height: 16px;
+      color: #005ae1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding-bottom: 12px;
+    }
+    .po-disclosure-link svg { flex-shrink: 0; }
+    .po-divider {
+      height: 1px;
+      background: rgba(0,0,0,0.1);
+      margin: 0 16px;
     }
     .price-variant-child-sub {
       font-size: 13px;
@@ -4634,17 +4836,23 @@
       inset: 0;
       background: rgba(0,0,0,0.4);
       z-index: 300;
-      display: none;
-      transition: opacity 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
       opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.3s ease, visibility 0s linear 0.3s;
       border-radius: 24px;
     }
-    .bottom-sheet-overlay.open { display: block; opacity: 1; }
-    .bottom-sheet {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
+    .bottom-sheet-overlay.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity 0.3s ease, visibility 0s linear 0s;
+    }
+    .bottom-sheet,
+    .bottom-sheet-card {
       background: white;
       border-radius: 16px 16px 0 0;
       max-height: 70%;
@@ -4652,10 +4860,12 @@
       display: flex;
       flex-direction: column;
       transform: translateY(100%);
-      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+      transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
       z-index: 301;
+      width: 100%;
     }
-    .bottom-sheet-overlay.open .bottom-sheet { transform: translateY(0); }
+    .bottom-sheet-overlay.open .bottom-sheet,
+    .bottom-sheet-overlay.open .bottom-sheet-card { transform: translateY(0); }
     .bottom-sheet-handle {
       width: 36px;
       height: 5px;
@@ -4706,12 +4916,28 @@
       inset: 0;
       background: rgba(0,0,0,0.4);
       z-index: 400;
-      display: none;
+      display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 24px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.25s ease, visibility 0s linear 0.25s;
     }
-    .confirm-overlay.open { display: flex; }
+    .confirm-overlay.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity 0.25s ease, visibility 0s linear 0s;
+    }
+    .confirm-overlay .confirm-dialog {
+      transform: scale(0.95);
+      transition: transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .confirm-overlay.open .confirm-dialog {
+      transform: scale(1);
+    }
     .confirm-dialog {
       background: white;
       border-radius: 12px;
@@ -5524,7 +5750,7 @@
   </div>
 
   <!-- ═══ SHOP SHEET (New Sellers) ═══ -->
-  <div id="shopSheet" style="display:none;position:absolute;inset:0;z-index:20">
+  <div id="shopSheet" style="position:absolute;inset:0;z-index:20;opacity:0;visibility:hidden;pointer-events:none;transition:opacity 0.3s ease, visibility 0s linear 0.3s">
     <!-- Dim overlay at top showing lobby behind -->
     <div style="position:absolute;top:0;left:0;right:0;height:100px;background:transparent"></div>
     <!-- Sheet -->
@@ -6358,33 +6584,152 @@
         <div class="edit-chips" id="priceFormatChips">
           <span class="edit-chip edit-chip-on" onclick="selectChip(this,'format')">Auction</span>
           <span class="edit-chip edit-chip-off" onclick="selectChip(this,'format')">Buy Now</span>
-          <span class="edit-chip edit-chip-off" onclick="selectChip(this,'format')">Giveaway</span>
           <span class="edit-chip edit-chip-off" onclick="selectChip(this,'format')">Flash Sale</span>
+          <span class="edit-chip edit-chip-off" onclick="selectChip(this,'format')">Giveaway</span>
         </div>
       </div>
 
-      <!-- Starting Price -->
-      <div class="edit-field">
-        <div class="edit-field-label">Starting Price <span class="required">*</span></div>
-        <div class="edit-field-value">
-          <input type="text" id="priceStartingPriceInput" value="$1" oninput="priceOnMainPriceFieldChanged()" style="border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;width:100%;background:transparent">
+      <!-- ═══ AUCTION FORMAT (global) ═══ -->
+      <div id="gpAuctionPanel" class="gp-format-panel">
+        <div class="edit-field">
+          <div class="edit-field-label">Starting Price <span class="required">*</span></div>
+          <div class="edit-field-value">
+            <input type="text" id="priceStartingPriceInput" value="$1" oninput="priceOnMainPriceFieldChanged()" style="border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;width:100%;background:transparent">
+          </div>
+        </div>
+        <div class="edit-field edit-field-with-helper" id="priceFeaturedIn">
+          <div class="edit-field-label">Featured In <span class="required">*</span></div>
+          <div class="edit-field-value" onclick="gpOpenShowsPicker('priceFeaturedInValue')"><span id="priceFeaturedInValue">All Shows</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+        </div>
+        <div class="po-featured-helper"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><circle cx="8" cy="8" r="7" stroke="#545454" stroke-width="1"/><path d="M8 7v4" stroke="#545454" stroke-width="1" stroke-linecap="round"/><circle cx="8" cy="5.25" r="0.75" fill="#545454"/></svg><span>Featuring in shows will reserve this product exclusively for those shows. It will not appear in your profile shop.</span></div>
+        <div class="edit-field" style="display:flex;align-items:center;gap:12px">
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Sudden Death</div>
+            <div style="font-size:12px;font-weight:400;line-height:16px;color:#6f6f6f;margin-top:2px">This means when you're down to 00:01, the last person to bid wins!</div>
+          </div>
+          <div class="toggle-track" id="suddenDeathToggle" onclick="this.classList.toggle('on'); priceOnMainPriceFieldChanged();">
+            <div class="toggle-thumb"></div>
+          </div>
         </div>
       </div>
 
-      <!-- Featured In -->
-      <div class="edit-field" id="priceFeaturedIn">
-        <div class="edit-field-label">Featured In <span class="required">*</span></div>
-        <div class="edit-field-value"><span id="priceFeaturedInValue">All Shows</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+      <!-- ═══ BUY NOW FORMAT (global) ═══ -->
+      <div id="gpBuyNowPanel" class="gp-format-panel" style="display:none">
+        <div class="edit-field">
+          <div class="edit-field-label">Price <span class="required">*</span></div>
+          <div class="edit-field-value">
+            <input type="text" id="gpBuyNowPriceInput" value="$" oninput="priceOnMainPriceFieldChanged()" style="border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;width:100%;background:transparent">
+          </div>
+        </div>
+        <div class="edit-field" style="display:flex;align-items:center;gap:12px">
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Accept Offers</div>
+            <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c;margin-top:2px">Turn this on to accept offers. You can accept, counter or decline the offers.</div>
+          </div>
+          <div class="toggle-track" onclick="this.classList.toggle('on'); priceOnMainPriceFieldChanged();">
+            <div class="toggle-thumb"></div>
+          </div>
+        </div>
+        <div class="edit-field edit-field-with-helper" id="gpBuyNowFeaturedIn">
+          <div class="edit-field-label">Featured In</div>
+          <div class="edit-field-value" onclick="gpOpenShowsPicker('gpBuyNowFeaturedValue')"><span id="gpBuyNowFeaturedValue">All Shows</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+        </div>
+        <div class="po-featured-helper"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><circle cx="8" cy="8" r="7" stroke="#545454" stroke-width="1"/><path d="M8 7v4" stroke="#545454" stroke-width="1" stroke-linecap="round"/><circle cx="8" cy="5.25" r="0.75" fill="#545454"/></svg><span>Featuring in shows will reserve this product exclusively for those shows. It will not appear in your profile shop.</span></div>
       </div>
 
-      <!-- Sudden Death -->
-      <div class="edit-field" style="display:flex;align-items:center;gap:12px">
-        <div style="flex:1">
-          <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Sudden Death</div>
-          <div style="font-size:12px;font-weight:400;line-height:16px;color:#6f6f6f;margin-top:2px">This means when you're down to 00:01, the last person to bid wins!</div>
+      <!-- ═══ FLASH SALE FORMAT (global) ═══ -->
+      <div id="gpFlashSalePanel" class="gp-format-panel" style="display:none">
+        <div class="edit-field">
+          <div class="edit-field-label">Price <span class="required">*</span></div>
+          <div class="edit-field-value">
+            <input type="text" id="gpFlashPriceInput" value="$" oninput="gpSyncFlashDropdownState(); gpUpdateFlashDiscountHelper(); priceOnMainPriceFieldChanged();" style="border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;width:100%;background:transparent">
+          </div>
         </div>
-        <div class="toggle-track" id="suddenDeathToggle" onclick="this.classList.toggle('on'); priceOnMainPriceFieldChanged();">
-          <div class="toggle-thumb"></div>
+        <div id="gpFlashDropdownGroup" style="opacity:0.35;pointer-events:none">
+          <div class="edit-field">
+            <div class="edit-field-label">Discount Type</div>
+            <div class="edit-field-value" onclick="gpCycleFlashDiscountType()"><span id="gpFlashDiscountType">Percentage Off</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+          </div>
+          <div class="edit-field edit-field-with-helper">
+            <div class="edit-field-label">Percentage Discount Amount <span class="required">*</span></div>
+            <div class="edit-field-value" onclick="gpCycleFlashPercent()"><span id="gpFlashPercent">50%</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+          </div>
+          <div class="po-featured-helper" id="gpFlashDiscountHelper"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><circle cx="8" cy="8" r="7" stroke="#545454" stroke-width="1"/><path d="M8 7v4" stroke="#545454" stroke-width="1" stroke-linecap="round"/><circle cx="8" cy="5.25" r="0.75" fill="#545454"/></svg><span id="gpFlashDiscountHelperText"></span></div>
+          <div class="edit-field">
+            <div class="edit-field-label">Sale Duration</div>
+            <div class="edit-field-value" onclick="gpCycleFlashDuration()"><span id="gpFlashDuration">30 Secs</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+          </div>
+        </div>
+        <div class="edit-field" style="display:flex;align-items:center;gap:12px">
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Available for Full Price</div>
+            <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c;margin-top:2px">If turned off this product will be available before and after the Flash Sale at full price.</div>
+          </div>
+          <div class="toggle-track" onclick="this.classList.toggle('on'); priceOnMainPriceFieldChanged();">
+            <div class="toggle-thumb"></div>
+          </div>
+        </div>
+        <div class="edit-field" style="display:flex;align-items:center;gap:12px">
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Set Max Purchase Limit</div>
+            <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c;margin-top:2px">Set a max purchase limit per buyer.</div>
+          </div>
+          <div class="toggle-track" onclick="this.classList.toggle('on'); priceOnMainPriceFieldChanged();">
+            <div class="toggle-thumb"></div>
+          </div>
+        </div>
+        <div class="edit-field edit-field-with-helper" id="gpFlashFeaturedIn">
+          <div class="edit-field-label">Featured In</div>
+          <div class="edit-field-value" onclick="gpOpenShowsPicker('gpFlashFeaturedValue')"><span id="gpFlashFeaturedValue">All Shows</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+        </div>
+        <div class="po-featured-helper"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><circle cx="8" cy="8" r="7" stroke="#545454" stroke-width="1"/><path d="M8 7v4" stroke="#545454" stroke-width="1" stroke-linecap="round"/><circle cx="8" cy="5.25" r="0.75" fill="#545454"/></svg><span>Featuring in shows will reserve this product exclusively for those shows. It will not appear in your profile shop.</span></div>
+      </div>
+
+      <!-- ═══ GIVEAWAY FORMAT (global) ═══ -->
+      <div id="gpGiveawayPanel" class="gp-format-panel" style="display:none">
+        <div style="padding:8px 16px 8px">
+          <div style="font-size:18px;font-weight:590;line-height:23px;letter-spacing:-0.44px;color:#121212">Who Can Enter</div>
+        </div>
+        <div class="po-radio-list" id="gpGiveawayRadioList">
+          <div class="po-radio-item" onclick="gpSelectGiveawayRadio(this)">
+            <div class="po-radio-content">
+              <div class="po-radio-title">Everyone</div>
+              <div class="po-radio-desc">Any viewer in your stream can enter the giveaway.</div>
+            </div>
+            <div class="po-radio-btn checked"></div>
+          </div>
+          <div class="po-radio-item" onclick="gpSelectGiveawayRadio(this)">
+            <div class="po-radio-content">
+              <div class="po-radio-title">Followers Only</div>
+              <div class="po-radio-desc">Only viewers who follow you can enter the giveaway.</div>
+            </div>
+            <div class="po-radio-btn"></div>
+          </div>
+          <div class="po-radio-item" onclick="gpSelectGiveawayRadio(this)" style="padding-bottom:0">
+            <div class="po-radio-content">
+              <div class="po-radio-title">Buyer Appreciation</div>
+              <div class="po-radio-desc">Buyers who make a purchase in your stream after the giveaway is created are eligible to enter.</div>
+            </div>
+            <div class="po-radio-btn"></div>
+          </div>
+          <div class="po-disclosure-link" onclick="event.stopPropagation()">Non-Buyer Entries <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#005ae1" stroke-width="1.5" stroke-linecap="round"><path d="M6 8l4 4 4-4"/></svg></div>
+          <div class="po-radio-item" onclick="gpSelectGiveawayRadio(this)">
+            <div class="po-radio-content">
+              <div class="po-radio-title">Rewards Members (54)</div>
+              <div class="po-radio-desc">Only members of your Rewards Club can enter.</div>
+            </div>
+            <div class="po-radio-btn"></div>
+          </div>
+        </div>
+        <div class="po-divider" style="margin-top:4px"></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px 16px">
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">International Viewers</div>
+            <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#1c1c1c;margin-top:2px">International viewers can enter the giveaway. You will be responsible for international shipping costs.</div>
+          </div>
+          <div class="toggle-track" onclick="this.classList.toggle('on')">
+            <div class="toggle-thumb"></div>
+          </div>
         </div>
       </div>
 
@@ -6427,6 +6772,231 @@
         </div>
       </div>
       <div class="edit-scroll" id="priceVariantDrillScroll" style="flex:1;min-height:0"></div>
+    </div>
+
+    <!-- Price step: per-variant override push page -->
+    <div class="price-variant-drill-layer" id="priceVariantOverrideOverlay" style="z-index:340">
+      <div class="proto-ios-status-spacer" style="height:54px;flex-shrink:0" aria-hidden="true"></div>
+      <div class="edit-nav">
+        <button type="button" class="edit-nav-back" onclick="priceCloseOverrideSheet(true)"><svg viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></button>
+        <span class="edit-nav-title" id="priceOverrideSheetTitle">Variant</span>
+      </div>
+      <div class="edit-scroll" style="flex:1;min-height:0;padding-top:0">
+        <div class="price-override-format-chips-wrap" style="padding:8px 16px 12px">
+          <div class="edit-chips" id="priceOverrideFormatChips">
+            <span class="edit-chip edit-chip-on" data-format="Auction" onclick="priceOverrideSelectFormatChip(this)">Auction</span>
+            <span class="edit-chip edit-chip-off" data-format="Buy Now" onclick="priceOverrideSelectFormatChip(this)">Buy Now</span>
+            <span class="edit-chip edit-chip-off" data-format="Flash Sale" onclick="priceOverrideSelectFormatChip(this)">Flash Sale</span>
+            <span class="edit-chip edit-chip-off" data-format="Giveaway" onclick="priceOverrideSelectFormatChip(this)">Giveaway</span>
+          </div>
+        </div>
+        <!-- ═══ AUCTION FORMAT PANEL ═══ -->
+        <div id="poAuctionPanel" class="po-format-panel">
+          <div class="price-override-starting-wrap">
+            <div class="price-override-starting-box">
+              <div class="price-override-starting-label-row">Starting Price <span class="required">*</span></div>
+              <div class="price-override-starting-value-row">
+                <span class="price-override-dollar">$</span>
+                <input type="text" id="priceOverrideStartingInput" value="1" inputmode="decimal" class="vm-input-field" oninput="priceOverrideStartingDigitsOnly(this)" style="border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;background:transparent" />
+                <button type="button" class="vm-input-clear" aria-label="Clear" onclick="document.getElementById('priceOverrideStartingInput').value=''; document.getElementById('priceOverrideStartingInput').focus()">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 6l8 8M14 6l-8 8"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="po-setting" style="margin:8px 16px 0">
+            <div style="flex:1">
+              <div class="po-setting-title">Sudden Death</div>
+              <div class="po-setting-desc">This means when you're down to 00:01, the last person to bid wins!</div>
+            </div>
+            <div class="toggle-track" id="priceOverrideSuddenDeath" onclick="this.classList.toggle('on')">
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+          <div class="edit-field edit-field-with-helper" id="priceOverrideFeaturedRow" style="margin:8px 16px 0">
+            <div class="edit-field-label">Featured In <span class="required">*</span></div>
+            <div class="edit-field-value" onclick="poOpenShowsPicker('poAuctionFeaturedValue')"><span id="poAuctionFeaturedValue">All Shows</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
+          </div>
+          <div class="po-featured-helper" style="margin:0 16px 16px"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><circle cx="8" cy="8" r="7" stroke="#545454" stroke-width="1"/><path d="M8 7v4" stroke="#545454" stroke-width="1" stroke-linecap="round"/><circle cx="8" cy="5.25" r="0.75" fill="#545454"/></svg><span>Featuring in shows will reserve this product exclusively for those shows. It will not appear in your profile shop.</span></div>
+        </div>
+        <!-- ═══ BUY NOW FORMAT PANEL ═══ -->
+        <div id="poBuyNowPanel" class="po-format-panel" style="display:none">
+          <div class="price-override-starting-wrap">
+            <div class="price-override-starting-box">
+              <div class="price-override-starting-label-row">Price <span class="required">*</span></div>
+              <div class="price-override-starting-value-row">
+                <span class="price-override-dollar">$</span>
+                <input type="text" id="poBuyNowPriceInput" value="" inputmode="decimal" class="vm-input-field" oninput="priceOverrideStartingDigitsOnly(this)" style="border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;background:transparent" />
+              </div>
+            </div>
+          </div>
+          <div class="po-setting" style="margin:8px 16px 0">
+            <div style="flex:1">
+              <div class="po-setting-title">Accept Offers</div>
+              <div class="po-setting-desc">Turn this on to accept offers. You can accept, counter or decline the offers.</div>
+            </div>
+            <div class="toggle-track" onclick="this.classList.toggle('on')">
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+          <div class="po-dropdown-field po-dropdown-with-helper" onclick="poOpenShowsPicker('poBuyNowFeaturedValue')" style="margin-top:12px">
+            <div class="po-dropdown-content">
+              <div class="po-dropdown-label" style="font-size:14px;letter-spacing:-0.15px">Featured In</div>
+              <div class="po-dropdown-value" id="poBuyNowFeaturedValue">All Shows</div>
+            </div>
+            <svg class="po-dropdown-chevron" viewBox="0 0 20 20" fill="none" stroke="#545454" stroke-width="1.5" stroke-linecap="round"><path d="M6 8l4 4 4-4"/></svg>
+          </div>
+          <div class="po-featured-helper"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><circle cx="8" cy="8" r="7" stroke="#545454" stroke-width="1"/><path d="M8 7v4" stroke="#545454" stroke-width="1" stroke-linecap="round"/><circle cx="8" cy="5.25" r="0.75" fill="#545454"/></svg><span>Featuring in shows will reserve this product exclusively for those shows. It will not appear in your profile shop.</span></div>
+        </div>
+        <!-- ═══ FLASH SALE FORMAT PANEL ═══ -->
+        <div id="poFlashSalePanel" class="po-format-panel" style="display:none">
+          <div class="price-override-starting-wrap">
+            <div class="price-override-starting-box">
+              <div class="price-override-starting-label-row">Price <span class="required">*</span></div>
+              <div class="price-override-starting-value-row">
+                <span class="price-override-dollar">$</span>
+                <input type="text" id="poFlashPriceInput" value="100" inputmode="decimal" class="vm-input-field" oninput="priceOverrideStartingDigitsOnly(this)" style="border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;background:transparent" />
+              </div>
+            </div>
+          </div>
+          <div class="po-dropdown-field" onclick="poCycleFlashDiscountType()" style="margin-top:12px">
+            <div class="po-dropdown-content">
+              <div class="po-dropdown-label">Discount Type</div>
+              <div class="po-dropdown-value" id="poFlashDiscountType">Percentage Off</div>
+            </div>
+            <svg class="po-dropdown-chevron" viewBox="0 0 20 20" fill="none" stroke="#545454" stroke-width="1.5" stroke-linecap="round"><path d="M6 8l4 4 4-4"/></svg>
+          </div>
+          <div class="po-dropdown-field" onclick="poCycleFlashPercent()">
+            <div class="po-dropdown-content">
+              <div class="po-dropdown-label">Percentage Discount Amount <span style="color:#ce291a">*</span></div>
+              <div class="po-dropdown-value" id="poFlashPercent">50%</div>
+            </div>
+          </div>
+          <div class="po-dropdown-field" onclick="poCycleFlashDuration()">
+            <div class="po-dropdown-content">
+              <div class="po-dropdown-label">Sale Duration</div>
+              <div class="po-dropdown-value" id="poFlashDuration">30 Secs</div>
+            </div>
+            <svg class="po-dropdown-chevron" viewBox="0 0 20 20" fill="none" stroke="#545454" stroke-width="1.5" stroke-linecap="round"><path d="M6 8l4 4 4-4"/></svg>
+          </div>
+          <div class="po-setting" style="margin:12px 16px 0">
+            <div style="flex:1">
+              <div class="po-setting-title">Available for Full Price</div>
+              <div class="po-setting-desc">If turned off this product will be available before and after the Flash Sale at full price.</div>
+            </div>
+            <div class="toggle-track" onclick="this.classList.toggle('on')">
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+          <div class="po-setting" style="margin:8px 16px 0">
+            <div style="flex:1">
+              <div class="po-setting-title">Set Max Purchase Limit</div>
+              <div class="po-setting-desc">Set a max purchase limit per buyer.</div>
+            </div>
+            <div class="toggle-track" onclick="this.classList.toggle('on')">
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+          <div class="po-dropdown-field po-dropdown-with-helper" onclick="poOpenShowsPicker('poFlashFeaturedValue')" style="margin-top:12px">
+            <div class="po-dropdown-content">
+              <div class="po-dropdown-label" style="font-size:14px;letter-spacing:-0.15px">Featured In</div>
+              <div class="po-dropdown-value" id="poFlashFeaturedValue">All Shows</div>
+            </div>
+            <svg class="po-dropdown-chevron" viewBox="0 0 20 20" fill="none" stroke="#545454" stroke-width="1.5" stroke-linecap="round"><path d="M6 8l4 4 4-4"/></svg>
+          </div>
+          <div class="po-featured-helper"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><circle cx="8" cy="8" r="7" stroke="#545454" stroke-width="1"/><path d="M8 7v4" stroke="#545454" stroke-width="1" stroke-linecap="round"/><circle cx="8" cy="5.25" r="0.75" fill="#545454"/></svg><span>Featuring in shows will reserve this product exclusively for those shows. It will not appear in your profile shop.</span></div>
+        </div>
+        <!-- ═══ GIVEAWAY FORMAT PANEL ═══ -->
+        <div id="poGiveawayPanel" class="po-format-panel" style="display:none">
+          <div class="po-section-header">Who Can Enter</div>
+          <div class="po-radio-list" id="poGiveawayRadioList">
+            <div class="po-radio-item" onclick="poSelectGiveawayRadio(this)">
+              <div class="po-radio-content">
+                <div class="po-radio-title">Everyone</div>
+                <div class="po-radio-desc">Any viewer in your stream can enter the giveaway.</div>
+              </div>
+              <div class="po-radio-btn checked"></div>
+            </div>
+            <div class="po-radio-item" onclick="poSelectGiveawayRadio(this)">
+              <div class="po-radio-content">
+                <div class="po-radio-title">Followers Only</div>
+                <div class="po-radio-desc">Only viewers who follow you can enter the giveaway.</div>
+              </div>
+              <div class="po-radio-btn"></div>
+            </div>
+            <div class="po-radio-item" onclick="poSelectGiveawayRadio(this)" style="padding-bottom:0">
+              <div class="po-radio-content">
+                <div class="po-radio-title">Buyer Appreciation</div>
+                <div class="po-radio-desc">Buyers who make a purchase in your stream after the giveaway is created are eligible to enter.</div>
+              </div>
+              <div class="po-radio-btn"></div>
+            </div>
+            <div class="po-disclosure-link" onclick="event.stopPropagation()">Non-Buyer Entries <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#005ae1" stroke-width="1.5" stroke-linecap="round"><path d="M6 8l4 4 4-4"/></svg></div>
+            <div class="po-radio-item" onclick="poSelectGiveawayRadio(this)">
+              <div class="po-radio-content">
+                <div class="po-radio-title">Rewards Members (54)</div>
+                <div class="po-radio-desc">Only members of your Rewards Club can enter.</div>
+              </div>
+              <div class="po-radio-btn"></div>
+            </div>
+          </div>
+          <div class="po-divider"></div>
+          <div class="po-setting" style="margin:12px 16px 16px">
+            <div style="flex:1">
+              <div class="po-setting-title">International Viewers</div>
+              <div class="po-setting-desc">International viewers can enter the giveaway. You will be responsible for international shipping costs.</div>
+            </div>
+            <div class="toggle-track" onclick="this.classList.toggle('on')">
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ═══ SHOWS PICKER SHEET (white, inside push page) ═══ -->
+      <div id="poShowsPicker" class="bottom-sheet-overlay" style="z-index:350" onclick="poCloseShowsPicker()">
+        <div onclick="event.stopPropagation()" class="bottom-sheet-card" style="background:#fff;border-radius:16px 16px 0 0;width:100%;box-shadow:0 -4px 24px rgba(0,0,0,0.12);display:flex;flex-direction:column">
+          <div style="font-size:16px;font-weight:600;line-height:22px;letter-spacing:-0.2px;color:#1c1c1c;padding:16px 16px 12px">Select Show</div>
+          <div class="po-shows-option" onclick="poPickShow(this,'All Shows')"><span style="flex:1">All Shows</span><div class="po-radio-btn checked"></div></div>
+          <div class="po-shows-option" onclick="poPickShow(this,'Sneaker Fridays')"><span style="flex:1">Sneaker Fridays</span><div class="po-radio-btn"></div></div>
+          <div class="po-shows-option" onclick="poPickShow(this,'$1 Start Mondays')"><span style="flex:1">$1 Start Mondays</span><div class="po-radio-btn"></div></div>
+          <div class="po-shows-option po-shows-option-create"><span style="flex:1">Create new show</span><div class="vm-chevron vm-chevron-right"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div></div>
+          <div style="padding:12px 16px 0;border-top:1px solid rgba(0,0,0,0.08)">
+            <button type="button" class="edit-btn-publish" style="flex:1;margin:0;width:100%" onclick="poSaveShowsPicker()">Save</button>
+          </div>
+          <div style="height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><div style="width:135px;height:5px;background:#1c1c1c;border-radius:100px"></div></div>
+        </div>
+      </div>
+      <div class="edit-footer" id="priceOverrideSheetFooter" style="gap:8px">
+        <button type="button" class="edit-btn-draft" id="priceOverrideResetBtn" style="display:none;flex:1;margin:0" onclick="priceOverrideSheetReset()">Reset</button>
+        <button type="button" class="edit-btn-publish" id="priceOverrideSaveBtn" style="flex:1;margin:0" onclick="priceOverrideSheetSave()">Save</button>
+      </div>
+    </div>
+
+    <!-- ═══ SHOWS PICKER OVERLAY (global price page) ═══ -->
+    <div id="gpShowsPicker" class="bottom-sheet-overlay" style="z-index:310" onclick="gpCloseShowsPicker()">
+      <div onclick="event.stopPropagation()" class="bottom-sheet-card" style="background:#fff;border-radius:16px 16px 0 0;width:100%;box-shadow:0 -4px 24px rgba(0,0,0,0.12);display:flex;flex-direction:column">
+        <div style="font-size:16px;font-weight:600;line-height:22px;letter-spacing:-0.2px;color:#1c1c1c;padding:16px 16px 12px">Select Show</div>
+        <div class="po-shows-option" onclick="gpPickShow(this,'All Shows')"><span style="flex:1">All Shows</span><div class="po-radio-btn checked"></div></div>
+        <div class="po-shows-option" onclick="gpPickShow(this,'Sneaker Fridays')"><span style="flex:1">Sneaker Fridays</span><div class="po-radio-btn"></div></div>
+        <div class="po-shows-option" onclick="gpPickShow(this,'$1 Start Mondays')"><span style="flex:1">$1 Start Mondays</span><div class="po-radio-btn"></div></div>
+        <div class="po-shows-option po-shows-option-create"><span style="flex:1">Create new show</span><div class="vm-chevron vm-chevron-right"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div></div>
+        <div style="padding:12px 16px 0;border-top:1px solid rgba(0,0,0,0.08)">
+          <button type="button" class="edit-btn-publish" style="flex:1;margin:0;width:100%" onclick="gpSaveShowsPicker()">Save</button>
+        </div>
+        <div style="height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><div style="width:135px;height:5px;background:#1c1c1c;border-radius:100px"></div></div>
+      </div>
+    </div>
+
+    <!-- ═══ GENERIC RADIO PICKER SHEET (global price page) ═══ -->
+    <div id="gpRadioPicker" class="bottom-sheet-overlay" style="z-index:310" onclick="gpCloseRadioPicker()">
+      <div onclick="event.stopPropagation()" class="bottom-sheet-card" style="background:#fff;border-radius:16px 16px 0 0;width:100%;box-shadow:0 -4px 24px rgba(0,0,0,0.12);display:flex;flex-direction:column">
+        <div style="font-size:16px;font-weight:600;line-height:22px;letter-spacing:-0.2px;color:#1c1c1c;padding:16px 16px 12px" id="gpRadioPickerTitle"></div>
+        <div id="gpRadioPickerOptions"></div>
+        <div style="padding:12px 16px 0;border-top:1px solid rgba(0,0,0,0.08)">
+          <button type="button" class="edit-btn-publish" style="flex:1;margin:0;width:100%" onclick="gpSaveRadioPicker()">Save</button>
+        </div>
+        <div style="height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><div style="width:135px;height:5px;background:#1c1c1c;border-radius:100px"></div></div>
+      </div>
     </div>
 
     <div class="edit-footer">
@@ -6957,65 +7527,6 @@
       <div class="vm-sheet-body" id="vmGroupByListMount"></div>
       <div class="vm-sheet-footer">
         <button type="button" class="vm-done-btn vm-done-btn-secondary" onclick="closeVmGroupBySheet()">Save</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Price step: per-variant override sheet -->
-  <div class="vm-overlay price-override-sheet" id="priceVariantOverrideOverlay" onclick="priceCloseOverrideSheet(true)">
-    <div class="vm-sheet-panel" onclick="event.stopPropagation()" style="max-height:92%">
-      <div class="vm-sheet-nav price-override-nav">
-        <span class="vm-sheet-nav-spacer"></span>
-        <div class="vm-sheet-nav-mid">
-          <div class="vm-sheet-h1" id="priceOverrideSheetTitle">Variant</div>
-        </div>
-        <button type="button" class="vm-icon-btn" aria-label="Close" onclick="priceCloseOverrideSheet(true)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
-      </div>
-      <div class="vm-sheet-body" style="padding-top:0">
-        <div class="price-override-format-chips-wrap" style="padding:8px 16px 12px">
-          <div class="edit-chips" id="priceOverrideFormatChips">
-            <span class="edit-chip edit-chip-on" data-format="Auction" onclick="priceOverrideSelectFormatChip(this)">Auction</span>
-            <span class="edit-chip edit-chip-off" data-format="Buy Now" onclick="priceOverrideSelectFormatChip(this)">Buy Now</span>
-            <span class="edit-chip edit-chip-off" data-format="Giveaway" onclick="priceOverrideSelectFormatChip(this)">Giveaway</span>
-            <span class="edit-chip edit-chip-off" data-format="Flash Sale" onclick="priceOverrideSelectFormatChip(this)">Flash Sale</span>
-          </div>
-        </div>
-        <div class="price-override-starting-wrap">
-          <div class="price-override-starting-box">
-            <div class="price-override-starting-label-row">Starting Price <span class="required">*</span></div>
-            <div class="price-override-starting-value-row">
-              <span class="price-override-dollar">$</span>
-              <input type="text" id="priceOverrideStartingInput" value="1" inputmode="decimal" class="vm-input-field" oninput="priceOverrideStartingDigitsOnly(this)" style="border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;background:transparent" />
-              <button type="button" class="vm-input-clear" aria-label="Clear" onclick="document.getElementById('priceOverrideStartingInput').value=''; document.getElementById('priceOverrideStartingInput').focus()">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 6l8 8M14 6l-8 8"/></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="edit-field" style="display:flex;align-items:center;gap:12px;margin:8px 16px 0">
-          <div style="flex:1">
-            <div style="font-size:14px;font-weight:600;line-height:19px;color:#1c1c1c">Sudden Death</div>
-            <div style="font-size:12px;color:#6f6f6f;margin-top:2px">This means when you're down to 00:01, the last person to bid wins!</div>
-          </div>
-          <div class="toggle-track" id="priceOverrideSuddenDeath" onclick="this.classList.toggle('on')">
-            <div class="toggle-thumb"></div>
-          </div>
-        </div>
-        <div class="edit-field" id="priceOverrideFeaturedRow" style="margin:8px 16px 16px">
-          <div class="edit-field-label">Featured In <span class="required">*</span></div>
-          <div class="edit-field-value"><span id="priceOverrideFeaturedValue">All Shows</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8l4 4 4-4"/></svg></div>
-        </div>
-      </div>
-      <div
-        class="vm-sheet-footer"
-        id="priceOverrideSheetFooter"
-        style="display:flex;gap:8px;padding:12px 16px 16px;background:#fff;border-top:1px solid rgba(0,0,0,0.08)"
-      >
-        <button type="button" class="confirm-btn-destructive" id="priceOverrideResetBtn" style="display:none;flex:1;margin:0;height:44px;width:auto" onclick="priceOverrideSheetReset()">Reset</button>
-        <button type="button" class="edit-btn-publish" id="priceOverrideSaveBtn" style="flex:1;margin:0" onclick="priceOverrideSheetSave()">Save</button>
-      </div>
-      <div class="vm-sheet-footer-grab" aria-hidden="true">
-        <div class="vm-sheet-grab"><span></span></div>
       </div>
     </div>
   </div>
@@ -7702,8 +8213,8 @@
   </div>
 
   <!-- ═══ SHOP LISTING OPTIONS SHEET ═══ -->
-  <div id="shopListingOptionsSheet" onclick="closeShopListingOptions()" style="display:none;position:absolute;inset:0;z-index:35;background:rgba(0,0,0,0.7)">
-    <div onclick="event.stopPropagation()" style="position:absolute;bottom:0;left:0;right:0;background:white;border-radius:16px 16px 0 0;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.32,0.72,0,1)">
+  <div id="shopListingOptionsSheet" class="bottom-sheet-overlay" style="z-index:35;background:rgba(0,0,0,0.7)" onclick="closeShopListingOptions()">
+    <div class="bottom-sheet" onclick="event.stopPropagation()">
       <!-- Handle -->
       <div style="display:flex;flex-direction:column;align-items:center;padding:8px 50px">
         <div style="width:40px;height:4px;border-radius:30px;background:#f3efee"></div>
@@ -7750,8 +8261,8 @@
   </div>
 
   <!-- ═══ REMOVE CONFIRMATION MODAL ═══ -->
-  <div id="deleteListingModal" onclick="closeDeleteModal()" style="display:none;position:absolute;inset:0;z-index:40;background:rgba(0,0,0,0.5);align-items:center;justify-content:center">
-    <div onclick="event.stopPropagation()" style="background:white;border-radius:14px;width:270px;overflow:hidden;text-align:center">
+  <div id="deleteListingModal" class="confirm-overlay" style="z-index:40;background:rgba(0,0,0,0.5)" onclick="closeDeleteModal()">
+    <div class="confirm-dialog" onclick="event.stopPropagation()" style="background:white;border-radius:14px;width:270px;overflow:hidden;text-align:center">
       <div style="padding:20px 16px 0">
         <div style="font-size:17px;font-weight:600;line-height:22px;letter-spacing:-0.41px;color:#1c1c1c">Remove from Show?</div>
         <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#7f7f7f;margin-top:4px">This listing will be removed from your show. You can add it back anytime from your shop.</div>
@@ -7766,8 +8277,8 @@
   </div>
 
   <!-- ═══ LIVE CREATE SHEET ═══ -->
-  <div id="liveCreateSheet" onclick="closeLiveCreateSheet()" style="display:none;position:absolute;inset:0;z-index:45;background:rgba(0,0,0,0.7);border-radius:24px;opacity:0;transition:opacity 0.3s ease">
-    <div id="liveCreateSheetInner" onclick="event.stopPropagation()" style="position:absolute;bottom:0;left:0;right:0;background:white;border-radius:24px 24px 0 0;display:flex;flex-direction:column;align-items:center;gap:12px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)">
+  <div id="liveCreateSheet" class="bottom-sheet-overlay" style="z-index:45;background:rgba(0,0,0,0.7)" onclick="closeLiveCreateSheet()">
+    <div id="liveCreateSheetInner" class="bottom-sheet" onclick="event.stopPropagation()" style="align-items:center;gap:12px">
       <!-- Handle -->
       <div style="display:flex;flex-direction:column;align-items:center;width:100%;padding:8px 50px 0">
         <div style="width:40px;height:3px;border-radius:30px;background:#e0e0e0"></div>
@@ -7947,18 +8458,14 @@
 <script>
 function openListingOptions() {
   const sheet = document.getElementById('listingOptionsSheet');
-  sheet.style.display = 'block';
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      sheet.classList.add('open');
-    });
+    requestAnimationFrame(() => sheet.classList.add('open'));
   });
 }
 
 function closeListingOptions() {
   const sheet = document.getElementById('listingOptionsSheet');
   sheet.classList.remove('open');
-  setTimeout(() => { sheet.style.display = 'none'; }, 350);
 }
 
 function cloneTemplate() {
@@ -7998,11 +8505,8 @@ function openCreateSheet() {
   document.getElementById('createSheetTabbed').style.display = 'none';
 
   const sheet = document.getElementById('createSheet');
-  sheet.style.display = 'block';
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      sheet.classList.add('open');
-    });
+    requestAnimationFrame(() => sheet.classList.add('open'));
   });
 }
 
@@ -8024,7 +8528,6 @@ function switchCreateTab(tab) {
 function closeCreateSheet() {
   const sheet = document.getElementById('createSheet');
   sheet.classList.remove('open');
-  setTimeout(() => { sheet.style.display = 'none'; }, 350);
 }
 
 function openLiveCreateSheet() {
@@ -8034,13 +8537,8 @@ function openLiveCreateSheet() {
   if (isL1) switchLiveCreateTab('products');
 
   const overlay = document.getElementById('liveCreateSheet');
-  const inner = document.getElementById('liveCreateSheetInner');
-  overlay.style.display = 'block';
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      overlay.style.opacity = '1';
-      inner.style.transform = 'translateY(0)';
-    });
+    requestAnimationFrame(() => overlay.classList.add('open'));
   });
 }
 
@@ -8061,10 +8559,7 @@ function switchLiveCreateTab(tab) {
 
 function closeLiveCreateSheet() {
   const overlay = document.getElementById('liveCreateSheet');
-  const inner = document.getElementById('liveCreateSheetInner');
-  overlay.style.opacity = '0';
-  inner.style.transform = 'translateY(100%)';
-  setTimeout(() => { overlay.style.display = 'none'; }, 400);
+  overlay.classList.remove('open');
 }
 
 function createNewTemplate() {
@@ -8466,7 +8961,10 @@ function importToShopFromNux() {
   // Open shop sheet instantly (no animation) so it's ready behind the NUX
   const sheet = document.getElementById('shopSheet');
   const inner = document.getElementById('shopSheetInner');
-  sheet.style.display = 'block';
+  sheet.style.opacity = '1';
+  sheet.style.visibility = 'visible';
+  sheet.style.pointerEvents = '';
+  sheet.style.transition = 'none';
   inner.style.transition = 'none';
   inner.style.transform = 'translateY(0)';
 
@@ -8948,13 +9446,15 @@ function closeEditPageDirect() {
       saveTemplateEdits(currentTemplateIndex);
       const shopSheet = document.getElementById('shopSheet');
       const shopInner = document.getElementById('shopSheetInner');
-      shopSheet.style.display = 'block';
+      shopSheet.style.opacity = '1';
+      shopSheet.style.visibility = 'visible';
       shopSheet.style.pointerEvents = '';
+      shopSheet.style.transition = 'none';
       if (shopInner) {
         shopInner.style.transition = 'none';
         shopInner.style.transform = 'translateY(0)';
         shopInner.style.opacity = '';
-        requestAnimationFrame(() => { shopInner.style.transition = ''; });
+        requestAnimationFrame(() => { shopInner.style.transition = ''; shopSheet.style.transition = ''; });
       }
       const circle = document.getElementById('shopCircle');
       if (circle) circle.style.borderColor = 'white';
@@ -10996,15 +11496,45 @@ function priceResolveVmGroupBy() {
   }
 }
 
-function priceGetBaseListingPriceState() {
+let _gpCommittedBase = { format: 'Auction', startingPrice: '$1', suddenDeath: false, featuredIn: 'All Shows', flashPercent: 0 };
+
+function priceReadLiveBaseState() {
   const formatChip = document.querySelector('#priceFormatChips .edit-chip-on');
   const format = formatChip ? formatChip.textContent.trim() : 'Auction';
-  const input = document.getElementById('priceStartingPriceInput');
-  const startingPrice = input && input.value.trim() ? input.value.trim() : '$1';
-  const suddenDeath = !!document.getElementById('suddenDeathToggle')?.classList.contains('on');
-  const featuredEl = document.getElementById('priceFeaturedInValue');
-  const featuredIn = featuredEl ? featuredEl.textContent.trim() : 'All Shows';
-  return { format, startingPrice, suddenDeath, featuredIn };
+
+  let startingPrice = '$1';
+  let suddenDeath = false;
+  let featuredIn = 'All Shows';
+  let flashPercent = 0;
+
+  if (format === 'Auction') {
+    const inp = document.getElementById('priceStartingPriceInput');
+    startingPrice = inp && inp.value.trim() ? inp.value.trim() : '$1';
+    suddenDeath = !!document.getElementById('suddenDeathToggle')?.classList.contains('on');
+    featuredIn = document.getElementById('priceFeaturedInValue')?.textContent.trim() || 'All Shows';
+  } else if (format === 'Buy Now') {
+    const inp = document.getElementById('gpBuyNowPriceInput');
+    startingPrice = inp && inp.value.trim() ? inp.value.trim() : '$';
+    featuredIn = document.getElementById('gpBuyNowFeaturedValue')?.textContent.trim() || 'All Shows';
+  } else if (format === 'Flash Sale') {
+    const inp = document.getElementById('gpFlashPriceInput');
+    startingPrice = inp && inp.value.trim() ? inp.value.trim() : '$';
+    featuredIn = document.getElementById('gpFlashFeaturedValue')?.textContent.trim() || 'All Shows';
+    const pctEl = document.getElementById('gpFlashPercent');
+    flashPercent = pctEl ? parseInt(pctEl.textContent, 10) || 0 : 0;
+  } else if (format === 'Giveaway') {
+    startingPrice = '';
+  }
+
+  return { format, startingPrice, suddenDeath, featuredIn, flashPercent };
+}
+
+function priceCommitBaseState() {
+  _gpCommittedBase = priceReadLiveBaseState();
+}
+
+function priceGetBaseListingPriceState() {
+  return { ..._gpCommittedBase };
 }
 
 function priceEffectiveStateForKey(key) {
@@ -11043,18 +11573,39 @@ function priceOverrideSummaryLine(key) {
 }
 
 /** Drill subline: price first (Figma 19633:67290); overridden rows use red segments. */
+function priceFlashSalePriceHtml(original, pct, cssClass) {
+  const n = priceNumericPrice(original);
+  if (!Number.isFinite(n) || n <= 0 || !pct) return escapeHtmlVm(original);
+  const sale = Math.round(n * (1 - pct / 100) * 100) / 100;
+  const saleStr = Number.isInteger(sale) ? `$${sale}` : `$${sale.toFixed(2)}`;
+  const origStr = Number.isInteger(n) ? `$${n}` : `$${n.toFixed(2)}`;
+  const cls = cssClass ? ` class="${cssClass}"` : '';
+  return `<span style="text-decoration:line-through;color:#999"${cls}>${escapeHtmlVm(origStr)}</span> <span${cls}>${escapeHtmlVm(saleStr)}</span>`;
+}
+
 function priceFormatChildSubHtml(key) {
   const b = priceGetBaseListingPriceState();
   const st = priceEffectiveStateForKey(key);
   if (!priceVariantOverrides[key]) {
-    return escapeHtmlVm(`${st.startingPrice} · ${st.format}`);
+    let priceDisplay = escapeHtmlVm(st.startingPrice);
+    if (st.format === 'Flash Sale' && st.flashPercent) {
+      priceDisplay = priceFlashSalePriceHtml(st.startingPrice, st.flashPercent);
+    }
+    return `${priceDisplay}<span class="price-variant-meta-sep"> · </span>${escapeHtmlVm(st.format)}`;
   }
   const parts = [];
   const pushRed = (text) => {
     const esc = escapeHtmlVm(text);
     parts.push(`<span class="price-variant-meta-diff">${esc}</span>`);
   };
-  pushRed(st.startingPrice);
+  const pushRedHtml = (html) => {
+    parts.push(html);
+  };
+  if (st.format === 'Flash Sale' && st.flashPercent) {
+    pushRedHtml(priceFlashSalePriceHtml(st.startingPrice, st.flashPercent, 'price-variant-meta-diff'));
+  } else {
+    pushRed(st.startingPrice);
+  }
   pushRed(st.format);
   if (st.suddenDeath !== b.suddenDeath) {
     pushRed(st.suddenDeath ? 'Sudden Death' : 'Sudden Death off');
@@ -11098,10 +11649,25 @@ function priceL1RowSubHtml(nVariants, childKeys) {
     return escapeHtmlVm(`${nVariants} Variants`);
   }
 
-  const priceLabel = min === max ? `$${min}` : `$${min}–$${max}`;
-  const priceHtml = hasAnyOverride
-    ? `<span class="price-variant-meta-diff">${escapeHtmlVm(priceLabel)}</span>`
-    : escapeHtmlVm(priceLabel);
+  let priceHtml;
+  if (b.format === 'Flash Sale' && b.flashPercent && formatDiffCount === 0) {
+    const cls = hasAnyOverride ? 'price-variant-meta-diff' : '';
+    if (min === max) {
+      priceHtml = priceFlashSalePriceHtml(`$${min}`, b.flashPercent, cls || undefined);
+    } else {
+      const saleMin = Math.round(min * (1 - b.flashPercent / 100) * 100) / 100;
+      const saleMax = Math.round(max * (1 - b.flashPercent / 100) * 100) / 100;
+      const origLabel = `$${min}–$${max}`;
+      const saleLabel = saleMin === saleMax ? `$${saleMin}` : `$${saleMin}–$${saleMax}`;
+      const clsAttr = cls ? ` class="${cls}"` : '';
+      priceHtml = `<span style="text-decoration:line-through;color:#999"${clsAttr}>${escapeHtmlVm(origLabel)}</span> <span${clsAttr}>${escapeHtmlVm(saleLabel)}</span>`;
+    }
+  } else {
+    const priceLabel = min === max ? `$${min}` : `$${min}–$${max}`;
+    priceHtml = hasAnyOverride
+      ? `<span class="price-variant-meta-diff">${escapeHtmlVm(priceLabel)}</span>`
+      : escapeHtmlVm(priceLabel);
+  }
 
   const suffix =
     formatDiffCount > 0
@@ -11316,7 +11882,7 @@ function priceRenderDrillVariantList() {
 
   const thumb = vmThumbPlainHtml();
   const chev =
-    '<div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div>';
+    '<div class="vm-chevron vm-chevron-right"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div>';
   const htmlParts = [];
   display.forEach((c, idx) => {
     const k = c.key;
@@ -11353,7 +11919,7 @@ function priceRefreshVariantTree() {
   const nSub = vmL1RowSubtitleCount();
   const cam = vmThumbCamHtml();
   const chev =
-    '<div class="vm-chevron"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div>';
+    '<div class="vm-chevron vm-chevron-right"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg></div>';
   /** @type {{ childKeys: string[], html: string }[]} */
   const l1Blocks = [];
 
@@ -11623,6 +12189,291 @@ function priceOverrideSelectFormatChip(el) {
   });
   el.classList.remove('edit-chip-off');
   el.classList.add('edit-chip-on');
+  poSyncFormatPanel();
+}
+
+const PO_FORMAT_MAP = {
+  'Auction': 'poAuctionPanel',
+  'Buy Now': 'poBuyNowPanel',
+  'Flash Sale': 'poFlashSalePanel',
+  'Giveaway': 'poGiveawayPanel'
+};
+
+function poSyncFormatPanel() {
+  const active = document.querySelector('#priceOverrideFormatChips .edit-chip-on');
+  const fmt = active?.getAttribute('data-format') || 'Auction';
+  Object.entries(PO_FORMAT_MAP).forEach(([k, id]) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = k === fmt ? '' : 'none';
+  });
+}
+
+let poShowsTargetId = null;
+function poOpenShowsPicker(targetSpanId) {
+  poShowsTargetId = targetSpanId;
+  const picker = document.getElementById('poShowsPicker');
+  if (!picker) return;
+  const current = document.getElementById(targetSpanId)?.textContent.trim() || 'All Shows';
+  picker.dataset.selectedShow = current;
+  picker.querySelectorAll('.po-shows-option:not(.po-shows-option-create)').forEach(opt => {
+    const label = opt.querySelector('span')?.textContent.trim();
+    const rb = opt.querySelector('.po-radio-btn');
+    if (rb) rb.classList.toggle('checked', label === current);
+  });
+  requestAnimationFrame(() => { requestAnimationFrame(() => picker.classList.add('open')); });
+}
+function poCloseShowsPicker() {
+  const picker = document.getElementById('poShowsPicker');
+  if (picker) picker.classList.remove('open');
+  poShowsTargetId = null;
+}
+function poSelectShow(val) {
+  if (poShowsTargetId) {
+    const sp = document.getElementById(poShowsTargetId);
+    if (sp) sp.textContent = val;
+  }
+  poCloseShowsPicker();
+}
+function poPickShow(el, val) {
+  const picker = document.getElementById('poShowsPicker');
+  if (!picker) return;
+  picker.querySelectorAll('.po-radio-btn').forEach(r => r.classList.remove('checked'));
+  const btn = el.querySelector('.po-radio-btn');
+  if (btn) btn.classList.add('checked');
+  picker.dataset.selectedShow = val;
+}
+function poSaveShowsPicker() {
+  const picker = document.getElementById('poShowsPicker');
+  const val = picker?.dataset.selectedShow || 'All Shows';
+  if (poShowsTargetId) {
+    const sp = document.getElementById(poShowsTargetId);
+    if (sp) sp.textContent = val;
+  }
+  poCloseShowsPicker();
+}
+
+const PO_FLASH_DISCOUNT_TYPES = ['Percentage Off', 'Amount Off'];
+function poCycleFlashDiscountType() {
+  const el = document.getElementById('poFlashDiscountType');
+  if (!el) return;
+  const cur = PO_FLASH_DISCOUNT_TYPES.indexOf(el.textContent);
+  el.textContent = PO_FLASH_DISCOUNT_TYPES[(cur + 1) % PO_FLASH_DISCOUNT_TYPES.length];
+}
+
+const PO_FLASH_PERCENTS = ['10%', '25%', '50%', '75%'];
+function poCycleFlashPercent() {
+  const el = document.getElementById('poFlashPercent');
+  if (!el) return;
+  const cur = PO_FLASH_PERCENTS.indexOf(el.textContent);
+  el.textContent = PO_FLASH_PERCENTS[(cur + 1) % PO_FLASH_PERCENTS.length];
+}
+
+const PO_FLASH_DURATIONS = ['30 Secs', '1 Min', '2 Min', '5 Min'];
+function poCycleFlashDuration() {
+  const el = document.getElementById('poFlashDuration');
+  if (!el) return;
+  const cur = PO_FLASH_DURATIONS.indexOf(el.textContent);
+  el.textContent = PO_FLASH_DURATIONS[(cur + 1) % PO_FLASH_DURATIONS.length];
+}
+
+function poSelectGiveawayRadio(item) {
+  const list = document.getElementById('poGiveawayRadioList');
+  if (!list) return;
+  list.querySelectorAll('.po-radio-btn').forEach(b => b.classList.remove('checked'));
+  const btn = item.querySelector('.po-radio-btn');
+  if (btn) btn.classList.add('checked');
+}
+
+const GP_FORMAT_MAP = {
+  'Auction': 'gpAuctionPanel',
+  'Buy Now': 'gpBuyNowPanel',
+  'Flash Sale': 'gpFlashSalePanel',
+  'Giveaway': 'gpGiveawayPanel'
+};
+
+let gpShowsTargetId = null;
+function gpOpenShowsPicker(targetSpanId) {
+  gpShowsTargetId = targetSpanId;
+  const picker = document.getElementById('gpShowsPicker');
+  if (!picker) return;
+  const current = document.getElementById(targetSpanId)?.textContent.trim() || 'All Shows';
+  picker.dataset.selectedShow = current;
+  picker.querySelectorAll('.po-shows-option:not(.po-shows-option-create)').forEach(opt => {
+    const label = opt.querySelector('span')?.textContent.trim();
+    const rb = opt.querySelector('.po-radio-btn');
+    if (rb) rb.classList.toggle('checked', label === current);
+  });
+  requestAnimationFrame(() => { requestAnimationFrame(() => picker.classList.add('open')); });
+}
+function gpCloseShowsPicker() {
+  const picker = document.getElementById('gpShowsPicker');
+  if (picker) picker.classList.remove('open');
+  gpShowsTargetId = null;
+}
+function gpSelectShow(val) {
+  if (gpShowsTargetId) {
+    const sp = document.getElementById(gpShowsTargetId);
+    if (sp) sp.textContent = val;
+  }
+  gpCloseShowsPicker();
+}
+function gpPickShow(el, val) {
+  const picker = document.getElementById('gpShowsPicker');
+  if (!picker) return;
+  picker.querySelectorAll('.po-radio-btn').forEach(r => r.classList.remove('checked'));
+  const btn = el.querySelector('.po-radio-btn');
+  if (btn) btn.classList.add('checked');
+  picker.dataset.selectedShow = val;
+}
+function gpSaveShowsPicker() {
+  const picker = document.getElementById('gpShowsPicker');
+  const val = picker?.dataset.selectedShow || 'All Shows';
+  if (gpShowsTargetId) {
+    const sp = document.getElementById(gpShowsTargetId);
+    if (sp) sp.textContent = val;
+  }
+  gpCloseShowsPicker();
+  priceOnMainPriceFieldChanged();
+}
+
+function gpSyncFormatPanel() {
+  const active = document.querySelector('#priceFormatChips .edit-chip-on');
+  const fmt = active?.textContent.trim() || 'Auction';
+  Object.entries(GP_FORMAT_MAP).forEach(([k, id]) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = k === fmt ? '' : 'none';
+  });
+  const variantSection = document.getElementById('pricePerVariantSection');
+  if (variantSection) {
+    variantSection.style.display = fmt === 'Giveaway' ? 'none' : '';
+  }
+  if (fmt === 'Flash Sale') { gpSyncFlashDropdownState(); gpUpdateFlashDiscountHelper(); }
+}
+function gpClearInactiveFormats() {
+  const active = document.querySelector('#priceFormatChips .edit-chip-on');
+  const fmt = active?.textContent.trim() || 'Auction';
+  if (fmt !== 'Auction') {
+    const ai = document.getElementById('priceStartingPriceInput');
+    if (ai) ai.value = '$1';
+    const sd = document.getElementById('suddenDeathToggle');
+    if (sd) sd.classList.remove('on');
+    const af = document.getElementById('priceFeaturedInValue');
+    if (af) af.textContent = 'All Shows';
+  }
+  if (fmt !== 'Buy Now') {
+    const bi = document.getElementById('gpBuyNowPriceInput');
+    if (bi) bi.value = '$';
+    const bf = document.getElementById('gpBuyNowFeaturedValue');
+    if (bf) bf.textContent = 'All Shows';
+    const panel = document.getElementById('gpBuyNowPanel');
+    if (panel) panel.querySelectorAll('.toggle-track').forEach(t => t.classList.remove('on'));
+  }
+  if (fmt !== 'Flash Sale') {
+    const fi = document.getElementById('gpFlashPriceInput');
+    if (fi) fi.value = '$';
+    const ff = document.getElementById('gpFlashFeaturedValue');
+    if (ff) ff.textContent = 'All Shows';
+    const fd = document.getElementById('gpFlashDiscountType');
+    if (fd) fd.textContent = 'Percentage Off';
+    const fp = document.getElementById('gpFlashPercent');
+    if (fp) fp.textContent = '50%';
+    const fdu = document.getElementById('gpFlashDuration');
+    if (fdu) fdu.textContent = '30 Secs';
+    const panel = document.getElementById('gpFlashSalePanel');
+    if (panel) panel.querySelectorAll('.toggle-track').forEach(t => t.classList.remove('on'));
+  }
+  if (fmt !== 'Giveaway') {
+    const gl = document.getElementById('gpGiveawayRadioList');
+    if (gl) {
+      gl.querySelectorAll('.po-radio-btn').forEach((b, i) => b.classList.toggle('checked', i === 0));
+    }
+    const gp = document.getElementById('gpGiveawayPanel');
+    if (gp) gp.querySelectorAll('.toggle-track').forEach(t => t.classList.remove('on'));
+  }
+}
+
+function gpSelectGiveawayRadio(item) {
+  const list = document.getElementById('gpGiveawayRadioList');
+  if (!list) return;
+  list.querySelectorAll('.po-radio-btn').forEach(b => b.classList.remove('checked'));
+  const btn = item.querySelector('.po-radio-btn');
+  if (btn) btn.classList.add('checked');
+}
+
+let _gpRadioTarget = null;
+let _gpRadioSelected = null;
+let _gpRadioCallback = null;
+
+function gpOpenRadioPicker(title, options, currentVal, targetId, callback) {
+  _gpRadioTarget = targetId;
+  _gpRadioSelected = currentVal;
+  _gpRadioCallback = callback || null;
+  const titleEl = document.getElementById('gpRadioPickerTitle');
+  if (titleEl) titleEl.textContent = title;
+  const mount = document.getElementById('gpRadioPickerOptions');
+  if (!mount) return;
+  mount.innerHTML = options.map(opt => {
+    const checked = opt === currentVal ? ' checked' : '';
+    return `<div class="po-shows-option" onclick="gpPickRadio(this,'${opt.replace(/'/g,"\\'")}')"><span style="flex:1">${opt}</span><div class="po-radio-btn${checked}"></div></div>`;
+  }).join('');
+  const picker = document.getElementById('gpRadioPicker');
+  if (picker) requestAnimationFrame(() => { requestAnimationFrame(() => picker.classList.add('open')); });
+}
+function gpPickRadio(el, val) {
+  const mount = document.getElementById('gpRadioPickerOptions');
+  if (mount) mount.querySelectorAll('.po-radio-btn').forEach(r => r.classList.remove('checked'));
+  const btn = el.querySelector('.po-radio-btn');
+  if (btn) btn.classList.add('checked');
+  _gpRadioSelected = val;
+}
+function gpSaveRadioPicker() {
+  if (_gpRadioTarget && _gpRadioSelected != null) {
+    const el = document.getElementById(_gpRadioTarget);
+    if (el) el.textContent = _gpRadioSelected;
+  }
+  gpCloseRadioPicker();
+  if (_gpRadioCallback) _gpRadioCallback();
+  _gpRadioCallback = null;
+}
+function gpCloseRadioPicker() {
+  const picker = document.getElementById('gpRadioPicker');
+  if (picker) picker.classList.remove('open');
+  _gpRadioTarget = null;
+}
+
+function gpCycleFlashDiscountType() {
+  const el = document.getElementById('gpFlashDiscountType');
+  gpOpenRadioPicker('Discount Type', PO_FLASH_DISCOUNT_TYPES, el?.textContent || PO_FLASH_DISCOUNT_TYPES[0], 'gpFlashDiscountType', () => { priceOnMainPriceFieldChanged(); });
+}
+function gpCycleFlashPercent() {
+  const el = document.getElementById('gpFlashPercent');
+  gpOpenRadioPicker('Percentage Discount Amount', PO_FLASH_PERCENTS, el?.textContent || PO_FLASH_PERCENTS[0], 'gpFlashPercent', () => { gpUpdateFlashDiscountHelper(); priceOnMainPriceFieldChanged(); });
+}
+function gpSyncFlashDropdownState() {
+  const inp = document.getElementById('gpFlashPriceInput');
+  const group = document.getElementById('gpFlashDropdownGroup');
+  if (!group) return;
+  const val = priceNumericPrice(inp?.value || '');
+  const enabled = val > 0;
+  group.style.opacity = enabled ? '' : '0.35';
+  group.style.pointerEvents = enabled ? '' : 'none';
+}
+function gpUpdateFlashDiscountHelper() {
+  const helperText = document.getElementById('gpFlashDiscountHelperText');
+  if (!helperText) return;
+  const priceEl = document.getElementById('gpFlashPriceInput');
+  const pctEl = document.getElementById('gpFlashPercent');
+  const price = priceNumericPrice(priceEl?.value || '');
+  const pct = parseInt(pctEl?.textContent || '0', 10) || 0;
+  if (!price || !pct) { helperText.textContent = ''; return; }
+  const discount = Math.round(price * pct / 100 * 100) / 100;
+  const sale = Math.round(price * (1 - pct / 100) * 100) / 100;
+  const fmtN = (n) => Number.isInteger(n) ? n.toFixed(2) : n.toFixed(2);
+  helperText.innerHTML = `$${fmtN(discount)} Off · Price: <span style="text-decoration:line-through">$${fmtN(price)}</span> $${fmtN(sale)}`;
+}
+function gpCycleFlashDuration() {
+  const el = document.getElementById('gpFlashDuration');
+  gpOpenRadioPicker('Sale Duration', PO_FLASH_DURATIONS, el?.textContent || PO_FLASH_DURATIONS[0], 'gpFlashDuration', () => { priceOnMainPriceFieldChanged(); });
 }
 
 function priceOverrideStartingDigitsOnly(inp) {
@@ -11654,49 +12505,83 @@ function priceSyncOverrideSheetResetVisibility() {
 
 function priceOpenOverrideSheet(key, titleText) {
   priceOverrideEditingKey = key;
-  const base = priceGetBaseListingPriceState();
   const saved = priceVariantOverrides[key];
-  const st = saved ? { ...base, ...saved } : { ...base };
+  const hasOverride = !!saved;
 
   const tEl = document.getElementById('priceOverrideSheetTitle');
   if (tEl) tEl.textContent = titleText;
 
-  document.querySelectorAll('#priceOverrideFormatChips .edit-chip').forEach((ch) => {
-    const fmt = ch.getAttribute('data-format') || ch.textContent.trim();
-    const on = fmt === st.format;
-    ch.classList.toggle('edit-chip-on', on);
-    ch.classList.toggle('edit-chip-off', !on);
-  });
-
-  const inp = document.getElementById('priceOverrideStartingInput');
-  if (inp) inp.value = priceOverrideStartingInputFromStored(st.startingPrice);
-  const sd = document.getElementById('priceOverrideSuddenDeath');
-  if (sd) sd.classList.toggle('on', st.suddenDeath);
-  const fv = document.getElementById('priceOverrideFeaturedValue');
-  if (fv) fv.textContent = st.featuredIn;
-
-  const featRow = document.getElementById('priceOverrideFeaturedRow');
-  if (featRow) {
-    featRow.style.display =
-      productReturnTo === 'shop' || productReturnTo === 'edu' ? 'none' : '';
+  if (hasOverride) {
+    const base = priceGetBaseListingPriceState();
+    const st = { ...base, ...saved };
+    document.querySelectorAll('#priceOverrideFormatChips .edit-chip').forEach((ch) => {
+      const fmt = ch.getAttribute('data-format') || ch.textContent.trim();
+      const on = fmt === st.format;
+      ch.classList.toggle('edit-chip-on', on);
+      ch.classList.toggle('edit-chip-off', !on);
+    });
+    const inp = document.getElementById('priceOverrideStartingInput');
+    if (inp) inp.value = priceOverrideStartingInputFromStored(st.startingPrice);
+    const sd = document.getElementById('priceOverrideSuddenDeath');
+    if (sd) sd.classList.toggle('on', st.suddenDeath);
+    const bni = document.getElementById('poBuyNowPriceInput');
+    if (bni) bni.value = st.format === 'Buy Now' ? priceOverrideStartingInputFromStored(st.startingPrice) : '';
+    const fpi = document.getElementById('poFlashPriceInput');
+    if (fpi) fpi.value = st.format === 'Flash Sale' ? priceOverrideStartingInputFromStored(st.startingPrice) : '100';
+    ['poAuctionFeaturedValue', 'poBuyNowFeaturedValue', 'poFlashFeaturedValue'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = st.featuredIn || 'All Shows';
+    });
+  } else {
+    document.querySelectorAll('#priceOverrideFormatChips .edit-chip').forEach((ch, i) => {
+      ch.classList.toggle('edit-chip-on', i === 0);
+      ch.classList.toggle('edit-chip-off', i !== 0);
+    });
+    const inp = document.getElementById('priceOverrideStartingInput');
+    if (inp) inp.value = '';
+    const sd = document.getElementById('priceOverrideSuddenDeath');
+    if (sd) sd.classList.remove('on');
+    const bni = document.getElementById('poBuyNowPriceInput');
+    if (bni) bni.value = '';
+    const fpi = document.getElementById('poFlashPriceInput');
+    if (fpi) fpi.value = '';
+    ['poAuctionFeaturedValue', 'poBuyNowFeaturedValue', 'poFlashFeaturedValue'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = 'All Shows';
+    });
+    document.querySelectorAll('#priceVariantOverrideOverlay .toggle-track').forEach(t => t.classList.remove('on'));
   }
 
+  poSyncFormatPanel();
+  poCloseShowsPicker();
   priceSyncOverrideSheetResetVisibility();
-  vmOpenOverlay('priceVariantOverrideOverlay');
+  const ovPage = document.getElementById('priceVariantOverrideOverlay');
+  if (ovPage) ovPage.classList.add('open');
 }
 
 function priceReadOverrideSheetState() {
   const formatChip = document.querySelector('#priceOverrideFormatChips .edit-chip-on');
   const format =
     formatChip?.getAttribute('data-format') || formatChip?.textContent.trim() || 'Auction';
-  const rawInp = document.getElementById('priceOverrideStartingInput')?.value.trim() || '1';
+
+  let priceInputId = 'priceOverrideStartingInput';
+  let featuredId = 'poAuctionFeaturedValue';
+  if (format === 'Buy Now') { priceInputId = 'poBuyNowPriceInput'; featuredId = 'poBuyNowFeaturedValue'; }
+  else if (format === 'Flash Sale') { priceInputId = 'poFlashPriceInput'; featuredId = 'poFlashFeaturedValue'; }
+
+  const rawInp = document.getElementById(priceInputId)?.value.trim() || '1';
   let n = parseFloat(rawInp.replace(/[^0-9.]/g, ''));
   if (!Number.isFinite(n) || n <= 0) n = 1;
   const startingPrice = '$' + String(n);
   const suddenDeath = !!document.getElementById('priceOverrideSuddenDeath')?.classList.contains('on');
   const featuredIn =
-    document.getElementById('priceOverrideFeaturedValue')?.textContent.trim() || 'All Shows';
-  return { format, startingPrice, suddenDeath, featuredIn };
+    document.getElementById(featuredId)?.textContent.trim() || 'All Shows';
+  let flashPercent = 0;
+  if (format === 'Flash Sale') {
+    const pctEl = document.getElementById('poFlashPercent');
+    flashPercent = pctEl ? parseInt(pctEl.textContent, 10) || 0 : 0;
+  }
+  return { format, startingPrice, suddenDeath, featuredIn, flashPercent };
 }
 
 function priceGetDrillChildrenForL1() {
@@ -11781,6 +12666,8 @@ function priceToggleUniquePerVariant() {
 }
 
 function priceOnMainPriceFieldChanged() {
+  gpClearInactiveFormats();
+  priceCommitBaseState();
   if (priceUniquePerVariantEnabled && pricePageSource === 'product') {
     priceRefreshVariantTree();
   }
@@ -14013,11 +14900,8 @@ function openSizesSheet(target) {
     </div>`;
   }).join('');
 
-  sheet.style.display = 'block';
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      sheet.classList.add('open');
-    });
+    requestAnimationFrame(() => sheet.classList.add('open'));
   });
 }
 
@@ -14045,7 +14929,6 @@ function closeSizesSheet() {
   const sheet = document.getElementById('sizesSheet');
   sheet.classList.remove('open');
   sizesSheetTarget = 'edit';
-  setTimeout(() => { sheet.style.display = 'none'; }, 350);
 }
 
 // Single-select chips
@@ -14058,7 +14941,7 @@ function selectChip(el, group) {
   el.classList.remove('edit-chip-off');
   el.classList.add('edit-chip-on');
   if (group === 'format' && el.closest('#pricePage')) {
-    priceOnMainPriceFieldChanged();
+    gpSyncFormatPanel();
   }
   if (group === 'type') {
     const typeName = el.textContent;
@@ -14210,11 +15093,8 @@ function openBrandsSheetForTarget(target) {
 
   renderBrandsList();
 
-  sheet.style.display = 'block';
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      sheet.classList.add('open');
-    });
+    requestAnimationFrame(() => sheet.classList.add('open'));
   });
 }
 
@@ -14294,7 +15174,6 @@ function applyBrands() {
 function closeBrandsSheet() {
   const sheet = document.getElementById('brandsSheet');
   sheet.classList.remove('open');
-  setTimeout(() => { sheet.style.display = 'none'; }, 350);
 }
 
 const weightOptions = [
@@ -14320,11 +15199,8 @@ function openWeightSheet() {
     </div>`;
   }).join('');
 
-  sheet.style.display = 'block';
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      sheet.classList.add('open');
-    });
+    requestAnimationFrame(() => sheet.classList.add('open'));
   });
 }
 
@@ -14344,11 +15220,8 @@ function openProductWeightSheet() {
     </div>`;
   }).join('');
 
-  sheet.style.display = 'block';
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      sheet.classList.add('open');
-    });
+    requestAnimationFrame(() => sheet.classList.add('open'));
   });
 }
 
@@ -14376,7 +15249,6 @@ function selectWeight(w) {
 function closeWeightSheet() {
   const sheet = document.getElementById('weightSheet');
   sheet.classList.remove('open');
-  setTimeout(() => { sheet.style.display = 'none'; }, 350);
 }
 
 function selectCategoryFromSheet(rowEl) {
@@ -14404,18 +15276,14 @@ function openCategorySheet() {
     </div>
   `).join('');
 
-  sheet.style.display = 'block';
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      sheet.classList.add('open');
-    });
+    requestAnimationFrame(() => sheet.classList.add('open'));
   });
 }
 
 function closeCategorySheet() {
   const sheet = document.getElementById('categorySheet');
   sheet.classList.remove('open');
-  setTimeout(() => { sheet.style.display = 'none'; }, 350);
 }
 
 function syncWomensFashionBrandsFromCategory(categoryName) {
@@ -14785,13 +15653,15 @@ function publishListing() {
       editVertical = false;
       const shopSheet = document.getElementById('shopSheet');
       const shopInner = document.getElementById('shopSheetInner');
-      shopSheet.style.display = 'block';
+      shopSheet.style.opacity = '1';
+      shopSheet.style.visibility = 'visible';
       shopSheet.style.pointerEvents = '';
+      shopSheet.style.transition = 'none';
       if (shopInner) {
         shopInner.style.transition = 'none';
         shopInner.style.transform = 'translateY(0)';
         shopInner.style.opacity = '';
-        requestAnimationFrame(() => { shopInner.style.transition = ''; });
+        requestAnimationFrame(() => { shopInner.style.transition = ''; shopSheet.style.transition = ''; });
       }
       const circle = document.getElementById('shopCircle');
       if (circle) circle.style.borderColor = 'white';
@@ -15335,8 +16205,10 @@ function openShopSheet() {
   const sheet = document.getElementById('shopSheet');
   const inner = document.getElementById('shopSheetInner');
   const circle = document.getElementById('shopCircle');
-  sheet.style.display = 'block';
+  sheet.style.opacity = '1';
+  sheet.style.visibility = 'visible';
   sheet.style.pointerEvents = '';
+  sheet.style.transition = 'opacity 0.3s ease, visibility 0s linear 0s';
   if (circle) circle.style.borderColor = 'white';
   inner.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
   inner.style.transform = 'translateY(100%)';
@@ -15358,6 +16230,8 @@ function closeShopSheet() {
   const inner = document.getElementById('shopSheetInner');
   const circle = document.getElementById('shopCircle');
   sheet.style.pointerEvents = 'none';
+  sheet.style.opacity = '0';
+  sheet.style.transition = 'opacity 0.3s ease, visibility 0s linear 0.4s';
   if (circle) circle.style.borderColor = 'white';
   inner.style.transform = 'translateY(100%)';
 
@@ -15365,7 +16239,7 @@ function closeShopSheet() {
   if (hasProducts) markChecklistStep2Complete();
 
   setTimeout(() => {
-    sheet.style.display = 'none';
+    sheet.style.visibility = 'hidden';
     sheet.style.pointerEvents = '';
     const genOverlay = document.getElementById('shopGenerateOverlay');
     if (genOverlay) { genOverlay.style.display = 'none'; genOverlay.style.transform = ''; }
@@ -16056,20 +16930,14 @@ function openShopListingOptions(idx) {
     selectOptDiv.style.display = 'none';
   }
   const sheet = document.getElementById('shopListingOptionsSheet');
-  sheet.style.display = 'block';
-  const inner = sheet.querySelector(':scope > div:last-child');
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      inner.style.transform = 'translateY(0)';
-    });
+    requestAnimationFrame(() => sheet.classList.add('open'));
   });
 }
 
 function closeShopListingOptions() {
   const sheet = document.getElementById('shopListingOptionsSheet');
-  const inner = sheet.querySelector(':scope > div:last-child');
-  inner.style.transform = 'translateY(100%)';
-  setTimeout(() => { sheet.style.display = 'none'; }, 420);
+  sheet.classList.remove('open');
 }
 
 function shopListingOptionSelectOption() {
@@ -16139,12 +17007,14 @@ function shopListingOptionDelete() {
   closeShopListingOptions();
   setTimeout(() => {
     const modal = document.getElementById('deleteListingModal');
-    modal.style.display = 'flex';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => modal.classList.add('open'));
+    });
   }, 450);
 }
 
 function closeDeleteModal() {
-  document.getElementById('deleteListingModal').style.display = 'none';
+  document.getElementById('deleteListingModal').classList.remove('open');
 }
 
 function confirmDeleteListing() {
@@ -16454,7 +17324,7 @@ function openLiveShow(templateIndex) {
   const inner = document.getElementById('shopSheetInner');
   inner.style.transform = 'translateY(100%)';
   setTimeout(() => {
-    document.getElementById('shopSheet').style.display = 'none';
+    const _ss = document.getElementById('shopSheet'); _ss.style.opacity = '0'; _ss.style.visibility = 'hidden'; _ss.style.pointerEvents = '';
     const overlay = document.getElementById('liveShowOverlay');
     overlay.style.display = 'flex';
     overlay.style.opacity = '0';
@@ -16547,7 +17417,7 @@ function pinListingDirectly(idx, shopRow, storeRec) {
   const inner = document.getElementById('shopSheetInner');
   inner.style.transform = 'translateY(100%)';
   setTimeout(() => {
-    document.getElementById('shopSheet').style.display = 'none';
+    const _ss2 = document.getElementById('shopSheet'); _ss2.style.opacity = '0'; _ss2.style.visibility = 'hidden'; _ss2.style.pointerEvents = '';
 
     document.getElementById('lobbyPinnedProduct').style.display = 'flex';
     document.getElementById('lobbyDefaultCta').style.display = 'none';
@@ -17116,7 +17986,7 @@ function skipToLobby() {
   markChecklistStep2Complete();
 
   const shopSheet = document.getElementById('shopSheet');
-  if (shopSheet) { shopSheet.style.display = 'none'; }
+  if (shopSheet) { shopSheet.style.opacity = '0'; shopSheet.style.visibility = 'hidden'; shopSheet.style.pointerEvents = ''; }
 
   document.getElementById('lobbyPinnedProduct').style.display = 'none';
   document.getElementById('lobbyDefaultCta').style.display = 'block';
@@ -17222,7 +18092,7 @@ function resetNewSellerScene() {
   }
 
   const shopSheet = document.getElementById('shopSheet');
-  if (shopSheet) shopSheet.style.display = 'none';
+  if (shopSheet) { shopSheet.style.opacity = '0'; shopSheet.style.visibility = 'hidden'; shopSheet.style.pointerEvents = ''; }
 
   document.getElementById('lobbyPinnedProduct').style.display = 'none';
   document.getElementById('lobbyDefaultCta').style.display = 'block';
@@ -17330,7 +18200,7 @@ function initPrototypeScene() {
   if (globalStatusBar) globalStatusBar.style.display = '';
 
   const shopSheet = document.getElementById('shopSheet');
-  if (shopSheet) shopSheet.style.display = 'none';
+  if (shopSheet) { shopSheet.style.opacity = '0'; shopSheet.style.visibility = 'hidden'; shopSheet.style.pointerEvents = ''; }
 
   const homePage = document.querySelector('.page');
   if (homePage) {
