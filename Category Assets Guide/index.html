@@ -1,0 +1,2979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Category type images — Guide &amp; production</title>
+  <style>
+    :root {
+      --font: -apple-system, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
+      --text-primary: #161616;
+      --text-secondary: #444;
+      --text-muted: #6a6a6a;
+      --card-bg: #f3f3f3;
+      --canvas: #f5f5f5;
+      --brand-yellow: #ffe414;
+      --radius-card: 8px;
+      --gap-grid: 8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+    }
+    body {
+      font-family: var(--font);
+      background: var(--canvas);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .app-shell {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+    }
+    .app-content {
+      flex: 1;
+      overflow-y: auto;
+      min-width: 0;
+    }
+    .view-panel {
+      display: none;
+      padding-bottom: 48px;
+    }
+    .view-panel.is-active {
+      display: block;
+    }
+    .production-list-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px 16px;
+      margin-bottom: 14px;
+    }
+    .production-list-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px 14px;
+      margin-left: auto;
+    }
+    .status-filter-field {
+      display: flex;
+      align-items: center;
+    }
+    .status-filter-field select {
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid #d4d4d4;
+      background: #fff;
+      min-width: 200px;
+      max-width: min(100%, 280px);
+      cursor: pointer;
+    }
+    .status-filter-field select:focus {
+      outline: none;
+      border-color: #121212;
+    }
+    .manifest-filter-empty {
+      margin: 0 0 16px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .production-page-title {
+      margin: 0 0 12px;
+      font-size: 22px;
+      font-weight: 600;
+    }
+    .production-list-heading {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.3;
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 6px 8px;
+    }
+    .production-categories-total {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .production-get-started-wrap {
+      margin: 0 0 18px;
+    }
+    .btn-get-started-guide {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-get-started-guide .btn-get-started-arrow {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1;
+      opacity: 0.92;
+    }
+    .production-add-footer {
+      margin-top: 18px;
+    }
+    .production-add-full {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .guide-back-row {
+      margin: 0 0 18px;
+    }
+
+    .proto-header {
+      position: relative;
+      width: 100%;
+      flex-shrink: 0;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px 0 20px;
+      background: #1d1d1d;
+      z-index: 10000;
+      overflow-x: hidden;
+    }
+    .proto-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+    }
+    .proto-logo {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      border-radius: 5px;
+      margin-right: 4px;
+    }
+    .proto-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.35);
+      white-space: nowrap;
+      min-width: 0;
+      flex: 1;
+    }
+    .proto-breadcrumb a {
+      color: rgba(255, 255, 255, 0.35);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .proto-breadcrumb a:hover {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .proto-breadcrumb .sep {
+      margin: 0 1px;
+    }
+    .proto-breadcrumb .current {
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 600;
+    }
+    .proto-divider {
+      width: 1px;
+      height: 16px;
+      background: rgba(255, 255, 255, 0.12);
+      flex-shrink: 0;
+    }
+    .proto-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font);
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: background 0.15s, color 0.15s;
+      cursor: pointer;
+    }
+    .proto-link-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.7);
+    }
+    .proto-link-btn svg {
+      flex-shrink: 0;
+    }
+    .proto-header-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      margin-left: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .proto-header-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 8px;
+      flex-shrink: 0;
+      min-width: 0;
+    }
+    .proto-header-meta.proto-header-meta--hidden {
+      display: none;
+    }
+    .proto-timestamp {
+      font-size: 12px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.3);
+    }
+    .proto-header-toast {
+      position: fixed;
+      padding: 10px 18px;
+      border-radius: 10px;
+      background: #f9dc00;
+      color: #1d1d1d;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: var(--font);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 200020;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.32, 0.72, 0, 1);
+      white-space: nowrap;
+    }
+    .proto-header-toast.visible {
+      opacity: 1;
+    }
+    .proto-link-btn.proto-share-btn--flash {
+      background: rgba(249, 220, 0, 0.22);
+      border-color: rgba(249, 220, 0, 0.45);
+      color: #f9dc00;
+    }
+
+    .notes-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 200000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .notes-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .notes-panel {
+      position: fixed;
+      z-index: 200001;
+      width: 320px;
+      max-height: 50vh;
+      background: rgba(50, 50, 50, 0.95);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+      font-family: var(--font);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(-6px) scale(0.95);
+      transform-origin: top right;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .notes-panel.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+    .notes-panel-header {
+      padding: 10px 14px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .notes-panel-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .notes-panel-close {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      border: none;
+      transition: background 0.15s;
+    }
+    .notes-panel-close:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+    .notes-panel-body {
+      padding: 0 14px 14px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .notes-panel-content {
+      font-size: 14px;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.65);
+      word-break: break-word;
+    }
+    .notes-panel-content p {
+      margin: 0 0 12px;
+    }
+    .notes-panel-content h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.85);
+      margin: 14px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .notes-panel-content ul,
+    .notes-panel-content ol {
+      margin: 0 0 12px;
+      padding-left: 18px;
+    }
+    .notes-panel-content li {
+      margin-bottom: 6px;
+    }
+    .notes-panel-content strong {
+      color: rgba(255, 255, 255, 0.85);
+      font-weight: 600;
+    }
+    .notes-panel-footer {
+      padding: 10px 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .notes-panel-footer label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .notes-panel-footer input[type="checkbox"] {
+      accent-color: #ffe414;
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    main {
+      padding: 32px 24px 0;
+    }
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .wrap--tracker {
+      max-width: 880px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 8px;
+      text-transform: none;
+    }
+    .lede {
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+
+    section {
+      margin-bottom: 36px;
+    }
+    section h2 {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    section p,
+    section li {
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--text-primary);
+    }
+    section p + p {
+      margin-top: 10px;
+    }
+    ul.raw-list {
+      padding-left: 1.2em;
+      margin-top: 10px;
+    }
+    .raw-list li + li {
+      margin-top: 6px;
+    }
+
+    .reference-frame {
+      background: #000;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 8px;
+    }
+    .type-grid {
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap-grid);
+    }
+    .type-row {
+      display: flex;
+      gap: var(--gap-grid);
+    }
+    .type-card {
+      flex: 1 1 0;
+      min-width: 0;
+      background: var(--card-bg);
+      border-radius: var(--radius-card);
+      border: 4px solid rgba(255, 255, 255, 0);
+      padding: 16px 8px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .type-card h3 {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+      text-align: center;
+      color: var(--text-primary);
+    }
+    .type-card .thumb {
+      width: 65px;
+      height: 65px;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .type-card .thumb img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+    .type-card .thumb img.cover {
+      object-fit: cover;
+    }
+    .caption {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.45);
+      margin-top: 12px;
+      line-height: 1.4;
+    }
+
+    .prompt-box {
+      position: relative;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .prompt-box pre {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 12px;
+      line-height: 1.55;
+      padding: 16px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #222;
+    }
+    .copy-row {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 10px 10px;
+    }
+    .copy-btn {
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 999px;
+      background: #121212;
+      color: #fff;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .copy-btn:hover {
+      opacity: 0.88;
+    }
+    .copy-btn:active {
+      opacity: 0.75;
+    }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: var(--brand-yellow);
+      color: #1d1d1d;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 200020;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+    .toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .note {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 12px;
+    }
+
+    .manifest-intro {
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+    .tracker-accordion {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+    .tracker-accordion-summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      user-select: none;
+    }
+    .tracker-accordion-summary::-webkit-details-marker {
+      display: none;
+    }
+    .tracker-accordion-summary::before {
+      content: "";
+      display: inline-block;
+      width: 0;
+      height: 0;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 6px solid var(--text-muted);
+      margin-right: 10px;
+      transition: transform 0.15s;
+      flex-shrink: 0;
+    }
+    .tracker-accordion[open] > .tracker-accordion-summary::before {
+      transform: rotate(90deg);
+    }
+    .tracker-accordion-summary .summary-title {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 10px;
+      flex: 1;
+      min-width: 0;
+    }
+    .tracker-accordion-summary .summary-title h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 0;
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .summary-type-count {
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .tracker-accordion-body {
+      padding: 12px 16px 12px;
+      border-top: 1px solid #f0f0f0;
+    }
+    .tracker-group {
+      margin-bottom: 0;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      background: transparent;
+    }
+    .tracker-group .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+    }
+    .tracker-group .badge--core {
+      color: #b45309;
+      background: #fffbeb;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .tracker-item {
+      border-top: 1px solid #efefef;
+      padding: 14px 0 16px;
+    }
+    .tracker-item:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+    .tracker-item-main {
+      display: grid;
+      grid-template-columns: 1fr 88px;
+      gap: 14px;
+      align-items: start;
+    }
+    @media (max-width: 600px) {
+      .tracker-item-main {
+        grid-template-columns: 1fr 72px;
+      }
+      .tracker-thumb-wrap,
+      .tracker-thumb,
+      .thumb-upload-trigger {
+        width: 72px;
+        height: 72px;
+      }
+      .thumb-upload-plus {
+        font-size: 24px;
+      }
+    }
+    .tracker-thumb-wrap {
+      position: relative;
+      width: 88px;
+      height: 88px;
+      flex-shrink: 0;
+    }
+    .tracker-thumb {
+      width: 88px;
+      height: 88px;
+      border-radius: 8px;
+      background: var(--card-bg);
+      border: 1px solid #e0e0e0;
+      overflow: hidden;
+      cursor: zoom-in;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tracker-thumb img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .tracker-thumb--empty {
+      cursor: default;
+    }
+    .thumb-upload-trigger {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 88px;
+      height: 88px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.35);
+      transition: background 0.15s;
+    }
+    .thumb-upload-trigger:hover {
+      background: rgba(255, 255, 255, 0.55);
+    }
+    .thumb-upload-trigger:focus {
+      outline: 2px solid #121212;
+      outline-offset: 2px;
+    }
+    .thumb-upload-trigger:focus:not(:focus-visible) {
+      outline: none;
+    }
+    .thumb-upload-plus {
+      font-size: 28px;
+      font-weight: 300;
+      line-height: 1;
+      color: #121212;
+      user-select: none;
+    }
+    .tracker-thumb-wrap.has-image .thumb-upload-trigger {
+      left: auto;
+      top: auto;
+      right: 4px;
+      bottom: 4px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+    .tracker-thumb-wrap.has-image .thumb-upload-trigger:hover {
+      background: rgba(0, 0, 0, 0.72);
+    }
+    .tracker-thumb-wrap.has-image .thumb-upload-plus {
+      font-size: 18px;
+      font-weight: 400;
+      color: #fff;
+    }
+    .tracker-thumb-wrap.has-image .thumb-upload-trigger:focus {
+      outline-color: #fff;
+    }
+    .tracker-type-title {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .tracker-meta {
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      white-space: pre-wrap;
+    }
+    .tracker-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      align-items: center;
+      margin-bottom: 0;
+    }
+    .status-field {
+      display: block;
+      margin-bottom: 0;
+    }
+    .tracker-item-status-row {
+      margin-bottom: 8px;
+    }
+    .status-chip {
+      align-self: flex-start;
+    }
+    .status-chip-inner {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      max-width: 260px;
+      vertical-align: top;
+    }
+    .status-chip-chevron {
+      position: absolute;
+      right: 13px;
+      top: 50%;
+      width: 7px;
+      height: 7px;
+      margin-top: -5px;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      pointer-events: none;
+      opacity: 0.85;
+      box-sizing: border-box;
+    }
+    .status-chip--not_started .status-chip-chevron {
+      color: #37474f;
+    }
+    .status-chip--needs_approval .status-chip-chevron {
+      color: #92400e;
+    }
+    .status-chip--complete .status-chip-chevron {
+      color: #0d652d;
+    }
+    .status-chip-select {
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 34px 8px 14px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      width: 100%;
+      max-width: 260px;
+      min-width: 160px;
+      box-sizing: border-box;
+      cursor: pointer;
+      line-height: 1.25;
+      appearance: none;
+      -webkit-appearance: none;
+      transition: box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+    .status-chip-select:hover:not(:focus) {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
+    }
+    .status-chip--not_started .status-chip-select {
+      background-color: #eceff1;
+      color: #37474f;
+      border-color: #cfd8dc;
+    }
+    .status-chip--needs_approval .status-chip-select {
+      background-color: #fef3c7;
+      color: #92400e;
+      border-color: #fcd34d;
+    }
+    .status-chip--complete .status-chip-select {
+      background-color: #e6f4ea;
+      color: #0d652d;
+      border-color: #81c995;
+    }
+    .status-chip-select:focus {
+      outline: none;
+    }
+    .status-chip--not_started .status-chip-select:focus {
+      box-shadow: 0 0 0 2px rgba(55, 71, 79, 0.25);
+      border-color: #90a4ae;
+    }
+    .status-chip--needs_approval .status-chip-select:focus {
+      box-shadow: 0 0 0 2px rgba(146, 64, 14, 0.3);
+      border-color: #f59e0b;
+    }
+    .status-chip--complete .status-chip-select:focus {
+      box-shadow: 0 0 0 2px rgba(13, 101, 45, 0.35);
+      border-color: #34a853;
+    }
+    .btn-small {
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid #d4d4d4;
+      background: #fff;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn-small:hover {
+      background: #fafafa;
+      border-color: #bbb;
+    }
+    .btn-small--primary {
+      background: #121212;
+      color: #fff;
+      border-color: #121212;
+    }
+    .btn-small--primary:hover {
+      opacity: 0.9;
+      background: #121212;
+    }
+    .btn-small--success {
+      color: #fff;
+      background: #188038;
+      border-color: #137333;
+    }
+    .btn-small--success:hover:not(:disabled) {
+      background: #137333;
+      border-color: #0d652d;
+    }
+    .btn-small--success:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .tracker-item input[type="file"] {
+      display: none;
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 200010;
+      background: rgba(0, 0, 0, 0.88);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .lightbox.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .lightbox-inner {
+      position: relative;
+      max-width: 100%;
+      max-height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .lightbox-inner img {
+      max-width: min(96vw, 1600px);
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+    .lightbox-caption {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 13px;
+      margin-top: 12px;
+    }
+    .lightbox-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px 14px;
+      margin-top: 18px;
+    }
+    .lightbox-actions[hidden] {
+      display: none !important;
+    }
+    .lightbox-actions-sep {
+      color: rgba(255, 255, 255, 0.4);
+      font-weight: 500;
+      font-size: 13px;
+      user-select: none;
+    }
+    .lightbox-close {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .lightbox-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .manifest-footnote {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 14px;
+      line-height: 1.45;
+    }
+    .add-item-panel {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 16px 18px 18px;
+      margin-bottom: 20px;
+    }
+    .add-item-panel h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .add-item-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 16px;
+      align-items: start;
+    }
+    @media (max-width: 640px) {
+      .add-item-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .add-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .add-field label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .add-field input,
+    .add-field select,
+    .add-field textarea {
+      font-family: var(--font);
+      font-size: 14px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #d4d4d4;
+      outline: none;
+    }
+    .add-field textarea {
+      min-height: 72px;
+      resize: vertical;
+    }
+    .add-field input:focus,
+    .add-field select:focus,
+    .add-field textarea:focus {
+      border-color: #121212;
+    }
+    .add-field--full {
+      grid-column: 1 / -1;
+    }
+    .add-item-actions {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 4px;
+    }
+    .add-item-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 10px;
+      line-height: 1.45;
+    }
+
+    .tracker-group-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .tracker-group-head h3 {
+      margin-bottom: 0;
+    }
+    .tracker-group-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .btn-small--danger {
+      color: #b91c1c;
+      border-color: #fecaca;
+      background: #fff;
+    }
+    .btn-small--danger:hover {
+      background: #fef2f2;
+      border-color: #f87171;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 300000;
+      background: rgba(0, 0, 0, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .modal-card {
+      background: #fff;
+      border-radius: 12px;
+      max-width: 440px;
+      width: 100%;
+      max-height: min(90vh, 720px);
+      overflow-y: auto;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18);
+    }
+    .modal-card--wide {
+      max-width: 520px;
+    }
+    .modal-card-header {
+      padding: 18px 20px 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .modal-card-body {
+      padding: 14px 20px 20px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+    .modal-card-footer {
+      padding: 0 20px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    .btn-danger-solid {
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #dc2626;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-danger-solid:hover {
+      background: #b91c1c;
+    }
+    .modal-add-body .add-item-panel {
+      margin: 0;
+      border: none;
+      padding: 0;
+    }
+    .modal-add-body .add-item-hint {
+      margin-top: 8px;
+    }
+
+    @media (max-width: 520px) {
+      .type-row {
+        flex-wrap: wrap;
+      }
+      .type-card {
+        flex: 1 1 calc(50% - 4px);
+        min-width: calc(50% - 4px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="proto-header" id="protoHeader">
+    <div class="proto-header-left">
+      <div class="proto-breadcrumb" aria-label="Breadcrumb">
+        <svg class="proto-logo" width="20" height="20" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M80 40C80 70.9265 70.9265 80 40 80C9.07348 80 0 70.9265 0 40C0 9.07347 9.07348 0 40 0C70.9265 0 80 9.07347 80 40Z" fill="#2D2D2D"/><path transform="translate(12.12,22.94)" d="M18.7312 34.1275C21.6005 34.1275 23.703 31.9154 24.1473 29.3869C24.4668 27.6799 24.2751 24.838 23.5722 22.0569C23.2527 20.6664 24.3359 20.0335 25.3552 21.5518L27.4578 24.7741C32.8739 32.8647 35.1712 34.1275 37.2737 34.1275C39.3762 34.1275 41.7344 33.242 47.9811 24.269L49.5755 21.993C55.1194 14.094 55.7584 10.8687 55.7584 8.97307C55.7584 3.91602 51.9337 0 46.8371 0C43.0123 0 40.8459 2.08428 38.9989 5.81469L38.2991 7.20523C37.724 8.34322 36.8964 8.34322 36.2605 7.20523L35.4967 5.75079C33.522 1.95952 31.4803 0 27.8503 0C24.2203 0 22.1786 1.83173 20.3286 5.62604L19.5649 7.20523C18.9898 8.40712 18.0344 8.46797 17.4623 7.20523L16.7625 5.68993C14.9156 1.64611 12.7461 0.00302715 8.86049 0.00302715C3.88863 0.00302715 0 3.79431 0 8.97612C0 10.8717 0.447281 14.0332 5.86338 21.8682L7.39389 24.0803C14.021 33.6224 16.443 34.1275 18.7373 34.1275H18.7312Z" fill="#FFE414"/></svg>
+        <a href="https://sturdy-parakeet-o3wwv73.pages.github.io/">Index</a>
+        <span class="sep">›</span>
+        <span>st</span>
+        <span class="sep">›</span>
+        <span class="current">Category Assets Guide</span>
+      </div>
+    </div>
+    <div class="proto-header-right">
+      <div class="proto-header-meta">
+        <span class="proto-timestamp" id="protoTimestamp"></span>
+        <div class="proto-divider"></div>
+      </div>
+      <a
+        class="proto-link-btn"
+        href="https://www.figma.com/design/Efq06B5ZlyOhHXIKojFhFd/Product-Creation---Management?node-id=20404-98854&amp;m=dev"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 2H5a3 3 0 0 0-3 3v3a3 3 0 0 0 3 3h3a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Z" fill="currentColor" opacity="0.5"/><path d="M5 13H8a3 3 0 0 1 3 3v3a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-3a3 3 0 0 1 3-3Z" fill="currentColor" opacity="0.7"/><path d="M16 2h-3a3 3 0 0 0-3 3v3a3 3 0 0 0 3 3h3a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Z" fill="currentColor" opacity="0.6"/><path d="M19 13h-3a3 3 0 0 0-3 3v5h3a3 3 0 0 0 3-3v-5Z" fill="currentColor" opacity="0.8"/></svg>
+        <span class="proto-btn-label">Figma</span>
+      </a>
+      <a
+        class="proto-link-btn"
+        href="https://docs.google.com/document/d/1Hr9BI1rszc3mk-bpH511IIkmtbrsUhWMXqyGSzJ9DbY/edit?tab=t.0#heading=h.j5sk7xjejuu4"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+        <span class="proto-btn-label">PRD</span>
+      </a>
+      <button type="button" class="proto-link-btn" id="protoNotesBtn" onclick="toggleNotesPanel()" title="Prototype notes" style="display: none">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <span class="proto-btn-label">Notes</span>
+      </button>
+      <button type="button" class="proto-link-btn" id="protoShareBtn" onclick="copyShareLink()" title="Copy share link">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        <span class="proto-btn-label">Share</span>
+      </button>
+      <div class="proto-header-toast" id="protoHeaderToast" role="status" aria-live="polite" aria-atomic="true">Link copied!</div>
+    </div>
+  </div>
+
+  <div class="notes-overlay" id="notesOverlay" onclick="toggleNotesPanel(false)"></div>
+  <div class="notes-panel" id="notesPanel">
+    <div class="notes-panel-header">
+      <span class="notes-panel-title">Notes</span>
+      <button type="button" class="notes-panel-close" onclick="toggleNotesPanel(false)" aria-label="Close notes">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+    <div class="notes-panel-body">
+      <div class="notes-panel-content" id="notesPanelContent"></div>
+    </div>
+    <div class="notes-panel-footer">
+      <label><input type="checkbox" id="notesAutoOpenCb" checked onchange="saveNotesAutoOpen()" />Don’t show on load</label>
+    </div>
+  </div>
+
+  <div class="app-shell">
+    <div class="app-content">
+      <main>
+        <div id="view-guide" class="view-panel">
+    <div class="wrap">
+      <div class="guide-back-row">
+        <button type="button" class="btn-small" id="backToProduction">← Back to production</button>
+      </div>
+      <h1>Category type images</h1>
+      <p class="lede">
+        <strong>One square image per type</strong> (Tops, Pants, Dresses, …). Use the <strong>Gemini</strong> prompt
+        below and keep lighting, color, and cutout style <strong>the same across types</strong> so the grid feels like
+        one set.
+      </p>
+
+      <section aria-labelledby="ref-heading">
+        <h2 id="ref-heading">What we’re matching</h2>
+        <p>Sample grid below — title and square thumb on light gray.</p>
+        <div class="reference-frame" role="img" aria-label="Sample category type grid">
+          <div class="type-grid">
+            <div class="type-row">
+              <article class="type-card">
+                <h3>Tops</h3>
+                <div class="thumb"><img class="cover" src="https://www.figma.com/api/mcp/asset/5a4e0e6c-42db-43d0-806f-be3b02bfa6c3" alt="" /></div>
+              </article>
+              <article class="type-card">
+                <h3>Leggings</h3>
+                <div class="thumb"><img src="https://www.figma.com/api/mcp/asset/d69f11f7-7f3e-4f8c-9245-b34cd1597d77" alt="" /></div>
+              </article>
+              <article class="type-card">
+                <h3>Pants</h3>
+                <div class="thumb"><img src="https://www.figma.com/api/mcp/asset/4f576d84-fdd8-4b94-9095-daf9922c34fa" alt="" /></div>
+              </article>
+            </div>
+            <div class="type-row">
+              <article class="type-card">
+                <h3>Shorts</h3>
+                <div class="thumb"><img src="https://www.figma.com/api/mcp/asset/a203f995-d8a1-4fee-99e9-aa3246d37e88" alt="" /></div>
+              </article>
+              <article class="type-card">
+                <h3>Skirts</h3>
+                <div class="thumb"><img src="https://www.figma.com/api/mcp/asset/c271778a-8360-4f17-a59c-2ae25cdba536" alt="" /></div>
+              </article>
+              <article class="type-card">
+                <h3>Outerwear</h3>
+                <div class="thumb"><img src="https://www.figma.com/api/mcp/asset/6f7dd733-6cc8-4371-8b48-4bacd09aba05" alt="" /></div>
+              </article>
+            </div>
+            <div class="type-row">
+              <article class="type-card">
+                <h3>Sets</h3>
+                <div class="thumb"><img src="https://www.figma.com/api/mcp/asset/5cd51d89-96e1-4c37-9b6e-a1807e988715" alt="" /></div>
+              </article>
+              <article class="type-card">
+                <h3>Sports Bras</h3>
+                <div class="thumb"><img src="https://www.figma.com/api/mcp/asset/6f3c5472-1f13-4ebf-ba9e-7eab9639fb81" alt="" /></div>
+              </article>
+              <article class="type-card">
+                <h3>Accessories</h3>
+                <div class="thumb"><img src="https://www.figma.com/api/mcp/asset/cfa95cd4-6ac7-4689-b13e-56827225ad57" alt="" /></div>
+              </article>
+            </div>
+          </div>
+          <p class="caption">
+            Example from the live UI — your Gemini outputs become these thumbnails.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <div class="wrap">
+      <section aria-labelledby="workflow-heading">
+        <h2 id="workflow-heading">How to make them (Gemini)</h2>
+        <ol class="raw-list" style="padding-left: 1.2em;">
+          <li>Go to the <strong>Production</strong> tab and pick the type you’re creating.</li>
+          <li>
+            Open the Gemini app at
+            <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">https://gemini.google.com/app</a>
+            and tap <strong>Create image</strong>.
+          </li>
+          <li>Paste the prompt from the template on this page and generate the image.</li>
+          <li>In <strong>Photoshop</strong>, knock out the background so the cutout works on <strong>light and dark</strong> mode.</li>
+          <li><strong>Save as PNG</strong> and upload it on that Production row.</li>
+        </ol>
+      </section>
+
+      <section aria-labelledby="prompt-heading">
+        <h2 id="prompt-heading">Prompt you can paste into Gemini</h2>
+        <p>
+          Only <strong>three</strong> lines need your values: <strong>category</strong>, <strong>type</strong>, and <strong>color scheme</strong> (each in brackets below). Paste the rest of the prompt unchanged for every type.
+        </p>
+        <div class="prompt-box">
+          <pre id="promptText">We are building a matched set of category tiles — each image must feel like the same brand / theme as the others.
+
+You only fill in these three lines:
+- Category: [CATEGORY NAME — e.g. Women’s fashion]
+- Type: [TYPE NAME — e.g. Outerwear, Tops, Sports bras]
+- Color scheme (2–4 colors the whole set shares): [e.g. oatmeal, warm white, washed indigo, soft black]
+
+What to show for this tile (fixed instructions — do not change this block):
+- Depict exactly what the category and type names imply: a single, believable product (or a small coherent set only when the type clearly calls for multiple items—e.g. accessories). Do not invent unrelated categories of goods.
+- Default to one main product, centered, top-down, filling a comfortable portion of the frame. If multiple products are appropriate, use at most five distinct objects, each clearly readable, evenly spaced, in a simple arrangement (single row, gentle arc, or loose grid)—nothing crowded, nothing touching the frame edges.
+- Avoid vague hero shots: show the actual product forms (silhouette, layers, hardware) you would expect for that type in e-commerce.
+
+Shot & composition:
+- Simple product shot, top-down / overhead view, camera straight above, product centered.
+- If you combine multiple products or props in one frame, maximum 5 objects total, clearly separated (prefer fewer).
+
+Set / theme rules:
+- Treat this as one set: use similar tones and stay inside the color scheme you named above (do not introduce a new accent color).
+- Flat, even lighting. Absolutely no shadows — no drop shadows, no cast shadows, no contact shadow, no ground plane or horizon.
+- The product(s) should look like they were clipped out in Photoshop and placed floating in empty air — not on a floor, table, or lifestyle scene.
+
+Technical:
+- Create in high resolution.
+- Output must be exactly 1:1 (square) aspect ratio.
+- Clean edges, catalog-sharp clarity suitable for UI thumbnails.
+- Background: solid light gray #f3f3f3 filling the entire frame edge-to-edge (or full transparency if you need alpha — state which you used).</pre>
+          <div class="copy-row">
+            <button type="button" class="copy-btn" id="copyPrompt">Copy prompt</button>
+          </div>
+        </div>
+        <p class="note">
+          If the model drifts, add: no vignette, no logos or text, no hands or mannequins unless you explicitly want them.
+        </p>
+      </section>
+    </div>
+        </div>
+
+        <div id="view-production" class="view-panel is-active">
+          <div class="wrap wrap--tracker">
+            <h2 id="manifest-heading" class="production-page-title">Production — category assets</h2>
+            <p class="manifest-intro">
+              One hi-res 1×1 asset per type. Set <strong>Status</strong> to Not Started, Needs Approval, or Complete. Use <strong>Add</strong> at the bottom of the list for new types or categories (with optional description). Open a category accordion to work through items.
+            </p>
+            <div class="production-get-started-wrap">
+              <button type="button" class="btn-small btn-small--success btn-get-started-guide" id="getStartedToGuide">
+                Get started
+                <span class="btn-get-started-arrow" aria-hidden="true">→</span>
+              </button>
+            </div>
+            <div class="production-list-head">
+              <h3 class="production-list-heading">
+                Categories
+                <span class="production-categories-total" id="productionCategoriesTotal" aria-live="polite"></span>
+              </h3>
+              <div class="production-list-controls">
+                <div class="status-filter-field">
+                  <select id="productionStatusFilter" aria-label="Filter types by status">
+                    <option value="all">All</option>
+                    <option value="not_started">Not Started</option>
+                    <option value="needs_approval">Needs Approval</option>
+                    <option value="complete">Complete</option>
+                  </select>
+                </div>
+                <button type="button" class="btn-small btn-small--success" id="downloadAssetsZip" title="Export every saved hi-res image from this browser">
+                  Download ZIP
+                </button>
+              </div>
+            </div>
+            <div id="manifestRoot"></div>
+            <div class="production-add-footer">
+              <button type="button" class="btn-small btn-small--primary production-add-full" id="openAddModalFooter">
+                Add
+              </button>
+            </div>
+            <p class="manifest-footnote">
+              Reused labels (e.g. Outerwear, Tops) appear in more than one group; ship a distinct asset per group so each grid stays visually coherent for its vertical.
+            </p>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="addItemModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="addItemModalTitle">
+    <div class="modal-card modal-card--wide">
+      <div class="modal-card-header" id="addItemModalTitle">Add list item</div>
+      <div class="modal-card-body modal-add-body">
+        <div class="add-item-panel" aria-describedby="addItemModalHint">
+          <div class="add-item-grid">
+            <div class="add-field add-field--full">
+              <label for="addCategoryMode">Category</label>
+              <select id="addCategoryMode" aria-describedby="addCatHelp">
+                <option value="">— Select category —</option>
+              </select>
+              <span id="addCatHelp" class="visually-hidden">Pick a built-in or custom group, or create a new one.</span>
+            </div>
+            <div class="add-field">
+              <label for="newTypeLabel">Type name</label>
+              <input type="text" id="newTypeLabel" placeholder="e.g. Onesies" maxlength="120" />
+            </div>
+            <div class="add-field">
+              <label for="newTypeDescription">Description <span style="font-weight:400;color:var(--text-muted)">(optional)</span></label>
+              <textarea id="newTypeDescription" placeholder="Notes for art / prompt / template generator…"></textarea>
+            </div>
+            <div class="add-item-actions">
+              <button type="button" class="btn-small" id="addItemCancel">Cancel</button>
+              <button type="button" class="btn-small btn-small--primary" id="addItemSubmit">Add to list</button>
+            </div>
+          </div>
+          <p class="add-item-hint" id="addItemModalHint">
+            Custom rows are saved in <strong>localStorage</strong>. Built-in canonical types cannot be removed.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirmDialog" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="confirmDialogTitle">
+    <div class="modal-card">
+      <div class="modal-card-header" id="confirmDialogTitle">Confirm</div>
+      <div class="modal-card-body" id="confirmDialogMessage"></div>
+      <div class="modal-card-footer">
+        <button type="button" class="btn-small" id="confirmDialogCancel">Cancel</button>
+        <button type="button" class="btn-danger-solid" id="confirmDialogDanger">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Full resolution image">
+    <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+    <div class="lightbox-inner">
+      <img id="lightboxImg" alt="Full resolution preview" />
+      <p class="lightbox-caption" id="lightboxCap"></p>
+      <div class="lightbox-actions" id="lightboxActions" hidden>
+        <button type="button" class="btn-small btn-small--primary" id="lightboxReplaceImage">Replace Image</button>
+        <span class="lightbox-actions-sep" aria-hidden="true">|</span>
+        <button type="button" class="btn-small btn-small--danger" id="lightboxDiscardImage">Discard Image</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Copied</div>
+
+  <style>
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" crossorigin="anonymous"></script>
+  <script>
+    (function () {
+      var LS_KEY = "categoryGuideMeta_v1";
+      var LS_STRUCTURE_KEY = "categoryGuideStructure_v1";
+      var IDB_NAME = "categoryGuideImages_v1";
+      var IDB_STORE = "assets";
+
+      var ADD_NEW_CATEGORY_VALUE = "__new_category__";
+
+      function openModal(el) {
+        if (!el) return;
+        el.classList.add("open");
+      }
+      function closeModal(el) {
+        if (!el) return;
+        el.classList.remove("open");
+      }
+      function openConfirm(opts) {
+        return new Promise(function (resolve) {
+          document.getElementById("confirmDialogTitle").textContent = opts.title || "Confirm";
+          document.getElementById("confirmDialogMessage").textContent = opts.message || "";
+          var dangerBtn = document.getElementById("confirmDialogDanger");
+          dangerBtn.textContent = opts.dangerLabel || "Delete";
+          var dlg = document.getElementById("confirmDialog");
+          function cleanup() {
+            cancelBtn.removeEventListener("click", onCancel);
+            dangerBtn.removeEventListener("click", onDanger);
+            dlg.removeEventListener("click", onBackdrop);
+            document.removeEventListener("keydown", onKey);
+          }
+          function finish(val) {
+            cleanup();
+            closeModal(dlg);
+            resolve(val);
+          }
+          function onCancel() {
+            finish(false);
+          }
+          function onDanger() {
+            finish(true);
+          }
+          function onBackdrop(e) {
+            if (e.target === dlg) finish(false);
+          }
+          function onKey(e) {
+            if (e.key === "Escape") finish(false);
+          }
+          var cancelBtn = document.getElementById("confirmDialogCancel");
+          cancelBtn.addEventListener("click", onCancel);
+          dangerBtn.addEventListener("click", onDanger);
+          dlg.addEventListener("click", onBackdrop);
+          document.addEventListener("keydown", onKey);
+          openModal(dlg);
+        });
+      }
+
+      var MANIFEST_GROUPS = [
+        {
+          id: "womens-fashion",
+          title: "Women’s fashion",
+          types: [
+            "Dresses", "Intimates", "Jeans", "Jumpsuits", "Loungewear", "Outerwear", "Pants", "Sets",
+            "Shorts", "Skirts", "Sleepwear", "Swimwear", "Sweaters & Knits", "Tops",
+          ],
+        },
+        {
+          id: "womens-activewear",
+          title: "Women’s Activewear",
+          types: [
+            "Accessories", "Leggings", "Outerwear", "Pants", "Sets", "Shorts", "Skirts", "Sports Bras", "Tops",
+          ],
+        },
+        {
+          id: "womens-shoes",
+          title: "Women’s Shoes",
+          types: ["Boots", "Flats", "Heels", "Loafers", "Sandals", "Slippers", "Sneakers"],
+        },
+        {
+          id: "mens-fashion",
+          title: "Men’s Fashion",
+          types: ["Accessories", "Outerwear", "Pants", "Sets", "Shorts", "Suits", "Tops", "Underwear"],
+        },
+        {
+          id: "sports-jerseys",
+          title: "Sports Jerseys",
+          types: ["Hats", "Hoodies & Sweatshirts", "Jerseys", "Outerwear", "Shorts", "Tops"],
+        },
+      ];
+
+      function slugLabel(s) {
+        return s
+          .toLowerCase()
+          .replace(/&/g, "and")
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "");
+      }
+
+      function itemKey(groupId, label) {
+        return groupId + "::" + slugLabel(label);
+      }
+
+      function uid(prefix) {
+        return (
+          prefix +
+          Date.now().toString(36) +
+          "_" +
+          Math.random()
+            .toString(36)
+            .slice(2, 9)
+        );
+      }
+
+      function loadStructure() {
+        try {
+          var raw = localStorage.getItem(LS_STRUCTURE_KEY);
+          if (!raw) return { extraTypes: {}, customGroups: [] };
+          var o = JSON.parse(raw);
+          if (!o || typeof o !== "object") return { extraTypes: {}, customGroups: [] };
+          if (!o.extraTypes || typeof o.extraTypes !== "object") o.extraTypes = {};
+          if (!Array.isArray(o.customGroups)) o.customGroups = [];
+          return o;
+        } catch (e) {
+          return { extraTypes: {}, customGroups: [] };
+        }
+      }
+
+      function saveStructure(s) {
+        localStorage.setItem(LS_STRUCTURE_KEY, JSON.stringify(s));
+      }
+
+      function getMergedManifestGroups() {
+        var s = loadStructure();
+        var out = [];
+
+        MANIFEST_GROUPS.forEach(function (g) {
+          var types = g.types.map(function (label) {
+            return {
+              label: label,
+              description: "",
+              itemKey: itemKey(g.id, label),
+              builtIn: true,
+              structureRef: null,
+            };
+          });
+          (s.extraTypes[g.id] || []).forEach(function (e) {
+            if (!e || !e.id || !e.label) return;
+            types.push({
+              label: e.label,
+              description: (e.description || "").trim(),
+              itemKey: g.id + "::x_" + e.id,
+              builtIn: false,
+              structureRef: { kind: "extra", groupId: g.id, entryId: e.id },
+            });
+          });
+          out.push({
+            id: g.id,
+            title: g.title,
+            badge: g.badge,
+            customGroup: false,
+            types: types,
+          });
+        });
+
+        (s.customGroups || []).forEach(function (cg) {
+          if (!cg || !cg.id || !cg.title) return;
+          var types = (cg.types || [])
+            .map(function (e) {
+              if (!e || !e.id || !e.label) return null;
+              return {
+                label: e.label,
+                description: (e.description || "").trim(),
+                itemKey: cg.id + "::x_" + e.id,
+                builtIn: false,
+                structureRef: { kind: "custom", groupId: cg.id, entryId: e.id },
+              };
+            })
+            .filter(Boolean);
+          out.push({
+            id: cg.id,
+            title: cg.title,
+            badge: null,
+            customGroup: true,
+            types: types,
+          });
+        });
+
+        return out;
+      }
+
+      function allItemKeys() {
+        var keys = [];
+        getMergedManifestGroups().forEach(function (g) {
+          g.types.forEach(function (t) {
+            keys.push(t.itemKey);
+          });
+        });
+        return keys;
+      }
+
+      function purgeItemStorage(itemKey) {
+        idbDelete(itemKey, function () {});
+        var meta = loadMeta();
+        if (meta.items[itemKey]) {
+          delete meta.items[itemKey];
+          saveMeta(meta);
+        }
+      }
+
+      function removeStructureEntry(structureRef, itemKey) {
+        var s = loadStructure();
+        if (!structureRef || !structureRef.kind) return;
+        if (structureRef.kind === "extra") {
+          var arr = s.extraTypes[structureRef.groupId];
+          if (!arr) return;
+          s.extraTypes[structureRef.groupId] = arr.filter(function (e) {
+            return e.id !== structureRef.entryId;
+          });
+          if (s.extraTypes[structureRef.groupId].length === 0) {
+            delete s.extraTypes[structureRef.groupId];
+          }
+        } else if (structureRef.kind === "custom") {
+          var grp = s.customGroups.find(function (g) {
+            return g.id === structureRef.groupId;
+          });
+          if (!grp) return;
+          grp.types = (grp.types || []).filter(function (e) {
+            return e.id !== structureRef.entryId;
+          });
+          if (!grp.types.length) {
+            s.customGroups = s.customGroups.filter(function (g) {
+              return g.id !== structureRef.groupId;
+            });
+          }
+        }
+        saveStructure(s);
+        purgeItemStorage(itemKey);
+      }
+
+      function removeEntireCustomGroup(groupId) {
+        var s = loadStructure();
+        var grp = s.customGroups.find(function (g) {
+          return g.id === groupId;
+        });
+        if (!grp) return;
+        (grp.types || []).forEach(function (e) {
+          purgeItemStorage(groupId + "::x_" + e.id);
+        });
+        s.customGroups = s.customGroups.filter(function (g) {
+          return g.id !== groupId;
+        });
+        saveStructure(s);
+      }
+
+      function addTypeToManifest(categorySelectValue, typeLabel, typeDescription) {
+        var s = loadStructure();
+        var desc = (typeDescription || "").trim();
+        var label = (typeLabel || "").trim();
+        if (!label) {
+          showToast("Enter a type name");
+          return false;
+        }
+
+        if (categorySelectValue === ADD_NEW_CATEGORY_VALUE) {
+          var title = label;
+          var gid = uid("cg_");
+          var tid = uid("ct_");
+          s.customGroups.push({
+            id: gid,
+            title: title,
+            types: [{ id: tid, label: label, description: desc }],
+          });
+          saveStructure(s);
+          return true;
+        }
+
+        if (!categorySelectValue) {
+          showToast("Choose a category");
+          return false;
+        }
+
+        var isBuiltIn = MANIFEST_GROUPS.some(function (g) {
+          return g.id === categorySelectValue;
+        });
+        if (isBuiltIn) {
+          if (!s.extraTypes[categorySelectValue]) s.extraTypes[categorySelectValue] = [];
+          s.extraTypes[categorySelectValue].push({
+            id: uid("ex_"),
+            label: label,
+            description: desc,
+          });
+          saveStructure(s);
+          return true;
+        }
+
+        var grp = s.customGroups.find(function (g) {
+          return g.id === categorySelectValue;
+        });
+        if (!grp) {
+          showToast("Unknown category");
+          return false;
+        }
+        if (!grp.types) grp.types = [];
+        grp.types.push({ id: uid("ct_"), label: label, description: desc });
+        saveStructure(s);
+        return true;
+      }
+
+      function migrateItemState(st) {
+        if (!st) return false;
+        if (st.status === "wip") {
+          st.status = "not_started";
+          delete st.approved;
+          delete st.complete;
+          return true;
+        }
+        if (
+          st.status === "not_started" ||
+          st.status === "needs_approval" ||
+          st.status === "complete"
+        ) {
+          delete st.approved;
+          delete st.complete;
+          return false;
+        }
+        if (st.complete) st.status = "complete";
+        else if (st.approved) st.status = "needs_approval";
+        else st.status = "not_started";
+        delete st.approved;
+        delete st.complete;
+        return true;
+      }
+
+      function loadMeta() {
+        try {
+          var raw = localStorage.getItem(LS_KEY);
+          if (!raw) return { items: {} };
+          var o = JSON.parse(raw);
+          if (!o || typeof o !== "object") return { items: {} };
+          if (!o.items) o.items = {};
+          var changed = false;
+          if ("roster" in o) {
+            delete o.roster;
+            changed = true;
+          }
+          Object.keys(o.items).forEach(function (k) {
+            var it = o.items[k];
+            if (it && "comments" in it) {
+              delete it.comments;
+              changed = true;
+            }
+            if (migrateItemState(o.items[k])) changed = true;
+          });
+          if (changed) saveMeta(o);
+          return o;
+        } catch (e) {
+          return { items: {} };
+        }
+      }
+
+      function saveMeta(meta) {
+        localStorage.setItem(LS_KEY, JSON.stringify(meta));
+      }
+
+      function getItemState(meta, key) {
+        if (!meta.items[key]) {
+          meta.items[key] = { status: "not_started" };
+        }
+        var st = meta.items[key];
+        if (st.status === "wip") {
+          st.status = "not_started";
+          saveMeta(meta);
+        }
+        if (!st.status) {
+          migrateItemState(st);
+          saveMeta(meta);
+        }
+        return st;
+      }
+
+      var idb = null;
+      function openDb(cb) {
+        if (idb) {
+          cb(null, idb);
+          return;
+        }
+        var req = indexedDB.open(IDB_NAME, 1);
+        req.onupgradeneeded = function () {
+          var db = req.result;
+          if (!db.objectStoreNames.contains(IDB_STORE)) db.createObjectStore(IDB_STORE, { keyPath: "id" });
+        };
+        req.onsuccess = function () {
+          idb = req.result;
+          cb(null, idb);
+        };
+        req.onerror = function () {
+          cb(req.error);
+        };
+      }
+
+      function idbPut(record, cb) {
+        openDb(function (err, db) {
+          if (err) return cb && cb(err);
+          var tx = db.transaction(IDB_STORE, "readwrite");
+          tx.objectStore(IDB_STORE).put(record);
+          tx.oncomplete = function () {
+            cb && cb(null);
+          };
+          tx.onerror = function () {
+            cb && cb(tx.error);
+          };
+        });
+      }
+
+      function idbGet(id, cb) {
+        openDb(function (err, db) {
+          if (err) return cb(err);
+          var tx = db.transaction(IDB_STORE, "readonly");
+          var q = tx.objectStore(IDB_STORE).get(id);
+          q.onsuccess = function () {
+            cb(null, q.result || null);
+          };
+          q.onerror = function () {
+            cb(q.error);
+          };
+        });
+      }
+
+      function idbDelete(id, cb) {
+        openDb(function (err, db) {
+          if (err) return cb && cb(err);
+          var tx = db.transaction(IDB_STORE, "readwrite");
+          tx.objectStore(IDB_STORE).delete(id);
+          tx.oncomplete = function () {
+            cb && cb(null);
+          };
+        });
+      }
+
+      var objectUrlCache = {};
+
+      function revokeItemUrls(key) {
+        if (objectUrlCache[key]) {
+          objectUrlCache[key].forEach(URL.revokeObjectURL);
+          delete objectUrlCache[key];
+        }
+      }
+
+      function makeThumbBlob(blob, cb) {
+        var url = URL.createObjectURL(blob);
+        var img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = function () {
+          URL.revokeObjectURL(url);
+          var max = 256;
+          var w = img.naturalWidth;
+          var h = img.naturalHeight;
+          if (!w || !h) return cb(new Error("bad image"));
+          var scale = Math.min(1, max / w, max / h);
+          var tw = Math.max(1, Math.round(w * scale));
+          var th = Math.max(1, Math.round(h * scale));
+          var c = document.createElement("canvas");
+          c.width = tw;
+          c.height = th;
+          var ctx = c.getContext("2d");
+          ctx.drawImage(img, 0, 0, tw, th);
+          c.toBlob(
+            function (thumbBlob) {
+              if (!thumbBlob) return cb(new Error("thumb fail"));
+              cb(null, thumbBlob, w, h);
+            },
+            "image/jpeg",
+            0.88
+          );
+        };
+        img.onerror = function () {
+          URL.revokeObjectURL(url);
+          cb(new Error("load fail"));
+        };
+        img.src = url;
+      }
+
+      var root = document.getElementById("manifestRoot");
+      var lightbox = document.getElementById("lightbox");
+      var lightboxImg = document.getElementById("lightboxImg");
+      var lightboxCap = document.getElementById("lightboxCap");
+      var toast = document.getElementById("toast");
+
+      function showToast(msg) {
+        toast.textContent = msg || "Done";
+        toast.classList.add("visible");
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(function () {
+          toast.classList.remove("visible");
+        }, 2000);
+      }
+
+      function updateProductionStatusFilterLabels(total, notStarted, need, complete) {
+        var sel = document.getElementById("productionStatusFilter");
+        if (!sel) return;
+        var prev = sel.value;
+        if (prev === "wip") prev = "all";
+        Array.prototype.forEach.call(sel.options, function (o) {
+          var v = o.value;
+          if (v === "all") o.textContent = "All (" + total + ")";
+          else if (v === "not_started") o.textContent = "Not Started (" + notStarted + ")";
+          else if (v === "needs_approval") o.textContent = "Needs Approval (" + need + ")";
+          else if (v === "complete") o.textContent = "Complete (" + complete + ")";
+        });
+        if (prev && Array.prototype.some.call(sel.options, function (opt) { return opt.value === prev; })) {
+          sel.value = prev;
+        }
+      }
+
+      function updateProgress(meta) {
+        var keys = allItemKeys();
+        var backlog = 0;
+        var need = 0;
+        var comp = 0;
+        keys.forEach(function (k) {
+          var st = getItemState(meta, k);
+          if (st.status === "complete") comp++;
+          else if (st.status === "needs_approval") need++;
+          else backlog++;
+        });
+        updateProductionStatusFilterLabels(keys.length, backlog, need, comp);
+        updateDownloadZipButtonLabel();
+      }
+
+      function updateDownloadZipButtonLabel() {
+        var btn = document.getElementById("downloadAssetsZip");
+        if (!btn) return;
+        var keys = allItemKeys();
+        if (!keys.length) {
+          btn.textContent = "Download ZIP (0)";
+          btn.title = "No types in the list";
+          return;
+        }
+        var left = keys.length;
+        var withImg = 0;
+        keys.forEach(function (k) {
+          idbGet(k, function (_, rec) {
+            if (rec && rec.full) withImg++;
+            left--;
+            if (left !== 0) return;
+            btn.textContent = "Download ZIP (" + withImg + ")";
+            btn.title =
+              withImg < 1
+                ? "No saved hi-res images yet — upload images to export"
+                : "Export " +
+                  withImg +
+                  " saved hi-res image" +
+                  (withImg === 1 ? "" : "s") +
+                  " in a ZIP";
+          });
+        });
+      }
+
+      var lightboxUrlKey = null;
+      var lightboxItemKey = null;
+      var lightboxItemLabel = "";
+      var lightboxActionsEl = document.getElementById("lightboxActions");
+
+      function closeLightbox() {
+        lightbox.classList.remove("open");
+        lightboxImg.removeAttribute("src");
+        lightboxItemKey = null;
+        lightboxItemLabel = "";
+        if (lightboxActionsEl) lightboxActionsEl.hidden = true;
+        if (lightboxUrlKey && objectUrlCache[lightboxUrlKey]) {
+          objectUrlCache[lightboxUrlKey].forEach(URL.revokeObjectURL);
+          delete objectUrlCache[lightboxUrlKey];
+          lightboxUrlKey = null;
+        }
+      }
+
+      document.getElementById("lightboxClose").addEventListener("click", closeLightbox);
+      lightbox.addEventListener("click", function (e) {
+        if (e.target === lightbox) closeLightbox();
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") closeLightbox();
+      });
+
+      function fileInputIdForItemKey(key) {
+        return "file_" + key.replace(/[^a-z0-9]+/gi, "_");
+      }
+
+      document.getElementById("lightboxReplaceImage").addEventListener("click", function () {
+        if (!lightboxItemKey) return;
+        var inp = document.getElementById(fileInputIdForItemKey(lightboxItemKey));
+        if (inp) inp.click();
+      });
+      document.getElementById("lightboxDiscardImage").addEventListener("click", function () {
+        if (!lightboxItemKey) return;
+        var k = lightboxItemKey;
+        var lab = lightboxItemLabel;
+        openConfirm({
+          title: "Discard image",
+          message: "Delete the uploaded image for “" + lab + "”? You can upload a new file afterward.",
+          dangerLabel: "Discard Image",
+        }).then(function (ok) {
+          if (!ok) return;
+          idbDelete(k, function () {
+            closeLightbox();
+            renderManifest();
+            showToast("Image removed");
+          });
+        });
+      });
+
+      function buildItemRow(meta, group, tr) {
+        var label = tr.label;
+        var key = tr.itemKey;
+        var st = getItemState(meta, key);
+
+        var article = document.createElement("article");
+        article.className = "tracker-item";
+        article.dataset.itemKey = key;
+
+        var main = document.createElement("div");
+        main.className = "tracker-item-main";
+
+        var thumbWrap = document.createElement("div");
+        thumbWrap.className = "tracker-thumb-wrap";
+        var thumb = document.createElement("div");
+        thumb.className = "tracker-thumb tracker-thumb--empty";
+        thumb.setAttribute("aria-hidden", "true");
+        thumbWrap.appendChild(thumb);
+
+        var right = document.createElement("div");
+        var title = document.createElement("div");
+        title.className = "tracker-type-title";
+        title.textContent = label;
+
+        var statusId = "status_" + key.replace(/[^a-z0-9]+/gi, "_");
+        var statusWrap = document.createElement("div");
+        statusWrap.className = "status-field status-chip";
+        statusWrap.innerHTML =
+          '<div class="status-chip-inner">' +
+          '<select id="' +
+          statusId +
+          '" class="status-chip-select" aria-label="Status">' +
+          '<option value="not_started">Not Started</option>' +
+          '<option value="needs_approval">Needs Approval</option>' +
+          '<option value="complete">Complete</option>' +
+          "</select>" +
+          '<span class="status-chip-chevron" aria-hidden="true"></span>' +
+          "</div>";
+        var statusSel = statusWrap.querySelector("select");
+        var statusVal = st.status || "not_started";
+        if (
+          statusVal !== "not_started" &&
+          statusVal !== "needs_approval" &&
+          statusVal !== "complete"
+        ) {
+          statusVal = "not_started";
+        }
+        statusSel.value = statusVal;
+        function syncStatusChipClass() {
+          var v = statusSel.value || "not_started";
+          if (
+            v !== "not_started" &&
+            v !== "needs_approval" &&
+            v !== "complete"
+          ) {
+            v = "not_started";
+          }
+          statusWrap.className = "status-field status-chip status-chip--" + v;
+        }
+        syncStatusChipClass();
+
+        var actions = document.createElement("div");
+        actions.className = "tracker-actions";
+        var fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "image/*";
+        fileInput.id = "file_" + key.replace(/[^a-z0-9]+/gi, "_");
+        var uploadHit = document.createElement("label");
+        uploadHit.className = "thumb-upload-trigger";
+        uploadHit.setAttribute("for", fileInput.id);
+        uploadHit.tabIndex = 0;
+        uploadHit.innerHTML =
+          '<span class="thumb-upload-plus" aria-hidden="true">+</span><span class="visually-hidden">Upload or replace image</span>';
+        uploadHit.addEventListener("keydown", function (e) {
+          if (e.key === " " || e.key === "Enter") {
+            e.preventDefault();
+            fileInput.click();
+          }
+        });
+        actions.appendChild(fileInput);
+        thumbWrap.appendChild(uploadHit);
+
+        if (!tr.builtIn && tr.structureRef) {
+          var removeTypeBtn = document.createElement("button");
+          removeTypeBtn.type = "button";
+          removeTypeBtn.className = "btn-small btn-small--danger";
+          removeTypeBtn.textContent = "Remove type";
+          removeTypeBtn.addEventListener("click", function () {
+            openConfirm({
+              title: "Remove type",
+              message:
+                "Remove “" +
+                tr.label +
+                "” from the list? Its uploaded image will be permanently deleted from this browser.",
+              dangerLabel: "Remove type",
+            }).then(function (ok) {
+              if (!ok) return;
+              removeStructureEntry(tr.structureRef, key);
+              renderManifest();
+              showToast("Type removed");
+            });
+          });
+          actions.appendChild(removeTypeBtn);
+        }
+
+        var statusRow = document.createElement("div");
+        statusRow.className = "tracker-item-status-row";
+        statusRow.appendChild(statusWrap);
+
+        right.appendChild(title);
+        if (tr.description) {
+          var metaLine = document.createElement("div");
+          metaLine.className = "tracker-meta";
+          metaLine.textContent = tr.description;
+          right.appendChild(metaLine);
+        }
+        right.appendChild(statusRow);
+        right.appendChild(actions);
+
+        main.appendChild(right);
+        main.appendChild(thumbWrap);
+        article.appendChild(main);
+
+        function applyThumbFromRecord(rec) {
+          revokeItemUrls(key);
+          thumbWrap.classList.add("has-image");
+          thumb.classList.remove("tracker-thumb--empty");
+          thumb.removeAttribute("aria-hidden");
+          thumb.innerHTML = "";
+          var im = document.createElement("img");
+          im.alt = "Category thumbnail for " + tr.label;
+          var u = URL.createObjectURL(rec.thumb || rec.full);
+          im.src = u;
+          objectUrlCache[key] = [u];
+          thumb.appendChild(im);
+          thumb.tabIndex = 0;
+          thumb.onclick = function () {
+            closeLightbox();
+            var u2 = URL.createObjectURL(rec.full);
+            lightboxUrlKey = key + "_lb";
+            objectUrlCache[lightboxUrlKey] = [u2];
+            lightboxImg.src = u2;
+            lightboxCap.textContent = group.title + " · " + tr.label;
+            lightboxItemKey = key;
+            lightboxItemLabel = tr.label;
+            if (lightboxActionsEl) lightboxActionsEl.hidden = false;
+            lightbox.classList.add("open");
+          };
+          thumb.onkeydown = function (e) {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              thumb.click();
+            }
+          };
+        }
+
+        function refreshThumb(done) {
+          idbGet(key, function (_, rec) {
+            if (rec && rec.full) {
+              applyThumbFromRecord(rec);
+            } else {
+              revokeItemUrls(key);
+              thumbWrap.classList.remove("has-image");
+              thumb.onclick = null;
+              thumb.onkeydown = null;
+              thumb.removeAttribute("tabIndex");
+              thumb.classList.add("tracker-thumb--empty");
+              thumb.innerHTML = "";
+              thumb.setAttribute("aria-hidden", "true");
+            }
+            if (typeof done === "function") done();
+          });
+        }
+
+        refreshThumb();
+
+        statusSel.addEventListener("change", function () {
+          var m = loadMeta();
+          getItemState(m, key).status = statusSel.value;
+          saveMeta(m);
+          updateProgress(m);
+          syncStatusChipClass();
+          var fil = document.getElementById("productionStatusFilter");
+          if (fil && fil.value !== "all") renderManifest();
+        });
+
+        fileInput.addEventListener("change", function () {
+          var f = fileInput.files && fileInput.files[0];
+          fileInput.value = "";
+          if (!f) return;
+          makeThumbBlob(f, function (err, thumbBlob, w, h) {
+            if (err) {
+              showToast("Could not read image");
+              return;
+            }
+            idbPut(
+              {
+                id: key,
+                full: f,
+                thumb: thumbBlob,
+                width: w,
+                height: h,
+                updatedAt: Date.now(),
+              },
+              function (e2) {
+                if (e2) {
+                  showToast("Storage failed — file too large?");
+                  return;
+                }
+                if (lightboxItemKey === key) closeLightbox();
+                refreshThumb(updateDownloadZipButtonLabel);
+                showToast("Image saved");
+              }
+            );
+          });
+        });
+
+        return article;
+      }
+
+      function populateCategorySelect() {
+        var sel = document.getElementById("addCategoryMode");
+        var prev = sel.value;
+        sel.innerHTML = "";
+        var o0 = document.createElement("option");
+        o0.value = "";
+        o0.textContent = "— Select category —";
+        sel.appendChild(o0);
+        var on = document.createElement("option");
+        on.value = ADD_NEW_CATEGORY_VALUE;
+        on.textContent = "＋ New category…";
+        sel.appendChild(on);
+        getMergedManifestGroups().forEach(function (g) {
+          var o = document.createElement("option");
+          o.value = g.id;
+          o.textContent = g.title + (g.customGroup ? " (custom)" : "");
+          sel.appendChild(o);
+        });
+        if (prev && Array.prototype.some.call(sel.options, function (opt) { return opt.value === prev; })) {
+          sel.value = prev;
+        }
+      }
+
+      function extensionForImageMime(m) {
+        if (!m || typeof m !== "string") return ".jpg";
+        if (m === "image/png") return ".png";
+        if (m === "image/jpeg" || m === "image/jpg") return ".jpg";
+        if (m === "image/webp") return ".webp";
+        if (m === "image/gif") return ".gif";
+        return ".bin";
+      }
+
+      function sanitizeZipStem(s) {
+        var t = (s || "")
+          .replace(/[/\\?%*:|"<>]/g, "-")
+          .replace(/\s+/g, " ")
+          .trim();
+        return t || "asset";
+      }
+
+      function uniqueZipFileName(stem, ext, usedLower) {
+        var name = stem + ext;
+        var n = 2;
+        while (usedLower[name.toLowerCase()]) {
+          name = stem + "-" + n + ext;
+          n++;
+        }
+        usedLower[name.toLowerCase()] = true;
+        return name;
+      }
+
+      function downloadAllAssetsZip() {
+        var btn = document.getElementById("downloadAssetsZip");
+        if (typeof JSZip === "undefined") {
+          showToast("ZIP library not loaded — check network");
+          return;
+        }
+        var labelByKey = {};
+        getMergedManifestGroups().forEach(function (g) {
+          g.types.forEach(function (t) {
+            labelByKey[t.itemKey] = g.title + " - " + t.label;
+          });
+        });
+        var keys = allItemKeys();
+        if (!keys.length) {
+          showToast("Nothing to export");
+          updateDownloadZipButtonLabel();
+          return;
+        }
+        if (btn) btn.disabled = true;
+        var parts = [];
+        var left = keys.length;
+        keys.forEach(function (k) {
+          idbGet(k, function (err, rec) {
+            if (!err && rec && rec.full) {
+              parts.push({ key: k, blob: rec.full });
+            }
+            left--;
+            if (left !== 0) return;
+            if (!parts.length) {
+              if (btn) btn.disabled = false;
+              showToast("No saved images yet");
+              updateDownloadZipButtonLabel();
+              return;
+            }
+            try {
+              var zip = new JSZip();
+              var folder = zip.folder("category-assets");
+              var used = {};
+              parts.forEach(function (p) {
+                var stem = sanitizeZipStem(labelByKey[p.key] || p.key.replace(/::/g, "__"));
+                var ext = extensionForImageMime(p.blob.type);
+                var fname = uniqueZipFileName(stem, ext, used);
+                folder.file(fname, p.blob);
+              });
+              zip
+                .generateAsync({ type: "blob" })
+                .then(function (blob) {
+                  var a = document.createElement("a");
+                  var url = URL.createObjectURL(blob);
+                  a.href = url;
+                  a.download = "category-type-images-" + new Date().toISOString().slice(0, 10) + ".zip";
+                  a.rel = "noopener";
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                  setTimeout(function () {
+                    URL.revokeObjectURL(url);
+                  }, 4000);
+                  showToast("ZIP: " + parts.length + " image" + (parts.length === 1 ? "" : "s"));
+                })
+                .catch(function () {
+                  showToast("Could not build ZIP");
+                })
+                .finally(function () {
+                  if (btn) btn.disabled = false;
+                  updateDownloadZipButtonLabel();
+                });
+            } catch (e) {
+              if (btn) btn.disabled = false;
+              showToast("Could not build ZIP");
+              updateDownloadZipButtonLabel();
+            }
+          });
+        });
+      }
+
+      var addItemModalEl = document.getElementById("addItemModal");
+      document.getElementById("downloadAssetsZip").addEventListener("click", downloadAllAssetsZip);
+      function openAddItemModal() {
+        populateCategorySelect();
+        openModal(addItemModalEl);
+      }
+      document.getElementById("openAddModalFooter").addEventListener("click", openAddItemModal);
+      document.getElementById("addItemCancel").addEventListener("click", function () {
+        closeModal(addItemModalEl);
+      });
+      addItemModalEl.addEventListener("click", function (e) {
+        if (e.target === addItemModalEl) closeModal(addItemModalEl);
+      });
+
+      document.getElementById("addItemSubmit").addEventListener("click", function () {
+        var ok = addTypeToManifest(
+          document.getElementById("addCategoryMode").value,
+          document.getElementById("newTypeLabel").value,
+          document.getElementById("newTypeDescription").value
+        );
+        if (ok) {
+          document.getElementById("newTypeLabel").value = "";
+          document.getElementById("newTypeDescription").value = "";
+          closeModal(addItemModalEl);
+          renderManifest();
+          showToast("Added to list");
+        }
+      });
+
+      function setMainView(view) {
+        var guide = document.getElementById("view-guide");
+        var prod = document.getElementById("view-production");
+        var content = document.querySelector(".app-content");
+        if (!guide || !prod) return;
+        guide.classList.toggle("is-active", view === "guide");
+        prod.classList.toggle("is-active", view === "production");
+        if (content) content.scrollTop = 0;
+      }
+      var getStartedBtn = document.getElementById("getStartedToGuide");
+      if (getStartedBtn) {
+        getStartedBtn.addEventListener("click", function () {
+          setMainView("guide");
+        });
+      }
+      var backProdBtn = document.getElementById("backToProduction");
+      if (backProdBtn) {
+        backProdBtn.addEventListener("click", function () {
+          setMainView("production");
+        });
+      }
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key !== "Escape") return;
+        if (addItemModalEl.classList.contains("open")) {
+          closeModal(addItemModalEl);
+        }
+      });
+
+      root.addEventListener(
+        "toggle",
+        function (e) {
+          var t = e.target;
+          if (!t.classList || !t.classList.contains("tracker-accordion")) return;
+          if (!t.open) return;
+          root.querySelectorAll("details.tracker-accordion").forEach(function (d) {
+            if (d !== t) d.open = false;
+          });
+        },
+        true
+      );
+
+      function filterTypesByStatus(meta, types, filterVal) {
+        if (!filterVal || filterVal === "all") return types.slice();
+        return types.filter(function (tr) {
+          return getItemState(meta, tr.itemKey).status === filterVal;
+        });
+      }
+
+      function renderManifest() {
+        var meta = loadMeta();
+        root.innerHTML = "";
+        var filterEl = document.getElementById("productionStatusFilter");
+        var filterVal = "all";
+        if (filterEl) {
+          var rawFv = filterEl.value;
+          if (
+            rawFv === "wip" ||
+            !Array.prototype.some.call(filterEl.options, function (o) {
+              return o.value === rawFv;
+            })
+          ) {
+            filterEl.value = "all";
+            filterVal = "all";
+          } else {
+            filterVal = rawFv;
+          }
+        }
+        var groups = getMergedManifestGroups();
+        var totalTypes = 0;
+        groups.forEach(function (g) {
+          totalTypes += g.types.length;
+        });
+        var catTotalEl = document.getElementById("productionCategoriesTotal");
+        if (catTotalEl) {
+          catTotalEl.textContent =
+            "· " + totalTypes + (totalTypes === 1 ? " type" : " types");
+        }
+
+        var anyShown = false;
+        groups.forEach(function (g) {
+          var typesVisible = filterTypesByStatus(meta, g.types, filterVal);
+          if (filterVal !== "all" && typesVisible.length === 0) return;
+
+          anyShown = true;
+          var acc = document.createElement("details");
+          acc.className = "tracker-accordion";
+          var summary = document.createElement("summary");
+          summary.className = "tracker-accordion-summary";
+
+          var titleBox = document.createElement("div");
+          titleBox.className = "summary-title";
+          var h = document.createElement("h3");
+          h.appendChild(document.createTextNode(g.title));
+          var nTypes = typesVisible.length;
+          var countSpan = document.createElement("span");
+          countSpan.className = "summary-type-count";
+          countSpan.textContent =
+            " · " + nTypes + (nTypes === 1 ? " type" : " types");
+          h.appendChild(countSpan);
+          if (g.badge === "core") {
+            var b = document.createElement("span");
+            b.className = "badge badge--core";
+            b.textContent = "Core set — most important";
+            h.appendChild(b);
+          }
+          titleBox.appendChild(h);
+          summary.appendChild(titleBox);
+
+          if (g.customGroup) {
+            var ga = document.createElement("div");
+            ga.className = "tracker-group-actions";
+            ga.addEventListener("click", function (ev) {
+              ev.stopPropagation();
+            });
+            var rmG = document.createElement("button");
+            rmG.type = "button";
+            rmG.className = "btn-small btn-small--danger";
+            rmG.textContent = "Remove category";
+            rmG.addEventListener("click", function (ev) {
+              ev.preventDefault();
+              ev.stopPropagation();
+              openConfirm({
+                title: "Remove category",
+                message:
+                  "Remove the entire custom category “" +
+                  g.title +
+                  "” and all of its types and uploaded images? This cannot be undone.",
+                dangerLabel: "Remove category",
+              }).then(function (ok) {
+                if (!ok) return;
+                removeEntireCustomGroup(g.id);
+                renderManifest();
+                showToast("Category removed");
+              });
+            });
+            ga.appendChild(rmG);
+            summary.appendChild(ga);
+          }
+
+          var abody = document.createElement("div");
+          abody.className = "tracker-accordion-body";
+          var section = document.createElement("section");
+          section.className = "tracker-group";
+          typesVisible.forEach(function (tr) {
+            section.appendChild(buildItemRow(meta, g, tr));
+          });
+          abody.appendChild(section);
+          acc.appendChild(summary);
+          acc.appendChild(abody);
+          root.appendChild(acc);
+        });
+        if (!anyShown && filterVal !== "all") {
+          var empty = document.createElement("p");
+          empty.className = "manifest-filter-empty";
+          empty.textContent = "No types match this status.";
+          root.appendChild(empty);
+        }
+        populateCategorySelect();
+        updateProgress(meta);
+      }
+
+      var FIGMA_WOMENS_CATEGORY_SEED_KEY = "categoryGuideFigmaWomensSeed_v1";
+      var FIGMA_WOMENS_DEMO_ASSETS = [
+        {
+          itemKey: "womens-fashion::tops",
+          url: "https://www.figma.com/api/mcp/asset/ccb14784-3e68-42a6-9823-dab4faeac3be",
+        },
+        {
+          itemKey: "womens-activewear::leggings",
+          url: "https://www.figma.com/api/mcp/asset/ee67c25d-c2ce-46d8-a62c-748e75b18fc1",
+        },
+        {
+          itemKey: "womens-fashion::pants",
+          url: "https://www.figma.com/api/mcp/asset/1b7f03ef-c8e8-4c76-bdf9-8998ab93b58c",
+        },
+        {
+          itemKey: "womens-fashion::outerwear",
+          url: "https://www.figma.com/api/mcp/asset/27a0b303-af32-40d6-9713-0eea62e56fd8",
+        },
+        {
+          itemKey: "womens-fashion::skirts",
+          url: "https://www.figma.com/api/mcp/asset/cda5be05-1ec2-4a1b-90d6-6c00dc65e5bf",
+        },
+        {
+          itemKey: "womens-fashion::shorts",
+          url: "https://www.figma.com/api/mcp/asset/f27d639e-b855-46f4-8166-7208c095b745",
+        },
+        {
+          itemKey: "womens-fashion::sets",
+          url: "https://www.figma.com/api/mcp/asset/4bf84691-009a-46b2-b790-dabfe38675af",
+        },
+        {
+          itemKey: "womens-activewear::sports-bras",
+          url: "https://www.figma.com/api/mcp/asset/667a74e5-406d-4858-ab1a-c729b7034178",
+        },
+        {
+          itemKey: "womens-activewear::accessories",
+          url: "https://www.figma.com/api/mcp/asset/7cf2eda0-5e86-4996-b6b9-d4e862e9f836",
+        },
+      ];
+
+      function runFigmaWomensCategorySeedOnce(done) {
+        var didWrite = false;
+        try {
+          if (localStorage.getItem(FIGMA_WOMENS_CATEGORY_SEED_KEY)) {
+            return done && done(false);
+          }
+        } catch (e) {
+          return done && done(false);
+        }
+        openDb(function (err) {
+          if (err) return done && done(false);
+          var meta = loadMeta();
+          var idx = 0;
+          function step() {
+            if (idx >= FIGMA_WOMENS_DEMO_ASSETS.length) {
+              try {
+                localStorage.setItem(FIGMA_WOMENS_CATEGORY_SEED_KEY, "1");
+              } catch (e2) {}
+              if (didWrite) saveMeta(meta);
+              return done && done(didWrite);
+            }
+            var row = FIGMA_WOMENS_DEMO_ASSETS[idx++];
+            fetch(row.url, { mode: "cors" })
+              .then(function (res) {
+                if (!res.ok) throw new Error("fetch");
+                return res.blob();
+              })
+              .then(function (blob) {
+                makeThumbBlob(blob, function (terr, thumbBlob, w, h) {
+                  if (terr || !thumbBlob) {
+                    step();
+                    return;
+                  }
+                  var mime = blob.type && blob.type.indexOf("image/") === 0 ? blob.type : "image/png";
+                  var file = new File([blob], "figma-category.png", { type: mime });
+                  idbPut(
+                    {
+                      id: row.itemKey,
+                      full: file,
+                      thumb: thumbBlob,
+                      width: w,
+                      height: h,
+                      updatedAt: Date.now(),
+                    },
+                    function (putErr) {
+                      if (!putErr) {
+                        didWrite = true;
+                        getItemState(meta, row.itemKey).status = "complete";
+                      }
+                      step();
+                    }
+                  );
+                });
+              })
+              .catch(function () {
+                step();
+              });
+          }
+          step();
+        });
+      }
+
+      document.getElementById("productionStatusFilter").addEventListener("change", renderManifest);
+
+      renderManifest();
+
+      runFigmaWomensCategorySeedOnce(function (didSeed) {
+        if (didSeed) {
+          renderManifest();
+          updateProgress(loadMeta());
+        }
+      });
+
+      var copyBtn = document.getElementById("copyPrompt");
+      var promptText = document.getElementById("promptText");
+      copyBtn.addEventListener("click", function () {
+        var body = promptText.textContent || "";
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(body).then(function () {
+            showToast("Copied");
+          });
+        }
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      var PROTO_TIMESTAMP = "Updated by Soh on 4/14/26 @ 4:03pm";
+      var PROTO_TIMESTAMP_SHORT = (function () {
+        var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
+        return m ? m[1].trim() : PROTO_TIMESTAMP;
+      })();
+
+      function protoBreadcrumbContentRight(crumb) {
+        if (!crumb) return 0;
+        var maxR = crumb.getBoundingClientRect().right;
+        Array.prototype.forEach.call(crumb.children, function (el) {
+          if (el.classList.contains("sep")) return;
+          var er = el.getBoundingClientRect();
+          if (er.width > 0 && er.height > 0) maxR = Math.max(maxR, er.right);
+        });
+        return maxR;
+      }
+
+      function syncProtoTimestampCompact() {
+        var ts = document.getElementById("protoTimestamp");
+        var crumb = document.querySelector(".proto-breadcrumb");
+        var meta = document.querySelector(".proto-header-meta");
+        if (!ts || !crumb || !meta) return;
+
+        meta.classList.remove("proto-header-meta--hidden");
+        ts.style.removeProperty("display");
+        ts.textContent = PROTO_TIMESTAMP;
+        ts.removeAttribute("title");
+
+        var gapSlack = 10;
+        function metaLeft() {
+          return meta.getBoundingClientRect().left;
+        }
+        function touchesPublishLine() {
+          return protoBreadcrumbContentRight(crumb) > metaLeft() - gapSlack;
+        }
+
+        if (!touchesPublishLine()) return;
+
+        ts.textContent = PROTO_TIMESTAMP_SHORT;
+        ts.setAttribute("title", PROTO_TIMESTAMP);
+        if (!touchesPublishLine()) return;
+
+        requestAnimationFrame(function () {
+          if (protoBreadcrumbContentRight(crumb) > meta.getBoundingClientRect().left - gapSlack) {
+            meta.classList.add("proto-header-meta--hidden");
+            ts.textContent = PROTO_TIMESTAMP;
+            ts.removeAttribute("title");
+          }
+        });
+      }
+
+      var PROTO_NOTES_TITLE = "Category type images";
+      var PROTO_NOTES_HTML =
+        "<p>Guide for <strong>one square asset per type</strong>, plus a <strong>Production</strong> tracker with statuses and ZIP export. Images stay in this browser (IndexedDB).</p>" +
+        "<h4>How to try it</h4>" +
+        "<ol>" +
+        "<li>Open <strong>Production</strong> and expand a category.</li>" +
+        "<li>Use the <strong>Guide</strong> tab: open <a href=\"https://gemini.google.com/app\" target=\"_blank\" rel=\"noopener noreferrer\">Gemini</a>, tap <strong>Create image</strong>, paste the prompt, then upload PNGs per row.</li>" +
+        "<li><strong>Download ZIP</strong> when you want every saved hi-res image.</li>" +
+        "</ol>";
+
+      var NOTES_STORAGE_KEY = "proto-notes-autoopen-" + location.pathname;
+
+      window.saveNotesAutoOpen = function () {
+        var cb = document.getElementById("notesAutoOpenCb");
+        if (!cb) return;
+        if (cb.checked) localStorage.setItem(NOTES_STORAGE_KEY, "no");
+        else localStorage.setItem(NOTES_STORAGE_KEY, "yes");
+      };
+
+      function shouldAutoOpenNotes() {
+        return localStorage.getItem(NOTES_STORAGE_KEY) === "yes";
+      }
+
+      function positionNotesPanel() {
+        var btn = document.getElementById("protoNotesBtn");
+        var panel = document.getElementById("notesPanel");
+        if (!btn || !panel) return;
+        var r = btn.getBoundingClientRect();
+        panel.style.top = r.bottom + 8 + "px";
+        panel.style.right = window.innerWidth - r.right + "px";
+      }
+
+      window.toggleNotesPanel = function (show) {
+        var panel = document.getElementById("notesPanel");
+        var overlay = document.getElementById("notesOverlay");
+        var content = document.getElementById("notesPanelContent");
+        if (!panel || !overlay || !content) return;
+        if (show === undefined) show = !panel.classList.contains("visible");
+        if (show) {
+          content.innerHTML =
+            '<div style="font-size:15px;font-weight:600;color:white;margin-bottom:10px">' +
+            PROTO_NOTES_TITLE +
+            "</div>" +
+            PROTO_NOTES_HTML;
+          var cb = document.getElementById("notesAutoOpenCb");
+          if (cb) cb.checked = !shouldAutoOpenNotes();
+          positionNotesPanel();
+          overlay.classList.add("visible");
+          requestAnimationFrame(function () {
+            panel.classList.add("visible");
+          });
+        } else {
+          panel.classList.remove("visible");
+          overlay.classList.remove("visible");
+        }
+      };
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          var panel = document.getElementById("notesPanel");
+          if (panel && panel.classList.contains("visible")) window.toggleNotesPanel(false);
+        }
+      });
+
+      syncProtoTimestampCompact();
+      window.addEventListener("resize", function () {
+        requestAnimationFrame(syncProtoTimestampCompact);
+      });
+
+      var LIVE_URL =
+        "https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/category-assets-guide/index.html";
+      var shareToastTimer = null;
+      var shareBtnFlashTimer = null;
+
+      function copyShareLinkShowToast(message, flashButton) {
+        var toast = document.getElementById("protoHeaderToast");
+        if (!toast) return;
+        clearTimeout(shareToastTimer);
+        toast.textContent = message || "Link copied!";
+
+        var shareBtn = document.getElementById("protoShareBtn");
+        if (shareBtn) {
+          var r = shareBtn.getBoundingClientRect();
+          toast.style.left = r.left + r.width / 2 + "px";
+          toast.style.top = r.bottom + 12 + "px";
+          toast.style.transform = "translate(-50%, 0) translateY(-8px) scale(0.96)";
+        } else {
+          toast.style.left = "50%";
+          toast.style.top = "72px";
+          toast.style.transform = "translate(-50%, 0) translateY(-8px) scale(0.96)";
+        }
+
+        toast.classList.add("visible");
+        void toast.offsetWidth;
+        toast.style.transform = "translate(-50%, 0) scale(1)";
+        shareToastTimer = setTimeout(function () {
+          toast.classList.remove("visible");
+        }, 2600);
+
+        if (flashButton !== false) {
+          var sb = document.getElementById("protoShareBtn");
+          if (sb) {
+            clearTimeout(shareBtnFlashTimer);
+            sb.classList.add("proto-share-btn--flash");
+            sb.setAttribute("aria-label", message || "Link copied!");
+            shareBtnFlashTimer = setTimeout(function () {
+              sb.classList.remove("proto-share-btn--flash");
+              sb.setAttribute("aria-label", "Copy share link");
+            }, 1600);
+          }
+        }
+      }
+
+      function copyShareLinkFallbackExec(url) {
+        var ta = document.createElement("textarea");
+        ta.value = url;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        ta.style.top = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        ta.setSelectionRange(0, url.length);
+        var ok = false;
+        try {
+          ok = document.execCommand("copy");
+        } catch (_) {}
+        document.body.removeChild(ta);
+        return ok;
+      }
+
+      window.copyShareLink = function () {
+        var url = LIVE_URL;
+        var done = function () {
+          copyShareLinkShowToast("Link copied!", true);
+        };
+        var fail = function () {
+          copyShareLinkShowToast("Copy blocked — open in https or select the URL", false);
+        };
+
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+          navigator.clipboard.writeText(url).then(done).catch(function () {
+            if (copyShareLinkFallbackExec(url)) done();
+            else fail();
+          });
+          return;
+        }
+        if (copyShareLinkFallbackExec(url)) done();
+        else fail();
+      };
+
+      if (PROTO_NOTES_HTML.trim()) {
+        var btn = document.getElementById("protoNotesBtn");
+        if (btn) btn.style.display = "";
+        if (shouldAutoOpenNotes()) setTimeout(function () {
+          window.toggleNotesPanel(true);
+        }, 600);
+      }
+    })();
+  </script>
+</body>
+</html>
