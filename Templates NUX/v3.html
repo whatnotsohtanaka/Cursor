@@ -2637,12 +2637,19 @@
       </button>
     </div>
     <!-- Content -->
-    <div id="step2Content" style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:20px;overflow-y:auto">
+    <div id="step2Content" style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:16px;overflow-y:auto">
       <div style="display:flex;flex-direction:column;gap:6px">
         <div style="font-size:22px;font-weight:600;line-height:28px;color:#161616">What will you be selling?</div>
         <div style="font-size:15px;font-weight:400;line-height:21px;color:#6a6a6a">Select all that apply. We'll set up templates to match.</div>
       </div>
-      <div id="step2Grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%">
+      <div id="step2CategoryRow" role="button" tabindex="0" onclick="openTypeCategorySheet('step2')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTypeCategorySheet('step2');}" style="width:100%;height:56px;min-height:56px;max-height:56px;box-sizing:border-box;border:1px solid #d2d2d2;border-radius:8px;background:white;display:flex;align-items:center;gap:8px;padding:0 16px;cursor:pointer">
+        <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:400;line-height:16px;letter-spacing:0;color:#545454">Category</div>
+          <div id="step2CategoryDisplay" style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Women's Contemporary</div>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#7f7f7f" stroke-width="1.5" stroke-linecap="round"><path d="M6 8l4 4 4-4"/></svg>
+      </div>
+      <div id="step2TypeList" style="display:flex;flex-direction:column;width:100%">
         <!-- Populated by configureStep2() -->
       </div>
     </div>
@@ -2990,9 +2997,10 @@
       <div class="nux-templates-list">
         <div class="tpl-card" onclick="openEditFromShopGen()" style="cursor:pointer">
           <div style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative">
-            <img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-            <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>
-            <img src="icons/icon-tops.png" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:49px;height:49px;object-fit:contain">
+            <img src="https://www.figma.com/api/mcp/asset/89a20fed-873d-4497-8112-d1c647a00873" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.8">
+            <div style="position:absolute;inset:33.33%">
+              <img src="https://www.figma.com/api/mcp/asset/e29c7d55-e04b-45a0-8b16-10136a270651" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain">
+            </div>
           </div>
           <div class="tpl-info">
             <div class="tpl-details">
@@ -3643,7 +3651,7 @@
         </div>
       </div>
 
-      <div class="edit-chips-field">
+      <div class="edit-chips-field" id="typeChipsField">
         <div class="edit-chips-label">Type</div>
         <div class="edit-chips" id="typeChips">
           <span class="edit-chip edit-chip-off" onclick="selectChip(this,'type')">Shoes</span>
@@ -3680,7 +3688,7 @@
         <div class="edit-chips" id="sizeChipsContainer"></div>
       </div>
 
-      <div class="edit-chips-field">
+      <div class="edit-chips-field" id="conditionChipsField">
         <div class="edit-chips-label">Condition(s)</div>
         <div class="edit-chips">
           <span class="edit-chip edit-chip-on" onclick="toggleChip(this)">New w Tag</span>
@@ -4103,9 +4111,10 @@
           <div class="nux-templates-list">
             <div class="tpl-card">
               <div style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative">
-                <img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-                <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>
-                <img src="icons/icon-tops.png" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:49px;height:49px;object-fit:contain">
+                <img src="https://www.figma.com/api/mcp/asset/89a20fed-873d-4497-8112-d1c647a00873" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.8">
+                <div style="position:absolute;inset:33.33%">
+                  <img src="https://www.figma.com/api/mcp/asset/e29c7d55-e04b-45a0-8b16-10136a270651" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain">
+                </div>
               </div>
               <div class="tpl-info">
                 <div class="tpl-details">
@@ -4117,9 +4126,10 @@
             </div>
             <div class="tpl-card">
               <div style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative">
-                <img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-                <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>
-                <img src="icons/icon-pants.png" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:49px;height:49px;object-fit:contain">
+                <img src="https://www.figma.com/api/mcp/asset/89a20fed-873d-4497-8112-d1c647a00873" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.8">
+                <div style="position:absolute;inset:33.33%">
+                  <img src="https://www.figma.com/api/mcp/asset/e29c7d55-e04b-45a0-8b16-10136a270651" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain">
+                </div>
               </div>
               <div class="tpl-info">
                 <div class="tpl-details">
@@ -4131,9 +4141,10 @@
             </div>
             <div class="tpl-card">
               <div style="width:140px;height:140px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative">
-                <img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-                <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>
-                <img src="icons/icon-skirts.png" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:49px;height:49px;object-fit:contain">
+                <img src="https://www.figma.com/api/mcp/asset/89a20fed-873d-4497-8112-d1c647a00873" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.8">
+                <div style="position:absolute;inset:33.33%">
+                  <img src="https://www.figma.com/api/mcp/asset/e29c7d55-e04b-45a0-8b16-10136a270651" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain">
+                </div>
               </div>
               <div class="tpl-info">
                 <div class="tpl-details">
@@ -4178,12 +4189,19 @@
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
       </button>
     </div>
-    <div style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:20px;overflow-y:auto">
+    <div style="flex:1;display:flex;flex-direction:column;padding:24px 16px 12px;gap:16px;overflow-y:auto">
       <div style="display:flex;flex-direction:column;gap:6px">
         <div style="font-size:22px;font-weight:600;line-height:28px;color:#161616">What will you be selling?</div>
         <div style="font-size:15px;font-weight:400;line-height:21px;color:#6a6a6a">Select one or more types. We'll generate a template for each.</div>
       </div>
-      <div id="tplTypePickerGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%"></div>
+      <div id="tplCategoryRow" role="button" tabindex="0" onclick="openTypeCategorySheet('tpl')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTypeCategorySheet('tpl');}" style="width:100%;height:56px;min-height:56px;max-height:56px;box-sizing:border-box;border:1px solid #d2d2d2;border-radius:8px;background:white;display:flex;align-items:center;gap:8px;padding:0 16px;cursor:pointer">
+        <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:400;line-height:16px;letter-spacing:0;color:#545454">Category</div>
+          <div id="tplCategoryDisplay" style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Women's Contemporary</div>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#7f7f7f" stroke-width="1.5" stroke-linecap="round"><path d="M6 8l4 4 4-4"/></svg>
+      </div>
+      <div id="tplTypePickerList" style="display:flex;flex-direction:column;width:100%"></div>
     </div>
     <div style="flex-shrink:0;padding:0 16px 0">
       <button id="tplTypePickerCta" onclick="confirmTplTypePicker()" disabled style="width:100%;height:48px;border-radius:999px;background:#e0e0e0;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#999;cursor:not-allowed;transition:background 0.2s,color 0.2s">Continue</button>
@@ -4385,6 +4403,43 @@
     </div>
   </div>
 
+  <!-- Step2/Template Picker Category Sheet -->
+  <div class="bottom-sheet-overlay" id="typeCategorySheet" onclick="closeTypeCategorySheet()">
+    <div class="bottom-sheet" onclick="event.stopPropagation()" style="max-height:92%;padding-bottom:0;display:flex;flex-direction:column">
+      <div style="display:flex;align-items:center;justify-content:center;padding:8px 0 4px;flex-shrink:0">
+        <div style="width:40px;height:4px;border-radius:999px;background:#e8e8e8"></div>
+      </div>
+      <div id="typeCategoryHeader" style="height:48px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;padding:0 16px">
+        <button id="typeCategoryBackBtn" onclick="openWomensFashionL2(false)" style="position:absolute;left:8px;width:32px;height:32px;border:none;background:none;display:none;align-items:center;justify-content:center;cursor:pointer;border-radius:999px">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#6f6f6f" stroke-width="1.8" stroke-linecap="round"><path d="M12 5l-5 5 5 5"/></svg>
+        </button>
+        <span id="typeCategoryHeaderTitle" style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.41px;color:#1c1c1c">Select Category</span>
+      </div>
+      <div id="typeCategorySearchWrap" style="padding:8px 16px 0;flex-shrink:0">
+        <div style="height:44px;border:1px solid #d2d2d2;border-radius:999px;display:flex;align-items:center;gap:8px;padding:0 14px;background:white">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6f6f6f" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+          <input id="typeCategorySearchField" oninput="renderTypeCategoryList()" placeholder="Search categories..." style="flex:1;border:none;outline:none;font-family:var(--font);font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;background:transparent">
+        </div>
+      </div>
+      <div id="typeCategoryRecentSection" style="padding:14px 16px 0;flex-shrink:0">
+        <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;margin-bottom:8px">Recently Used</div>
+        <div id="typeCategoryRecent" style="display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding:0 16px 8px;margin:0 -16px;box-sizing:border-box;-webkit-overflow-scrolling:touch"></div>
+      </div>
+      <div id="typeCategoryDivider" style="padding:0 16px;flex-shrink:0">
+        <div style="height:1px;background:rgba(0,0,0,0.1)"></div>
+      </div>
+      <div id="typeCategoryHeadingWrap" style="padding:14px 16px 8px;flex-shrink:0">
+        <div id="typeCategoryListHeading" style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">All Categories</div>
+      </div>
+      <div id="typeCategoryListViewport" style="overflow:hidden;flex:1;position:relative">
+        <div id="typeCategoryListTrack" style="display:flex;width:200%;height:100%;transform:translateX(0);transition:transform 0.35s cubic-bezier(0.32,0.72,0,1)">
+          <div id="typeCategoryListRoot" style="width:50%;overflow:auto;padding:0 16px 24px"></div>
+          <div id="typeCategoryListL2" style="width:50%;overflow:auto;padding:0 16px 24px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ═══ LISTING DETAIL PAGE ═══ -->
   <div id="listingDetailPage" class="edit-page" style="z-index:199">
     <div style="height:54px;flex-shrink:0"></div>
@@ -4402,9 +4457,9 @@
     <div class="edit-scroll" style="flex:1;overflow-y:auto">
       <!-- Product Image -->
       <div id="detailImageCarousel" style="width:100%;aspect-ratio:1;position:relative;overflow:hidden">
-        <img id="detailHeroBg" src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-        <div id="detailHeroOverlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>
-        <img id="detailHeroImg" src="icons/icon-tops.png" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:120px;height:120px;object-fit:contain">
+        <img id="detailHeroBg" src="https://www.figma.com/api/mcp/asset/89a20fed-873d-4497-8112-d1c647a00873" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.8">
+        <div id="detailHeroOverlay" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>
+        <img id="detailHeroImg" src="https://www.figma.com/api/mcp/asset/e29c7d55-e04b-45a0-8b16-10136a270651" style="position:absolute;inset:33.33%;width:auto;height:auto;object-fit:contain">
         <!-- Dots -->
         <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px">
           <div style="width:8px;height:8px;border-radius:50%;background:#1c1c1c"></div>
@@ -5401,12 +5456,23 @@ function openEditPage(templateIndex, returnTo, prefillType) {
     }
   }
 
+  const recForEdit = currentEditingListingId ? findListing(currentEditingListingId) : null;
+  const editsForCategory = templateEdits[templateIndex];
+  const isChocolateTemplate = (
+    (prefillType && String(prefillType).toLowerCase().includes('chocolate')) ||
+    (tpl && tpl.type && String(tpl.type).toLowerCase().includes('chocolate')) ||
+    (recForEdit && recForEdit.typeId === 'chocolates')
+  );
+  const editCategoryLabel = isChocolateTemplate
+    ? 'Chocolate'
+    : ((recForEdit && recForEdit.categoryLabel) || (editsForCategory && editsForCategory.categoryLabel) || "Women's Contemporary");
+
   // Set Category and rebuild chips first
-  document.getElementById('editCategory').textContent = "Women's Contemporary";
-  applyCategoryConfig("Women's Contemporary");
+  document.getElementById('editCategory').textContent = editCategoryLabel;
+  applyCategoryConfig(editCategoryLabel);
 
   // THEN set Type chip selection (after applyCategoryConfig rebuilt them)
-  const typeToSelect = prefillType || (isNull ? '' : tpl.type);
+  const typeToSelect = isChocolateTemplate ? 'Chocolates' : (prefillType || (isNull ? '' : tpl.type));
   const typeChips = document.getElementById('typeChips');
   typeChips.querySelectorAll('.edit-chip').forEach(c => {
     if (typeToSelect && c.textContent === typeToSelect) {
@@ -5509,7 +5575,14 @@ function openEditPage(templateIndex, returnTo, prefillType) {
     currentSizeMode = 'clothing';
     renderSizeChips();
     // Reset condition chips
-    document.querySelectorAll('#editPage .edit-chips-field:last-of-type .edit-chip').forEach(c => {
+    document.querySelectorAll('#conditionChipsField .edit-chip').forEach(c => {
+      c.classList.remove('edit-chip-on');
+      c.classList.add('edit-chip-off');
+    });
+  } else if (isChocolateTemplate) {
+    selectedSizes.clear();
+    renderSizeChips();
+    document.querySelectorAll('#conditionChipsField .edit-chip').forEach(c => {
       c.classList.remove('edit-chip-on');
       c.classList.add('edit-chip-off');
     });
@@ -5517,7 +5590,12 @@ function openEditPage(templateIndex, returnTo, prefillType) {
     currentSizeMode = resolveTemplateSizeMode(tpl.type);
     selectedSizes.clear();
     const editsForSizes = templateEdits[templateIndex];
-    if (returnTo === 'shop' && editsForSizes && editsForSizes.sizes) {
+    const recSizes = recForEdit && recForEdit.sizes
+      ? (Array.isArray(recForEdit.sizes) ? recForEdit.sizes : String(recForEdit.sizes).split(',').map(s => s.trim()).filter(Boolean))
+      : [];
+    if (recSizes.length > 0) {
+      recSizes.forEach(s => selectedSizes.add(s));
+    } else if (returnTo === 'shop' && editsForSizes && editsForSizes.sizes) {
       editsForSizes.sizes.forEach(s => selectedSizes.add(s));
     } else if (currentSizeMode === 'shoes') {
       ['7', '8', '9', '10'].forEach(s => selectedSizes.add(s));
@@ -5529,17 +5607,37 @@ function openEditPage(templateIndex, returnTo, prefillType) {
       ['XS', 'S', 'M', 'L', 'XL'].forEach(s => selectedSizes.add(s));
     }
     renderSizeChips();
-    // Restore default condition: New w Tag on
-    document.querySelectorAll('#editPage .edit-chips-field:last-of-type .edit-chip').forEach(c => {
-      if (c.textContent === 'New w Tag') {
-        c.classList.remove('edit-chip-off');
-        c.classList.add('edit-chip-on');
-      } else {
-        c.classList.remove('edit-chip-on');
-        c.classList.add('edit-chip-off');
-      }
-    });
+    const recConditions = recForEdit && recForEdit.conditions
+      ? (Array.isArray(recForEdit.conditions) ? recForEdit.conditions : String(recForEdit.conditions).split(',').map(c => c.trim()).filter(Boolean))
+      : [];
+    const editConditions = (editsForSizes && editsForSizes.conditions) ? editsForSizes.conditions : [];
+    const conditionsToApply = recConditions.length > 0 ? recConditions : editConditions;
+    if (conditionsToApply.length > 0) {
+      document.querySelectorAll('#conditionChipsField .edit-chip').forEach(c => {
+        const isOn = conditionsToApply.includes(c.textContent);
+        c.classList.toggle('edit-chip-on', isOn);
+        c.classList.toggle('edit-chip-off', !isOn);
+      });
+    } else {
+      // Restore default condition: New w Tag on
+      document.querySelectorAll('#conditionChipsField .edit-chip').forEach(c => {
+        if (c.textContent === 'New w Tag') {
+          c.classList.remove('edit-chip-off');
+          c.classList.add('edit-chip-on');
+        } else {
+          c.classList.remove('edit-chip-on');
+          c.classList.add('edit-chip-off');
+        }
+      });
+    }
   }
+
+  const typeField = document.getElementById('typeChipsField');
+  const sizeField = document.getElementById('sizeChipsField');
+  const conditionField = document.getElementById('conditionChipsField');
+  if (typeField) typeField.style.display = isChocolateTemplate ? 'none' : '';
+  if (sizeField) sizeField.style.display = isChocolateTemplate ? 'none' : '';
+  if (conditionField) conditionField.style.display = isChocolateTemplate ? 'none' : '';
 
   // Generate title from current selections
   updateGeneratedTitle();
@@ -5618,8 +5716,8 @@ function getFormSnapshot() {
   const activeType = typeChips ? (typeChips.querySelector('.edit-chip-on') || {}).textContent || '' : '';
   const category = document.getElementById('editCategory') ? document.getElementById('editCategory').textContent : '';
   const brands = document.getElementById('editBrands') ? document.getElementById('editBrands').textContent : '';
-  const sizes = [...document.querySelectorAll('#editPage .edit-chips-field:nth-of-type(3) .edit-chip-on')].map(c => c.textContent).join(',');
-  const conditions = [...document.querySelectorAll('#editPage .edit-chips-field:nth-of-type(4) .edit-chip-on')].map(c => c.textContent).join(',');
+  const sizes = [...document.querySelectorAll('#sizeChipsField .edit-chip-on')].map(c => c.textContent).join(',');
+  const conditions = [...document.querySelectorAll('#conditionChipsField .edit-chip-on')].map(c => c.textContent).join(',');
   return JSON.stringify({ title, activeType, category, brands, sizes, conditions });
 }
 
@@ -5662,7 +5760,15 @@ function saveExistingTemplate() {
     const titleInput = document.getElementById('editTitleInput');
     const title = titleInput ? titleInput.value : 'Template';
     const meta = getEditFormMeta();
-    updateListing(currentEditingListingId, { title: title, typeLabel: meta.typeLabel, brands: meta.brands, typeId: meta.typeId });
+    updateListing(currentEditingListingId, {
+      title: title,
+      typeLabel: meta.typeLabel,
+      brands: meta.brands,
+      typeId: meta.typeId,
+      categoryLabel: meta.categoryLabel,
+      sizes: meta.sizes,
+      conditions: meta.conditions,
+    });
   }
   currentEditingListingId = null;
   closeEditPageDirect();
@@ -5676,9 +5782,21 @@ function getEditFormMeta() {
   const brandsEl = document.getElementById('editBrands');
   const brandsText = brandsEl ? brandsEl.textContent : '';
   const brands = (brandsText && brandsText !== 'Brand(s)') ? brandsText : '';
+  const categoryEl = document.getElementById('editCategory');
+  const categoryLabel = categoryEl ? categoryEl.textContent : '';
   const ft = typeLabel ? fashionTypes.find(t => t.label.toLowerCase() === typeLabel.toLowerCase()) : null;
   const typeId = ft ? ft.id : null;
-  return { typeLabel, brands, typeId };
+  const isChocolate = /chocolate/i.test(categoryLabel || '') || typeId === 'chocolates';
+  const sizes = [...document.querySelectorAll('#sizeChipsField .edit-chip-on')].map(c => c.textContent);
+  const conditions = [...document.querySelectorAll('#conditionChipsField .edit-chip-on')].map(c => c.textContent);
+  return {
+    typeLabel,
+    brands,
+    typeId,
+    categoryLabel,
+    sizes: isChocolate ? null : (sizes.length > 0 ? sizes : null),
+    conditions: isChocolate ? null : (conditions.length > 0 ? conditions : null),
+  };
 }
 
 function saveDraft() {
@@ -5688,7 +5806,15 @@ function saveDraft() {
   const meta = getEditFormMeta();
 
   if (currentEditingListingId) {
-    updateListing(currentEditingListingId, { title: title, typeLabel: meta.typeLabel, brands: meta.brands, typeId: meta.typeId });
+    updateListing(currentEditingListingId, {
+      title: title,
+      typeLabel: meta.typeLabel,
+      brands: meta.brands,
+      typeId: meta.typeId,
+      categoryLabel: meta.categoryLabel,
+      sizes: meta.sizes,
+      conditions: meta.conditions,
+    });
     currentEditingListingId = null;
     closeEditPageDirect();
     setTimeout(() => { showToastMessage('Changes saved'); }, 450);
@@ -5697,7 +5823,17 @@ function saveDraft() {
     loader.querySelector('p').textContent = 'Saving draft…';
     loader.classList.add('visible');
 
-    const rec = createListingRecord({ title: title, type: 'template', status: 'draft', typeLabel: meta.typeLabel, brands: meta.brands, typeId: meta.typeId });
+    const rec = createListingRecord({
+      title: title,
+      type: 'template',
+      status: 'draft',
+      typeLabel: meta.typeLabel,
+      brands: meta.brands,
+      typeId: meta.typeId,
+      categoryLabel: meta.categoryLabel,
+      sizes: meta.sizes,
+      conditions: meta.conditions,
+    });
     addTemplateToDraftTab(title, rec.id);
     currentEditingListingId = null;
 
@@ -6221,8 +6357,12 @@ function addListingToShop(title) {
   return rec;
 }
 
-function addNewTemplateToShop(title) {
-  const iconSrc = currentEditingListingId ? ((findListing(currentEditingListingId) || {}).icon || 'icons/icon-tops.png') : 'icons/icon-tops.png';
+function addNewTemplateToShop(title, overrides) {
+  const opts = overrides || {};
+  const fallbackRec = currentEditingListingId ? findListing(currentEditingListingId) : null;
+  const fallbackTypeId = opts.typeId || (fallbackRec && fallbackRec.typeId) || null;
+  const fallbackType = fallbackTypeId ? fashionTypes.find(t => t.id === fallbackTypeId) : null;
+  const iconSrc = (opts.icon || (fallbackRec && fallbackRec.icon) || (fallbackType && fallbackType.icon) || 'icons/icon-tops.png');
   const rec = createListingRecord({
     type: 'template',
     title: title,
@@ -6231,6 +6371,13 @@ function addNewTemplateToShop(title) {
     origin: 'shop',
     status: 'active',
     _shopActive: true,
+    typeId: fallbackTypeId,
+    typeLabel: opts.typeLabel || (fallbackType && fallbackType.label) || '',
+    brands: opts.brands || '',
+    categoryLabel: opts.categoryLabel || '',
+    sizes: opts.sizes || null,
+    conditions: opts.conditions || null,
+    icon: iconSrc,
   });
 
   const list = document.getElementById('shopProductList');
@@ -6461,6 +6608,7 @@ function selectChip(el, group) {
     currentSizeMode = newMode;
     renderSizeChips();
     updateGeneratedTitle();
+    syncChocolateFieldVisibility();
   }
 }
 
@@ -6505,7 +6653,7 @@ function updateGeneratedTitle() {
 
 // Category bottom sheet
 const whatnotCategories = [
-  "Women's Contemporary", "Men's Fashion", "Sneakers", "Streetwear", "Designer",
+  "Women's Contemporary", "Women's Activewear", "Women's Shoes", "Chocolate", "Men's Fashion", "Sports Jerseys", "Sneakers", "Streetwear", "Designer",
   "Accessories", "Art", "Beauty", "Comics", "Electronics",
   "Funko", "Handbags", "Home & Garden", "Jewelry", "Shoes",
   "Sportswear", "Toys & Collectibles", "Trading Cards", "Vintage", "Watches"
@@ -6513,14 +6661,32 @@ const whatnotCategories = [
 
 const categoryConfig = {
   "Women's Contemporary": {
-    types: ['Tops', 'Leggings', 'Pants', 'Shorts', 'Skirts', 'Outerwear', 'Sets', 'Sports Bras', 'Accessories'],
+    types: ['Dresses', 'Intimates', 'Jeans', 'Jumpsuits', 'Loungewear', 'Outerwear', 'Pants', 'Sets', 'Shorts', 'Skirts', 'Sleepwear', 'Swimwear', 'Sweaters & Knits', 'Tops'],
     brands: ['Alo Yoga', 'Anthropologie', 'Aritzia', 'Babaton', 'Commense', 'COS', 'Eileen Fisher', 'Everlane', 'Farm Rio', 'Free People', 'Good American', 'H&M', 'J.Crew', 'Lulu Lemon', 'Madewell', 'Nordstrom', 'Princess Polly', 'Reformation', 'Skims', 'Theory', 'Urban Outfitters', 'Vince', 'Vuori', 'Zara'],
     defaultSizeMode: 'clothing',
     clothingSizes: ['OS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'],
   },
+  "Women's Activewear": {
+    types: ['Accessories', 'Leggings', 'Outerwear', 'Pants', 'Sets', 'Shorts', 'Skirts', 'Sports Bras', 'Tops'],
+    brands: ['Alo Yoga', 'Athleta', 'Beyond Yoga', 'Girlfriend Collective', 'Lululemon', 'Nike', 'Outdoor Voices', 'Sweaty Betty', 'Under Armour', 'Vuori'],
+    defaultSizeMode: 'clothing',
+    clothingSizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+  },
+  "Women's Shoes": {
+    types: ['Boots', 'Flats', 'Heels', 'Loafers', 'Sandals', 'Slippers', 'Sneakers'],
+    brands: ['Adidas', 'Aldo', 'Birkenstock', 'Converse', 'Dr. Martens', 'Nike', 'Sam Edelman', 'Steve Madden', 'Tory Burch', 'Vans'],
+    defaultSizeMode: 'shoes',
+    clothingSizes: ['OS'],
+  },
   "Men's Fashion": {
-    types: ['Shoes', 'Shirts', 'Pants', 'Jackets', 'Suits', 'Shorts', 'Activewear', 'Accessories'],
+    types: ['Accessories', 'Outerwear', 'Pants', 'Sets', 'Shorts', 'Suits', 'Tops', 'Underwear'],
     brands: ['Nike', 'Polo Ralph Lauren', 'J.Crew', 'Uniqlo', 'Zara', 'H&M', 'Banana Republic', 'Brooks Brothers', 'Bonobos', 'Levi\'s', 'Tommy Hilfiger', 'Calvin Klein', 'Hugo Boss', 'Lacoste', 'Patagonia', 'The North Face', 'Carhartt', 'Vineyard Vines', 'Todd Snyder', 'Reigning Champ'],
+    defaultSizeMode: 'clothing',
+    clothingSizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'],
+  },
+  "Sports Jerseys": {
+    types: ['Hats', 'Hoodies & Sweatshirts', 'Jerseys', 'Outerwear', 'Shorts', 'Tops'],
+    brands: ['Adidas', 'Champion', 'Fanatics', 'Majestic', 'Mitchell & Ness', 'NBA', 'NFL', 'NHL', 'Nike', 'Puma'],
     defaultSizeMode: 'clothing',
     clothingSizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'],
   },
@@ -6541,6 +6707,12 @@ const categoryConfig = {
     brands: ['Louis Vuitton', 'Gucci', 'Chanel', 'Prada', 'Hermes', 'Dior', 'Balenciaga', 'Bottega Veneta', 'Saint Laurent', 'Burberry', 'Fendi', 'Versace', 'Givenchy', 'Valentino', 'Celine', 'Loewe', 'Miu Miu', 'Tom Ford', 'Alexander McQueen', 'Cartier'],
     defaultSizeMode: 'clothing',
     clothingSizes: ['OS', 'XS', 'S', 'M', 'L', 'XL'],
+  },
+  "Chocolate": {
+    types: ['Chocolates'],
+    brands: ['Lindt', 'Ghirardelli', 'Godiva', 'Ferrero Rocher', 'Hershey', 'Cadbury', 'Toblerone', 'Dove', 'Guylian', 'Tony\'s Chocolonely'],
+    defaultSizeMode: 'accessories',
+    clothingSizes: ['OS'],
   },
   "_default": {
     types: ['Clothing', 'Shoes', 'Accessories', 'Bags', 'Jewelry', 'Other'],
@@ -6709,6 +6881,136 @@ function closeCategorySheet() {
   setTimeout(() => { sheet.style.display = 'none'; }, 350);
 }
 
+function openTypeCategorySheet(target) {
+  typeCategoryTarget = target === 'tpl' ? 'tpl' : 'step2';
+  typeCategoryView = 'root';
+  pendingCategoryAutoTypeIdsStep2 = null;
+  pendingCategoryAutoTypeIdsTpl = null;
+  const search = document.getElementById('typeCategorySearchField');
+  if (search) search.value = '';
+  renderTypeCategoryList();
+  const sheet = document.getElementById('typeCategorySheet');
+  sheet.style.display = 'block';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      sheet.classList.add('open');
+    });
+  });
+}
+
+function closeTypeCategorySheet() {
+  const sheet = document.getElementById('typeCategorySheet');
+  sheet.classList.remove('open');
+  setTimeout(() => { sheet.style.display = 'none'; }, 350);
+}
+
+function renderTypeCategoryList() {
+  const qEl = document.getElementById('typeCategorySearchField');
+  const q = qEl ? qEl.value.trim().toLowerCase() : '';
+  const activeCategory = typeCategoryTarget === 'tpl' ? tplPickerCategoryLabel : step2CategoryLabel;
+  const heading = document.getElementById('typeCategoryListHeading');
+  const isWomensL2 = typeCategoryView === 'womens-fashion-l2';
+  const headerTitle = document.getElementById('typeCategoryHeaderTitle');
+  const backBtn = document.getElementById('typeCategoryBackBtn');
+  const searchWrap = document.getElementById('typeCategorySearchWrap');
+  const recentSection = document.getElementById('typeCategoryRecentSection');
+  const divider = document.getElementById('typeCategoryDivider');
+  const headingWrap = document.getElementById('typeCategoryHeadingWrap');
+  if (headerTitle) headerTitle.textContent = isWomensL2 ? "Women's Fashion" : 'Select Category';
+  if (backBtn) backBtn.style.display = isWomensL2 ? 'flex' : 'none';
+  if (searchWrap) searchWrap.style.display = isWomensL2 ? 'none' : '';
+  if (recentSection) recentSection.style.display = isWomensL2 ? 'none' : '';
+  if (divider) divider.style.display = isWomensL2 ? 'none' : '';
+  if (headingWrap) headingWrap.style.display = isWomensL2 ? 'none' : '';
+  if (heading) heading.textContent = 'All Categories';
+  const recentWrap = document.getElementById('typeCategoryRecent');
+  if (recentWrap) {
+    recentWrap.innerHTML = recentTypeCategories.map(cat => `
+      <button onclick="selectTypeCategory('${cat.replace(/'/g, "\\'")}')" style="height:32px;padding:0 12px;border:none;border-radius:8px;background:#e7e7e7;font-family:var(--font);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;cursor:pointer;white-space:nowrap;flex-shrink:0">${cat}</button>
+    `).join('');
+  }
+  const rootWrap = document.getElementById('typeCategoryListRoot');
+  const l2Wrap = document.getElementById('typeCategoryListL2');
+  const track = document.getElementById('typeCategoryListTrack');
+  if (!rootWrap || !l2Wrap || !track) return;
+
+  const rootRows = TYPE_CATEGORY_ROOT.filter(cat => !q || cat.toLowerCase().includes(q));
+  rootWrap.innerHTML = rootRows.map(cat => `
+    <button onclick="${cat === "Women's Fashion" ? 'openWomensFashionL2(true)' : `selectTypeCategory('${cat.replace(/'/g, "\\'")}')`}" style="width:100%;height:56px;border:none;background:white;padding:0;display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+      <span style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;text-align:left">${cat}</span>
+      ${cat === "Women's Fashion"
+        ? '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#6f6f6f" stroke-width="1.5" stroke-linecap="round"><path d="M8 6l4 4-4 4"/></svg>'
+        : `<span style="width:20px;height:20px;border:1.5px solid ${cat === activeCategory ? '#1c1c1c' : '#b8b8b8'};border-radius:999px;display:flex;align-items:center;justify-content:center;box-sizing:border-box">${cat === activeCategory ? '<span style="width:10px;height:10px;border-radius:999px;background:#1c1c1c"></span>' : ''}</span>`
+      }
+    </button>
+  `).join('');
+
+  const l2Rows = WOMENS_FASHION_SUBCATEGORIES.filter(cat => !q || cat.toLowerCase().includes(q));
+  l2Wrap.innerHTML = `
+    ${l2Rows.map(cat => `
+      <button onclick="selectTypeCategory('${cat.replace(/'/g, "\\'")}')" style="width:100%;height:56px;border:none;background:white;padding:0;display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+        <span style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;text-align:left">${cat}</span>
+        <span style="width:20px;height:20px;border:1.5px solid ${cat === activeCategory ? '#1c1c1c' : '#b8b8b8'};border-radius:999px;display:flex;align-items:center;justify-content:center;box-sizing:border-box">${cat === activeCategory ? '<span style="width:10px;height:10px;border-radius:999px;background:#1c1c1c"></span>' : ''}</span>
+      </button>
+    `).join('')}
+  `;
+
+  track.style.transform = typeCategoryView === 'womens-fashion-l2' ? 'translateX(-50%)' : 'translateX(0)';
+}
+
+function openWomensFashionL2(open) {
+  typeCategoryView = open ? 'womens-fashion-l2' : 'root';
+  renderTypeCategoryList();
+}
+
+function selectTypeCategory(cat) {
+  if (cat === "Women's Fashion") {
+    openWomensFashionL2(true);
+    return;
+  }
+  const autoTypeIds = getAutoTemplateTypeIds(cat);
+  if (typeCategoryTarget === 'tpl') {
+    tplPickerCategoryLabel = cat;
+    tplPickerSelectedTypes.clear();
+    pendingCategoryAutoTypeIdsTpl = (autoTypeIds && autoTypeIds.length) ? [...autoTypeIds] : null;
+    if (!pendingCategoryAutoTypeIdsTpl) {
+      renderTypeList('tplTypePickerList', 'tplPick_', tplPickerSelectedTypes, 'toggleTplPickerType');
+    }
+    const cta = document.getElementById('tplTypePickerCta');
+    if (cta) {
+      if ((pendingCategoryAutoTypeIdsTpl && pendingCategoryAutoTypeIdsTpl.length > 0) || tplPickerSelectedTypes.size > 0) {
+        cta.disabled = false;
+        cta.style.background = '#f9dc00';
+        cta.style.color = '#161616';
+        cta.style.cursor = 'pointer';
+      } else {
+        cta.disabled = true;
+        cta.style.background = '#e0e0e0';
+        cta.style.color = '#999';
+        cta.style.cursor = 'not-allowed';
+      }
+    }
+  } else {
+    step2CategoryLabel = cat;
+    selectedTypes.clear();
+    pendingCategoryAutoTypeIdsStep2 = (autoTypeIds && autoTypeIds.length) ? [...autoTypeIds] : null;
+    if (!pendingCategoryAutoTypeIdsStep2) {
+      renderTypeList('step2TypeList', 'typeBtn_', selectedTypes, 'toggleType');
+      updateStep2Cta();
+    }
+  }
+  recentTypeCategories = [cat, ...recentTypeCategories.filter(c => c !== cat)].slice(0, 3);
+  syncTypeCategoryDisplays();
+  closeTypeCategorySheet();
+  if (typeCategoryTarget === 'tpl' && autoTypeIds && autoTypeIds.length) {
+    setTimeout(() => { confirmTplTypePicker(); }, 220);
+    return;
+  }
+  if (typeCategoryTarget === 'step2' && autoTypeIds && autoTypeIds.length) {
+    setTimeout(() => { showStep2Loader(); }, 220);
+  }
+}
+
 function applyCategoryConfig(categoryName) {
   const config = categoryConfig[categoryName] || categoryConfig['_default'];
 
@@ -6737,9 +7039,30 @@ function applyCategoryConfig(categoryName) {
   updateGeneratedTitle();
 }
 
+function syncChocolateFieldVisibility() {
+  const cat = (document.getElementById('editCategory') || {}).textContent || '';
+  const activeType = (document.querySelector('#typeChips .edit-chip-on') || {}).textContent || '';
+  const isChocolate = /chocolate/i.test(cat) || /chocolate/i.test(activeType);
+  const typeField = document.getElementById('typeChipsField');
+  const sizeField = document.getElementById('sizeChipsField');
+  const conditionField = document.getElementById('conditionChipsField');
+  if (typeField) typeField.style.display = isChocolate ? 'none' : '';
+  if (sizeField) sizeField.style.display = isChocolate ? 'none' : '';
+  if (conditionField) conditionField.style.display = isChocolate ? 'none' : '';
+}
+
 function selectCategory(cat) {
   document.getElementById('editCategory').textContent = cat;
   applyCategoryConfig(cat);
+  if (/chocolate/i.test(cat)) {
+    selectedSizes.clear();
+    renderSizeChips();
+    document.querySelectorAll('#conditionChipsField .edit-chip').forEach(c => {
+      c.classList.remove('edit-chip-on');
+      c.classList.add('edit-chip-off');
+    });
+  }
+  syncChocolateFieldVisibility();
   closeCategorySheet();
 }
 
@@ -6818,7 +7141,15 @@ function pricePageSave() {
       const titleInput = document.getElementById('editTitleInput');
       const title = titleInput ? titleInput.value : 'Template';
       const meta = getEditFormMeta();
-      updateListing(currentEditingListingId, { title: title, typeLabel: meta.typeLabel, brands: meta.brands, typeId: meta.typeId });
+      updateListing(currentEditingListingId, {
+        title: title,
+        typeLabel: meta.typeLabel,
+        brands: meta.brands,
+        typeId: meta.typeId,
+        categoryLabel: meta.categoryLabel,
+        sizes: meta.sizes,
+        conditions: meta.conditions,
+      });
 
       // Update row title on L1 templates page
       const l1Row = document.querySelector('#templatesL1List [data-listing-id="' + currentEditingListingId + '"]');
@@ -6851,7 +7182,17 @@ function pricePageSaveDraft() {
     const titleInput = document.getElementById('editTitleInput');
     const title = titleInput ? titleInput.value : 'Template';
     const meta = getEditFormMeta();
-    const rec = createListingRecord({ title: title, type: 'template', status: 'draft', typeLabel: meta.typeLabel, brands: meta.brands, typeId: meta.typeId });
+    const rec = createListingRecord({
+      title: title,
+      type: 'template',
+      status: 'draft',
+      typeLabel: meta.typeLabel,
+      brands: meta.brands,
+      typeId: meta.typeId,
+      categoryLabel: meta.categoryLabel,
+      sizes: meta.sizes,
+      conditions: meta.conditions,
+    });
     addTemplateToDraftTab(title, rec.id);
   }
   currentEditingListingId = null;
@@ -6943,20 +7284,21 @@ function publishListing() {
   loader.querySelector('p').textContent = (isEditing && !wasDraft) ? 'Saving changes…' : 'Publishing template…';
   loader.classList.add('visible');
 
-  // Resolve selected type label from chips
-  let selectedTypeLabel = '';
-  const typeChips = document.getElementById('typeChips');
-  if (typeChips) {
-    const activeChip = typeChips.querySelector('.edit-chip-on');
-    if (activeChip) selectedTypeLabel = activeChip.textContent;
-  }
-  const brandsText = document.getElementById('editBrands').textContent;
-  const brandsVal = (brandsText && brandsText !== 'Brand(s)') ? brandsText : '';
-
-  const pubFt = selectedTypeLabel ? fashionTypes.find(t => t.label.toLowerCase() === selectedTypeLabel.toLowerCase()) : null;
-  const pubTypeId = pubFt ? pubFt.id : null;
+  const meta = getEditFormMeta();
+  const selectedTypeLabel = meta.typeLabel;
+  const brandsVal = meta.brands;
+  const pubTypeId = meta.typeId;
   if (isEditing && currentEditingListingId) {
-    updateListing(currentEditingListingId, { title: publishedTitle, status: 'active', typeLabel: selectedTypeLabel, brands: brandsVal, typeId: pubTypeId });
+    updateListing(currentEditingListingId, {
+      title: publishedTitle,
+      status: 'active',
+      typeLabel: selectedTypeLabel,
+      brands: brandsVal,
+      typeId: pubTypeId,
+      categoryLabel: meta.categoryLabel,
+      sizes: meta.sizes,
+      conditions: meta.conditions,
+    });
   }
 
   if (editReturnTo === 'shop') {
@@ -6966,7 +7308,14 @@ function publishListing() {
 
     // If this is a brand new template (index -1), add it to the shop
     if (currentTemplateIndex === -1 && !isEditing) {
-      addNewTemplateToShop(publishedTitle);
+      addNewTemplateToShop(publishedTitle, {
+        typeId: pubTypeId,
+        typeLabel: selectedTypeLabel,
+        brands: brandsVal,
+        categoryLabel: meta.categoryLabel,
+        sizes: meta.sizes,
+        conditions: meta.conditions,
+      });
     }
 
     setTimeout(() => {
@@ -7324,6 +7673,14 @@ function selectSellerType(type) {
 
 const fashionTypes = [
   { id: 'tops', label: 'Tops', img: 'icons/type-tops.png', icon: 'icons/icon-tops.png' },
+  { id: 'dresses', label: 'Dresses', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'intimates', label: 'Intimates', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'jeans', label: 'Jeans', img: 'icons/type-pants.png', icon: 'icons/icon-pants.png' },
+  { id: 'jumpsuits', label: 'Jumpsuits', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'loungewear', label: 'Loungewear', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'sleepwear', label: 'Sleepwear', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'swimwear', label: 'Swimwear', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'sweatersknits', label: 'Sweaters & Knits', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
   { id: 'leggings', label: 'Leggings', img: 'icons/type-leggings.png', icon: 'icons/icon-leggings.png' },
   { id: 'pants', label: 'Pants', img: 'icons/type-pants.png', icon: 'icons/icon-pants.png' },
   { id: 'shorts', label: 'Shorts', img: 'icons/type-shorts.png', icon: 'icons/icon-shorts.png' },
@@ -7331,56 +7688,108 @@ const fashionTypes = [
   { id: 'outerwear', label: 'Outerwear', img: 'icons/type-outerwear.png', icon: 'icons/icon-outerwear.png' },
   { id: 'sets', label: 'Sets', img: 'icons/type-sets.png', icon: 'icons/icon-sets.png' },
   { id: 'sportsbras', label: 'Sports Bras', img: 'icons/type-sportsbras.png', icon: 'icons/icon-sportsbras.png' },
+  { id: 'boots', label: 'Boots', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'flats', label: 'Flats', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'heels', label: 'Heels', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'loafers', label: 'Loafers', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'sandals', label: 'Sandals', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'slippers', label: 'Slippers', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'sneakers', label: 'Sneakers', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'suits', label: 'Suits', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'underwear', label: 'Underwear', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'hats', label: 'Hats', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'hoodiessweatshirts', label: 'Hoodies & Sweatshirts', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'jerseys', label: 'Jerseys', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
   { id: 'accessories', label: 'Accessories', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
+  { id: 'chocolates', label: 'Chocolates', img: 'icons/type-accessories.png', icon: 'icons/icon-accessories.png' },
 ];
 let selectedTypes = new Set();
+let step2CategoryLabel = "Women's Contemporary";
+let tplPickerCategoryLabel = "Women's Contemporary";
+let typeCategoryTarget = 'step2';
+let recentTypeCategories = ["Women's Fashion", 'Chocolate', "Women's Contemporary"];
+let typeCategoryView = 'root';
+let pendingCategoryAutoTypeIdsStep2 = null;
+let pendingCategoryAutoTypeIdsTpl = null;
+
+const WOMENS_FASHION_SUBCATEGORIES = [
+  "Women's Contemporary",
+  "Women's Activewear",
+  "Women's Shoes",
+];
+
+const TYPE_CATEGORY_ROOT = [
+  "Women's Fashion",
+  'Chocolate',
+  "Men's Fashion",
+  'Sports Jerseys',
+  'Sneakers',
+  'Streetwear',
+  'Designer',
+  'Accessories',
+  'Art',
+  'Beauty',
+  'Comics',
+  'Electronics',
+  'Funko',
+  'Handbags',
+  'Home & Garden',
+  'Jewelry',
+  'Shoes',
+  'Sportswear',
+  'Toys & Collectibles',
+  'Trading Cards',
+  'Vintage',
+  'Watches',
+];
+
+const CATEGORY_TYPE_IDS = {
+  "Women's Fashion": ['dresses', 'intimates', 'jeans', 'jumpsuits', 'loungewear', 'outerwear', 'pants', 'sets', 'shorts', 'skirts', 'sleepwear', 'swimwear', 'sweatersknits', 'tops'],
+  "Women's Contemporary": ['dresses', 'intimates', 'jeans', 'jumpsuits', 'loungewear', 'outerwear', 'pants', 'sets', 'shorts', 'skirts', 'sleepwear', 'swimwear', 'sweatersknits', 'tops'],
+  "Women's Activewear": ['accessories', 'leggings', 'outerwear', 'pants', 'sets', 'shorts', 'skirts', 'sportsbras', 'tops'],
+  "Women's Shoes": ['boots', 'flats', 'heels', 'loafers', 'sandals', 'slippers', 'sneakers'],
+  "Men's Fashion": ['accessories', 'outerwear', 'pants', 'sets', 'shorts', 'suits', 'tops', 'underwear'],
+  "Sports Jerseys": ['hats', 'hoodiessweatshirts', 'jerseys', 'outerwear', 'shorts', 'tops'],
+  'Sneakers': ['sneakers'],
+  'Streetwear': ['tops', 'pants', 'shorts', 'outerwear', 'accessories'],
+  'Designer': ['tops', 'pants', 'outerwear', 'accessories'],
+  'Chocolate': ['chocolates'],
+};
+
+const TEMPLATE_THUMB_BG_ASSET = 'https://www.figma.com/api/mcp/asset/89a20fed-873d-4497-8112-d1c647a00873';
+const TEMPLATE_THUMB_ICON_ASSET = 'https://www.figma.com/api/mcp/asset/e29c7d55-e04b-45a0-8b16-10136a270651';
+
+function templateThumbLayersHTML() {
+  return `<img src="${TEMPLATE_THUMB_BG_ASSET}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.8">` +
+    `<div style="position:absolute;inset:33.33%"><img src="${TEMPLATE_THUMB_ICON_ASSET}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain"></div>`;
+}
 
 function typeThumbHTML(typeIdOrIcon, size) {
   const sz = size || 140;
-  const iconSz = Math.round(sz * 0.35);
-  let iconSrc = typeIdOrIcon;
-  if (typeIdOrIcon && !typeIdOrIcon.includes('/')) {
-    const ft = fashionTypes.find(t => t.id === typeIdOrIcon);
-    iconSrc = ft ? ft.icon : 'icons/icon-tops.png';
-  }
-  if (!iconSrc) iconSrc = 'icons/icon-tops.png';
   return `<div style="width:${sz}px;height:${sz}px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative">` +
-    `<img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">` +
-    `<div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div>` +
-    `<img src="${iconSrc}" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${iconSz}px;height:${iconSz}px;object-fit:contain">` +
+    templateThumbLayersHTML() +
     `</div>`;
 }
 
 function configureStep2() {
-  const grid = document.getElementById('step2Grid');
   selectedTypes.clear();
+  syncTypeCategoryDisplays();
   updateStep2Cta();
-  grid.innerHTML = fashionTypes.map(t => `
-    <button id="typeBtn_${t.id}" onclick="toggleType('${t.id}')" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px 8px 24px;background:#f3f3f3;border:4px solid transparent;border-radius:8px;cursor:pointer;font-family:var(--font);transition:all 0.15s ease">
-      <div style="font-size:12px;font-weight:600;line-height:16px;color:#161616;text-align:center;width:100%">${t.label}</div>
-      <img src="${t.img}" alt="" style="width:65px;height:65px;object-fit:contain;pointer-events:none">
-      <div class="type-card-ring" style="display:none;position:absolute;inset:-4px;border-radius:8px;border:2px solid #2d2d2d;pointer-events:none"></div>
-    </button>
-  `).join('');
+  renderTypeList('step2TypeList', 'typeBtn_', selectedTypes, 'toggleType');
 }
 
 function toggleType(id) {
   if (selectedTypes.has(id)) selectedTypes.delete(id);
   else selectedTypes.add(id);
-
-  fashionTypes.forEach(t => {
-    const btn = document.getElementById('typeBtn_' + t.id);
-    if (!btn) return;
-    const ring = btn.querySelector('.type-card-ring');
-    if (ring) ring.style.display = selectedTypes.has(t.id) ? 'block' : 'none';
-  });
+  refreshTypeListChecks('typeBtn_', selectedTypes);
   updateStep2Cta();
 }
 
 function updateStep2Cta() {
   const cta = document.getElementById('step2Cta');
   if (!cta) return;
-  if (selectedTypes.size > 0) {
+  const hasAutoFlow = !!getAutoTemplateTypeIds(step2CategoryLabel);
+  if (selectedTypes.size > 0 || hasAutoFlow) {
     cta.disabled = false;
     cta.style.background = '#f9dc00';
     cta.style.color = '#161616';
@@ -7391,6 +7800,67 @@ function updateStep2Cta() {
     cta.style.color = '#999';
     cta.style.cursor = 'not-allowed';
   }
+}
+
+function syncTypeCategoryDisplays() {
+  const step2Display = document.getElementById('step2CategoryDisplay');
+  if (step2Display) step2Display.textContent = step2CategoryLabel;
+  const tplDisplay = document.getElementById('tplCategoryDisplay');
+  if (tplDisplay) tplDisplay.textContent = tplPickerCategoryLabel;
+}
+
+function getTypesForCategory(categoryLabel) {
+  const ids = CATEGORY_TYPE_IDS[categoryLabel];
+  if (ids && ids.length && categoryLabel !== 'Chocolate') {
+    const mapped = ids.map(id => fashionTypes.find(t => t.id === id)).filter(Boolean);
+    if (mapped.length) return mapped;
+  }
+  return [];
+}
+
+function getAutoTemplateTypeIds(categoryLabel) {
+  // Only auto-generate when the category does not expose a type picker.
+  if (categoryLabel === 'Chocolate') return ['chocolates'];
+  const ids = CATEGORY_TYPE_IDS[categoryLabel];
+  if (!ids || ids.length === 0) return ['accessories'];
+  return null;
+}
+
+function getTargetCategoryLabel(containerId) {
+  return containerId === 'tplTypePickerList' ? tplPickerCategoryLabel : step2CategoryLabel;
+}
+
+function renderTypeList(containerId, btnPrefix, selectedSet, toggleFnName) {
+  const list = document.getElementById(containerId);
+  if (!list) return;
+  const categoryLabel = getTargetCategoryLabel(containerId);
+  const typesForCategory = getTypesForCategory(categoryLabel);
+  if (typesForCategory.length === 0) {
+    list.innerHTML = '';
+    return;
+  }
+  list.innerHTML = typesForCategory.map((t, idx) => `
+    <button id="${btnPrefix}${t.id}" onclick="${toggleFnName}('${t.id}')" style="height:56px;border:none;background:white;display:flex;align-items:center;gap:12px;padding:12px 0;cursor:pointer;width:100%;text-align:left;border-bottom:${idx === typesForCategory.length - 1 ? 'none' : '1px solid rgba(0,0,0,0.1)'}">
+      <div style="flex:1;font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">${t.label}</div>
+      <div class="type-list-check" style="width:20px;height:20px;border-radius:4px;border:1px solid ${selectedSet.has(t.id) ? '#1c1c1c' : '#aaa'};background:${selectedSet.has(t.id) ? '#1c1c1c' : 'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s ease">
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:${selectedSet.has(t.id) ? 1 : 0};transition:opacity 0.15s ease"><path d="M4 10l4 4 8-8"/></svg>
+      </div>
+    </button>
+  `).join('');
+}
+
+function refreshTypeListChecks(btnPrefix, selectedSet) {
+  document.querySelectorAll(`[id^="${btnPrefix}"]`).forEach(btn => {
+    const check = btn.querySelector('.type-list-check');
+    const icon = check ? check.querySelector('svg') : null;
+    const id = btn.id.replace(btnPrefix, '');
+    const on = selectedSet.has(id);
+    if (check) {
+      check.style.borderColor = on ? '#1c1c1c' : '#aaa';
+      check.style.background = on ? '#1c1c1c' : 'transparent';
+    }
+    if (icon) icon.style.opacity = on ? '1' : '0';
+  });
 }
 
 function configureStep3() {
@@ -7656,10 +8126,12 @@ function populateShopWithTemplates() {
 
   selected.forEach((t, i) => {
     if (!templateEdits[i]) {
+      const isChocolateType = t.id === 'chocolates';
       templateEdits[i] = {
         title: 'Assorted ' + t.label,
         brands: null,
-        sizes: templateSizes[t.id] || null,
+        sizes: isChocolateType ? null : (templateSizes[t.id] || null),
+        conditions: isChocolateType ? null : ['New w Tag'],
       };
     }
     const existing = listingStore.find(l => l.type === 'template' && l.typeId === t.id && l.origin === 'shop');
@@ -7667,6 +8139,7 @@ function populateShopWithTemplates() {
       existing.title = templateEdits[i].title;
       existing.brands = templateEdits[i].brands;
       existing.sizes = templateEdits[i].sizes;
+      existing.conditions = templateEdits[i].conditions;
       existing._shopActive = true;
       existing._shopIndex = i;
     } else {
@@ -7676,7 +8149,8 @@ function populateShopWithTemplates() {
         subtitle: 'Template',
         price: '$1',
         brands: templateEdits[i].brands,
-        sizes: templateEdits[i].sizes || templateSizes[t.id] || null,
+        sizes: t.id === 'chocolates' ? null : (templateEdits[i].sizes || templateSizes[t.id] || null),
+        conditions: templateEdits[i].conditions,
         typeId: t.id,
         origin: 'shop',
         status: 'active',
@@ -7773,6 +8247,8 @@ function openOnboardingStep2() {
     openEduStep1();
     return;
   }
+  step2CategoryLabel = "Women's Contemporary";
+  syncTypeCategoryDisplays();
   configureStep2();
 
   const step1 = document.getElementById('onboardStep1');
@@ -7828,6 +8304,10 @@ function showStep2Loader() {
   }, 250);
 
   setTimeout(() => {
+    if (pendingCategoryAutoTypeIdsStep2 && pendingCategoryAutoTypeIdsStep2.length > 0) {
+      selectedTypes = new Set(pendingCategoryAutoTypeIdsStep2);
+      pendingCategoryAutoTypeIdsStep2 = null;
+    }
     loader.style.display = 'none';
     loader.style.opacity = '';
     loader.style.transition = '';
@@ -8043,6 +8523,10 @@ function dismissEduTip() {
 let currentLiveTemplate = null;
 let selectedBrand = null;
 let selectedSize = null;
+let selectedCondition = null;
+let currentLiveCategoryLabel = "Women's Contemporary";
+let currentLiveBaseTitle = '';
+let liveShowHasSizeSection = true;
 let liveShowFirstTime = true;
 let liveTipActive = 0;
 let shopSelectOptionTipShown = false;
@@ -8185,7 +8669,8 @@ function dismissLiveTip(num) {
     setTimeout(() => { tip.style.display = 'none'; }, 300);
   }
   liveTipActive = 0;
-  if (num === 1) setTimeout(() => showLiveTip(2), 500);
+  if (num === 1 && liveShowHasSizeSection) setTimeout(() => showLiveTip(2), 500);
+  if (num === 1 && !liveShowHasSizeSection) setTimeout(() => showLiveTip(3), 500);
   if (num === 2) setTimeout(() => showLiveTip(3), 500);
 }
 
@@ -8317,6 +8802,14 @@ function confirmDeleteListing() {
 
 const templateBrands = {
   tops: [],
+  dresses: [],
+  intimates: [],
+  jeans: [],
+  jumpsuits: [],
+  loungewear: [],
+  sleepwear: [],
+  swimwear: [],
+  sweatersknits: [],
   leggings: [],
   pants: [],
   shorts: [],
@@ -8324,11 +8817,32 @@ const templateBrands = {
   outerwear: [],
   sets: [],
   sportsbras: [],
+  boots: [],
+  flats: [],
+  heels: [],
+  loafers: [],
+  sandals: [],
+  slippers: [],
+  sneakers: [],
+  suits: [],
+  underwear: [],
+  hats: [],
+  hoodiessweatshirts: [],
+  jerseys: [],
   accessories: [],
+  chocolates: [],
 };
 
 const templateSizes = {
   tops: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+  dresses: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+  intimates: ['XS', 'S', 'M', 'L', 'XL'],
+  jeans: ['24', '25', '26', '27', '28', '29', '30', '31', '32'],
+  jumpsuits: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+  loungewear: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+  sleepwear: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+  swimwear: ['XS', 'S', 'M', 'L', 'XL'],
+  sweatersknits: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
   leggings: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
   pants: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
   shorts: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
@@ -8336,7 +8850,20 @@ const templateSizes = {
   outerwear: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
   sets: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
   sportsbras: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+  boots: ['6', '6.5', '7', '7.5', '8', '8.5', '9', '9.5', '10', '11'],
+  flats: ['5', '5.5', '6', '6.5', '7', '7.5', '8', '8.5', '9', '10'],
+  heels: ['5', '5.5', '6', '6.5', '7', '7.5', '8', '8.5', '9', '10'],
+  loafers: ['6', '6.5', '7', '7.5', '8', '8.5', '9', '9.5', '10', '11'],
+  sandals: ['5', '6', '7', '8', '9', '10', '11'],
+  slippers: ['5', '6', '7', '8', '9', '10', '11'],
+  sneakers: ['5', '5.5', '6', '6.5', '7', '7.5', '8', '8.5', '9', '9.5', '10', '11'],
+  suits: ['36R', '38R', '40R', '42R', '44R', '46R'],
+  underwear: ['S', 'M', 'L', 'XL', '2XL'],
+  hats: ['One Size'],
+  hoodiessweatshirts: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'],
+  jerseys: ['S', 'M', 'L', 'XL', '2XL', '3XL'],
   accessories: ['One Size'],
+  chocolates: [],
 };
 
 let currentLiveShopIndex = -1;
@@ -8355,6 +8882,7 @@ function createListingRecord(overrides) {
     price: '$1',
     brands: null,
     sizes: null,
+    conditions: null,
     img: null,
     icon: null,
     status: 'draft',        // 'draft' | 'active'
@@ -8437,12 +8965,10 @@ function refreshAllViews(listingId) {
     const pinnedPrice = document.getElementById('pinnedPrice');
     if (pinnedTitle) pinnedTitle.textContent = record.title;
     if (pinnedPrice) pinnedPrice.textContent = record.price;
-    if (record.icon) {
+    if (record.type === 'template') {
       const pinnedThumb = document.getElementById('pinnedThumb');
       if (pinnedThumb) {
-        const sz = 48;
-        const iconSz = Math.round(sz * 0.35);
-        pinnedThumb.innerHTML = `<img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div><img src="${record.icon}" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${iconSz}px;height:${iconSz}px;object-fit:contain">`;
+        pinnedThumb.innerHTML = templateThumbLayersHTML();
       }
     }
   }
@@ -8478,6 +9004,9 @@ function saveTemplateEdits(templateIndex) {
   const titleInput = document.getElementById('editTitleInput');
   const brandsText = document.getElementById('editBrands').textContent;
   const sizeChips = [...document.querySelectorAll('#sizeChipsField .edit-chip-on')].map(c => c.textContent);
+  const conditionChips = [...document.querySelectorAll('#conditionChipsField .edit-chip-on')].map(c => c.textContent);
+  const categoryLabel = (document.getElementById('editCategory') || {}).textContent || '';
+  const isChocolate = /chocolate/i.test(categoryLabel);
 
   let brands = [];
   if (brandsText && brandsText !== 'Brand(s)') {
@@ -8489,7 +9018,9 @@ function saveTemplateEdits(templateIndex) {
   templateEdits[templateIndex] = {
     title: newTitle,
     brands: brands.length > 0 ? brands : null,
-    sizes: sizeChips.length > 0 ? sizeChips : null,
+    sizes: (!isChocolate && sizeChips.length > 0) ? sizeChips : null,
+    conditions: (!isChocolate && conditionChips.length > 0) ? conditionChips : null,
+    categoryLabel: categoryLabel || null,
   };
 
   updateShopListingTitle(templateIndex);
@@ -8498,7 +9029,9 @@ function saveTemplateEdits(templateIndex) {
     updateListing(currentEditingListingId, {
       title: newTitle,
       brands: brands.length > 0 ? brands : null,
-      sizes: sizeChips.length > 0 ? sizeChips : null,
+      sizes: (!isChocolate && sizeChips.length > 0) ? sizeChips : null,
+      conditions: (!isChocolate && conditionChips.length > 0) ? conditionChips : null,
+      categoryLabel: categoryLabel || null,
     });
   }
 }
@@ -8520,6 +9053,8 @@ function openLiveShow(templateIndex) {
   let tpl = selected[templateIndex];
   selectedBrand = null;
   selectedSize = null;
+  selectedCondition = null;
+  liveShowHasSizeSection = true;
 
   // Resolve data from the listing store — prefer store's typeId (may have been edited)
   const shopRow = document.querySelectorAll('#shopProductList [data-listing-id]')[templateIndex];
@@ -8538,8 +9073,15 @@ function openLiveShow(templateIndex) {
     tpl = selected[0] || { id: 'tops', label: 'Tops', img: 'icons/type-tops.png' };
   }
   currentLiveTemplate = tpl;
+  let isChocolate = tpl.id === 'chocolates';
 
   const edits = templateEdits[templateIndex];
+  currentLiveCategoryLabel = (storeRec && storeRec.categoryLabel) || (edits && edits.categoryLabel) || (isChocolate ? 'Chocolate' : "Women's Contemporary");
+  isChocolate = isChocolate
+    || /chocolate/i.test(currentLiveCategoryLabel || '')
+    || /chocolate/i.test((storeRec && storeRec.title) || '')
+    || /chocolate/i.test((edits && edits.title) || '')
+    || /chocolate/i.test(tpl.label || '');
   let brands, hasBrands;
   if (storeRec && storeRec.brands && storeRec.brands.length > 0) {
     hasBrands = true;
@@ -8554,54 +9096,96 @@ function openLiveShow(templateIndex) {
     hasBrands = brands.length > 0;
   }
 
-  let sizes;
-  if (storeRec && storeRec.sizes && storeRec.sizes.length > 0) {
-    sizes = storeRec.sizes;
-  } else if (edits) {
-    sizes = edits.sizes || templateSizes[tpl.id] || ['One Size'];
-  } else {
-    sizes = templateSizes[tpl.id] || ['One Size'];
+  let sizes = [];
+  if (!isChocolate) {
+    if (storeRec) {
+      if (storeRec.sizes && storeRec.sizes.length > 0) {
+        const raw = storeRec.sizes;
+        sizes = Array.isArray(raw) ? raw : raw.split(',').map(s => s.trim()).filter(Boolean);
+      } else if (edits && edits.sizes && edits.sizes.length > 0) {
+        sizes = edits.sizes;
+      } else {
+        sizes = [];
+      }
+    } else if (edits) {
+      sizes = edits.sizes || templateSizes[tpl.id] || ['One Size'];
+    } else {
+      sizes = templateSizes[tpl.id] || ['One Size'];
+    }
   }
 
-  let title;
+  let conditions = [];
+  if (!isChocolate && storeRec) {
+    if (storeRec.conditions && storeRec.conditions.length > 0) {
+      const raw = storeRec.conditions;
+      conditions = Array.isArray(raw) ? raw : raw.split(',').map(c => c.trim()).filter(Boolean);
+    } else if (edits && edits.conditions && edits.conditions.length > 0) {
+      conditions = edits.conditions;
+    } else {
+      conditions = [];
+    }
+  } else if (!isChocolate && edits && edits.conditions && edits.conditions.length > 0) {
+    conditions = edits.conditions;
+  } else if (!isChocolate) {
+    conditions = ['New w Tag'];
+  }
+
+  currentLiveBaseTitle = '';
   if (storeRec && storeRec.title) {
-    title = storeRec.title;
+    currentLiveBaseTitle = storeRec.title.replace(/\s-\s[^-]+$/, '').replace(/:\s.*$/, '');
   } else if (edits && edits.title) {
-    title = edits.title;
-  } else if (hasBrands) {
-    title = 'Assorted ' + tpl.label + ': ' + brands[0] + ' - Women\'s Contemporary';
+    currentLiveBaseTitle = edits.title.replace(/\s-\s[^-]+$/, '').replace(/:\s.*$/, '');
   } else {
-    title = 'Assorted ' + tpl.label + ' - Women\'s Contemporary';
+    currentLiveBaseTitle = 'Assorted ' + tpl.label;
   }
 
   const liveTitleEl = document.getElementById('liveProductTitle');
-  liveTitleEl.textContent = title;
+  liveTitleEl.textContent = currentLiveBaseTitle;
   liveTitleEl.dataset.listingId = shopRow ? shopRow.dataset.listingId : '';
-  document.getElementById('liveProductAttrs').textContent = sizes[0] + ' • New w Tag';
 
   const liveIcon = tpl.icon || 'icons/icon-tops.png';
   const liveImgEl = document.getElementById('liveProductImg');
   if (liveImgEl) liveImgEl.src = liveIcon;
 
   selectedBrand = hasBrands ? brands[0] : null;
-  selectedSize = sizes[0];
+  selectedSize = sizes.length > 0 ? sizes[0] : null;
+  selectedCondition = conditions.length > 0 ? conditions[0] : null;
+  liveShowHasSizeSection = sizes.length > 0;
 
   const brandSection = document.getElementById('liveBrandSection');
   const sizeSection = document.getElementById('liveSizeSection');
   if (hasBrands) {
     brandSection.style.display = '';
-    sizeSection.style.borderRadius = '0 0 8px 8px';
+    brandSection.style.borderRadius = liveShowHasSizeSection ? '8px 8px 0 0' : '8px';
+    brandSection.style.borderBottom = liveShowHasSizeSection ? 'none' : '1px solid #545454';
     document.getElementById('liveBrandChips').innerHTML = brands.map((b, idx) =>
       `<div onclick="selectLiveBrand(this,'${b}')" style="padding:8px 12px;border-radius:8px;background:${idx === 0 ? '#f3f3f3' : 'rgba(255,255,255,0.1)'};backdrop-filter:blur(32px);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:${idx === 0 ? '#1c1c1c' : 'white'};cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background 0.15s,color 0.15s">${b}</div>`
     ).join('') + `<div style="padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.1);backdrop-filter:blur(32px);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer"><svg width="16" height="16" viewBox="0 0 16 16" fill="white"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg></div>`;
   } else {
     brandSection.style.display = 'none';
-    sizeSection.style.borderRadius = '8px';
+    brandSection.style.borderBottom = 'none';
   }
 
-  document.getElementById('liveSizeChips').innerHTML = sizes.map((s, idx) =>
-    `<div onclick="selectLiveSize(this,'${s}')" style="padding:8px 12px;border-radius:8px;background:${idx === 0 ? '#f3f3f3' : 'rgba(255,255,255,0.1)'};backdrop-filter:blur(32px);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:${idx === 0 ? '#1c1c1c' : 'white'};cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background 0.15s,color 0.15s">${s}</div>`
-  ).join('') + `<div style="padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.1);backdrop-filter:blur(32px);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer"><svg width="16" height="16" viewBox="0 0 16 16" fill="white"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg></div>`;
+  if (liveShowHasSizeSection) {
+    sizeSection.style.display = '';
+    sizeSection.style.borderRadius = hasBrands ? '0 0 8px 8px' : '8px';
+    document.getElementById('liveSizeChips').innerHTML = sizes.map((s, idx) =>
+      `<div onclick="selectLiveSize(this,'${s}')" style="padding:8px 12px;border-radius:8px;background:${idx === 0 ? '#f3f3f3' : 'rgba(255,255,255,0.1)'};backdrop-filter:blur(32px);font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:${idx === 0 ? '#1c1c1c' : 'white'};cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background 0.15s,color 0.15s">${s}</div>`
+    ).join('') + `<div style="padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.1);backdrop-filter:blur(32px);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer"><svg width="16" height="16" viewBox="0 0 16 16" fill="white"><circle cx="3" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="13" cy="8" r="1.5"/></svg></div>`;
+  } else {
+    sizeSection.style.display = 'none';
+    document.getElementById('liveSizeChips').innerHTML = '';
+  }
+
+  const selectionUI = document.getElementById('liveSelectionUI');
+  selectionUI.style.display = (hasBrands || liveShowHasSizeSection) ? '' : 'none';
+  updateLiveAttrs();
+
+  // No selectable attributes -> skip overlay and pin immediately.
+  if (!hasBrands && !liveShowHasSizeSection) {
+    pinListingDirectly(templateIndex, shopRow, storeRec);
+    return;
+  }
 
   clearAllLiveTips();
 
@@ -8653,15 +9237,15 @@ function selectLiveSize(el, size) {
 function updateLiveAttrs() {
   const parts = [];
   if (selectedSize) parts.push(selectedSize);
-  parts.push('New w Tag');
+  if (selectedCondition) parts.push(selectedCondition);
   document.getElementById('liveProductAttrs').textContent = parts.join(' • ');
   if (currentLiveTemplate) {
-    const edits = templateEdits[currentLiveShopIndex];
-    const baseTitle = (edits && edits.title) ? edits.title.replace(/:\s.*$/, '') : currentLiveTemplate.label;
+    const baseTitle = currentLiveBaseTitle || currentLiveTemplate.label;
+    const categorySuffix = currentLiveCategoryLabel ? (' - ' + currentLiveCategoryLabel) : '';
     if (selectedBrand) {
-      document.getElementById('liveProductTitle').textContent = baseTitle + ': ' + selectedBrand + ' - Women\'s Contemporary';
+      document.getElementById('liveProductTitle').textContent = baseTitle + ': ' + selectedBrand + categorySuffix;
     } else {
-      document.getElementById('liveProductTitle').textContent = baseTitle + ' - Women\'s Contemporary';
+      document.getElementById('liveProductTitle').textContent = baseTitle + categorySuffix;
     }
   }
 }
@@ -8684,19 +9268,26 @@ function pinListingDirectly(idx, shopRow, storeRec) {
   if (storeRec) storeRec.pinned = true;
 
   const title = storeRec ? storeRec.title : (shopRow.dataset.title || 'Listing');
-  const attrs = (storeRec && storeRec.sizes && storeRec.sizes[0] ? storeRec.sizes[0] : 'OS') + ' • New w Tag';
+  const directParts = [];
+  if (storeRec && storeRec.sizes) {
+    const rawSizes = Array.isArray(storeRec.sizes) ? storeRec.sizes : String(storeRec.sizes).split(',').map(s => s.trim()).filter(Boolean);
+    if (rawSizes.length > 0) directParts.push(rawSizes[0]);
+  }
+  if (storeRec && storeRec.conditions) {
+    const rawConditions = Array.isArray(storeRec.conditions) ? storeRec.conditions : String(storeRec.conditions).split(',').map(c => c.trim()).filter(Boolean);
+    if (rawConditions.length > 0) directParts.push(rawConditions[0]);
+  }
+  const attrs = directParts.join(' • ');
   document.getElementById('pinnedTitle').textContent = title;
   document.getElementById('pinnedAttrs').textContent = attrs;
 
   const tpl = storeRec && storeRec.typeId ? fashionTypes.find(ft => ft.id === storeRec.typeId) : null;
   currentLiveTemplate = tpl || null;
   const pinnedThumbRestore = document.getElementById('pinnedThumb');
-  if (pinnedThumbRestore && storeRec && storeRec.icon) {
-    const sz = 48, iconSz = Math.round(sz * 0.35);
-    pinnedThumbRestore.innerHTML = `<img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div><img src="${storeRec.icon}" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${iconSz}px;height:${iconSz}px;object-fit:contain">`;
-  } else if (pinnedThumbRestore && tpl && tpl.icon) {
-    const sz = 48, iconSz = Math.round(sz * 0.35);
-    pinnedThumbRestore.innerHTML = `<img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div><img src="${tpl.icon}" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${iconSz}px;height:${iconSz}px;object-fit:contain">`;
+  if (pinnedThumbRestore && storeRec && storeRec.type === 'template') {
+    pinnedThumbRestore.innerHTML = templateThumbLayersHTML();
+  } else if (pinnedThumbRestore && tpl) {
+    pinnedThumbRestore.innerHTML = templateThumbLayersHTML();
   }
 
   const inner = document.getElementById('shopSheetInner');
@@ -8763,16 +9354,10 @@ function pinProduct() {
     const pinnedImgEl = document.getElementById('pinnedImg');
     if (pinnedThumb && pinnedImgEl) {
       const rec = pinnedRow ? findListing(parseInt(pinnedRow.dataset.listingId)) : null;
-      if (rec && rec.type === 'template' && rec.icon) {
-        pinnedThumb.innerHTML = '';
-        const sz = 48;
-        const iconSz = Math.round(sz * 0.35);
-        pinnedThumb.innerHTML = `<img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div><img src="${rec.icon}" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${iconSz}px;height:${iconSz}px;object-fit:contain">`;
-      } else if (currentLiveTemplate && currentLiveTemplate.icon) {
-        pinnedThumb.innerHTML = '';
-        const sz = 48;
-        const iconSz = Math.round(sz * 0.35);
-        pinnedThumb.innerHTML = `<img src="icons/thumb-bg.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.4)"></div><img src="${currentLiveTemplate.icon}" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${iconSz}px;height:${iconSz}px;object-fit:contain">`;
+      if (rec && rec.type === 'template') {
+        pinnedThumb.innerHTML = templateThumbLayersHTML();
+      } else if (currentLiveTemplate) {
+        pinnedThumb.innerHTML = templateThumbLayersHTML();
       } else {
         pinnedThumb.style.background = 'rgba(255,255,255,0.1)';
         pinnedThumb.innerHTML = '<img id="pinnedImg" src="" style="width:100%;height:100%;object-fit:cover;display:none" alt="">';
@@ -8845,9 +9430,11 @@ function openListingDetail(idx) {
   document.getElementById('detailSubtitle').textContent = '1 Available';
   document.getElementById('detailPrice').textContent = '$1';
 
-  const detailIcon = tpl ? (tpl.icon || 'icons/icon-tops.png') : 'icons/icon-tops.png';
+  const detailIcon = TEMPLATE_THUMB_ICON_ASSET;
   const detailImgEl = document.getElementById('detailHeroImg');
   if (detailImgEl) detailImgEl.src = detailIcon;
+  const detailBgEl = document.getElementById('detailHeroBg');
+  if (detailBgEl) detailBgEl.src = TEMPLATE_THUMB_BG_ASSET;
 
   const page = document.getElementById('listingDetailPage');
   const shopInner = document.getElementById('shopSheetInner');
@@ -9155,14 +9742,8 @@ function toggleConsistentTpl() {
 function openTplTypePicker(returnTo) {
   tplPickerReturnTo = returnTo;
   tplPickerSelectedTypes.clear();
-  const grid = document.getElementById('tplTypePickerGrid');
-  grid.innerHTML = fashionTypes.map(ft => `
-    <button id="tplPick_${ft.id}" onclick="toggleTplPickerType('${ft.id}')" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px 8px 24px;background:#f3f3f3;border:4px solid transparent;border-radius:8px;cursor:pointer;font-family:var(--font);transition:all 0.15s ease">
-      <div style="font-size:12px;font-weight:600;line-height:16px;color:#161616;text-align:center;width:100%">${ft.label}</div>
-      <img src="${ft.img}" alt="" style="width:65px;height:65px;object-fit:contain;pointer-events:none">
-      <div class="type-card-ring" style="display:none;position:absolute;inset:-4px;border-radius:8px;border:2px solid #2d2d2d;pointer-events:none"></div>
-    </button>
-  `).join('');
+  syncTypeCategoryDisplays();
+  renderTypeList('tplTypePickerList', 'tplPick_', tplPickerSelectedTypes, 'toggleTplPickerType');
   const cta = document.getElementById('tplTypePickerCta');
   cta.disabled = true;
   cta.style.background = '#e0e0e0';
@@ -9189,12 +9770,7 @@ function toggleTplPickerType(typeId) {
   } else {
     tplPickerSelectedTypes.add(typeId);
   }
-  fashionTypes.forEach(ft => {
-    const btn = document.getElementById('tplPick_' + ft.id);
-    if (!btn) return;
-    const ring = btn.querySelector('.type-card-ring');
-    if (ring) ring.style.display = tplPickerSelectedTypes.has(ft.id) ? 'block' : 'none';
-  });
+  refreshTypeListChecks('tplPick_', tplPickerSelectedTypes);
   const cta = document.getElementById('tplTypePickerCta');
   const count = tplPickerSelectedTypes.size;
   if (count > 0) {
@@ -9218,6 +9794,10 @@ function closeTplTypePicker() {
 }
 
 function confirmTplTypePicker() {
+  if (tplPickerSelectedTypes.size === 0 && pendingCategoryAutoTypeIdsTpl && pendingCategoryAutoTypeIdsTpl.length > 0) {
+    tplPickerSelectedTypes = new Set(pendingCategoryAutoTypeIdsTpl);
+    pendingCategoryAutoTypeIdsTpl = null;
+  }
   const count = tplPickerSelectedTypes.size;
   if (count === 0) return;
   const picker = document.getElementById('tplTypePicker');
@@ -9882,7 +10462,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/2/26 @ 9:30pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/14/26 @ 2:35pm';
 document.getElementById('protoTimestamp').textContent = PROTO_TIMESTAMP;
 
   const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/templates-nux/v3.html';
