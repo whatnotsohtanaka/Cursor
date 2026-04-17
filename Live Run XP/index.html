@@ -2891,7 +2891,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/17/26 @ 2:45pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/17/26 @ 3:28pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -3338,13 +3338,13 @@
                             <span class="live-show__attr-label-required">*</span>
                           </div>
                           <div class="live-show__attr-chips">
-                            <button type="button" class="live-show__attr-chip is-selected" data-attr="size" data-value="9m">9M</button>
-                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="9.5m">9.5M</button>
-                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="10m">10M</button>
-                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="10.5m">10.5M</button>
-                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="11m">11M</button>
-                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="11.5m">11.5M</button>
-                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="12m">12M</button>
+                            <button type="button" class="live-show__attr-chip is-selected" data-attr="size" data-value="9m" data-price="1">9M</button>
+                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="9.5m" data-price="1">9.5M</button>
+                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="10m" data-price="5">10M</button>
+                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="10.5m" data-price="8">10.5M</button>
+                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="11m" data-price="10">11M</button>
+                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="11.5m" data-price="12">11.5M</button>
+                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="12m" data-price="15">12M</button>
                           </div>
                         </div>
                       </div>
@@ -4579,7 +4579,8 @@
         }).join('');
       }
       
-      if (priceEl) priceEl.textContent = price;
+      // Skip price update for variants (they have dynamic pricing based on selected attributes)
+      if (priceEl && type !== 'variant') priceEl.textContent = price;
       
       // For BIN types, show quantity
       if (type === 'bin' && timerEl) {
@@ -5307,6 +5308,12 @@
         var color = colorChip ? colorChip.textContent : 'Black/White';
         var colorSpan = document.getElementById(type + '-meta-color');
         if (colorSpan) colorSpan.textContent = color;
+        
+        // Update variant price based on selected size
+        if (sizeChip && sizeChip.dataset.price) {
+          var priceEl = document.getElementById('variant-price');
+          if (priceEl) priceEl.textContent = '$' + sizeChip.dataset.price;
+        }
       }
     }
 
