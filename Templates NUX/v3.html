@@ -5458,6 +5458,8 @@ function openEditPage(templateIndex, returnTo, prefillType) {
 
   const recForEdit = currentEditingListingId ? findListing(currentEditingListingId) : null;
   const editsForCategory = templateEdits[templateIndex];
+  const createCategoryFallback = tplPickerCategoryLabel || step2CategoryLabel || "Women's Contemporary";
+  const defaultCategoryFallback = isNull ? createCategoryFallback : "Women's Contemporary";
   const isChocolateTemplate = (
     (prefillType && String(prefillType).toLowerCase().includes('chocolate')) ||
     (tpl && tpl.type && String(tpl.type).toLowerCase().includes('chocolate')) ||
@@ -5465,7 +5467,7 @@ function openEditPage(templateIndex, returnTo, prefillType) {
   );
   const editCategoryLabel = isChocolateTemplate
     ? 'Chocolate'
-    : ((recForEdit && recForEdit.categoryLabel) || (editsForCategory && editsForCategory.categoryLabel) || "Women's Contemporary");
+    : ((recForEdit && recForEdit.categoryLabel) || (editsForCategory && editsForCategory.categoryLabel) || defaultCategoryFallback);
 
   // Set Category and rebuild chips first
   document.getElementById('editCategory').textContent = editCategoryLabel;
@@ -7819,10 +7821,10 @@ function getTypesForCategory(categoryLabel) {
 }
 
 function getAutoTemplateTypeIds(categoryLabel) {
-  // Only auto-generate when the category does not expose a type picker.
-  if (categoryLabel === 'Chocolate') return ['chocolates'];
+  // Auto-generate when category has 0 or 1 available type.
   const ids = CATEGORY_TYPE_IDS[categoryLabel];
   if (!ids || ids.length === 0) return ['accessories'];
+  if (ids.length === 1) return [...new Set(ids)];
   return null;
 }
 
