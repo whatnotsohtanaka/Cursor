@@ -2512,6 +2512,42 @@
       letter-spacing: -0.2px;
       color: #fff;
     }
+    .live-shop-template-badge {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: #ffe414;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    }
+    .live-shop-template-badge img {
+      display: block;
+      width: 12px;
+      height: 12px;
+      filter: brightness(0);
+    }
+    .live-shop-variant-badge {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 24px;
+      padding: 0 6px;
+      border-radius: 6px;
+      background: #ffe414;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      font-size: 12px;
+      font-weight: 700;
+      color: #1c1c1c;
+    }
     .live-shop-row__info {
       flex: 1 1 0;
       min-width: 0;
@@ -2596,6 +2632,25 @@
     }
     .live-shop-row__btn:active {
       opacity: 0.92;
+    }
+    /* Inverted (filled black) button for Start */
+    .live-shop-row__btn--inverted {
+      background: #1c1c1c;
+      color: #fff;
+    }
+    /* Shop row in auction-active state */
+    .live-shop-row.is-auction-active .live-shop-row__actions {
+      display: none;
+    }
+    .live-shop-row__timer {
+      display: none;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(28, 28, 28, 0.5);
+      margin-top: 2px;
+    }
+    .live-shop-row.is-auction-active .live-shop-row__timer {
+      display: block;
     }
     /* Buy Now — tertiary pill with leading icon (Figma BIN) */
     .live-shop-row__btn--icon-leading {
@@ -3346,9 +3401,10 @@
                 <!-- Auctions — Figma node 20868:97532 -->
                 <div id="live-shop-panel-auction" class="live-shop-panel" role="tabpanel" aria-labelledby="live-shop-tab-auction">
                   <div class="live-shop-section-head">
-                    <p class="live-shop-section-title">4 Auctions</p>
+                    <p class="live-shop-section-title">6 Auctions</p>
                   </div>
-                  <article class="live-shop-row">
+                  <!-- Standard Auction -->
+                  <article class="live-shop-row" data-pin-type="auction" data-pin-title="Supreme Logo Patch Backpack" data-pin-meta="New w tag" data-pin-price="$1" data-pin-img="https://www.figma.com/api/mcp/asset/34cbbbdf-ef28-417c-b15b-8208a1919c19">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/34cbbbdf-ef28-417c-b15b-8208a1919c19" />
                       <div class="live-shop-prebid" aria-hidden="true">
@@ -3362,11 +3418,12 @@
                           <p class="live-shop-row__title">Supreme Logo Patch Backpack</p>
                           <p class="live-shop-row__meta">New w tag • Qty: 1</p>
                         </div>
-                        <p class="live-shop-row__price">$1</p>
+                        <p class="live-shop-row__price js-shop-price">$1</p>
+                        <p class="live-shop-row__timer js-shop-timer">00:30</p>
                       </div>
                       <div class="live-shop-row__actions">
-                        <button type="button" class="live-shop-row__btn">Start</button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="Pin">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--inverted js-start-btn">Start</button>
+                        <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
                         </button>
                         <button type="button" class="live-shop-row__icon-btn" aria-label="More">
@@ -3375,7 +3432,8 @@
                       </div>
                     </div>
                   </article>
-                  <article class="live-shop-row">
+                  <!-- Standard Auction -->
+                  <article class="live-shop-row" data-pin-type="auction" data-pin-title="Bape Socks Black" data-pin-meta="OS • New w tag" data-pin-price="$12" data-pin-img="https://www.figma.com/api/mcp/asset/2ddeb315-a14a-406f-a444-9de25439d580">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/2ddeb315-a14a-406f-a444-9de25439d580" />
                       <div class="live-shop-prebid" aria-hidden="true">
@@ -3389,11 +3447,12 @@
                           <p class="live-shop-row__title">Bape Socks Black</p>
                           <p class="live-shop-row__meta">OS • New w tag • Qty: 1</p>
                         </div>
-                        <p class="live-shop-row__price">$12</p>
+                        <p class="live-shop-row__price js-shop-price">$12</p>
+                        <p class="live-shop-row__timer js-shop-timer">00:30</p>
                       </div>
                       <div class="live-shop-row__actions">
-                        <button type="button" class="live-shop-row__btn">Start</button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="Pin">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--inverted js-start-btn">Start</button>
+                        <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
                         </button>
                         <button type="button" class="live-shop-row__icon-btn" aria-label="More">
@@ -3402,12 +3461,16 @@
                       </div>
                     </div>
                   </article>
-                  <article class="live-shop-row">
+                  <!-- Template Auction -->
+                  <article class="live-shop-row" data-pin-type="template" data-pin-title="Carhartt Denim Jeans" data-pin-meta="32 • New w tag" data-pin-price="$35" data-pin-img="https://www.figma.com/api/mcp/asset/c0dd143a-f30c-46af-a437-0b082298ba8c">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/c0dd143a-f30c-46af-a437-0b082298ba8c" />
                       <div class="live-shop-prebid" aria-hidden="true">
                         <img alt="" src="https://www.figma.com/api/mcp/asset/bb8b3381-552c-470d-96f4-7b135fcb05a4" width="16" height="16" />
                         <span>7</span>
+                      </div>
+                      <div class="live-shop-template-badge" aria-label="Template">
+                        <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/template.svg" width="12" height="12" />
                       </div>
                     </div>
                     <div class="live-shop-row__info">
@@ -3416,11 +3479,12 @@
                           <p class="live-shop-row__title">Carhartt Denim Jeans</p>
                           <p class="live-shop-row__meta">32 • New w tag • Qty: 1</p>
                         </div>
-                        <p class="live-shop-row__price">$35</p>
+                        <p class="live-shop-row__price js-shop-price">$35</p>
+                        <p class="live-shop-row__timer js-shop-timer">00:30</p>
                       </div>
                       <div class="live-shop-row__actions">
-                        <button type="button" class="live-shop-row__btn">Start</button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="Pin">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--inverted js-start-btn">Start</button>
+                        <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
                         </button>
                         <button type="button" class="live-shop-row__icon-btn" aria-label="More">
@@ -3429,25 +3493,88 @@
                       </div>
                     </div>
                   </article>
-                  <article class="live-shop-row">
+                  <!-- Variant Auction -->
+                  <article class="live-shop-row" data-pin-type="variant" data-pin-title="Vintage Band Tee Bundle" data-pin-meta="Multiple Options" data-pin-price="$8" data-pin-img="https://www.figma.com/api/mcp/asset/ae1a2046-341e-4821-86d1-6d22a9b37885">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/ae1a2046-341e-4821-86d1-6d22a9b37885" />
                       <div class="live-shop-prebid" aria-hidden="true">
                         <img alt="" src="https://www.figma.com/api/mcp/asset/bb8b3381-552c-470d-96f4-7b135fcb05a4" width="16" height="16" />
                         <span>2</span>
                       </div>
+                      <div class="live-shop-variant-badge" aria-label="Variants">
+                        <span>5</span>
+                      </div>
                     </div>
                     <div class="live-shop-row__info">
                       <div class="live-shop-row__details">
                         <div class="live-shop-row__titleblock">
                           <p class="live-shop-row__title">Vintage Band Tee Bundle</p>
-                          <p class="live-shop-row__meta">L • Pre-owned • Qty: 1</p>
+                          <p class="live-shop-row__meta">Multiple Options</p>
                         </div>
-                        <p class="live-shop-row__price">$8</p>
+                        <p class="live-shop-row__price js-shop-price">$8</p>
+                        <p class="live-shop-row__timer js-shop-timer">00:30</p>
                       </div>
                       <div class="live-shop-row__actions">
-                        <button type="button" class="live-shop-row__btn">Start</button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="Pin">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--inverted js-start-btn">Start</button>
+                        <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
+                          <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
+                        </button>
+                        <button type="button" class="live-shop-row__icon-btn" aria-label="More">
+                          <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                  <!-- Standard Auction -->
+                  <article class="live-shop-row" data-pin-type="auction" data-pin-title="Nike Air Max 90" data-pin-meta="Size 10 • New w box" data-pin-price="$45" data-pin-img="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408">
+                    <div class="live-shop-row__thumb-wrap">
+                      <img alt="" src="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408" />
+                      <div class="live-shop-prebid" aria-hidden="true">
+                        <img alt="" src="https://www.figma.com/api/mcp/asset/bb8b3381-552c-470d-96f4-7b135fcb05a4" width="16" height="16" />
+                        <span>5</span>
+                      </div>
+                    </div>
+                    <div class="live-shop-row__info">
+                      <div class="live-shop-row__details">
+                        <div class="live-shop-row__titleblock">
+                          <p class="live-shop-row__title">Nike Air Max 90</p>
+                          <p class="live-shop-row__meta">Size 10 • New w box • Qty: 1</p>
+                        </div>
+                        <p class="live-shop-row__price js-shop-price">$45</p>
+                        <p class="live-shop-row__timer js-shop-timer">00:30</p>
+                      </div>
+                      <div class="live-shop-row__actions">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--inverted js-start-btn">Start</button>
+                        <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
+                          <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
+                        </button>
+                        <button type="button" class="live-shop-row__icon-btn" aria-label="More">
+                          <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                  <!-- Standard Auction -->
+                  <article class="live-shop-row" data-pin-type="auction" data-pin-title="Stussy Logo Hoodie" data-pin-meta="L • Pre-owned" data-pin-price="$25" data-pin-img="https://www.figma.com/api/mcp/asset/87553d74-ba47-429c-a9b7-3fb5e710947d">
+                    <div class="live-shop-row__thumb-wrap">
+                      <img alt="" src="https://www.figma.com/api/mcp/asset/87553d74-ba47-429c-a9b7-3fb5e710947d" />
+                      <div class="live-shop-prebid" aria-hidden="true">
+                        <img alt="" src="https://www.figma.com/api/mcp/asset/bb8b3381-552c-470d-96f4-7b135fcb05a4" width="16" height="16" />
+                        <span>4</span>
+                      </div>
+                    </div>
+                    <div class="live-shop-row__info">
+                      <div class="live-shop-row__details">
+                        <div class="live-shop-row__titleblock">
+                          <p class="live-shop-row__title">Stussy Logo Hoodie</p>
+                          <p class="live-shop-row__meta">L • Pre-owned • Qty: 1</p>
+                        </div>
+                        <p class="live-shop-row__price js-shop-price">$25</p>
+                        <p class="live-shop-row__timer js-shop-timer">00:30</p>
+                      </div>
+                      <div class="live-shop-row__actions">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--inverted js-start-btn">Start</button>
+                        <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
                         </button>
                         <button type="button" class="live-shop-row__icon-btn" aria-label="More">
@@ -3463,7 +3590,7 @@
                   <div class="live-shop-section-head">
                     <p class="live-shop-section-title">5 Buy now</p>
                   </div>
-                  <article class="live-shop-row">
+                  <article class="live-shop-row" data-pin-type="bin" data-pin-title="Carhartt Denim Jacket" data-pin-meta="XL • New w tag" data-pin-price="$65" data-pin-qty="1" data-pin-img="https://www.figma.com/api/mcp/asset/87553d74-ba47-429c-a9b7-3fb5e710947d">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/87553d74-ba47-429c-a9b7-3fb5e710947d" />
                       <div class="live-shop-prebid" aria-hidden="true">
@@ -3480,7 +3607,7 @@
                         <p class="live-shop-row__price">$65</p>
                       </div>
                       <div class="live-shop-row__actions">
-                        <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading js-pin-btn">
                           <img class="live-shop-row__btn-icon" alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
                           <span>Pin</span>
                         </button>
@@ -3490,7 +3617,7 @@
                       </div>
                     </div>
                   </article>
-                  <article class="live-shop-row">
+                  <article class="live-shop-row" data-pin-type="bin" data-pin-title="Supreme Logo Patch Backpack" data-pin-meta="OS • New w tag" data-pin-price="$185" data-pin-qty="1" data-pin-img="https://www.figma.com/api/mcp/asset/34cbbbdf-ef28-417c-b15b-8208a1919c19">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/34cbbbdf-ef28-417c-b15b-8208a1919c19" />
                       <div class="live-shop-prebid" aria-hidden="true">
@@ -3507,7 +3634,7 @@
                         <p class="live-shop-row__price">$185</p>
                       </div>
                       <div class="live-shop-row__actions">
-                        <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading js-pin-btn">
                           <img class="live-shop-row__btn-icon" alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
                           <span>Pin</span>
                         </button>
@@ -3517,7 +3644,7 @@
                       </div>
                     </div>
                   </article>
-                  <article class="live-shop-row">
+                  <article class="live-shop-row" data-pin-type="bin" data-pin-title="Bape Socks Black" data-pin-meta="OS • New w tag" data-pin-price="$24" data-pin-qty="2" data-pin-img="https://www.figma.com/api/mcp/asset/2ddeb315-a14a-406f-a444-9de25439d580">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/2ddeb315-a14a-406f-a444-9de25439d580" />
                       <div class="live-shop-prebid" aria-hidden="true">
@@ -3534,7 +3661,7 @@
                         <p class="live-shop-row__price">$24</p>
                       </div>
                       <div class="live-shop-row__actions">
-                        <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading js-pin-btn">
                           <img class="live-shop-row__btn-icon" alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
                           <span>Pin</span>
                         </button>
@@ -3544,7 +3671,7 @@
                       </div>
                     </div>
                   </article>
-                  <article class="live-shop-row">
+                  <article class="live-shop-row" data-pin-type="bin" data-pin-title="Carhartt Denim Jeans" data-pin-meta="32 • New w tag" data-pin-price="$48" data-pin-qty="1" data-pin-img="https://www.figma.com/api/mcp/asset/c0dd143a-f30c-46af-a437-0b082298ba8c">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/c0dd143a-f30c-46af-a437-0b082298ba8c" />
                       <div class="live-shop-prebid" aria-hidden="true">
@@ -3561,7 +3688,7 @@
                         <p class="live-shop-row__price">$48</p>
                       </div>
                       <div class="live-shop-row__actions">
-                        <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading js-pin-btn">
                           <img class="live-shop-row__btn-icon" alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
                           <span>Pin</span>
                         </button>
@@ -3571,12 +3698,15 @@
                       </div>
                     </div>
                   </article>
-                  <article class="live-shop-row">
+                  <article class="live-shop-row" data-pin-type="bin-variant" data-pin-title="Tops: Lulu Lemon, Commense, Alo, and more" data-pin-meta="Multiple Options" data-pin-price="$120" data-pin-qty="5" data-pin-img="https://www.figma.com/api/mcp/asset/ae1a2046-341e-4821-86d1-6d22a9b37885">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/ae1a2046-341e-4821-86d1-6d22a9b37885" />
                       <div class="live-shop-prebid" aria-hidden="true">
                         <img alt="" src="https://www.figma.com/api/mcp/asset/bb8b3381-552c-470d-96f4-7b135fcb05a4" width="16" height="16" />
                         <span>1</span>
+                      </div>
+                      <div class="live-shop-variant-badge" aria-label="Variants">
+                        <span>5</span>
                       </div>
                     </div>
                     <div class="live-shop-row__info">
@@ -3588,7 +3718,7 @@
                         <p class="live-shop-row__price">$120</p>
                       </div>
                       <div class="live-shop-row__actions">
-                        <button type="button" class="live-shop-row__btn">Select Options</button>
+                        <button type="button" class="live-shop-row__btn js-pin-btn">Pin</button>
                         <button type="button" class="live-shop-row__icon-btn" aria-label="More">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
                         </button>
@@ -4330,6 +4460,137 @@
       resetSelectOptions();
     }
 
+    /* ── Pin Product from Shop Row ── */
+    function pinProduct(row) {
+      if (!row || !row.dataset) return;
+      
+      var type = row.dataset.pinType;
+      var title = row.dataset.pinTitle || '';
+      var meta = row.dataset.pinMeta || '';
+      var price = row.dataset.pinPrice || '$0';
+      var img = row.dataset.pinImg || '';
+      var qty = row.dataset.pinQty || '1';
+      
+      // Get target panel ID based on type
+      var panelId = 'pinned-' + type;
+      var panel = document.getElementById(panelId);
+      if (!panel) return;
+      
+      // Update panel content
+      var thumbImg = panel.querySelector('.live-show__product-thumb img');
+      var titleEl = panel.querySelector('.live-show__product-title');
+      var metaEl = panel.querySelector('.live-show__product-meta');
+      var priceEl = panel.querySelector('.live-show__product-price');
+      var timerEl = panel.querySelector('.live-show__product-timer');
+      
+      if (thumbImg) thumbImg.src = img;
+      if (titleEl) titleEl.textContent = title;
+      
+      // Parse meta into spans (split by •)
+      if (metaEl) {
+        var metaParts = meta.split('•').map(function(s) { return s.trim(); }).filter(Boolean);
+        metaEl.innerHTML = metaParts.map(function(p, i) {
+          return '<span>' + p + '</span>' + (i < metaParts.length - 1 ? '<span>•</span>' : '');
+        }).join('');
+      }
+      
+      if (priceEl) priceEl.textContent = price;
+      
+      // For BIN types, show quantity
+      if (type === 'bin' && timerEl) {
+        timerEl.textContent = qty + ' Left';
+        timerEl.style.display = '';
+      }
+      
+      // Show the correct panel and hide others
+      showPinnedPanel(type);
+      
+      // Close the shop sheet
+      var shopRoot = document.getElementById('live-shop-root');
+      if (shopRoot && shopRoot.classList.contains('is-open')) {
+        shopRoot.classList.remove('is-open');
+        shopRoot.setAttribute('aria-hidden', 'true');
+      }
+    }
+
+    /* ── Wire up Pin Buttons ── */
+    (function initPinButtons() {
+      document.querySelectorAll('.js-pin-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var row = btn.closest('.live-shop-row');
+          if (row) pinProduct(row);
+        });
+      });
+    })();
+
+    /* ── Start Auction from Shop Row ── */
+    var activeShopAuctionRow = null;
+
+    function startAuctionFromShop(row) {
+      if (!row || !row.dataset) return;
+      
+      // First, pin the product
+      pinProduct(row);
+      
+      // Mark the row as auction-active
+      row.classList.add('is-auction-active');
+      activeShopAuctionRow = row;
+      
+      // Start the appropriate auction based on pin type
+      var type = row.dataset.pinType;
+      if (type === 'auction') {
+        startAuction();
+      } else if (type === 'template') {
+        startTemplateAuction();
+      } else if (type === 'variant') {
+        startVariantAuction();
+      }
+    }
+
+    function syncShopRowWithAuction(price, timeLeft) {
+      if (!activeShopAuctionRow) return;
+      
+      var priceEl = activeShopAuctionRow.querySelector('.js-shop-price');
+      var timerEl = activeShopAuctionRow.querySelector('.js-shop-timer');
+      
+      if (priceEl) priceEl.textContent = '$' + price;
+      if (timerEl) {
+        if (timeLeft <= 0) {
+          timerEl.textContent = 'SOLD';
+        } else {
+          var mins = Math.floor(timeLeft / 60);
+          var secs = timeLeft % 60;
+          timerEl.textContent = (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+        }
+      }
+    }
+
+    function resetShopAuctionRow() {
+      if (activeShopAuctionRow) {
+        activeShopAuctionRow.classList.remove('is-auction-active');
+        // Reset price to original
+        var origPrice = activeShopAuctionRow.dataset.pinPrice || '$1';
+        var priceEl = activeShopAuctionRow.querySelector('.js-shop-price');
+        if (priceEl) priceEl.textContent = origPrice;
+        var timerEl = activeShopAuctionRow.querySelector('.js-shop-timer');
+        if (timerEl) timerEl.textContent = '00:30';
+        activeShopAuctionRow = null;
+      }
+    }
+
+    (function initStartButtons() {
+      document.querySelectorAll('.js-start-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var row = btn.closest('.live-shop-row');
+          if (row) startAuctionFromShop(row);
+        });
+      });
+    })();
+
     /* Auction Logic */
     var auctionTimer = null;
     var auctionTimeLeft = 30;
@@ -4461,6 +4722,9 @@
         bidsBtn.classList.remove('live-show__bids-btn--disabled');
         bidsBtn.disabled = false;
       }
+      
+      // Sync with shop row
+      syncShopRowWithAuction(auctionPrice, auctionTimeLeft);
     }
 
     function endAuction() {
@@ -4493,6 +4757,9 @@
       auctionPrice = 1;
       currentWinner = null;
       lastBidder = null;
+      
+      // Reset shop row
+      resetShopAuctionRow();
     }
 
     /* Template Auction */
@@ -4598,6 +4865,9 @@
         bidsBtn.classList.remove('live-show__bids-btn--disabled');
         bidsBtn.disabled = false;
       }
+      
+      // Sync with shop row
+      syncShopRowWithAuction(templatePrice, templateTimeLeft);
     }
 
     function endTemplateAuction() {
@@ -4630,6 +4900,9 @@
       templatePrice = 1;
       templateWinner = null;
       templateLastBidder = null;
+      
+      // Reset shop row
+      resetShopAuctionRow();
     }
 
     /* Variant Auction */
@@ -4735,6 +5008,9 @@
         bidsBtn.classList.remove('live-show__bids-btn--disabled');
         bidsBtn.disabled = false;
       }
+      
+      // Sync with shop row
+      syncShopRowWithAuction(variantPrice, variantTimeLeft);
     }
 
     function endVariantAuction() {
@@ -4767,6 +5043,9 @@
       variantPrice = 1;
       variantWinner = null;
       variantLastBidder = null;
+      
+      // Reset shop row
+      resetShopAuctionRow();
     }
 
     /* Select Options interaction */
