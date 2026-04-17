@@ -805,7 +805,7 @@
       pointer-events: none;
     }
     .live-show__bottom-scrim-grad {
-      height: 180px;
+      height: 240px;
       width: 100%;
       background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
     }
@@ -823,6 +823,100 @@
       min-height: 100px;
       background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
       pointer-events: none;
+    }
+
+    /* Winner Celebration Overlay — Figma 275:11191 */
+    .live-show__winner-celebration {
+      position: absolute;
+      top: 143px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 263px;
+      height: 207px;
+      z-index: 100;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    .live-show__winner-celebration.is-visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    /* Shadow layers */
+    .live-show__winner-shadow {
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 263px;
+      height: 142px;
+      background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, transparent 70%);
+      filter: blur(20px);
+    }
+    .live-show__winner-shadow--outer {
+      bottom: -26px;
+      width: 263px;
+      height: 263px;
+      background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.35) 0%, transparent 60%);
+      filter: blur(30px);
+    }
+    .live-show__winner-celebration-content {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      transform: translateY(calc(-50% - 0.5px));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+    .live-show__winner-avatar-wrap {
+      width: 96px;
+      height: 96px;
+      flex-shrink: 0;
+    }
+    .live-show__winner-avatar-lg {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+    .live-show__winner-title {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      width: 100%;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .live-show__winner-name-lg {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 760;
+      font-variation-settings: 'wdth' 132;
+      color: #ffe414;
+      letter-spacing: 0.38px;
+      line-height: normal;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+    .live-show__winner-label {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 590;
+      font-variation-settings: 'wdth' 100;
+      color: #fff;
+      line-height: 21px;
+      letter-spacing: -0.31px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
     }
 
     .live-show__chrome {
@@ -1793,6 +1887,27 @@
     .live-show__product-timer--yellow {
       color: #ffe414;
     }
+    .live-show__product-timer--pre {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .live-show__product-timer-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+    .live-show__timer-bump {
+      font-size: 13px;
+      font-weight: 590;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: #FF9500;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .live-show__timer-bump.is-visible {
+      opacity: 1;
+    }
     .live-show__product-price--strike {
       text-decoration: line-through;
       color: rgba(255, 255, 255, 0.7);
@@ -2208,10 +2323,8 @@
       -webkit-tap-highlight-color: transparent;
     }
     .live-shop-close img {
-      max-width: 20px;
-      max-height: 20px;
-      width: auto;
-      height: auto;
+      width: 13px;
+      height: 13px;
       display: block;
       object-fit: contain;
     }
@@ -2228,7 +2341,7 @@
       align-items: center;
       gap: 8px;
       padding-left: 16px;
-      padding-right: 8px;
+      padding-right: 16px;
       background: #fff;
       box-sizing: border-box;
     }
@@ -2287,6 +2400,18 @@
     .live-shop-sticky {
       flex-shrink: 0;
       background: #fff;
+    }
+    .live-shop-search-row {
+      transition: height 0.25s ease, min-height 0.25s ease, max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
+      overflow: hidden;
+    }
+    .live-shop-search-row.is-collapsed {
+      height: 0;
+      min-height: 0;
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      opacity: 0;
     }
     /* Tabs — pl 16 pt 16, tab gap 16, underline 3px active #161616 */
     .live-shop-tabs-wrap {
@@ -2374,6 +2499,15 @@
       align-items: flex-start;
       padding: 16px;
       background: #fff;
+      transition: height 0.25s ease, max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
+      overflow: hidden;
+    }
+    .live-shop-filters.is-collapsed {
+      height: 0;
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      opacity: 0;
     }
     .live-shop-filter-chip {
       display: flex;
@@ -2456,8 +2590,22 @@
       display: flex;
       align-items: center;
       gap: 12px;
+    }
+    .live-shop-section-head--running {
+      display: none;
+    }
+    .live-shop-section-head--running.is-visible {
+      display: flex;
+    }
+    .live-shop-section-title--running {
       width: 100%;
       padding-top: 0;
+    }
+    .live-shop-section-head--pinned {
+      display: none;
+    }
+    .live-shop-section-head--pinned.is-visible {
+      display: flex;
     }
     /* Product row — gap 12 py 8, thumb 140 r8 */
     .live-shop-row {
@@ -2580,7 +2728,10 @@
       color: #1c1c1c;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      white-space: normal;
       width: 100%;
     }
     .live-shop-row__meta {
@@ -2645,6 +2796,9 @@
     .live-shop-row.is-auction-active .live-shop-row__actions {
       display: none;
     }
+    .live-shop-row.is-auction-active .live-shop-prebid {
+      display: none;
+    }
     .live-shop-row__timer {
       display: none;
       font-size: 13px;
@@ -2654,11 +2808,19 @@
     }
     .live-shop-row.is-auction-active .live-shop-row__timer {
       display: block;
+      color: #EF233C;
     }
     /* Buy Now — tertiary pill with leading icon (Figma BIN) */
     .live-shop-row__btn--icon-leading {
       gap: 8px;
       color: #1c1c1c;
+    }
+    .live-shop-row__btn--icon-leading.is-pinned {
+      background: #1c1c1c;
+      color: #fff;
+    }
+    .live-shop-row__btn--icon-leading.is-pinned .live-shop-row__btn-icon {
+      filter: invert(1);
     }
     .live-shop-row__btn-icon {
       display: block;
@@ -2834,6 +2996,12 @@
       color: #1c1c1c;
       letter-spacing: -0.1px;
     }
+    .listing-options-sheet__item--destructive .listing-options-sheet__label {
+      color: #EF233C;
+    }
+    .listing-options-sheet__item--destructive .listing-options-sheet__icon img {
+      filter: invert(27%) sepia(94%) saturate(5618%) hue-rotate(347deg) brightness(91%) contrast(95%);
+    }
 
   </style>
 </head>
@@ -2891,7 +3059,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/17/26 @ 3:28pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/17/26 @ 4:45pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -2943,6 +3111,21 @@
                   </div>
                   <div class="live-show__top-scrim" aria-hidden="true"></div>
                 </div>
+                <!-- Winner Celebration Overlay — Figma 275:11191 -->
+                <div class="live-show__winner-celebration" id="winnerCelebration" aria-hidden="true">
+                  <div class="live-show__winner-shadow live-show__winner-shadow--outer"></div>
+                  <div class="live-show__winner-shadow"></div>
+                  <div class="live-show__winner-celebration-content">
+                    <div class="live-show__winner-avatar-wrap">
+                      <img class="live-show__winner-avatar-lg" id="winnerCelebrationAvatar" alt="" width="96" height="96" src="" />
+                    </div>
+                    <div class="live-show__winner-title">
+                      <p class="live-show__winner-name-lg" id="winnerCelebrationName">username</p>
+                      <p class="live-show__winner-label">Won the auction!</p>
+                    </div>
+                  </div>
+                </div>
+
                 <div class="live-show__chrome">
                   <!-- Size Sheet -->
                   <div class="live-show__size-sheet" id="size-sheet">
@@ -2981,10 +3164,10 @@
                   </button>
                   <header class="live-show__header">
                     <div class="live-show__header-avatar">
-                      <img alt="" width="32" height="32" src="https://www.figma.com/api/mcp/asset/0670159f-e151-47be-ac2d-334701cebc60" />
+                      <img alt="" width="32" height="32" src="assets/6th-avatar.png" />
                     </div>
                     <div class="live-show__header-meta">
-                      <p class="live-show__header-name">sneakerfreaker</p>
+                      <p class="live-show__header-name">6th_official</p>
                       <p class="live-show__header-sub">Show Time: <span id="live-show-show-timer">00:31:28</span></p>
                     </div>
                     <div class="live-show__header-controls">
@@ -3136,7 +3319,10 @@
                               </div>
                               <div class="live-show__product-right">
                                 <p class="live-show__product-price" id="auction-price">$1</p>
-                                <p class="live-show__product-timer" id="auction-timer" style="display:none">00:30</p>
+                                <div class="live-show__product-timer-wrap">
+                                  <span class="live-show__timer-bump" id="auction-timer-bump"></span>
+                                  <p class="live-show__product-timer live-show__product-timer--pre" id="auction-timer">00:10</p>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -3237,7 +3423,10 @@
                               </div>
                               <div class="live-show__product-right">
                                 <p class="live-show__product-price" id="template-price">$1</p>
-                                <p class="live-show__product-timer" id="template-timer" style="display:none">00:30</p>
+                                <div class="live-show__product-timer-wrap">
+                                  <span class="live-show__timer-bump" id="template-timer-bump"></span>
+                                  <p class="live-show__product-timer live-show__product-timer--pre" id="template-timer">00:10</p>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -3312,7 +3501,10 @@
                               </div>
                               <div class="live-show__product-right">
                                 <p class="live-show__product-price" id="variant-price">$1</p>
-                                <p class="live-show__product-timer" id="variant-timer" style="display:none">00:30</p>
+                                <div class="live-show__product-timer-wrap">
+                                  <span class="live-show__timer-bump" id="variant-timer-bump"></span>
+                                  <p class="live-show__product-timer live-show__product-timer--pre" id="variant-timer">00:10</p>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -3494,8 +3686,14 @@
               <div class="live-shop-list">
                 <!-- Auctions — Figma node 20868:97532 -->
                 <div id="live-shop-panel-auction" class="live-shop-panel" role="tabpanel" aria-labelledby="live-shop-tab-auction">
-                  <div class="live-shop-section-head">
-                    <p class="live-shop-section-title">6 Auctions</p>
+                  <div class="live-shop-section-head live-shop-section-head--running" id="running-now-section">
+                    <p class="live-shop-section-title live-shop-section-title--running">Running Now</p>
+                  </div>
+                  <div class="live-shop-section-head live-shop-section-head--pinned" id="pinned-section">
+                    <p class="live-shop-section-title">Pinned</p>
+                  </div>
+                  <div class="live-shop-section-head" id="auction-listings-section">
+                    <p class="live-shop-section-title">Listings (6)</p>
                   </div>
                   <!-- Template Auction -->
                   <article class="live-shop-row" data-pin-type="template" data-pin-title="Assorted Sneakers: Nike, Adidas, and more" data-pin-meta="Template" data-pin-price="$1" data-pin-img="assets/pile-of-sneakers.jpg">
@@ -3509,12 +3707,12 @@
                           <p class="live-shop-row__meta">Template</p>
                         </div>
                         <p class="live-shop-row__price js-shop-price">$1</p>
-                        <p class="live-shop-row__timer js-shop-timer">00:30</p>
+                        <p class="live-shop-row__timer js-shop-timer">00:10</p>
                       </div>
                       <div class="live-shop-row__actions">
                         <button type="button" class="live-shop-row__btn js-select-options-btn" data-select-type="template">Select Options</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="../../shared/icons/svg/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
                       </div>
                     </div>
@@ -3531,12 +3729,12 @@
                           <p class="live-shop-row__meta">Multiple Options</p>
                         </div>
                         <p class="live-shop-row__price js-shop-price">$1 - $15</p>
-                        <p class="live-shop-row__timer js-shop-timer">00:30</p>
+                        <p class="live-shop-row__timer js-shop-timer">00:10</p>
                       </div>
                       <div class="live-shop-row__actions">
                         <button type="button" class="live-shop-row__btn js-select-options-btn" data-select-type="variant">Select Options</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="../../shared/icons/svg/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
                       </div>
                     </div>
@@ -3557,15 +3755,15 @@
                           <p class="live-shop-row__meta">New w tag • Qty: 1</p>
                         </div>
                         <p class="live-shop-row__price js-shop-price">$1</p>
-                        <p class="live-shop-row__timer js-shop-timer">00:30</p>
+                        <p class="live-shop-row__timer js-shop-timer">00:10</p>
                       </div>
                       <div class="live-shop-row__actions">
-                        <button type="button" class="live-shop-row__btn live-shop-row__btn--inverted js-start-btn">Start</button>
+                        <button type="button" class="live-shop-row__btn js-start-btn">Start</button>
                         <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
-                          <img alt="" src="../../shared/icons/svg/pin.svg" />
+                          <img alt="" src="assets/icons/pin.svg" />
                         </button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="../../shared/icons/svg/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
                       </div>
                     </div>
@@ -3586,15 +3784,15 @@
                           <p class="live-shop-row__meta">OS • New w tag • Qty: 1</p>
                         </div>
                         <p class="live-shop-row__price js-shop-price">$12</p>
-                        <p class="live-shop-row__timer js-shop-timer">00:30</p>
+                        <p class="live-shop-row__timer js-shop-timer">00:10</p>
                       </div>
                       <div class="live-shop-row__actions">
-                        <button type="button" class="live-shop-row__btn live-shop-row__btn--inverted js-start-btn">Start</button>
+                        <button type="button" class="live-shop-row__btn js-start-btn">Start</button>
                         <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
-                          <img alt="" src="../../shared/icons/svg/pin.svg" />
+                          <img alt="" src="assets/icons/pin.svg" />
                         </button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="../../shared/icons/svg/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
                       </div>
                     </div>
@@ -3615,15 +3813,15 @@
                           <p class="live-shop-row__meta">Size 10 • New w box • Qty: 1</p>
                         </div>
                         <p class="live-shop-row__price js-shop-price">$45</p>
-                        <p class="live-shop-row__timer js-shop-timer">00:30</p>
+                        <p class="live-shop-row__timer js-shop-timer">00:10</p>
                       </div>
                       <div class="live-shop-row__actions">
-                        <button type="button" class="live-shop-row__btn live-shop-row__btn--inverted js-start-btn">Start</button>
+                        <button type="button" class="live-shop-row__btn js-start-btn">Start</button>
                         <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
-                          <img alt="" src="../../shared/icons/svg/pin.svg" />
+                          <img alt="" src="assets/icons/pin.svg" />
                         </button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="../../shared/icons/svg/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
                       </div>
                     </div>
@@ -3644,15 +3842,15 @@
                           <p class="live-shop-row__meta">L • Pre-owned • Qty: 1</p>
                         </div>
                         <p class="live-shop-row__price js-shop-price">$25</p>
-                        <p class="live-shop-row__timer js-shop-timer">00:30</p>
+                        <p class="live-shop-row__timer js-shop-timer">00:10</p>
                       </div>
                       <div class="live-shop-row__actions">
-                        <button type="button" class="live-shop-row__btn live-shop-row__btn--inverted js-start-btn">Start</button>
+                        <button type="button" class="live-shop-row__btn js-start-btn">Start</button>
                         <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
-                          <img alt="" src="../../shared/icons/svg/pin.svg" />
+                          <img alt="" src="assets/icons/pin.svg" />
                         </button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="../../shared/icons/svg/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
                       </div>
                     </div>
@@ -3662,7 +3860,7 @@
                 <!-- Buy Now — Figma node 20868:97704 -->
                 <div id="live-shop-panel-buy-now" class="live-shop-panel" role="tabpanel" aria-labelledby="live-shop-tab-buy-now" hidden>
                   <div class="live-shop-section-head">
-                    <p class="live-shop-section-title">5 Buy now</p>
+                    <p class="live-shop-section-title">Listings (5)</p>
                   </div>
                   <article class="live-shop-row" data-pin-type="bin" data-pin-title="Carhartt Denim Jacket" data-pin-meta="XL • New w tag" data-pin-price="$65" data-pin-qty="1" data-pin-img="https://www.figma.com/api/mcp/asset/87553d74-ba47-429c-a9b7-3fb5e710947d">
                     <div class="live-shop-row__thumb-wrap">
@@ -3682,11 +3880,11 @@
                       </div>
                       <div class="live-shop-row__actions">
                         <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading js-pin-btn">
-                          <img class="live-shop-row__btn-icon" alt="" src="../../shared/icons/svg/pin.svg" />
+                          <img class="live-shop-row__btn-icon" alt="" src="assets/icons/pin.svg" />
                           <span>Pin</span>
                         </button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="../../shared/icons/svg/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
                       </div>
                     </div>
@@ -3709,11 +3907,11 @@
                       </div>
                       <div class="live-shop-row__actions">
                         <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading js-pin-btn">
-                          <img class="live-shop-row__btn-icon" alt="" src="../../shared/icons/svg/pin.svg" />
+                          <img class="live-shop-row__btn-icon" alt="" src="assets/icons/pin.svg" />
                           <span>Pin</span>
                         </button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="../../shared/icons/svg/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
                       </div>
                     </div>
@@ -3736,11 +3934,11 @@
                       </div>
                       <div class="live-shop-row__actions">
                         <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading js-pin-btn">
-                          <img class="live-shop-row__btn-icon" alt="" src="../../shared/icons/svg/pin.svg" />
+                          <img class="live-shop-row__btn-icon" alt="" src="assets/icons/pin.svg" />
                           <span>Pin</span>
                         </button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="../../shared/icons/svg/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
                       </div>
                     </div>
@@ -3763,11 +3961,11 @@
                       </div>
                       <div class="live-shop-row__actions">
                         <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading js-pin-btn">
-                          <img class="live-shop-row__btn-icon" alt="" src="../../shared/icons/svg/pin.svg" />
+                          <img class="live-shop-row__btn-icon" alt="" src="assets/icons/pin.svg" />
                           <span>Pin</span>
                         </button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="../../shared/icons/svg/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
                       </div>
                     </div>
@@ -3794,7 +3992,7 @@
                       <div class="live-shop-row__actions">
                         <button type="button" class="live-shop-row__btn js-pin-btn">Pin</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="../../shared/icons/svg/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
                       </div>
                     </div>
@@ -3804,7 +4002,7 @@
                 <!-- Giveaways — Figma node 20868:97857 -->
                 <div id="live-shop-panel-giveaway" class="live-shop-panel" role="tabpanel" aria-labelledby="live-shop-tab-giveaway" hidden>
                   <div class="live-shop-section-head">
-                    <p class="live-shop-section-title">3 Giveaways</p>
+                    <p class="live-shop-section-title">Listings (3)</p>
                   </div>
                   <article class="live-shop-row">
                     <div class="live-shop-row__thumb-wrap">
@@ -3820,7 +4018,7 @@
                       <div class="live-shop-row__actions">
                         <button type="button" class="live-shop-row__btn">Run Giveaway</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="../../shared/icons/svg/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
                       </div>
                     </div>
@@ -3839,7 +4037,7 @@
                       <div class="live-shop-row__actions">
                         <button type="button" class="live-shop-row__btn">Run Giveaway</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="../../shared/icons/svg/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
                       </div>
                     </div>
@@ -3858,7 +4056,7 @@
                       <div class="live-shop-row__actions">
                         <button type="button" class="live-shop-row__btn">Run Giveaway</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="../../shared/icons/svg/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
                       </div>
                     </div>
@@ -3867,7 +4065,7 @@
 
                 <div id="live-shop-panel-sold" class="live-shop-panel" role="tabpanel" aria-labelledby="live-shop-tab-sold" hidden>
                   <div class="live-shop-section-head">
-                    <p class="live-shop-section-title">0 Sold</p>
+                    <p class="live-shop-section-title">Listings (0)</p>
                   </div>
                   <div class="live-shop-empty">
                     <p class="live-shop-empty__title">No sold listings</p>
@@ -3876,7 +4074,7 @@
                 </div>
                 <div id="live-shop-panel-offers" class="live-shop-panel" role="tabpanel" aria-labelledby="live-shop-tab-offers" hidden>
                   <div class="live-shop-section-head">
-                    <p class="live-shop-section-title">0 Offers</p>
+                    <p class="live-shop-section-title">Listings (0)</p>
                   </div>
                   <div class="live-shop-empty">
                     <p class="live-shop-empty__title">No offers yet</p>
@@ -3885,7 +4083,7 @@
                 </div>
                 <div id="live-shop-panel-tips" class="live-shop-panel" role="tabpanel" aria-labelledby="live-shop-tab-tips" hidden>
                   <div class="live-shop-section-head">
-                    <p class="live-shop-section-title">0 Tips</p>
+                    <p class="live-shop-section-title">Listings (0)</p>
                   </div>
                   <div class="live-shop-empty">
                     <p class="live-shop-empty__title">No tips yet</p>
@@ -4524,11 +4722,16 @@
       showPinnedPanel(targetPinned);
     }
 
+    var currentlyPinnedType = 'auction'; // Track which type is currently pinned
+    var currentlyPinnedRow = null; // Track the currently pinned shop row
+
     function showPinnedPanel(targetPinned) {
       var panels = document.querySelectorAll('[data-pinned]');
       panels.forEach(function (p) {
         p.hidden = p.getAttribute('data-pinned') !== targetPinned;
       });
+      
+      currentlyPinnedType = targetPinned;
       
       // Reset auctions when switching away
       if (targetPinned !== 'auction') {
@@ -4560,6 +4763,20 @@
       var panelId = 'pinned-' + type;
       var panel = document.getElementById(panelId);
       if (!panel) return;
+      
+      // If there's a previously pinned row, move it back to listings
+      if (currentlyPinnedRow && currentlyPinnedRow !== row) {
+        unpinShopRow(currentlyPinnedRow);
+      }
+      
+      // Move the row to the Pinned section
+      var pinnedSection = document.getElementById('pinned-section');
+      if (pinnedSection && row) {
+        pinnedSection.classList.add('is-visible');
+        pinnedSection.after(row);
+        row.classList.add('is-pinned');
+        currentlyPinnedRow = row;
+      }
       
       // Update panel content
       var thumbImg = panel.querySelector('.live-show__product-thumb img');
@@ -4600,13 +4817,56 @@
     }
 
     /* ── Wire up Pin Buttons ── */
+    var currentlyPinnedBtn = null;
+
+    function unpinCurrentProduct() {
+      if (currentlyPinnedBtn) {
+        currentlyPinnedBtn.classList.remove('is-pinned');
+        var label = currentlyPinnedBtn.querySelector('span');
+        if (label) label.textContent = 'Pin';
+        currentlyPinnedBtn = null;
+      }
+    }
+
+    function togglePinProduct(btn, row) {
+      var isCurrentlyPinned = btn.classList.contains('is-pinned');
+      
+      if (isCurrentlyPinned) {
+        // Unpin - just reset button state, keep panel visible but could show default
+        btn.classList.remove('is-pinned');
+        var label = btn.querySelector('span');
+        if (label) label.textContent = 'Pin';
+        currentlyPinnedBtn = null;
+      } else {
+        // Unpin any previously pinned item first
+        unpinCurrentProduct();
+        
+        // Pin this product
+        pinProduct(row);
+        btn.classList.add('is-pinned');
+        var label = btn.querySelector('span');
+        if (label) label.textContent = 'Unpin';
+        currentlyPinnedBtn = btn;
+      }
+    }
+
     (function initPinButtons() {
       document.querySelectorAll('.js-pin-btn').forEach(function(btn) {
         btn.addEventListener('click', function(e) {
           e.preventDefault();
           e.stopPropagation();
           var row = btn.closest('.live-shop-row');
-          if (row) pinProduct(row);
+          if (row) {
+            // Check if this is a BIN pin button with icon (has span for label)
+            var label = btn.querySelector('span');
+            if (label) {
+              togglePinProduct(btn, row);
+            } else {
+              // Regular small pin button (auctions) - just pin
+              unpinCurrentProduct();
+              pinProduct(row);
+            }
+          }
         });
       });
     })();
@@ -4617,12 +4877,39 @@
     function startAuctionFromShop(row) {
       if (!row || !row.dataset) return;
       
+      // Only allow one auction at a time - stop any running auction first
+      if (activeShopAuctionRow && activeShopAuctionRow !== row) {
+        // Reset the previous auction row without moving to sold
+        resetShopAuctionRow();
+        // Stop any running timers
+        if (auctionTimer) { clearInterval(auctionTimer); auctionTimer = null; }
+        if (templateTimer) { clearInterval(templateTimer); templateTimer = null; }
+        if (variantTimer) { clearInterval(variantTimer); variantTimer = null; }
+      }
+      
       // First, pin the product
       pinProduct(row);
+      
+      // Remove from pinned state (it's now running)
+      row.classList.remove('is-pinned');
+      currentlyPinnedRow = null;
+      
+      // Hide pinned section if empty
+      var pinnedSection = document.getElementById('pinned-section');
+      if (pinnedSection) {
+        pinnedSection.classList.remove('is-visible');
+      }
       
       // Mark the row as auction-active
       row.classList.add('is-auction-active');
       activeShopAuctionRow = row;
+      
+      // Show "Running Now" section and move the row there
+      var runningSection = document.getElementById('running-now-section');
+      if (runningSection) {
+        runningSection.classList.add('is-visible');
+        runningSection.after(row);
+      }
       
       // Start the appropriate auction based on pin type
       var type = row.dataset.pinType;
@@ -4635,13 +4922,16 @@
       }
     }
 
-    function syncShopRowWithAuction(price, timeLeft) {
+    function syncShopRowWithAuction(price, timeLeft, bids) {
       if (!activeShopAuctionRow) return;
       
       var priceEl = activeShopAuctionRow.querySelector('.js-shop-price');
       var timerEl = activeShopAuctionRow.querySelector('.js-shop-timer');
       
-      if (priceEl) priceEl.textContent = '$' + price;
+      if (priceEl) {
+        var bidText = bids === 1 ? '1 Bid' : (bids || 0) + ' Bids';
+        priceEl.textContent = '$' + price + ' · ' + bidText;
+      }
       if (timerEl) {
         if (timeLeft <= 0) {
           timerEl.textContent = 'SOLD';
@@ -4661,9 +4951,115 @@
         var priceEl = activeShopAuctionRow.querySelector('.js-shop-price');
         if (priceEl) priceEl.textContent = origPrice;
         var timerEl = activeShopAuctionRow.querySelector('.js-shop-timer');
-        if (timerEl) timerEl.textContent = '00:30';
+        if (timerEl) timerEl.textContent = '00:10';
+        
+        // Hide "Running Now" section
+        var runningSection = document.getElementById('running-now-section');
+        if (runningSection) {
+          runningSection.classList.remove('is-visible');
+        }
+        
+        // Move row back to after the listings section head
+        var listingsSection = document.getElementById('auction-listings-section');
+        if (listingsSection) {
+          listingsSection.after(activeShopAuctionRow);
+        }
+        
         activeShopAuctionRow = null;
       }
+    }
+
+    function unpinShopRow(row) {
+      if (!row) return;
+      
+      row.classList.remove('is-pinned');
+      
+      // Move the row back to the listings section
+      var listingsSection = document.getElementById('auction-listings-section');
+      if (listingsSection) {
+        listingsSection.after(row);
+      }
+      
+      // Hide pinned section if no more pinned items
+      var pinnedSection = document.getElementById('pinned-section');
+      if (pinnedSection) {
+        var pinnedRows = pinnedSection.parentElement.querySelectorAll('.live-shop-row.is-pinned');
+        if (pinnedRows.length === 0) {
+          pinnedSection.classList.remove('is-visible');
+        }
+      }
+      
+      if (currentlyPinnedRow === row) {
+        currentlyPinnedRow = null;
+      }
+    }
+
+    function moveToSoldTab(row, finalPrice, winnerName) {
+      if (!row) return;
+      
+      row.classList.remove('is-auction-active');
+      row.classList.remove('is-pinned');
+      
+      // Clear pinned row reference if this was the pinned row
+      if (currentlyPinnedRow === row) {
+        currentlyPinnedRow = null;
+      }
+      
+      // Update the price to final sold price
+      var priceEl = row.querySelector('.js-shop-price');
+      if (priceEl) priceEl.textContent = '$' + finalPrice;
+      
+      // Update timer to show "SOLD"
+      var timerEl = row.querySelector('.js-shop-timer');
+      if (timerEl) {
+        timerEl.textContent = 'Sold to @' + winnerName;
+        timerEl.style.display = 'block';
+        timerEl.style.color = '#1c1c1c';
+      }
+      
+      // Hide the actions
+      var actionsEl = row.querySelector('.live-shop-row__actions');
+      if (actionsEl) actionsEl.style.display = 'none';
+      
+      // Hide "Running Now" section
+      var runningSection = document.getElementById('running-now-section');
+      if (runningSection) {
+        runningSection.classList.remove('is-visible');
+      }
+      
+      // Move to Sold tab
+      var soldPanel = document.getElementById('live-shop-panel-sold');
+      if (soldPanel) {
+        // Find the section head in sold panel
+        var soldSectionHead = soldPanel.querySelector('.live-shop-section-head');
+        // Remove empty state if exists
+        var emptyState = soldPanel.querySelector('.live-shop-empty');
+        if (emptyState) emptyState.remove();
+        // Insert after section head
+        if (soldSectionHead) {
+          soldSectionHead.after(row);
+        } else {
+          soldPanel.appendChild(row);
+        }
+        // Update sold count
+        var soldTitle = soldPanel.querySelector('.live-shop-section-title');
+        if (soldTitle) {
+          var soldCount = soldPanel.querySelectorAll('.live-shop-row').length;
+          soldTitle.textContent = 'Listings (' + soldCount + ')';
+        }
+      }
+      
+      // Update auction tab count
+      var auctionPanel = document.getElementById('live-shop-panel-auction');
+      if (auctionPanel) {
+        var auctionTitle = auctionPanel.querySelector('#auction-listings-section .live-shop-section-title');
+        if (auctionTitle) {
+          var auctionCount = auctionPanel.querySelectorAll('.live-shop-row').length;
+          auctionTitle.textContent = 'Listings (' + auctionCount + ')';
+        }
+      }
+      
+      activeShopAuctionRow = null;
     }
 
     (function initStartButtons() {
@@ -4693,6 +5089,9 @@
       updateProductMeta(type);
     }
 
+    var selectOptionsFromShop = false;
+    var selectOptionsShopRow = null;
+
     (function initSelectOptionsButtons() {
       document.querySelectorAll('.js-select-options-btn').forEach(function(btn) {
         btn.addEventListener('click', function(e) {
@@ -4701,7 +5100,10 @@
           var row = btn.closest('.live-shop-row');
           var selectType = btn.dataset.selectType;
           if (row && selectType) {
-            pinProduct(row);
+            selectOptionsFromShop = true;
+            selectOptionsShopRow = row;
+            // Show panel temporarily (not truly pinned yet)
+            showPanelForSelectOptions(row, selectType);
             preselectFirstChips(selectType);
             setTimeout(function() {
               onSelectOptions(selectType);
@@ -4711,29 +5113,73 @@
       });
     })();
 
+    function showPanelForSelectOptions(row, type) {
+      if (!row || !row.dataset) return;
+      
+      var title = row.dataset.pinTitle || '';
+      var img = row.dataset.pinImg || '';
+      
+      var panelId = 'pinned-' + type;
+      var panel = document.getElementById(panelId);
+      if (!panel) return;
+      
+      var thumbImg = panel.querySelector('.live-show__product-thumb img');
+      var titleEl = panel.querySelector('.live-show__product-title');
+      
+      if (thumbImg) thumbImg.src = img;
+      if (titleEl) titleEl.textContent = title;
+      
+      // Show the timer with default value
+      var timerEl = document.getElementById(type + '-timer');
+      if (timerEl) {
+        timerEl.textContent = '00:10';
+        timerEl.style.display = 'block';
+      }
+      
+      // Show the panel
+      showPinnedPanel(type);
+      
+      // Close the shop sheet
+      var shopRoot = document.getElementById('live-shop-root');
+      if (shopRoot && shopRoot.classList.contains('is-open')) {
+        shopRoot.classList.remove('is-open');
+        shopRoot.setAttribute('aria-hidden', 'true');
+      }
+    }
+
     /* ── Listing Options Action Sheet (More "..." Button) ── */
     var listingOptionsOverlay = document.getElementById('listingOptionsOverlay');
     var listingOptionsList = document.getElementById('listingOptionsList');
 
-    function openListingOptions(pinType) {
+    var currentListingOptionsRow = null;
+
+    function openListingOptions(pinType, row) {
       var options = [];
-      var iconPath = '../../shared/icons/svg/';
+      var iconPath = 'assets/icons/';
+      var isPinned = (pinType === currentlyPinnedType) && (pinType === 'template' || pinType === 'variant');
       
-      if (pinType === 'template') {
-        options = [
-          { icon: iconPath + 'pencil.svg', label: 'Edit Listing', action: 'edit' },
-          { icon: iconPath + 'duplicate.svg', label: 'Clone Template', action: 'clone' },
-          { icon: iconPath + 'trash.svg', label: 'Remove from Show', action: 'remove' }
-        ];
-      } else {
-        options = [
-          { icon: iconPath + 'pencil.svg', label: 'Edit Listing', action: 'edit' },
-          { icon: iconPath + 'trash.svg', label: 'Remove from Show', action: 'remove' }
-        ];
+      currentListingOptionsRow = row;
+      
+      // Add Unpin option if this item is currently pinned
+      if (isPinned) {
+        options.push({ icon: iconPath + 'pin.svg', label: 'Unpin', action: 'unpin' });
       }
       
+      // Add Edit Listing
+      options.push({ icon: iconPath + 'pencil.svg', label: 'Edit Listing', action: 'edit' });
+      
+      // Add Clone Template for templates only
+      if (pinType === 'template') {
+        options.push({ icon: iconPath + 'duplicate.svg', label: 'Clone Template', action: 'clone' });
+      }
+      
+      // Add Remove from Show
+      options.push({ icon: iconPath + 'trash.svg', label: 'Remove from Show', action: 'remove' });
+      
       listingOptionsList.innerHTML = options.map(function(opt) {
-        return '<li class="listing-options-sheet__item" data-action="' + opt.action + '">' +
+        var itemClass = 'listing-options-sheet__item';
+        if (opt.action === 'remove') itemClass += ' listing-options-sheet__item--destructive';
+        return '<li class="' + itemClass + '" data-action="' + opt.action + '">' +
           '<div class="listing-options-sheet__icon"><img alt="" src="' + opt.icon + '" /></div>' +
           '<span class="listing-options-sheet__label">' + opt.label + '</span>' +
         '</li>';
@@ -4741,6 +5187,11 @@
       
       listingOptionsList.querySelectorAll('.listing-options-sheet__item').forEach(function(item) {
         item.addEventListener('click', function() {
+          var action = item.dataset.action;
+          if (action === 'unpin') {
+            // Unpin - go back to default auction panel
+            showPinnedPanel('auction');
+          }
           closeListingOptions();
         });
       });
@@ -4767,7 +5218,7 @@
           e.stopPropagation();
           var row = btn.closest('.live-shop-row');
           if (row && row.dataset.pinType) {
-            openListingOptions(row.dataset.pinType);
+            openListingOptions(row.dataset.pinType, row);
           }
         });
       });
@@ -4775,7 +5226,7 @@
 
     /* Auction Logic */
     var auctionTimer = null;
-    var auctionTimeLeft = 30;
+    var auctionTimeLeft = 10;
     var auctionBids = 0;
     var auctionPrice = 1;
     var currentWinner = null;
@@ -4794,6 +5245,44 @@
       'https://i.pravatar.cc/64?img=33',
       'https://i.pravatar.cc/64?img=45'
     ];
+
+    function showTimerBump(bumpElementId, seconds) {
+      var bumpEl = document.getElementById(bumpElementId);
+      if (!bumpEl) return;
+      
+      // Format as +0:0X
+      var formatted = '+0:' + String(seconds).padStart(2, '0');
+      bumpEl.textContent = formatted;
+      bumpEl.classList.add('is-visible');
+      
+      // Flash quickly - hide after 500ms
+      setTimeout(function() {
+        bumpEl.classList.remove('is-visible');
+      }, 500);
+    }
+
+    function showWinnerCelebration(winner) {
+      if (!winner) return;
+      
+      var celebration = document.getElementById('winnerCelebration');
+      var avatarEl = document.getElementById('winnerCelebrationAvatar');
+      var nameEl = document.getElementById('winnerCelebrationName');
+      
+      if (!celebration || !avatarEl || !nameEl) return;
+      
+      avatarEl.src = winner.avatar || '';
+      nameEl.textContent = winner.name || 'Winner';
+      
+      // Show celebration
+      celebration.classList.add('is-visible');
+      celebration.setAttribute('aria-hidden', 'false');
+      
+      // Auto-hide after 3 seconds
+      setTimeout(function() {
+        celebration.classList.remove('is-visible');
+        celebration.setAttribute('aria-hidden', 'true');
+      }, 3000);
+    }
 
     function updateWinningUI(bidderName, bidderAvatar, bidAmount) {
       var winningRow = document.getElementById('auction-winning-row');
@@ -4832,11 +5321,34 @@
       startBtn.style.display = 'none';
       bidsBtn.style.display = 'flex';
       timerEl.style.display = 'block';
+      timerEl.classList.remove('live-show__product-timer--pre');
       winningRow.style.display = 'none';
       lastBidEl.style.display = 'none';
       
+      // Find and update the corresponding shop row if not already set
+      if (!activeShopAuctionRow) {
+        var defaultImg = 'https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408';
+        var shopRow = document.querySelector('.live-shop-row[data-pin-type="auction"][data-pin-img="' + defaultImg + '"]');
+        if (shopRow) {
+          shopRow.classList.add('is-auction-active');
+          shopRow.classList.remove('is-pinned');
+          activeShopAuctionRow = shopRow;
+          
+          // Hide pinned section
+          var pinnedSection = document.getElementById('pinned-section');
+          if (pinnedSection) pinnedSection.classList.remove('is-visible');
+          
+          // Show "Running Now" section and move the row there
+          var runningSection = document.getElementById('running-now-section');
+          if (runningSection) {
+            runningSection.classList.add('is-visible');
+            runningSection.after(shopRow);
+          }
+        }
+      }
+      
       // Reset auction state
-      auctionTimeLeft = 30;
+      auctionTimeLeft = 10;
       auctionBids = 0;
       auctionPrice = 1;
       currentWinner = null;
@@ -4872,7 +5384,14 @@
           auctionBids++;
           var bidIncrement = Math.floor(Math.random() * 10) + 1;
           auctionPrice += bidIncrement;
-          auctionTimeLeft = Math.min(auctionTimeLeft + 5, 30);
+          
+          // Calculate time bump
+          var oldTime = auctionTimeLeft;
+          auctionTimeLeft = Math.min(auctionTimeLeft + 3, 10);
+          var timeBump = auctionTimeLeft - oldTime;
+          if (timeBump > 0) {
+            showTimerBump('auction-timer-bump', timeBump);
+          }
           
           // Pick a random bidder
           var bidderIndex = Math.floor(Math.random() * bidderNames.length);
@@ -4893,9 +5412,12 @@
       var bidsCountEl = document.getElementById('auction-bids-count');
       var bidsBtn = document.getElementById('auction-bids-btn');
       
-      var mins = Math.floor(auctionTimeLeft / 60);
-      var secs = auctionTimeLeft % 60;
-      timerEl.textContent = (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+      // Don't overwrite "Sold" text if auction ended
+      if (auctionTimeLeft > 0) {
+        var mins = Math.floor(auctionTimeLeft / 60);
+        var secs = auctionTimeLeft % 60;
+        timerEl.textContent = (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+      }
       priceEl.textContent = '$' + auctionPrice;
       bidsCountEl.textContent = auctionBids + ' Bid' + (auctionBids !== 1 ? 's' : '');
       
@@ -4906,13 +5428,33 @@
       }
       
       // Sync with shop row
-      syncShopRowWithAuction(auctionPrice, auctionTimeLeft);
+      syncShopRowWithAuction(auctionPrice, auctionTimeLeft, auctionBids);
     }
 
     function endAuction() {
       var timerEl = document.getElementById('auction-timer');
-      timerEl.textContent = 'SOLD';
+      timerEl.textContent = 'Sold';
       timerEl.classList.add('live-show__product-timer--sold');
+      
+      // Update winning text to "won!"
+      var winnerNameEl = document.getElementById('auction-winner-name');
+      var winningText = winnerNameEl.parentElement;
+      if (winningText && currentWinner) {
+        winningText.innerHTML = '<span id="auction-winner-name">' + currentWinner.name + '</span> <span class="live-show__winning-highlight">won!</span>';
+      }
+      
+      // Hide the last bid info (counter bid price)
+      var lastBidEl = document.getElementById('auction-last-bid');
+      if (lastBidEl) lastBidEl.style.display = 'none';
+      
+      // Show celebration overlay
+      showWinnerCelebration(currentWinner);
+      
+      // Move the sold item to the Sold tab
+      if (activeShopAuctionRow) {
+        var winner = currentWinner ? currentWinner.name : 'bidder';
+        moveToSoldTab(activeShopAuctionRow, auctionPrice, winner);
+      }
     }
 
     function resetAuction() {
@@ -4929,12 +5471,13 @@
       
       startBtn.style.display = 'flex';
       bidsBtn.style.display = 'none';
-      timerEl.style.display = 'none';
+      timerEl.textContent = '00:10';
       timerEl.classList.remove('live-show__product-timer--sold');
+      timerEl.classList.add('live-show__product-timer--pre');
       priceEl.textContent = '$1';
       winningRow.style.display = 'none';
       lastBidEl.style.display = 'none';
-      auctionTimeLeft = 30;
+      auctionTimeLeft = 10;
       auctionBids = 0;
       auctionPrice = 1;
       currentWinner = null;
@@ -4946,7 +5489,7 @@
 
     /* Template Auction */
     var templateTimer = null;
-    var templateTimeLeft = 30;
+    var templateTimeLeft = 10;
     var templateBids = 0;
     var templatePrice = 1;
     var templateWinner = null;
@@ -4968,11 +5511,12 @@
       preAuction.style.display = 'none';
       bidsBtn.style.display = 'flex';
       timerEl.style.display = 'block';
+      timerEl.classList.remove('live-show__product-timer--pre');
       winningRow.style.display = 'none';
       lastBidEl.style.display = 'none';
       if (attrPicker) attrPicker.classList.remove('is-visible');
       
-      templateTimeLeft = 30;
+      templateTimeLeft = 10;
       templateBids = 0;
       templatePrice = 1;
       templateWinner = null;
@@ -5001,7 +5545,15 @@
         if (Math.random() < 0.2 && templateTimeLeft > 2) {
           templateBids++;
           templatePrice += Math.floor(Math.random() * 10) + 1;
-          templateTimeLeft = Math.min(templateTimeLeft + 5, 30);
+          
+          // Calculate time bump
+          var oldTime = templateTimeLeft;
+          templateTimeLeft = Math.min(templateTimeLeft + 3, 10);
+          var timeBump = templateTimeLeft - oldTime;
+          if (timeBump > 0) {
+            showTimerBump('template-timer-bump', timeBump);
+          }
+          
           var idx = Math.floor(Math.random() * bidderNames.length);
           updateTemplateWinningUI(bidderNames[idx], bidderAvatars[idx], templatePrice);
           updateTemplateDisplay();
@@ -5037,9 +5589,12 @@
       var bidsCountEl = document.getElementById('template-bids-count');
       var bidsBtn = document.getElementById('template-bids-btn');
       
-      var mins = Math.floor(templateTimeLeft / 60);
-      var secs = templateTimeLeft % 60;
-      timerEl.textContent = (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+      // Don't overwrite "Sold" text if auction ended
+      if (templateTimeLeft > 0) {
+        var mins = Math.floor(templateTimeLeft / 60);
+        var secs = templateTimeLeft % 60;
+        timerEl.textContent = (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+      }
       priceEl.textContent = '$' + templatePrice;
       bidsCountEl.textContent = templateBids + ' Bid' + (templateBids !== 1 ? 's' : '');
       
@@ -5049,13 +5604,33 @@
       }
       
       // Sync with shop row
-      syncShopRowWithAuction(templatePrice, templateTimeLeft);
+      syncShopRowWithAuction(templatePrice, templateTimeLeft, templateBids);
     }
 
     function endTemplateAuction() {
       var timerEl = document.getElementById('template-timer');
-      timerEl.textContent = 'SOLD';
+      timerEl.textContent = 'Sold';
       timerEl.classList.add('live-show__product-timer--sold');
+      
+      // Update winning text to "won!"
+      var winnerNameEl = document.getElementById('template-winner-name');
+      var winningText = winnerNameEl.parentElement;
+      if (winningText && templateWinner) {
+        winningText.innerHTML = '<span id="template-winner-name">' + templateWinner.name + '</span> <span class="live-show__winning-highlight">won!</span>';
+      }
+      
+      // Hide the last bid info (counter bid price)
+      var lastBidEl = document.getElementById('template-last-bid');
+      if (lastBidEl) lastBidEl.style.display = 'none';
+      
+      // Show celebration overlay
+      showWinnerCelebration(templateWinner);
+      
+      // Move the sold item to the Sold tab
+      if (activeShopAuctionRow) {
+        var winner = templateWinner ? templateWinner.name : 'bidder';
+        moveToSoldTab(activeShopAuctionRow, templatePrice, winner);
+      }
     }
 
     function resetTemplateAuction() {
@@ -5072,12 +5647,13 @@
       
       preAuction.style.display = 'flex';
       bidsBtn.style.display = 'none';
-      timerEl.style.display = 'none';
+      timerEl.textContent = '00:10';
       timerEl.classList.remove('live-show__product-timer--sold');
+      timerEl.classList.add('live-show__product-timer--pre');
       priceEl.textContent = '$1';
       winningRow.style.display = 'none';
       lastBidEl.style.display = 'none';
-      templateTimeLeft = 30;
+      templateTimeLeft = 10;
       templateBids = 0;
       templatePrice = 1;
       templateWinner = null;
@@ -5089,7 +5665,7 @@
 
     /* Variant Auction */
     var variantTimer = null;
-    var variantTimeLeft = 30;
+    var variantTimeLeft = 10;
     var variantBids = 0;
     var variantPrice = 1;
     var variantWinner = null;
@@ -5111,11 +5687,12 @@
       preAuction.style.display = 'none';
       bidsBtn.style.display = 'flex';
       timerEl.style.display = 'block';
+      timerEl.classList.remove('live-show__product-timer--pre');
       winningRow.style.display = 'none';
       lastBidEl.style.display = 'none';
       if (attrPicker) attrPicker.classList.remove('is-visible');
       
-      variantTimeLeft = 30;
+      variantTimeLeft = 10;
       variantBids = 0;
       variantPrice = 1;
       variantWinner = null;
@@ -5144,7 +5721,15 @@
         if (Math.random() < 0.2 && variantTimeLeft > 2) {
           variantBids++;
           variantPrice += Math.floor(Math.random() * 10) + 1;
-          variantTimeLeft = Math.min(variantTimeLeft + 5, 30);
+          
+          // Calculate time bump
+          var oldTime = variantTimeLeft;
+          variantTimeLeft = Math.min(variantTimeLeft + 3, 10);
+          var timeBump = variantTimeLeft - oldTime;
+          if (timeBump > 0) {
+            showTimerBump('variant-timer-bump', timeBump);
+          }
+          
           var idx = Math.floor(Math.random() * bidderNames.length);
           updateVariantWinningUI(bidderNames[idx], bidderAvatars[idx], variantPrice);
           updateVariantDisplay();
@@ -5180,9 +5765,12 @@
       var bidsCountEl = document.getElementById('variant-bids-count');
       var bidsBtn = document.getElementById('variant-bids-btn');
       
-      var mins = Math.floor(variantTimeLeft / 60);
-      var secs = variantTimeLeft % 60;
-      timerEl.textContent = (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+      // Don't overwrite "Sold" text if auction ended
+      if (variantTimeLeft > 0) {
+        var mins = Math.floor(variantTimeLeft / 60);
+        var secs = variantTimeLeft % 60;
+        timerEl.textContent = (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+      }
       priceEl.textContent = '$' + variantPrice;
       bidsCountEl.textContent = variantBids + ' Bid' + (variantBids !== 1 ? 's' : '');
       
@@ -5192,13 +5780,33 @@
       }
       
       // Sync with shop row
-      syncShopRowWithAuction(variantPrice, variantTimeLeft);
+      syncShopRowWithAuction(variantPrice, variantTimeLeft, variantBids);
     }
 
     function endVariantAuction() {
       var timerEl = document.getElementById('variant-timer');
-      timerEl.textContent = 'SOLD';
+      timerEl.textContent = 'Sold';
       timerEl.classList.add('live-show__product-timer--sold');
+      
+      // Update winning text to "won!"
+      var winnerNameEl = document.getElementById('variant-winner-name');
+      var winningText = winnerNameEl.parentElement;
+      if (winningText && variantWinner) {
+        winningText.innerHTML = '<span id="variant-winner-name">' + variantWinner.name + '</span> <span class="live-show__winning-highlight">won!</span>';
+      }
+      
+      // Hide the last bid info (counter bid price)
+      var lastBidEl = document.getElementById('variant-last-bid');
+      if (lastBidEl) lastBidEl.style.display = 'none';
+      
+      // Show celebration overlay
+      showWinnerCelebration(variantWinner);
+      
+      // Move the sold item to the Sold tab
+      if (activeShopAuctionRow) {
+        var winner = variantWinner ? variantWinner.name : 'bidder';
+        moveToSoldTab(activeShopAuctionRow, variantPrice, winner);
+      }
     }
 
     function resetVariantAuction() {
@@ -5215,12 +5823,13 @@
       
       preAuction.style.display = 'flex';
       bidsBtn.style.display = 'none';
-      timerEl.style.display = 'none';
+      timerEl.textContent = '00:10';
       timerEl.classList.remove('live-show__product-timer--sold');
+      timerEl.classList.add('live-show__product-timer--pre');
       priceEl.textContent = '$1';
       winningRow.style.display = 'none';
       lastBidEl.style.display = 'none';
-      variantTimeLeft = 30;
+      variantTimeLeft = 10;
       variantBids = 0;
       variantPrice = 1;
       variantWinner = null;
@@ -5280,6 +5889,11 @@
         header.classList.remove('is-hidden');
         rowChat.classList.remove('is-hidden');
         closeBtn.classList.remove('is-visible');
+        
+        // Product is now pinned - clear the "from shop" state
+        selectOptionsFromShop = false;
+        selectOptionsShopRow = null;
+        
         currentSelectType = null;
         selectOptionsActive = false;
       }
@@ -5336,6 +5950,23 @@
         if (commerce) commerce.classList.remove('is-selecting');
         var selectBtn = document.getElementById(currentSelectType + '-select-btn');
         if (selectBtn) selectBtn.textContent = 'Select Options';
+        
+        // If we came from shop without pinning, go back to shop and hide panel
+        if (selectOptionsFromShop) {
+          if (commerce) commerce.hidden = true;
+          // Show default auction panel
+          var defaultPanel = document.getElementById('pinned-auction');
+          if (defaultPanel) defaultPanel.hidden = false;
+          // Reopen shop
+          var shopRoot = document.getElementById('live-shop-root');
+          if (shopRoot) {
+            shopRoot.classList.add('is-open');
+            shopRoot.setAttribute('aria-hidden', 'false');
+          }
+          selectOptionsFromShop = false;
+          selectOptionsShopRow = null;
+        }
+        
         currentSelectType = null;
       }
       selectOptionsActive = false;
@@ -5527,6 +6158,59 @@
         rubberBand = 0;
       }, { passive: true });
     });
+
+    // Initialize: Pin the default product in the shop on page load
+    (function initDefaultPinnedInShop() {
+      // Find the shop row matching the default pinned product by image URL
+      var defaultImg = 'https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408';
+      var defaultRow = document.querySelector('.live-shop-row[data-pin-type="auction"][data-pin-img="' + defaultImg + '"]');
+      if (defaultRow) {
+        // Mark as pinned (auction not started yet)
+        defaultRow.classList.add('is-pinned');
+        currentlyPinnedRow = defaultRow;
+        currentlyPinnedType = 'auction';
+        
+        // Show "Pinned" section and move the row there
+        var pinnedSection = document.getElementById('pinned-section');
+        if (pinnedSection) {
+          pinnedSection.classList.add('is-visible');
+          pinnedSection.after(defaultRow);
+        }
+      }
+    })();
+
+    // Scroll-based collapse for search bar and filters
+    (function initShopScrollCollapse() {
+      var shopList = document.querySelector('.live-shop-list');
+      var searchRow = document.querySelector('.live-shop-search-row');
+      var filtersRow = document.querySelector('.live-shop-filters');
+      
+      if (!shopList || !searchRow || !filtersRow) return;
+      
+      var lastScrollTop = 0;
+      var scrollThreshold = 10;
+      var isCollapsed = false;
+      
+      shopList.addEventListener('scroll', function() {
+        var scrollTop = shopList.scrollTop;
+        var scrollDelta = scrollTop - lastScrollTop;
+        
+        // Scrolling down - collapse
+        if (scrollDelta > scrollThreshold && scrollTop > 50 && !isCollapsed) {
+          searchRow.classList.add('is-collapsed');
+          filtersRow.classList.add('is-collapsed');
+          isCollapsed = true;
+        }
+        // Scrolling up - expand
+        else if (scrollDelta < -scrollThreshold && isCollapsed) {
+          searchRow.classList.remove('is-collapsed');
+          filtersRow.classList.remove('is-collapsed');
+          isCollapsed = false;
+        }
+        
+        lastScrollTop = scrollTop;
+      }, { passive: true });
+    })();
   </script>
   <script src="assets/live-show.js?v=shop-tabs-by-format"></script>
   <script src="../../../design-prototypes/pages/shared/components/ios.js"></script>

@@ -100,7 +100,8 @@
     setInterval(function () {
       var row = chatPool[chatIdx % chatPool.length];
       chatIdx += 1;
-      appendChatMessage(row.u, row.t, false);
+      var isQuestion = row.t.trim().endsWith('?');
+      appendChatMessage(row.u, row.t, isQuestion);
     }, 2600 + Math.random() * 2400);
   }
 
