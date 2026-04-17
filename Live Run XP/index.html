@@ -1652,12 +1652,15 @@
     .live-show__commerce {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
       align-items: flex-start;
       width: 100%;
       padding: 0 16px;
       margin-top: 16px;
       box-sizing: border-box;
+    }
+    .live-show__commerce.is-selecting {
+      gap: 8px;
     }
     .live-show__commerce-inner {
       display: flex;
@@ -1670,7 +1673,7 @@
     .live-show__commerce.is-selecting .live-show__commerce-inner {
       /* Short Sheet Entry: Emphasized Entry 400ms */
       transition: transform 400ms cubic-bezier(0.05, 0.70, 0.10, 1.00);
-      transform: translateY(-20px);
+      transform: translateY(-16px);
     }
     /* Product Details row — Figma gap-[12px] */
     .live-show__product-row {
@@ -2741,6 +2744,97 @@
       transform: scale(0.96);
     }
 
+    /* ── Listing Options Action Sheet ── */
+    .listing-options-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 10000;
+      background: rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+    .listing-options-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .listing-options-sheet {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #fff;
+      border-radius: 12px 12px 0 0;
+      padding-bottom: 34px;
+      transform: translateY(100%);
+      transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .listing-options-overlay.is-open .listing-options-sheet {
+      transform: translateY(0);
+    }
+    .listing-options-sheet__handle {
+      display: flex;
+      justify-content: center;
+      padding: 6px 0 4px;
+    }
+    .listing-options-sheet__handle-bar {
+      width: 36px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.1);
+    }
+    .listing-options-sheet__title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1c1c1c;
+      text-align: center;
+      padding: 8px 16px 12px;
+      letter-spacing: -0.08px;
+    }
+    .listing-options-sheet__list {
+      list-style: none;
+      margin: 0;
+      padding: 0 16px 8px;
+    }
+    .listing-options-sheet__item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s ease;
+    }
+    .listing-options-sheet__item:last-child {
+      border-bottom: none;
+    }
+    .listing-options-sheet__item:active {
+      background: rgba(0, 0, 0, 0.04);
+    }
+    .listing-options-sheet__icon {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .listing-options-sheet__icon img {
+      width: 20px;
+      height: 20px;
+      display: block;
+      object-fit: contain;
+    }
+    .listing-options-sheet__label {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1c1c1c;
+      letter-spacing: -0.1px;
+    }
+
   </style>
 </head>
 <body>
@@ -2797,7 +2891,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/17/26 @ 1:49pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/17/26 @ 2:45pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -3403,6 +3497,50 @@
                   <div class="live-shop-section-head">
                     <p class="live-shop-section-title">6 Auctions</p>
                   </div>
+                  <!-- Template Auction -->
+                  <article class="live-shop-row" data-pin-type="template" data-pin-title="Assorted Sneakers: Nike, Adidas, and more" data-pin-meta="Template" data-pin-price="$1" data-pin-img="assets/pile-of-sneakers.jpg">
+                    <div class="live-shop-row__thumb-wrap">
+                      <img alt="" src="assets/pile-of-sneakers.jpg" />
+                    </div>
+                    <div class="live-shop-row__info">
+                      <div class="live-shop-row__details">
+                        <div class="live-shop-row__titleblock">
+                          <p class="live-shop-row__title">Assorted Sneakers: Nike, Adidas, and more</p>
+                          <p class="live-shop-row__meta">Template</p>
+                        </div>
+                        <p class="live-shop-row__price js-shop-price">$1</p>
+                        <p class="live-shop-row__timer js-shop-timer">00:30</p>
+                      </div>
+                      <div class="live-shop-row__actions">
+                        <button type="button" class="live-shop-row__btn js-select-options-btn" data-select-type="template">Select Options</button>
+                        <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
+                          <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                  <!-- Variant Auction -->
+                  <article class="live-shop-row" data-pin-type="variant" data-pin-title="Nike Air Max Black" data-pin-meta="Multiple Options" data-pin-price="$1 - $15" data-pin-img="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408">
+                    <div class="live-shop-row__thumb-wrap">
+                      <img alt="" src="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408" />
+                    </div>
+                    <div class="live-shop-row__info">
+                      <div class="live-shop-row__details">
+                        <div class="live-shop-row__titleblock">
+                          <p class="live-shop-row__title">Nike Air Max Black</p>
+                          <p class="live-shop-row__meta">Multiple Options</p>
+                        </div>
+                        <p class="live-shop-row__price js-shop-price">$1 - $15</p>
+                        <p class="live-shop-row__timer js-shop-timer">00:30</p>
+                      </div>
+                      <div class="live-shop-row__actions">
+                        <button type="button" class="live-shop-row__btn js-select-options-btn" data-select-type="variant">Select Options</button>
+                        <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
+                          <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
+                        </button>
+                      </div>
+                    </div>
+                  </article>
                   <!-- Standard Auction -->
                   <article class="live-shop-row" data-pin-type="auction" data-pin-title="Supreme Logo Patch Backpack" data-pin-meta="New w tag" data-pin-price="$1" data-pin-img="https://www.figma.com/api/mcp/asset/34cbbbdf-ef28-417c-b15b-8208a1919c19">
                     <div class="live-shop-row__thumb-wrap">
@@ -3426,7 +3564,7 @@
                         <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
                         </button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="More">
+                        <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
                         </button>
                       </div>
@@ -3455,71 +3593,7 @@
                         <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
                         </button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="More">
-                          <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                  <!-- Template Auction -->
-                  <article class="live-shop-row" data-pin-type="template" data-pin-title="Carhartt Denim Jeans" data-pin-meta="32 • New w tag" data-pin-price="$35" data-pin-img="https://www.figma.com/api/mcp/asset/c0dd143a-f30c-46af-a437-0b082298ba8c">
-                    <div class="live-shop-row__thumb-wrap">
-                      <img alt="" src="https://www.figma.com/api/mcp/asset/c0dd143a-f30c-46af-a437-0b082298ba8c" />
-                      <div class="live-shop-prebid" aria-hidden="true">
-                        <img alt="" src="https://www.figma.com/api/mcp/asset/bb8b3381-552c-470d-96f4-7b135fcb05a4" width="16" height="16" />
-                        <span>7</span>
-                      </div>
-                      <div class="live-shop-template-badge" aria-label="Template">
-                        <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/template.svg" width="12" height="12" />
-                      </div>
-                    </div>
-                    <div class="live-shop-row__info">
-                      <div class="live-shop-row__details">
-                        <div class="live-shop-row__titleblock">
-                          <p class="live-shop-row__title">Carhartt Denim Jeans</p>
-                          <p class="live-shop-row__meta">32 • New w tag • Qty: 1</p>
-                        </div>
-                        <p class="live-shop-row__price js-shop-price">$35</p>
-                        <p class="live-shop-row__timer js-shop-timer">00:30</p>
-                      </div>
-                      <div class="live-shop-row__actions">
-                        <button type="button" class="live-shop-row__btn live-shop-row__btn--inverted js-start-btn">Start</button>
-                        <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
-                          <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
-                        </button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="More">
-                          <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                  <!-- Variant Auction -->
-                  <article class="live-shop-row" data-pin-type="variant" data-pin-title="Vintage Band Tee Bundle" data-pin-meta="Multiple Options" data-pin-price="$8" data-pin-img="https://www.figma.com/api/mcp/asset/ae1a2046-341e-4821-86d1-6d22a9b37885">
-                    <div class="live-shop-row__thumb-wrap">
-                      <img alt="" src="https://www.figma.com/api/mcp/asset/ae1a2046-341e-4821-86d1-6d22a9b37885" />
-                      <div class="live-shop-prebid" aria-hidden="true">
-                        <img alt="" src="https://www.figma.com/api/mcp/asset/bb8b3381-552c-470d-96f4-7b135fcb05a4" width="16" height="16" />
-                        <span>2</span>
-                      </div>
-                      <div class="live-shop-variant-badge" aria-label="Variants">
-                        <span>5</span>
-                      </div>
-                    </div>
-                    <div class="live-shop-row__info">
-                      <div class="live-shop-row__details">
-                        <div class="live-shop-row__titleblock">
-                          <p class="live-shop-row__title">Vintage Band Tee Bundle</p>
-                          <p class="live-shop-row__meta">Multiple Options</p>
-                        </div>
-                        <p class="live-shop-row__price js-shop-price">$8</p>
-                        <p class="live-shop-row__timer js-shop-timer">00:30</p>
-                      </div>
-                      <div class="live-shop-row__actions">
-                        <button type="button" class="live-shop-row__btn live-shop-row__btn--inverted js-start-btn">Start</button>
-                        <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
-                          <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
-                        </button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="More">
+                        <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
                         </button>
                       </div>
@@ -3548,7 +3622,7 @@
                         <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
                         </button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="More">
+                        <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
                         </button>
                       </div>
@@ -3577,7 +3651,7 @@
                         <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
                         </button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="More">
+                        <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
                         </button>
                       </div>
@@ -3611,7 +3685,7 @@
                           <img class="live-shop-row__btn-icon" alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
                           <span>Pin</span>
                         </button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="More">
+                        <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
                         </button>
                       </div>
@@ -3638,7 +3712,7 @@
                           <img class="live-shop-row__btn-icon" alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
                           <span>Pin</span>
                         </button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="More">
+                        <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
                         </button>
                       </div>
@@ -3665,7 +3739,7 @@
                           <img class="live-shop-row__btn-icon" alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
                           <span>Pin</span>
                         </button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="More">
+                        <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
                         </button>
                       </div>
@@ -3692,7 +3766,7 @@
                           <img class="live-shop-row__btn-icon" alt="" src="../../../design-prototypes/pages/shared/icons/svg/pin.svg" />
                           <span>Pin</span>
                         </button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="More">
+                        <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
                         </button>
                       </div>
@@ -3719,7 +3793,7 @@
                       </div>
                       <div class="live-shop-row__actions">
                         <button type="button" class="live-shop-row__btn js-pin-btn">Pin</button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="More">
+                        <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
                         </button>
                       </div>
@@ -3745,7 +3819,7 @@
                       </div>
                       <div class="live-shop-row__actions">
                         <button type="button" class="live-shop-row__btn">Run Giveaway</button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="More">
+                        <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
                         </button>
                       </div>
@@ -3764,7 +3838,7 @@
                       </div>
                       <div class="live-shop-row__actions">
                         <button type="button" class="live-shop-row__btn">Run Giveaway</button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="More">
+                        <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
                         </button>
                       </div>
@@ -3783,7 +3857,7 @@
                       </div>
                       <div class="live-shop-row__actions">
                         <button type="button" class="live-shop-row__btn">Run Giveaway</button>
-                        <button type="button" class="live-shop-row__icon-btn" aria-label="More">
+                        <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="../../../design-prototypes/pages/shared/icons/svg/menu-dots-horizontal.svg" />
                         </button>
                       </div>
@@ -3823,6 +3897,17 @@
             <button type="button" class="live-shop-fab" aria-label="Add listing">
               <img alt="" src="https://www.figma.com/api/mcp/asset/ead16b85-adad-4768-abe2-5d889f04d6d3" width="24" height="24" />
             </button>
+          </div>
+        </div>
+
+        <!-- Listing Options Action Sheet -->
+        <div class="listing-options-overlay" id="listingOptionsOverlay" aria-hidden="true">
+          <div class="listing-options-sheet" id="listingOptionsSheet" role="dialog" aria-modal="true" aria-labelledby="listingOptionsTitle">
+            <div class="listing-options-sheet__handle"><div class="listing-options-sheet__handle-bar"></div></div>
+            <p class="listing-options-sheet__title" id="listingOptionsTitle">Listing Options</p>
+            <ul class="listing-options-sheet__list" id="listingOptionsList">
+              <!-- Options populated dynamically -->
+            </ul>
           </div>
         </div>
 
@@ -4486,8 +4571,8 @@
       if (thumbImg) thumbImg.src = img;
       if (titleEl) titleEl.textContent = title;
       
-      // Parse meta into spans (split by •)
-      if (metaEl) {
+      // Parse meta into spans (split by •) — skip for template/variant which have dynamic attribute pickers
+      if (metaEl && type !== 'template' && type !== 'variant') {
         var metaParts = meta.split('•').map(function(s) { return s.trim(); }).filter(Boolean);
         metaEl.innerHTML = metaParts.map(function(p, i) {
           return '<span>' + p + '</span>' + (i < metaParts.length - 1 ? '<span>•</span>' : '');
@@ -4587,6 +4672,102 @@
           e.stopPropagation();
           var row = btn.closest('.live-shop-row');
           if (row) startAuctionFromShop(row);
+        });
+      });
+    })();
+
+    /* ── Select Options from Shop Row (Template/Variant) ── */
+    function preselectFirstChips(type) {
+      var attrPicker = document.getElementById(type + '-attr-picker');
+      if (!attrPicker) return;
+      
+      attrPicker.querySelectorAll('.live-show__attr-group').forEach(function(group) {
+        var chips = group.querySelectorAll('.live-show__attr-chip');
+        chips.forEach(function(chip) { chip.classList.remove('is-selected'); });
+        if (chips.length > 0) {
+          chips[0].classList.add('is-selected');
+        }
+      });
+      
+      updateProductMeta(type);
+    }
+
+    (function initSelectOptionsButtons() {
+      document.querySelectorAll('.js-select-options-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var row = btn.closest('.live-shop-row');
+          var selectType = btn.dataset.selectType;
+          if (row && selectType) {
+            pinProduct(row);
+            preselectFirstChips(selectType);
+            setTimeout(function() {
+              onSelectOptions(selectType);
+            }, 120);
+          }
+        });
+      });
+    })();
+
+    /* ── Listing Options Action Sheet (More "..." Button) ── */
+    var listingOptionsOverlay = document.getElementById('listingOptionsOverlay');
+    var listingOptionsList = document.getElementById('listingOptionsList');
+
+    function openListingOptions(pinType) {
+      var options = [];
+      var iconPath = '../../../design-prototypes/pages/shared/icons/svg/';
+      
+      if (pinType === 'template') {
+        options = [
+          { icon: iconPath + 'pencil.svg', label: 'Edit Listing', action: 'edit' },
+          { icon: iconPath + 'duplicate.svg', label: 'Clone Template', action: 'clone' },
+          { icon: iconPath + 'trash.svg', label: 'Remove from Show', action: 'remove' }
+        ];
+      } else {
+        options = [
+          { icon: iconPath + 'pencil.svg', label: 'Edit Listing', action: 'edit' },
+          { icon: iconPath + 'trash.svg', label: 'Remove from Show', action: 'remove' }
+        ];
+      }
+      
+      listingOptionsList.innerHTML = options.map(function(opt) {
+        return '<li class="listing-options-sheet__item" data-action="' + opt.action + '">' +
+          '<div class="listing-options-sheet__icon"><img alt="" src="' + opt.icon + '" /></div>' +
+          '<span class="listing-options-sheet__label">' + opt.label + '</span>' +
+        '</li>';
+      }).join('');
+      
+      listingOptionsList.querySelectorAll('.listing-options-sheet__item').forEach(function(item) {
+        item.addEventListener('click', function() {
+          closeListingOptions();
+        });
+      });
+      
+      listingOptionsOverlay.classList.add('is-open');
+      listingOptionsOverlay.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeListingOptions() {
+      listingOptionsOverlay.classList.remove('is-open');
+      listingOptionsOverlay.setAttribute('aria-hidden', 'true');
+    }
+
+    listingOptionsOverlay.addEventListener('click', function(e) {
+      if (e.target === listingOptionsOverlay) {
+        closeListingOptions();
+      }
+    });
+
+    (function initMoreButtons() {
+      document.querySelectorAll('.js-more-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var row = btn.closest('.live-shop-row');
+          if (row && row.dataset.pinType) {
+            openListingOptions(row.dataset.pinType);
+          }
         });
       });
     })();
