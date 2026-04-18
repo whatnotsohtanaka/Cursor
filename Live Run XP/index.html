@@ -753,8 +753,8 @@
       body:not(.proto-mobile) .phone-content {
         padding-top: env(safe-area-inset-top, 0px);
         padding-bottom: env(safe-area-inset-bottom, 0px);
-        padding-left: max(16px, env(safe-area-inset-left, 0px));
-        padding-right: max(16px, env(safe-area-inset-right, 0px));
+        padding-left: env(safe-area-inset-left, 0px);
+        padding-right: env(safe-area-inset-right, 0px);
         box-sizing: border-box;
       }
       body:not(.proto-mobile) .phone-content * { max-width: 100%; }
@@ -3126,7 +3126,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 8:23am';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 8:24am';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
