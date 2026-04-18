@@ -3066,7 +3066,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 10:30am';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 10:40am';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -4976,10 +4976,10 @@
           runningSection.classList.remove('is-visible');
         }
         
-        // Move row back to after the listings section head
-        var listingsSection = document.getElementById('auction-listings-section');
-        if (listingsSection) {
-          listingsSection.after(activeShopAuctionRow);
+        // Move row to end of auction panel
+        var auctionPanel = document.getElementById('live-shop-panel-auction');
+        if (auctionPanel) {
+          auctionPanel.appendChild(activeShopAuctionRow);
         }
         
         activeShopAuctionRow = null;
@@ -4991,10 +4991,10 @@
       
       row.classList.remove('is-pinned');
       
-      // Move the row back to the listings section
-      var listingsSection = document.getElementById('auction-listings-section');
-      if (listingsSection) {
-        listingsSection.after(row);
+      // Move the row to the end of the auction panel (after all other rows)
+      var auctionPanel = document.getElementById('live-shop-panel-auction');
+      if (auctionPanel) {
+        auctionPanel.appendChild(row);
       }
       
       // Hide pinned section if no more pinned items
@@ -5719,10 +5719,10 @@
         activeShopAuctionRow.classList.remove('is-pinned');
         activeShopAuctionRow.classList.remove('is-auction-active');
         
-        // Move back to auction listings section
-        var auctionSection = document.getElementById('auction-listings-section');
-        if (auctionSection) {
-          auctionSection.appendChild(activeShopAuctionRow);
+        // Move template back to top of listings (right after listings header)
+        var listingsSection = document.getElementById('auction-listings-section');
+        if (listingsSection) {
+          listingsSection.after(activeShopAuctionRow);
         }
         
         // Reset shop row display
@@ -6077,10 +6077,16 @@
         activeShopAuctionRow.classList.remove('is-pinned');
         activeShopAuctionRow.classList.remove('is-auction-active');
         
-        // Move back to auction listings section
-        var auctionSection = document.getElementById('auction-listings-section');
-        if (auctionSection) {
-          auctionSection.appendChild(activeShopAuctionRow);
+        // Move variant back to second position (after template, right after listings header)
+        var templateRow = document.querySelector('.live-shop-row[data-pin-type="template"]');
+        if (templateRow) {
+          templateRow.after(activeShopAuctionRow);
+        } else {
+          // Fallback: put after listings header
+          var listingsSection = document.getElementById('auction-listings-section');
+          if (listingsSection) {
+            listingsSection.after(activeShopAuctionRow);
+          }
         }
         
         // Reset shop row display
