@@ -3066,7 +3066,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 11:20am';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 11:25am';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -5246,7 +5246,8 @@
     function openListingOptions(pinType, row) {
       var options = [];
       var iconPath = 'assets/icons/';
-      var isPinned = (pinType === currentlyPinnedType) && (pinType === 'template' || pinType === 'variant');
+      // Check if this specific row is pinned (has is-pinned class)
+      var isPinned = row && row.classList.contains('is-pinned');
       
       currentListingOptionsRow = row;
       
@@ -5278,9 +5279,9 @@
       listingOptionsList.querySelectorAll('.listing-options-sheet__item').forEach(function(item) {
         item.addEventListener('click', function() {
           var action = item.dataset.action;
-          if (action === 'unpin') {
-            // Unpin - go back to default auction panel
-            showPinnedPanel('auction');
+          if (action === 'unpin' && currentListingOptionsRow) {
+            // Unpin the shop row
+            unpinShopRow(currentListingOptionsRow);
           }
           closeListingOptions();
         });
