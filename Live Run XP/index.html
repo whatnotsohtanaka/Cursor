@@ -3067,7 +3067,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 11:50am';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 11:55am';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -5650,6 +5650,10 @@
           shopRow.classList.remove('is-pinned');
           activeShopAuctionRow = shopRow;
           
+          // Show shop timer (clear any inline display:none)
+          var shopTimerEl = shopRow.querySelector('.js-shop-timer');
+          if (shopTimerEl) shopTimerEl.style.display = 'block';
+          
           // Hide pinned section
           var pinnedSection = document.getElementById('pinned-section');
           if (pinnedSection) pinnedSection.classList.remove('is-visible');
@@ -5671,6 +5675,10 @@
         // activeShopAuctionRow is already set, make sure it's in Running Now
         activeShopAuctionRow.classList.add('is-auction-active');
         activeShopAuctionRow.classList.remove('is-pinned');
+        
+        // Show shop timer (clear any inline display:none)
+        var shopTimerEl = activeShopAuctionRow.querySelector('.js-shop-timer');
+        if (shopTimerEl) shopTimerEl.style.display = 'block';
         
         var pinnedSection = document.getElementById('pinned-section');
         if (pinnedSection) pinnedSection.classList.remove('is-visible');
@@ -6017,6 +6025,10 @@
           shopRow.classList.remove('is-pinned');
           activeShopAuctionRow = shopRow;
           
+          // Show shop timer (clear any inline display:none)
+          var shopTimerEl = shopRow.querySelector('.js-shop-timer');
+          if (shopTimerEl) shopTimerEl.style.display = 'block';
+          
           // Hide pinned section
           var pinnedSection = document.getElementById('pinned-section');
           if (pinnedSection) pinnedSection.classList.remove('is-visible');
@@ -6038,6 +6050,10 @@
         // activeShopAuctionRow is already set, make sure it's in Running Now
         activeShopAuctionRow.classList.add('is-auction-active');
         activeShopAuctionRow.classList.remove('is-pinned');
+        
+        // Show shop timer (clear any inline display:none)
+        var shopTimerEl = activeShopAuctionRow.querySelector('.js-shop-timer');
+        if (shopTimerEl) shopTimerEl.style.display = 'block';
         
         var pinnedSection = document.getElementById('pinned-section');
         if (pinnedSection) pinnedSection.classList.remove('is-visible');
