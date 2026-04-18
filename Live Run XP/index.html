@@ -3066,7 +3066,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 10:50am';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 11:00am';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -3297,6 +3297,10 @@
                           </div>
                         </div>
                       </div>
+                    </div>
+                    <!-- Empty State: Choose Product -->
+                    <div class="live-show__commerce" id="pinned-empty" hidden>
+                      <button type="button" class="live-show__cta-btn live-show__cta-btn--primary" onclick="openShop()">Choose Product</button>
                     </div>
                     <!-- Pinned Item: Auction (default for Seller) — Figma 696:45100 -->
                     <div class="live-show__commerce" id="pinned-auction" data-pinned="auction">
@@ -4736,11 +4740,23 @@
     var currentlyPinnedType = 'auction'; // Track which type is currently pinned
     var currentlyPinnedRow = null; // Track the currently pinned shop row
 
+    function openShop() {
+      var shopRoot = document.getElementById('live-shop-root');
+      if (shopRoot) {
+        shopRoot.classList.add('is-open');
+        shopRoot.setAttribute('aria-hidden', 'false');
+      }
+    }
+
     function showPinnedPanel(targetPinned) {
       var panels = document.querySelectorAll('[data-pinned]');
       panels.forEach(function (p) {
         p.hidden = p.getAttribute('data-pinned') !== targetPinned;
       });
+      
+      // Hide empty state when showing a product
+      var emptyPanel = document.getElementById('pinned-empty');
+      if (emptyPanel) emptyPanel.hidden = true;
       
       currentlyPinnedType = targetPinned;
       
@@ -5046,8 +5062,19 @@
         }
       }
       
+      // Hide all pinned product panels and show empty state
+      var allPinnedPanels = document.querySelectorAll('[data-pinned]');
+      allPinnedPanels.forEach(function(p) {
+        p.hidden = true;
+      });
+      var emptyPanel = document.getElementById('pinned-empty');
+      if (emptyPanel) {
+        emptyPanel.hidden = false;
+      }
+      
       if (currentlyPinnedRow === row) {
         currentlyPinnedRow = null;
+        currentlyPinnedType = null;
       }
     }
 
