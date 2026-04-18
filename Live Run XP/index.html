@@ -3059,7 +3059,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 9:30am';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 9:45am';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -5639,10 +5639,98 @@
       postAuction.style.display = 'flex';
       postBidsCount.textContent = templateBids + ' Bid' + (templateBids !== 1 ? 's' : '');
       
-      // Move the sold item to the Sold tab
+      // For templates, create a sold entry clone instead of moving the template
+      // Get variant info from the pinned template display
+      var metaBrand = document.getElementById('template-meta-brand');
+      var metaSize = document.getElementById('template-meta-size');
+      var pinnedThumb = document.querySelector('#pinned-template .live-show__product-thumb img');
+      
+      var variantMeta = (metaBrand ? metaBrand.textContent : '') + ' • ' + (metaSize ? metaSize.textContent : '') + ' • New';
+      var variantImg = pinnedThumb ? pinnedThumb.src : 'assets/pile-of-sneakers.jpg';
+      var winner = templateWinner ? templateWinner.name : 'bidder';
+      
+      // Create a sold entry for this specific variant
+      createSoldEntry('Assorted Sneakers', variantMeta, templatePrice, winner, variantImg);
+      
+      // Unpin the template row from shop (keep it in listings for Run Next)
       if (activeShopAuctionRow) {
-        var winner = templateWinner ? templateWinner.name : 'bidder';
-        moveToSoldTab(activeShopAuctionRow, templatePrice, winner);
+        activeShopAuctionRow.classList.remove('is-pinned');
+        activeShopAuctionRow.classList.remove('is-auction-active');
+        
+        // Move back to auction listings section
+        var auctionSection = document.getElementById('auction-listings-section');
+        if (auctionSection) {
+          auctionSection.appendChild(activeShopAuctionRow);
+        }
+        
+        // Reset shop row display
+        var shopTimerEl = activeShopAuctionRow.querySelector('.js-shop-timer');
+        if (shopTimerEl) {
+          shopTimerEl.textContent = '00:10';
+          shopTimerEl.style.display = 'none';
+          shopTimerEl.style.color = '';
+        }
+        var actionsEl = activeShopAuctionRow.querySelector('.live-shop-row__actions');
+        if (actionsEl) actionsEl.style.display = 'flex';
+      }
+      
+      // Hide pinned section
+      var pinnedSection = document.getElementById('pinned-section');
+      if (pinnedSection) pinnedSection.classList.remove('is-visible');
+      
+      // Hide running now section
+      var runningSection = document.getElementById('running-now-section');
+      if (runningSection) runningSection.classList.remove('is-visible');
+      
+      // Clear references
+      if (currentlyPinnedRow === activeShopAuctionRow) {
+        currentlyPinnedRow = null;
+      }
+      activeShopAuctionRow = null;
+    }
+    
+    function createSoldEntry(title, meta, price, winner, imgSrc) {
+      var soldPanel = document.getElementById('live-shop-panel-sold');
+      if (!soldPanel) return;
+      
+      // Remove empty state if exists
+      var emptyState = soldPanel.querySelector('.live-shop-empty');
+      if (emptyState) emptyState.remove();
+      
+      // Create sold row
+      var soldRow = document.createElement('article');
+      soldRow.className = 'live-shop-row';
+      soldRow.innerHTML = 
+        '<div class="live-shop-row__thumb-wrap">' +
+          '<img alt="" src="' + imgSrc + '" />' +
+        '</div>' +
+        '<div class="live-shop-row__info">' +
+          '<div class="live-shop-row__details">' +
+            '<div class="live-shop-row__titleblock">' +
+              '<p class="live-shop-row__title">' + title + '</p>' +
+              '<p class="live-shop-row__meta">' + meta + '</p>' +
+            '</div>' +
+            '<p class="live-shop-row__price">$' + price + '</p>' +
+            '<p class="live-shop-row__timer" style="display:block;color:#1c1c1c;">Sold to @' + winner + '</p>' +
+          '</div>' +
+        '</div>';
+      
+      // Find section head and insert after it
+      var soldSectionHead = soldPanel.querySelector('.live-shop-section-head');
+      if (soldSectionHead && soldSectionHead.nextSibling) {
+        soldPanel.insertBefore(soldRow, soldSectionHead.nextSibling);
+      } else {
+        soldPanel.appendChild(soldRow);
+      }
+      
+      // Update sold tab count
+      var soldTab = document.querySelector('[data-tab="sold"]');
+      if (soldTab) {
+        var countEl = soldTab.querySelector('.live-shop-tab__count');
+        if (countEl) {
+          var currentCount = parseInt(countEl.textContent) || 0;
+          countEl.textContent = currentCount + 1;
+        }
       }
     }
 
@@ -5848,11 +5936,54 @@
       // Show celebration overlay
       showWinnerCelebration(variantWinner);
       
-      // Move the sold item to the Sold tab
+      // For variants, create a sold entry clone instead of moving the variant row
+      // Get variant info from the pinned variant display
+      var metaColor = document.getElementById('variant-meta-color');
+      var metaSize = document.getElementById('variant-meta-size');
+      var pinnedThumb = document.querySelector('#pinned-variant .live-show__product-thumb img');
+      
+      var variantMeta = (metaColor ? metaColor.textContent : '') + ' · ' + (metaSize ? metaSize.textContent : '') + ' · New';
+      var variantImg = pinnedThumb ? pinnedThumb.src : '';
+      var winner = variantWinner ? variantWinner.name : 'bidder';
+      
+      // Create a sold entry for this specific variant
+      createSoldEntry('Nike Air Max Black', variantMeta, variantPrice, winner, variantImg);
+      
+      // Unpin the variant row from shop (keep it in listings)
       if (activeShopAuctionRow) {
-        var winner = variantWinner ? variantWinner.name : 'bidder';
-        moveToSoldTab(activeShopAuctionRow, variantPrice, winner);
+        activeShopAuctionRow.classList.remove('is-pinned');
+        activeShopAuctionRow.classList.remove('is-auction-active');
+        
+        // Move back to auction listings section
+        var auctionSection = document.getElementById('auction-listings-section');
+        if (auctionSection) {
+          auctionSection.appendChild(activeShopAuctionRow);
+        }
+        
+        // Reset shop row display
+        var shopTimerEl = activeShopAuctionRow.querySelector('.js-shop-timer');
+        if (shopTimerEl) {
+          shopTimerEl.textContent = '00:10';
+          shopTimerEl.style.display = 'none';
+          shopTimerEl.style.color = '';
+        }
+        var actionsEl = activeShopAuctionRow.querySelector('.live-shop-row__actions');
+        if (actionsEl) actionsEl.style.display = 'flex';
       }
+      
+      // Hide pinned section
+      var pinnedSection = document.getElementById('pinned-section');
+      if (pinnedSection) pinnedSection.classList.remove('is-visible');
+      
+      // Hide running now section
+      var runningSection = document.getElementById('running-now-section');
+      if (runningSection) runningSection.classList.remove('is-visible');
+      
+      // Clear references
+      if (currentlyPinnedRow === activeShopAuctionRow) {
+        currentlyPinnedRow = null;
+      }
+      activeShopAuctionRow = null;
     }
 
     function resetVariantAuction() {
