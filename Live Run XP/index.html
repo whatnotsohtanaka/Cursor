@@ -2875,6 +2875,13 @@
     .live-shop-row__icon-btn:active {
       opacity: 0.92;
     }
+    /* Invert pin button when row is pinned */
+    .live-shop-row.is-pinned .js-pin-btn {
+      background: #1c1c1c;
+    }
+    .live-shop-row.is-pinned .js-pin-btn > img {
+      filter: invert(1);
+    }
     /* FAB — 56×56 #ffe414, shadow from Figma */
     .live-shop-fab {
       position: absolute;
@@ -3059,7 +3066,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 9:45am';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 9:50am';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
