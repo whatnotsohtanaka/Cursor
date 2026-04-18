@@ -3066,7 +3066,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 10:40am';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 10:50am';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -4976,10 +4976,30 @@
           runningSection.classList.remove('is-visible');
         }
         
-        // Move row to end of auction panel
-        var auctionPanel = document.getElementById('live-shop-panel-auction');
-        if (auctionPanel) {
-          auctionPanel.appendChild(activeShopAuctionRow);
+        // Determine the correct position based on row type
+        var rowType = activeShopAuctionRow.dataset.pinType;
+        
+        if (rowType === 'template') {
+          // Template goes right after listings header
+          var listingsSection = document.getElementById('auction-listings-section');
+          if (listingsSection) {
+            listingsSection.after(activeShopAuctionRow);
+          }
+        } else if (rowType === 'variant') {
+          // Variant goes after template
+          var templateRow = document.querySelector('.live-shop-row[data-pin-type="template"]:not(.is-pinned):not(.is-auction-active)');
+          if (templateRow) {
+            templateRow.after(activeShopAuctionRow);
+          } else {
+            var listingsSection = document.getElementById('auction-listings-section');
+            if (listingsSection) listingsSection.after(activeShopAuctionRow);
+          }
+        } else {
+          // Standard auctions go to end of panel
+          var auctionPanel = document.getElementById('live-shop-panel-auction');
+          if (auctionPanel) {
+            auctionPanel.appendChild(activeShopAuctionRow);
+          }
         }
         
         activeShopAuctionRow = null;
@@ -4991,10 +5011,30 @@
       
       row.classList.remove('is-pinned');
       
-      // Move the row to the end of the auction panel (after all other rows)
-      var auctionPanel = document.getElementById('live-shop-panel-auction');
-      if (auctionPanel) {
-        auctionPanel.appendChild(row);
+      // Determine the correct position based on row type
+      var rowType = row.dataset.pinType;
+      
+      if (rowType === 'template') {
+        // Template goes right after listings header
+        var listingsSection = document.getElementById('auction-listings-section');
+        if (listingsSection) {
+          listingsSection.after(row);
+        }
+      } else if (rowType === 'variant') {
+        // Variant goes after template (or after listings header if no template)
+        var templateRow = document.querySelector('.live-shop-row[data-pin-type="template"]:not(.is-pinned):not(.is-auction-active)');
+        if (templateRow) {
+          templateRow.after(row);
+        } else {
+          var listingsSection = document.getElementById('auction-listings-section');
+          if (listingsSection) listingsSection.after(row);
+        }
+      } else {
+        // Standard auctions go to end of panel
+        var auctionPanel = document.getElementById('live-shop-panel-auction');
+        if (auctionPanel) {
+          auctionPanel.appendChild(row);
+        }
       }
       
       // Hide pinned section if no more pinned items
