@@ -2769,6 +2769,26 @@
       white-space: nowrap;
       width: 100%;
     }
+    /* Template chip for shop row — matches pinned product template label style */
+    .live-shop-row__template-chip {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      height: 16px;
+      padding: 0 5px;
+      margin-bottom: 2px;
+      background: rgba(0, 0, 0, 0.06);
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 590;
+      line-height: 16px;
+      letter-spacing: -0.08px;
+      color: rgba(0, 0, 0, 0.5);
+    }
+    .live-shop-row.is-auction-active .live-shop-row__template-chip {
+      display: inline-flex;
+    }
     .live-shop-row__price {
       margin: 0;
       font-size: 13px;
@@ -3094,7 +3114,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 1:50pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 2:00pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -3748,6 +3768,7 @@
                     <div class="live-shop-row__info">
                       <div class="live-shop-row__details">
                         <div class="live-shop-row__titleblock">
+                          <span class="live-shop-row__template-chip js-template-chip">#1</span>
                           <p class="live-shop-row__title">Assorted Sneakers: Nike, Adidas, and more</p>
                           <p class="live-shop-row__meta">Template</p>
                         </div>
@@ -5034,9 +5055,12 @@
         priceEl.textContent = '$' + price + ' · ' + bidText;
       }
       
-      // Show template number for templates
-      if (metaEl && rowType === 'template') {
-        metaEl.textContent = 'Template #' + templateRunCount;
+      // Update template chip number for templates
+      if (rowType === 'template') {
+        var chipEl = activeShopAuctionRow.querySelector('.js-template-chip');
+        if (chipEl) {
+          chipEl.textContent = '#' + templateRunCount;
+        }
       }
       
       if (timerEl) {
@@ -5066,6 +5090,12 @@
         if (metaEl) {
           var origMeta = activeShopAuctionRow.dataset.pinMeta || '';
           metaEl.textContent = origMeta;
+        }
+        
+        // Reset template chip to #1
+        if (rowType === 'template') {
+          var chipEl = activeShopAuctionRow.querySelector('.js-template-chip');
+          if (chipEl) chipEl.textContent = '#1';
         }
         
         // Hide "Running Now" section
