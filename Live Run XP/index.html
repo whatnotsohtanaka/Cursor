@@ -3067,7 +3067,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 12:15pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 12:25pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -3129,7 +3129,7 @@
                     </div>
                     <div class="live-show__winner-title">
                       <p class="live-show__winner-name-lg" id="winnerCelebrationName">username</p>
-                      <p class="live-show__winner-label">Won the auction!</p>
+                      <p class="live-show__winner-label" id="winnerCelebrationLabel">Won the auction!</p>
                     </div>
                   </div>
                 </div>
@@ -3354,20 +3354,20 @@
                           <div class="live-show__product-info">
                             <div class="live-show__product-line">
                               <div class="live-show__product-left">
-                                <p class="live-show__product-title">Nike Air Max Black</p>
+                                <p class="live-show__product-title" id="bin-title">Nike Air Max Black</p>
                                 <div class="live-show__product-meta">
                                   <span>Size M8.5</span><span>•</span><span>New</span>
                                 </div>
                               </div>
                               <div class="live-show__product-right">
-                                <p class="live-show__product-price">$50.00</p>
-                                <p class="live-show__product-timer">10 Left</p>
+                                <p class="live-show__product-price" id="bin-price">$50.00</p>
+                                <p class="live-show__product-timer" id="bin-qty">10 Left</p>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <button type="button" class="live-show__bids-btn live-show__bids-btn--disabled" disabled><span>7 Purchases</span></button>
+                      <button type="button" class="live-show__bids-btn live-show__bids-btn--disabled" id="bin-purchases-btn" disabled><span id="bin-purchases-count">0 Purchases</span></button>
                     </div>
 
                     <!-- Pinned Item: Flash Sale — Figma 275:32588 -->
@@ -4834,10 +4834,11 @@
       // Skip price update for variants (they have dynamic pricing based on selected attributes)
       if (priceEl && type !== 'variant') priceEl.textContent = price;
       
-      // For BIN types, show quantity
+      // For BIN types, show quantity and start purchase simulation
       if (type === 'bin' && timerEl) {
         timerEl.textContent = qty + ' Left';
         timerEl.style.display = '';
+        startBinPurchaseSimulation(title, parseInt(qty) || 10);
       }
       
       // Show the correct panel and hide others
@@ -5051,8 +5052,13 @@
       
       row.classList.remove('is-pinned');
       
-      // Determine the correct position based on row type
+      // Stop BIN purchase simulation if unpinning a BIN
       var rowType = row.dataset.pinType;
+      if (rowType === 'bin' || rowType === 'bin-variant') {
+        stopBinPurchaseSimulation();
+      }
+      
+      // Determine the correct position based on row type
       
       if (rowType === 'template') {
         // Template goes right after listings header
@@ -5370,6 +5376,88 @@
       }, 500);
     }
 
+    /* ── BIN Purchase Simulation ── */
+    var binPurchaseTimer = null;
+    var binPurchaseCount = 0;
+    var binQtyLeft = 0;
+    var binProductTitle = '';
+
+    function startBinPurchaseSimulation(title, qty) {
+      // Clear any existing timer
+      if (binPurchaseTimer) {
+        clearInterval(binPurchaseTimer);
+        binPurchaseTimer = null;
+      }
+      
+      binPurchaseCount = 0;
+      binQtyLeft = qty;
+      binProductTitle = title;
+      
+      // Update initial display
+      var purchasesBtn = document.getElementById('bin-purchases-btn');
+      var purchasesCount = document.getElementById('bin-purchases-count');
+      var qtyEl = document.getElementById('bin-qty');
+      
+      if (purchasesCount) purchasesCount.textContent = '0 Purchases';
+      if (qtyEl) qtyEl.textContent = binQtyLeft + ' Left';
+      
+      // Start random purchases after a short delay
+      setTimeout(function() {
+        binPurchaseTimer = setInterval(function() {
+          if (binQtyLeft <= 0) {
+            clearInterval(binPurchaseTimer);
+            binPurchaseTimer = null;
+            return;
+          }
+          
+          // Random chance of purchase
+          if (Math.random() < 0.4) {
+            simulateBinPurchase();
+          }
+        }, 2000);
+      }, 1500);
+    }
+
+    function simulateBinPurchase() {
+      if (binQtyLeft <= 0) return;
+      
+      binPurchaseCount++;
+      binQtyLeft--;
+      
+      // Pick random buyer
+      var idx = Math.floor(Math.random() * bidderNames.length);
+      var buyer = {
+        name: bidderNames[idx],
+        avatar: bidderAvatars[idx]
+      };
+      
+      // Update displays
+      var purchasesCount = document.getElementById('bin-purchases-count');
+      var purchasesBtn = document.getElementById('bin-purchases-btn');
+      var qtyEl = document.getElementById('bin-qty');
+      
+      if (purchasesCount) {
+        purchasesCount.textContent = binPurchaseCount + ' Purchase' + (binPurchaseCount !== 1 ? 's' : '');
+      }
+      if (purchasesBtn && binPurchaseCount > 0) {
+        purchasesBtn.classList.remove('live-show__bids-btn--disabled');
+        purchasesBtn.disabled = false;
+      }
+      if (qtyEl) {
+        qtyEl.textContent = binQtyLeft > 0 ? binQtyLeft + ' Left' : 'Sold Out';
+      }
+      
+      // Show celebration with purchase message
+      showWinnerCelebration(buyer, 'Purchased ' + binProductTitle);
+    }
+
+    function stopBinPurchaseSimulation() {
+      if (binPurchaseTimer) {
+        clearInterval(binPurchaseTimer);
+        binPurchaseTimer = null;
+      }
+    }
+
     function getHighResAvatar(avatarUrl) {
       // Convert pravatar.cc URLs from 64px to 192px for hi-res celebration
       if (avatarUrl && avatarUrl.includes('pravatar.cc/64')) {
@@ -5378,17 +5466,21 @@
       return avatarUrl;
     }
 
-    function showWinnerCelebration(winner) {
+    function showWinnerCelebration(winner, labelText) {
       if (!winner) return;
       
       var celebration = document.getElementById('winnerCelebration');
       var avatarEl = document.getElementById('winnerCelebrationAvatar');
       var nameEl = document.getElementById('winnerCelebrationName');
+      var labelEl = document.getElementById('winnerCelebrationLabel');
       
       if (!celebration || !avatarEl || !nameEl) return;
       
       avatarEl.src = getHighResAvatar(winner.avatar) || '';
       nameEl.textContent = winner.name || 'Winner';
+      if (labelEl) {
+        labelEl.textContent = labelText || 'Won the auction!';
+      }
       
       // Show celebration
       celebration.classList.add('is-visible');
