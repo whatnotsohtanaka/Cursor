@@ -3066,7 +3066,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 11:05am';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 11:10am';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -4958,10 +4958,12 @@
     function syncShopRowWithAuction(price, timeLeft, bids) {
       if (!activeShopAuctionRow) return;
       
+      var rowType = activeShopAuctionRow.dataset.pinType;
       var priceEl = activeShopAuctionRow.querySelector('.js-shop-price');
       var timerEl = activeShopAuctionRow.querySelector('.js-shop-timer');
       
-      if (priceEl) {
+      // Don't show bid counts for templates/variants (no pre-bidding)
+      if (priceEl && rowType !== 'template' && rowType !== 'variant') {
         var bidText = bids === 1 ? '1 Bid' : (bids || 0) + ' Bids';
         priceEl.textContent = '$' + price + ' · ' + bidText;
       }
