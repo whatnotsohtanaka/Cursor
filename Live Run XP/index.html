@@ -1847,6 +1847,17 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    .live-show__product-qty {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: #fff;
+      margin: 0;
+    }
+    .live-show__product-qty--low {
+      color: #EF233C;
+    }
     /* Right Column — Figma min-w-[64px] */
     .live-show__product-right {
       display: flex;
@@ -3078,7 +3089,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 1:00pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 1:10pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -3525,6 +3536,7 @@
                                 <div class="live-show__product-meta" id="variant-meta">
                                   <span id="variant-meta-color">Black/White</span><span>·</span><span id="variant-meta-size">9M</span><span>·</span><span>New</span>
                                 </div>
+                                <p class="live-show__product-qty" id="variant-qty">12 Left</p>
                               </div>
                               <div class="live-show__product-right">
                                 <p class="live-show__product-price" id="variant-price">$1</p>
@@ -3557,13 +3569,13 @@
                             <span class="live-show__attr-label-required">*</span>
                           </div>
                           <div class="live-show__attr-chips">
-                            <button type="button" class="live-show__attr-chip is-selected" data-attr="size" data-value="9m" data-price="1">9M</button>
-                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="9.5m" data-price="1">9.5M</button>
-                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="10m" data-price="5">10M</button>
-                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="10.5m" data-price="8">10.5M</button>
-                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="11m" data-price="10">11M</button>
-                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="11.5m" data-price="12">11.5M</button>
-                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="12m" data-price="15">12M</button>
+                            <button type="button" class="live-show__attr-chip is-selected" data-attr="size" data-value="9m" data-price="1" data-qty="12">9M</button>
+                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="9.5m" data-price="1" data-qty="8">9.5M</button>
+                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="10m" data-price="5" data-qty="3">10M</button>
+                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="10.5m" data-price="8" data-qty="6">10.5M</button>
+                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="11m" data-price="10" data-qty="2">11M</button>
+                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="11.5m" data-price="12" data-qty="1">11.5M</button>
+                            <button type="button" class="live-show__attr-chip" data-attr="size" data-value="12m" data-price="15" data-qty="4">12M</button>
                           </div>
                         </div>
                       </div>
@@ -6564,6 +6576,20 @@
         if (sizeChip && sizeChip.dataset.price) {
           var priceEl = document.getElementById('variant-price');
           if (priceEl) priceEl.textContent = '$' + sizeChip.dataset.price;
+        }
+        
+        // Update variant quantity based on selected size
+        if (sizeChip && sizeChip.dataset.qty) {
+          var qty = parseInt(sizeChip.dataset.qty) || 0;
+          var qtyEl = document.getElementById('variant-qty');
+          if (qtyEl) {
+            qtyEl.textContent = qty + ' Left';
+            if (qty < 5) {
+              qtyEl.classList.add('live-show__product-qty--low');
+            } else {
+              qtyEl.classList.remove('live-show__product-qty--low');
+            }
+          }
         }
       }
     }
