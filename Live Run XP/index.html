@@ -3066,7 +3066,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 11:25am';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 11:35am';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -4752,7 +4752,7 @@
       }
     }
 
-    function showPinnedPanel(targetPinned) {
+    function showPinnedPanel(targetPinned, updateState) {
       var panels = document.querySelectorAll('[data-pinned]');
       panels.forEach(function (p) {
         p.hidden = p.getAttribute('data-pinned') !== targetPinned;
@@ -4762,7 +4762,10 @@
       var emptyPanel = document.getElementById('pinned-empty');
       if (emptyPanel) emptyPanel.hidden = true;
       
-      currentlyPinnedType = targetPinned;
+      // Only update state if explicitly requested (default true for backwards compatibility)
+      if (updateState !== false) {
+        currentlyPinnedType = targetPinned;
+      }
       
       // Reset auctions when switching away
       if (targetPinned !== 'auction') {
@@ -5226,8 +5229,8 @@
         timerEl.style.display = 'block';
       }
       
-      // Show the panel
-      showPinnedPanel(type);
+      // Show the panel temporarily (don't update pinned state yet - user hasn't pinned)
+      showPinnedPanel(type, false);
       
       // Close the shop sheet
       var shopRoot = document.getElementById('live-shop-root');
@@ -6393,12 +6396,18 @@
         var selectBtn = document.getElementById(currentSelectType + '-select-btn');
         if (selectBtn) selectBtn.textContent = 'Select Options';
         
-        // If we came from shop without pinning, go back to shop and hide panel
+        // If we came from shop without pinning, go back to shop and restore previous panel
         if (selectOptionsFromShop) {
           if (commerce) commerce.hidden = true;
-          // Show default auction panel
-          var defaultPanel = document.getElementById('pinned-auction');
-          if (defaultPanel) defaultPanel.hidden = false;
+          // Show the actually pinned panel (or empty state if nothing pinned)
+          if (currentlyPinnedType && currentlyPinnedRow) {
+            var actualPanel = document.getElementById('pinned-' + currentlyPinnedType);
+            if (actualPanel) actualPanel.hidden = false;
+          } else {
+            // Nothing is pinned - show empty state
+            var emptyPanel = document.getElementById('pinned-empty');
+            if (emptyPanel) emptyPanel.hidden = false;
+          }
           // Reopen shop
           var shopRoot = document.getElementById('live-shop-root');
           if (shopRoot) {
