@@ -2810,6 +2810,11 @@
     .live-shop-row__btn:active {
       opacity: 0.92;
     }
+    .live-shop-row__btn:disabled,
+    .live-shop-row__btn.is-disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
     /* Inverted (filled black) button for Start */
     .live-shop-row__btn--inverted {
       background: #1c1c1c;
@@ -3089,7 +3094,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 1:15pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 1:25pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -4943,6 +4948,20 @@
     /* ── Start Auction from Shop Row ── */
     var activeShopAuctionRow = null;
 
+    function disableAllStartButtons() {
+      document.querySelectorAll('.js-start-btn').forEach(function(btn) {
+        btn.disabled = true;
+        btn.classList.add('is-disabled');
+      });
+    }
+
+    function enableAllStartButtons() {
+      document.querySelectorAll('.js-start-btn').forEach(function(btn) {
+        btn.disabled = false;
+        btn.classList.remove('is-disabled');
+      });
+    }
+
     function startAuctionFromShop(row) {
       if (!row || !row.dataset) return;
       
@@ -4955,6 +4974,9 @@
         if (templateTimer) { clearInterval(templateTimer); templateTimer = null; }
         if (variantTimer) { clearInterval(variantTimer); variantTimer = null; }
       }
+      
+      // Disable all start buttons while auction is running
+      disableAllStartButtons();
       
       // First, pin the product
       pinProduct(row);
@@ -5575,6 +5597,9 @@
       var winningRow = document.getElementById('auction-winning-row');
       var lastBidEl = document.getElementById('auction-last-bid');
       
+      // Disable all start buttons while auction is running
+      disableAllStartButtons();
+      
       // Hide start button, show bids button and timer
       startBtn.style.display = 'none';
       bidsBtn.style.display = 'flex';
@@ -5722,6 +5747,9 @@
       if (pinnedSection) pinnedSection.classList.remove('is-visible');
       
       updateListingsDivider();
+      
+      // Re-enable start buttons
+      enableAllStartButtons();
     }
 
     function resetAuction() {
@@ -5776,6 +5804,9 @@
         selectOptionsFromShop = false;
         closeSelectOptions();
       }
+      
+      // Disable all start buttons while auction is running
+      disableAllStartButtons();
       
       var preAuction = document.getElementById('template-pre-auction');
       var bidsBtn = document.getElementById('template-bids-btn');
@@ -6007,6 +6038,9 @@
         currentlyPinnedRow = null;
       }
       activeShopAuctionRow = null;
+      
+      // Re-enable start buttons
+      enableAllStartButtons();
     }
     
     function createSoldEntry(title, meta, price, winner, imgSrc) {
@@ -6151,6 +6185,9 @@
         selectOptionsFromShop = false;
         closeSelectOptions();
       }
+      
+      // Disable all start buttons while auction is running
+      disableAllStartButtons();
       
       var preAuction = document.getElementById('variant-pre-auction');
       var bidsBtn = document.getElementById('variant-bids-btn');
@@ -6397,6 +6434,9 @@
         currentlyPinnedRow = null;
       }
       activeShopAuctionRow = null;
+      
+      // Re-enable start buttons
+      enableAllStartButtons();
     }
 
     function resetVariantAuction() {
