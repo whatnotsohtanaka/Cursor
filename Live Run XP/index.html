@@ -3114,7 +3114,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 2:00pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 2:05pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -6652,11 +6652,16 @@
           metaEl.textContent = brand + ' · ' + size;
         }
       } else if (type === 'variant') {
-        // For variants: show selected color and size, update price
+        // For variants: show selected color, size, and qty
         var colorChip = attrPicker.querySelector('[data-attr="color"].is-selected');
         var color = colorChip ? colorChip.textContent : '';
+        var qty = sizeChip && sizeChip.dataset.qty ? sizeChip.dataset.qty : '';
         if (metaEl && color && size) {
-          metaEl.textContent = color + ' · ' + size;
+          var metaText = color + ' · ' + size;
+          if (qty) {
+            metaText += ' · ' + qty + ' Left';
+          }
+          metaEl.textContent = metaText;
         }
         // Update price to specific variant price
         if (sizeChip && sizeChip.dataset.price && priceEl) {
