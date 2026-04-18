@@ -3066,7 +3066,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 10:00am';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 10:05am';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -3422,7 +3422,7 @@
                           <div class="live-show__product-info">
                             <div class="live-show__product-line">
                               <div class="live-show__product-left">
-                                <span class="live-show__template-label">#2</span>
+                                <span class="live-show__template-label" id="template-number">#1</span>
                                 <p class="live-show__product-title">Assorted Sneakers: Nike, Adidas, and more</p>
                                 <div class="live-show__product-meta" id="template-meta">
                                   <span id="template-meta-brand">Nike</span><span>•</span><span id="template-meta-size">10M</span><span>•</span><span>New</span>
@@ -5511,6 +5511,7 @@
     var templatePrice = 1;
     var templateWinner = null;
     var templateLastBidder = null;
+    var templateRunCount = 1;
 
     function startTemplateAuction() {
       // Collapse picker state if open
@@ -5751,6 +5752,13 @@
       // Hide post-auction CTAs
       var postAuction = document.getElementById('template-post-auction');
       postAuction.style.display = 'none';
+      
+      // Increment template run count
+      templateRunCount++;
+      var templateNumberEl = document.getElementById('template-number');
+      if (templateNumberEl) {
+        templateNumberEl.textContent = '#' + templateRunCount;
+      }
       
       // Reset template state for next auction
       var timerEl = document.getElementById('template-timer');
