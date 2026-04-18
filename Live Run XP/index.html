@@ -3059,7 +3059,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/17/26 @ 4:45pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 9:30am';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -3471,6 +3471,10 @@
                         <button type="button" class="live-show__cta-btn live-show__cta-btn--primary" onclick="startTemplateAuction()">Start Auction</button>
                       </div>
                       <button type="button" class="live-show__bids-btn live-show__bids-btn--disabled" id="template-bids-btn" style="display:none" disabled><span id="template-bids-count">0 Bids</span></button>
+                      <div class="live-show__dual-ctas" id="template-post-auction" style="display:none">
+                        <button type="button" class="live-show__cta-btn live-show__cta-btn--tertiary" id="template-post-bids-btn" disabled><span id="template-post-bids-count">0 Bids</span></button>
+                        <button type="button" class="live-show__cta-btn live-show__cta-btn--primary" onclick="runNextTemplate()">Run Next</button>
+                      </div>
                     </div>
 
                     <!-- Pinned Item: Auction Variant — Figma 14973:44700 -->
@@ -5626,11 +5630,51 @@
       // Show celebration overlay
       showWinnerCelebration(templateWinner);
       
+      // Hide bids button, show post-auction CTAs with bid count
+      var bidsBtn = document.getElementById('template-bids-btn');
+      var postAuction = document.getElementById('template-post-auction');
+      var postBidsCount = document.getElementById('template-post-bids-count');
+      
+      bidsBtn.style.display = 'none';
+      postAuction.style.display = 'flex';
+      postBidsCount.textContent = templateBids + ' Bid' + (templateBids !== 1 ? 's' : '');
+      
       // Move the sold item to the Sold tab
       if (activeShopAuctionRow) {
         var winner = templateWinner ? templateWinner.name : 'bidder';
         moveToSoldTab(activeShopAuctionRow, templatePrice, winner);
       }
+    }
+
+    function runNextTemplate() {
+      // Hide post-auction CTAs
+      var postAuction = document.getElementById('template-post-auction');
+      postAuction.style.display = 'none';
+      
+      // Reset template state for next auction
+      var timerEl = document.getElementById('template-timer');
+      var priceEl = document.getElementById('template-price');
+      var winningRow = document.getElementById('template-winning-row');
+      var lastBidEl = document.getElementById('template-last-bid');
+      
+      timerEl.textContent = '00:10';
+      timerEl.classList.remove('live-show__product-timer--sold');
+      timerEl.classList.add('live-show__product-timer--pre');
+      priceEl.textContent = '$1';
+      winningRow.style.display = 'none';
+      lastBidEl.style.display = 'none';
+      templateTimeLeft = 10;
+      templateBids = 0;
+      templatePrice = 1;
+      templateWinner = null;
+      templateLastBidder = null;
+      
+      // Show pre-auction CTAs with attribute picker open
+      var preAuction = document.getElementById('template-pre-auction');
+      preAuction.style.display = 'flex';
+      
+      // Trigger the attribute picker state
+      onSelectOptions('template');
     }
 
     function resetTemplateAuction() {
@@ -5640,6 +5684,7 @@
       }
       var preAuction = document.getElementById('template-pre-auction');
       var bidsBtn = document.getElementById('template-bids-btn');
+      var postAuction = document.getElementById('template-post-auction');
       var timerEl = document.getElementById('template-timer');
       var priceEl = document.getElementById('template-price');
       var winningRow = document.getElementById('template-winning-row');
@@ -5647,6 +5692,7 @@
       
       preAuction.style.display = 'flex';
       bidsBtn.style.display = 'none';
+      postAuction.style.display = 'none';
       timerEl.textContent = '00:10';
       timerEl.classList.remove('live-show__product-timer--sold');
       timerEl.classList.add('live-show__product-timer--pre');
