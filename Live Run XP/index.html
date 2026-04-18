@@ -3066,7 +3066,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 11:00am';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 11:05am';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -5345,6 +5345,14 @@
       }, 500);
     }
 
+    function getHighResAvatar(avatarUrl) {
+      // Convert pravatar.cc URLs from 64px to 192px for hi-res celebration
+      if (avatarUrl && avatarUrl.includes('pravatar.cc/64')) {
+        return avatarUrl.replace('pravatar.cc/64', 'pravatar.cc/192');
+      }
+      return avatarUrl;
+    }
+
     function showWinnerCelebration(winner) {
       if (!winner) return;
       
@@ -5354,7 +5362,7 @@
       
       if (!celebration || !avatarEl || !nameEl) return;
       
-      avatarEl.src = winner.avatar || '';
+      avatarEl.src = getHighResAvatar(winner.avatar) || '';
       nameEl.textContent = winner.name || 'Winner';
       
       // Show celebration
