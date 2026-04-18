@@ -2609,6 +2609,16 @@
     .live-shop-section-head--pinned.is-visible {
       display: flex;
     }
+    .live-shop-section-divider {
+      display: none;
+      height: 8px;
+      background: rgba(0, 0, 0, 0.05);
+      margin: 8px -16px;
+      width: calc(100% + 32px);
+    }
+    .live-shop-section-divider.is-visible {
+      display: block;
+    }
     /* Product row — gap 12 py 8, thumb 140 r8 */
     .live-shop-row {
       display: flex;
@@ -3068,7 +3078,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 12:35pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 12:45pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -3709,6 +3719,7 @@
                   <div class="live-shop-section-head live-shop-section-head--pinned" id="pinned-section">
                     <p class="live-shop-section-title">Pinned</p>
                   </div>
+                  <div class="live-shop-section-divider" id="listings-divider"></div>
                   <div class="live-shop-section-head" id="auction-listings-section">
                     <p class="live-shop-section-title">Listings (6)</p>
                   </div>
@@ -4808,6 +4819,7 @@
         pinnedSection.after(row);
         row.classList.add('is-pinned');
         currentlyPinnedRow = row;
+        updateListingsDivider();
       }
       
       // Update panel content
@@ -4948,6 +4960,7 @@
       if (runningSection) {
         runningSection.classList.add('is-visible');
         runningSection.after(row);
+        updateListingsDivider();
       }
       
       // Start the appropriate auction based on pin type
@@ -5015,6 +5028,8 @@
           runningSection.classList.remove('is-visible');
         }
         
+        updateListingsDivider();
+        
         // Determine the correct position based on row type
         
         if (rowType === 'template') {
@@ -5041,6 +5056,23 @@
         }
         
         activeShopAuctionRow = null;
+      }
+    }
+
+    function updateListingsDivider() {
+      var divider = document.getElementById('listings-divider');
+      var pinnedSection = document.getElementById('pinned-section');
+      var runningSection = document.getElementById('running-now-section');
+      
+      if (!divider) return;
+      
+      var hasPinnedOrRunning = (pinnedSection && pinnedSection.classList.contains('is-visible')) ||
+                               (runningSection && runningSection.classList.contains('is-visible'));
+      
+      if (hasPinnedOrRunning) {
+        divider.classList.add('is-visible');
+      } else {
+        divider.classList.remove('is-visible');
       }
     }
 
@@ -5103,6 +5135,8 @@
         currentlyPinnedRow = null;
         currentlyPinnedType = null;
       }
+      
+      updateListingsDivider();
     }
 
     function moveToSoldTab(row, finalPrice, winnerName) {
@@ -6765,6 +6799,7 @@
         if (pinnedSection) {
           pinnedSection.classList.add('is-visible');
           pinnedSection.after(defaultRow);
+          updateListingsDivider();
         }
       }
     })();
