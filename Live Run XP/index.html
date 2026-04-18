@@ -3067,7 +3067,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 12:10pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 12:15pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -6376,6 +6376,9 @@
             unpinShopRow(currentlyPinnedRow);
           }
           
+          // Update shop row meta and price based on selected options
+          updateShopRowWithSelections(selectOptionsShopRow, currentSelectType);
+          
           // Pin the current row
           var pinnedSection = document.getElementById('pinned-section');
           if (pinnedSection) {
@@ -6392,6 +6395,42 @@
         
         currentSelectType = null;
         selectOptionsActive = false;
+      }
+    }
+
+    function updateShopRowWithSelections(row, type) {
+      if (!row) return;
+      
+      var attrPicker = document.getElementById(type + '-attr-picker');
+      if (!attrPicker) return;
+      
+      var metaEl = row.querySelector('.live-shop-row__meta');
+      var priceEl = row.querySelector('.js-shop-price');
+      
+      // Get selected size
+      var sizeChip = attrPicker.querySelector('[data-attr="size"].is-selected');
+      var size = sizeChip ? sizeChip.textContent : '';
+      
+      if (type === 'template') {
+        // For templates: show "Template #X" with selected brand
+        var brandChip = attrPicker.querySelector('[data-attr="brand"].is-selected');
+        var brand = brandChip ? brandChip.textContent : '';
+        if (metaEl && brand && size) {
+          metaEl.textContent = brand + ' · ' + size;
+        }
+      } else if (type === 'variant') {
+        // For variants: show selected color and size, update price
+        var colorChip = attrPicker.querySelector('[data-attr="color"].is-selected');
+        var color = colorChip ? colorChip.textContent : '';
+        if (metaEl && color && size) {
+          metaEl.textContent = color + ' · ' + size;
+        }
+        // Update price to specific variant price
+        if (sizeChip && sizeChip.dataset.price && priceEl) {
+          priceEl.textContent = '$' + sizeChip.dataset.price;
+          // Also update the data attribute for reset
+          row.dataset.pinPrice = '$' + sizeChip.dataset.price;
+        }
       }
     }
 
