@@ -3089,7 +3089,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 1:10pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 1:15pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -4770,6 +4770,12 @@
       if (shopRoot) {
         shopRoot.classList.add('is-open');
         shopRoot.setAttribute('aria-hidden', 'false');
+        
+        // Scroll to top when opening shop
+        var shopList = shopRoot.querySelector('.live-shop-list');
+        if (shopList) {
+          shopList.scrollTop = 0;
+        }
       }
     }
 
@@ -6631,6 +6637,9 @@
           if (shopRoot) {
             shopRoot.classList.add('is-open');
             shopRoot.setAttribute('aria-hidden', 'false');
+            // Scroll to top
+            var shopList = shopRoot.querySelector('.live-shop-list');
+            if (shopList) shopList.scrollTop = 0;
           }
           selectOptionsFromShop = false;
           selectOptionsShopRow = null;

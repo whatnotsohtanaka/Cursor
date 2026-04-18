@@ -127,6 +127,11 @@
     setSheetWillChange(true);
     shopRoot.classList.add('is-open');
     shopRoot.setAttribute('aria-hidden', 'false');
+    
+    // Scroll shop list to top
+    var shopList = shopRoot.querySelector('.live-shop-list');
+    if (shopList) shopList.scrollTop = 0;
+    
     /* Defer focus so the first paint is transform-only (avoids scroll/viewport nudge over video). */
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
