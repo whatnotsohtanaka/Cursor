@@ -3078,7 +3078,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 12:45pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 12:50pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -6345,6 +6345,16 @@
         }
         var actionsEl = activeShopAuctionRow.querySelector('.live-shop-row__actions');
         if (actionsEl) actionsEl.style.display = 'flex';
+        
+        // Reset price and meta to original values
+        var priceEl = activeShopAuctionRow.querySelector('.js-shop-price');
+        var metaEl = activeShopAuctionRow.querySelector('.live-shop-row__meta');
+        if (priceEl) {
+          priceEl.textContent = activeShopAuctionRow.dataset.pinPrice || '$1 - $15';
+        }
+        if (metaEl) {
+          metaEl.textContent = activeShopAuctionRow.dataset.pinMeta || 'Multiple Options';
+        }
       }
       
       // Hide pinned section
