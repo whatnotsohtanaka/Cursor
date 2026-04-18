@@ -3114,7 +3114,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 2:05pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 2:15pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -5589,6 +5589,82 @@
       
       // Show celebration with purchase message
       showWinnerCelebration(buyer, 'Purchased ' + binProductTitle);
+      
+      // If sold out, move to sold tab after celebration
+      if (binQtyLeft <= 0) {
+        stopBinPurchaseSimulation();
+        setTimeout(function() {
+          moveBinToSoldTab(currentlyPinnedRow, binPurchaseCount);
+        }, 2500);
+      }
+    }
+    
+    function moveBinToSoldTab(row, totalPurchases) {
+      if (!row) return;
+      
+      row.classList.remove('is-pinned');
+      
+      // Clear pinned row reference
+      if (currentlyPinnedRow === row) {
+        currentlyPinnedRow = null;
+        currentlyPinnedType = null;
+      }
+      
+      // Update timer to show sold info
+      var timerEl = row.querySelector('.js-shop-timer');
+      if (timerEl) {
+        timerEl.textContent = 'Sold Out · ' + totalPurchases + ' Purchased';
+        timerEl.style.display = 'block';
+        timerEl.style.color = '#1c1c1c';
+      }
+      
+      // Hide the actions
+      var actionsEl = row.querySelector('.live-shop-row__actions');
+      if (actionsEl) actionsEl.style.display = 'none';
+      
+      // Hide pinned section in BIN tab
+      var binPinnedSection = document.getElementById('bin-pinned-section');
+      if (binPinnedSection) {
+        binPinnedSection.classList.remove('is-visible');
+      }
+      updateBinListingsDivider();
+      
+      // Move to Sold tab
+      var soldPanel = document.getElementById('live-shop-panel-sold');
+      if (soldPanel) {
+        var soldSectionHead = soldPanel.querySelector('.live-shop-section-head');
+        var emptyState = soldPanel.querySelector('.live-shop-empty');
+        if (emptyState) emptyState.remove();
+        if (soldSectionHead) {
+          soldSectionHead.after(row);
+        } else {
+          soldPanel.appendChild(row);
+        }
+        // Update sold count
+        var soldTitle = soldPanel.querySelector('.live-shop-section-title');
+        if (soldTitle) {
+          var soldCount = soldPanel.querySelectorAll('.live-shop-row').length;
+          soldTitle.textContent = 'Listings (' + soldCount + ')';
+        }
+      }
+      
+      // Update BIN tab count
+      var binPanel = document.getElementById('live-shop-panel-buy-now');
+      if (binPanel) {
+        var binTitle = binPanel.querySelector('#bin-listings-section .live-shop-section-title');
+        if (binTitle) {
+          var binCount = binPanel.querySelectorAll('.live-shop-row').length;
+          binTitle.textContent = 'Listings (' + binCount + ')';
+        }
+      }
+      
+      // Show empty pinned state on live show
+      var allPinnedPanels = document.querySelectorAll('[data-pinned]');
+      allPinnedPanels.forEach(function(p) {
+        p.hidden = true;
+      });
+      var emptyPanel = document.getElementById('pinned-empty');
+      if (emptyPanel) emptyPanel.hidden = false;
     }
 
     function stopBinPurchaseSimulation() {
