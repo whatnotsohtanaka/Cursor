@@ -3066,7 +3066,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 10:25am';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 10:30am';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -5520,8 +5520,10 @@
     var templateRunCount = 1;
 
     function startTemplateAuction() {
-      // Collapse picker state if open
+      // Collapse picker state if open - but don't go back to shop
       if (selectOptionsActive) {
+        // Clear the fromShop flag so we stay on live show
+        selectOptionsFromShop = false;
         closeSelectOptions();
       }
       
@@ -5885,8 +5887,10 @@
     var variantLastBidder = null;
 
     function startVariantAuction() {
-      // Collapse picker state if open
+      // Collapse picker state if open - but don't go back to shop
       if (selectOptionsActive) {
+        // Clear the fromShop flag so we stay on live show
+        selectOptionsFromShop = false;
         closeSelectOptions();
       }
       
