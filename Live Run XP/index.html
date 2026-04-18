@@ -3114,7 +3114,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 2:30pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 2:40pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -5113,6 +5113,10 @@
           if (chipEl) chipEl.textContent = '#1';
         }
         
+        // Reset actions display (clear any inline styles)
+        var actionsEl = activeShopAuctionRow.querySelector('.live-shop-row__actions');
+        if (actionsEl) actionsEl.style.display = '';
+        
         // Hide "Running Now" section
         var runningSection = document.getElementById('running-now-section');
         if (runningSection) {
@@ -6015,6 +6019,10 @@
           var shopTimerEl = shopRow.querySelector('.js-shop-timer');
           if (shopTimerEl) shopTimerEl.style.display = 'block';
           
+          // Clear actions inline style so CSS can hide them
+          var shopActionsEl = shopRow.querySelector('.live-shop-row__actions');
+          if (shopActionsEl) shopActionsEl.style.display = '';
+          
           // Hide pinned section
           var pinnedSection = document.getElementById('pinned-section');
           if (pinnedSection) pinnedSection.classList.remove('is-visible');
@@ -6040,6 +6048,10 @@
         // Show shop timer (clear any inline display:none)
         var shopTimerEl = activeShopAuctionRow.querySelector('.js-shop-timer');
         if (shopTimerEl) shopTimerEl.style.display = 'block';
+        
+        // Clear actions inline style so CSS can hide them
+        var shopActionsEl = activeShopAuctionRow.querySelector('.live-shop-row__actions');
+        if (shopActionsEl) shopActionsEl.style.display = '';
         
         var pinnedSection = document.getElementById('pinned-section');
         if (pinnedSection) pinnedSection.classList.remove('is-visible');
@@ -6396,6 +6408,10 @@
           var shopTimerEl = shopRow.querySelector('.js-shop-timer');
           if (shopTimerEl) shopTimerEl.style.display = 'block';
           
+          // Clear actions inline style so CSS can hide them
+          var shopActionsEl = shopRow.querySelector('.live-shop-row__actions');
+          if (shopActionsEl) shopActionsEl.style.display = '';
+          
           // Hide pinned section
           var pinnedSection = document.getElementById('pinned-section');
           if (pinnedSection) pinnedSection.classList.remove('is-visible');
@@ -6421,6 +6437,10 @@
         // Show shop timer (clear any inline display:none)
         var shopTimerEl = activeShopAuctionRow.querySelector('.js-shop-timer');
         if (shopTimerEl) shopTimerEl.style.display = 'block';
+        
+        // Clear actions inline style so CSS can hide them
+        var shopActionsEl = activeShopAuctionRow.querySelector('.live-shop-row__actions');
+        if (shopActionsEl) shopActionsEl.style.display = '';
         
         var pinnedSection = document.getElementById('pinned-section');
         if (pinnedSection) pinnedSection.classList.remove('is-visible');
