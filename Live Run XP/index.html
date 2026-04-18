@@ -3066,7 +3066,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 10:20am';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 10:25am';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -4873,9 +4873,15 @@
             if (label) {
               togglePinProduct(btn, row);
             } else {
-              // Regular small pin button (auctions) - just pin
-              unpinCurrentProduct();
-              pinProduct(row);
+              // Regular small pin button (auctions) - toggle pin
+              if (row.classList.contains('is-pinned')) {
+                // Already pinned - unpin it
+                unpinShopRow(row);
+              } else {
+                // Not pinned - unpin any current and pin this one
+                unpinCurrentProduct();
+                pinProduct(row);
+              }
             }
           }
         });
