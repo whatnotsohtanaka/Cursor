@@ -3094,7 +3094,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 1:25pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 1:35pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -3904,7 +3904,11 @@
 
                 <!-- Buy Now — Figma node 20868:97704 -->
                 <div id="live-shop-panel-buy-now" class="live-shop-panel" role="tabpanel" aria-labelledby="live-shop-tab-buy-now" hidden>
-                  <div class="live-shop-section-head">
+                  <div class="live-shop-section-head live-shop-section-head--pinned" id="bin-pinned-section">
+                    <p class="live-shop-section-title">Pinned</p>
+                  </div>
+                  <div class="live-shop-section-divider" id="bin-listings-divider"></div>
+                  <div class="live-shop-section-head" id="bin-listings-section">
                     <p class="live-shop-section-title">Listings (5)</p>
                   </div>
                   <article class="live-shop-row" data-pin-type="bin" data-pin-title="Carhartt Denim Jacket" data-pin-meta="XL • New w tag" data-pin-price="$65" data-pin-qty="1" data-pin-img="https://www.figma.com/api/mcp/asset/87553d74-ba47-429c-a9b7-3fb5e710947d">
@@ -4835,14 +4839,16 @@
         unpinShopRow(currentlyPinnedRow);
       }
       
-      // Move the row to the Pinned section
-      var pinnedSection = document.getElementById('pinned-section');
+      // Move the row to the appropriate Pinned section based on type
+      var pinnedSectionId = (type === 'bin' || type === 'bin-variant') ? 'bin-pinned-section' : 'pinned-section';
+      var pinnedSection = document.getElementById(pinnedSectionId);
       if (pinnedSection && row) {
         pinnedSection.classList.add('is-visible');
         pinnedSection.after(row);
         row.classList.add('is-pinned');
         currentlyPinnedRow = row;
         updateListingsDivider();
+        updateBinListingsDivider();
       }
       
       // Update panel content
@@ -5116,6 +5122,19 @@
       }
     }
 
+    function updateBinListingsDivider() {
+      var divider = document.getElementById('bin-listings-divider');
+      var pinnedSection = document.getElementById('bin-pinned-section');
+      
+      if (!divider) return;
+      
+      if (pinnedSection && pinnedSection.classList.contains('is-visible')) {
+        divider.classList.add('is-visible');
+      } else {
+        divider.classList.remove('is-visible');
+      }
+    }
+
     function unpinShopRow(row) {
       if (!row) return;
       
@@ -5144,15 +5163,21 @@
           var listingsSection = document.getElementById('auction-listings-section');
           if (listingsSection) listingsSection.after(row);
         }
+      } else if (rowType === 'bin' || rowType === 'bin-variant') {
+        // BIN items go to end of BIN panel
+        var binPanel = document.getElementById('live-shop-panel-buy-now');
+        if (binPanel) {
+          binPanel.appendChild(row);
+        }
       } else {
-        // Standard auctions go to end of panel
+        // Standard auctions go to end of auction panel
         var auctionPanel = document.getElementById('live-shop-panel-auction');
         if (auctionPanel) {
           auctionPanel.appendChild(row);
         }
       }
       
-      // Hide pinned section if no more pinned items
+      // Hide pinned section if no more pinned items (for auctions)
       var pinnedSection = document.getElementById('pinned-section');
       if (pinnedSection) {
         var pinnedRows = pinnedSection.parentElement.querySelectorAll('.live-shop-row.is-pinned');
@@ -5160,6 +5185,17 @@
           pinnedSection.classList.remove('is-visible');
         }
       }
+      
+      // Hide BIN pinned section if no more pinned items
+      var binPinnedSection = document.getElementById('bin-pinned-section');
+      if (binPinnedSection) {
+        var binPinnedRows = binPinnedSection.parentElement.querySelectorAll('.live-shop-row.is-pinned');
+        if (binPinnedRows.length === 0) {
+          binPinnedSection.classList.remove('is-visible');
+        }
+      }
+      
+      updateBinListingsDivider();
       
       // Hide all pinned product panels and show empty state
       var allPinnedPanels = document.querySelectorAll('[data-pinned]');
