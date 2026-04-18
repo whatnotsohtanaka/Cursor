@@ -3078,7 +3078,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 12:50pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 12:55pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -5566,24 +5566,23 @@
       lastBidEl.style.display = 'none';
       
       // Find and update the corresponding shop row if not already set
-      if (!activeShopAuctionRow) {
-        var defaultImg = 'https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408';
-        var shopRow = document.querySelector('.live-shop-row[data-pin-type="auction"][data-pin-img="' + defaultImg + '"]');
-        if (shopRow) {
-          shopRow.classList.add('is-auction-active');
-          shopRow.classList.remove('is-pinned');
-          activeShopAuctionRow = shopRow;
-          
-          // Hide pinned section
-          var pinnedSection = document.getElementById('pinned-section');
-          if (pinnedSection) pinnedSection.classList.remove('is-visible');
-          
-          // Show "Running Now" section and move the row there
-          var runningSection = document.getElementById('running-now-section');
-          if (runningSection) {
-            runningSection.classList.add('is-visible');
-            runningSection.after(shopRow);
-          }
+      if (!activeShopAuctionRow && currentlyPinnedRow && currentlyPinnedRow.dataset.pinType === 'auction') {
+        var shopRow = currentlyPinnedRow;
+        shopRow.classList.add('is-auction-active');
+        shopRow.classList.remove('is-pinned');
+        activeShopAuctionRow = shopRow;
+        currentlyPinnedRow = null;
+        
+        // Hide pinned section
+        var pinnedSection = document.getElementById('pinned-section');
+        if (pinnedSection) pinnedSection.classList.remove('is-visible');
+        
+        // Show "Running Now" section and move the row there
+        var runningSection = document.getElementById('running-now-section');
+        if (runningSection) {
+          runningSection.classList.add('is-visible');
+          runningSection.after(shopRow);
+          updateListingsDivider();
         }
       }
       
