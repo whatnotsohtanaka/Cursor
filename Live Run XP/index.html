@@ -3094,7 +3094,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 1:35pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 1:50pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -4834,9 +4834,9 @@
       var panel = document.getElementById(panelId);
       if (!panel) return;
       
-      // If there's a previously pinned row, move it back to listings
+      // If there's a previously pinned row, move it back to listings (skip panel reset since we're pinning a new one)
       if (currentlyPinnedRow && currentlyPinnedRow !== row) {
-        unpinShopRow(currentlyPinnedRow);
+        unpinShopRow(currentlyPinnedRow, true);
       }
       
       // Move the row to the appropriate Pinned section based on type
@@ -5135,7 +5135,7 @@
       }
     }
 
-    function unpinShopRow(row) {
+    function unpinShopRow(row, skipPanelReset) {
       if (!row) return;
       
       row.classList.remove('is-pinned');
@@ -5197,14 +5197,17 @@
       
       updateBinListingsDivider();
       
-      // Hide all pinned product panels and show empty state
-      var allPinnedPanels = document.querySelectorAll('[data-pinned]');
-      allPinnedPanels.forEach(function(p) {
-        p.hidden = true;
-      });
-      var emptyPanel = document.getElementById('pinned-empty');
-      if (emptyPanel) {
-        emptyPanel.hidden = false;
+      // Only reset panels if not skipping (when another item is being pinned, skip this)
+      if (!skipPanelReset) {
+        // Hide all pinned product panels and show empty state
+        var allPinnedPanels = document.querySelectorAll('[data-pinned]');
+        allPinnedPanels.forEach(function(p) {
+          p.hidden = true;
+        });
+        var emptyPanel = document.getElementById('pinned-empty');
+        if (emptyPanel) {
+          emptyPanel.hidden = false;
+        }
       }
       
       if (currentlyPinnedRow === row) {
@@ -6567,21 +6570,25 @@
         
         // Pin the shop row if we came from shop
         if (selectOptionsShopRow) {
-          // Unpin any previous row
+          // Unpin any previous row (skip panel reset since we're pinning a new one)
           if (currentlyPinnedRow && currentlyPinnedRow !== selectOptionsShopRow) {
-            unpinShopRow(currentlyPinnedRow);
+            unpinShopRow(currentlyPinnedRow, true);
           }
           
           // Update shop row meta and price based on selected options
           updateShopRowWithSelections(selectOptionsShopRow, currentSelectType);
           
-          // Pin the current row
-          var pinnedSection = document.getElementById('pinned-section');
+          // Pin the current row to the correct section based on type
+          var rowType = selectOptionsShopRow.dataset.pinType;
+          var pinnedSectionId = (rowType === 'bin' || rowType === 'bin-variant') ? 'bin-pinned-section' : 'pinned-section';
+          var pinnedSection = document.getElementById(pinnedSectionId);
           if (pinnedSection) {
             pinnedSection.classList.add('is-visible');
             pinnedSection.after(selectOptionsShopRow);
             selectOptionsShopRow.classList.add('is-pinned');
             currentlyPinnedRow = selectOptionsShopRow;
+            updateListingsDivider();
+            updateBinListingsDivider();
           }
         }
         
