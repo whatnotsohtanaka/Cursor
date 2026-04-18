@@ -3114,7 +3114,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 2:20pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/18/26 @ 2:25pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -5603,14 +5603,15 @@
       
       // If sold out, move to sold tab after celebration
       if (binQtyLeft <= 0) {
+        var lastBuyerName = buyer.name;
         stopBinPurchaseSimulation();
         setTimeout(function() {
-          moveBinToSoldTab(currentlyPinnedRow, binPurchaseCount);
+          moveBinToSoldTab(currentlyPinnedRow, binPurchaseCount, lastBuyerName);
         }, 2500);
       }
     }
     
-    function moveBinToSoldTab(row, totalPurchases) {
+    function moveBinToSoldTab(row, totalPurchases, lastBuyer) {
       if (!row) return;
       
       row.classList.remove('is-pinned');
@@ -5621,10 +5622,29 @@
         currentlyPinnedType = null;
       }
       
-      // Update timer to show sold info
+      // Reset button state
+      var pinBtn = row.querySelector('.js-pin-btn');
+      if (pinBtn) {
+        pinBtn.classList.remove('is-pinned');
+        var label = pinBtn.querySelector('span');
+        if (label) label.textContent = 'Pin';
+      }
+      
+      // Add or update timer element with sold info
       var timerEl = row.querySelector('.js-shop-timer');
+      if (!timerEl) {
+        // Create timer element for BIN rows that don't have one
+        var detailsEl = row.querySelector('.live-shop-row__details');
+        var priceEl = row.querySelector('.live-shop-row__price');
+        if (detailsEl && priceEl) {
+          timerEl = document.createElement('p');
+          timerEl.className = 'live-shop-row__timer js-shop-timer';
+          priceEl.after(timerEl);
+        }
+      }
       if (timerEl) {
-        timerEl.textContent = 'Sold Out · ' + totalPurchases + ' Purchased';
+        var buyerName = lastBuyer || 'buyer';
+        timerEl.textContent = 'Sold to @' + buyerName;
         timerEl.style.display = 'block';
         timerEl.style.color = '#1c1c1c';
       }
