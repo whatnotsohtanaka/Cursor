@@ -446,6 +446,35 @@
       opacity: 0.5;
       cursor: not-allowed;
     }
+    /* Collapsible control section */
+    .ctrl-section-collapsible {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 12px;
+      margin-top: 4px;
+    }
+    .ctrl-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .ctrl-section-header:hover .ctrl-section-label {
+      color: rgba(255,255,255,0.5);
+    }
+    .ctrl-section-chevron {
+      transition: transform 0.2s ease;
+    }
+    .ctrl-section-chevron.is-expanded {
+      transform: rotate(180deg);
+    }
+    .ctrl-section-body {
+      padding-top: 10px;
+    }
     /* Segmented control */
     .ctrl-segment {
       display: flex;
@@ -746,6 +775,10 @@
     }
     body.proto-mobile .global-status-bar { display: none !important; }
     body.proto-mobile .proto-ios-status-spacer { display: none !important; }
+    /* In mobile responsive mode, hide pull area and move live-show header to top */
+    body.proto-mobile .proto-mobile-chrome-pull { display: none !important; }
+    body.proto-mobile .live-show__header { top: max(16px, env(safe-area-inset-top, 16px)) !important; }
+    body.proto-mobile.proto-mobile-chrome-retracted .proto-mobile-chrome-pull { display: none !important; }
 
     /* ── Phone view fallback (JS disabled/failed) ────────────
        If body.proto-mobile isn't set by JS at 768px, this 500px fallback
@@ -800,6 +833,425 @@
       inset: 0;
     }
     .flow-panel.active { display: block; }
+    /* LDP needs higher z-index than shop in buyer view */
+    #flow-ldp.active {
+      z-index: 600;
+    }
+    
+    /* Push transition between flow panels */
+    .flow-panel.push-from-right {
+      animation: flowPushFromRight 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+    }
+    .flow-panel.push-to-left {
+      animation: flowPushToLeft 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+    }
+    .flow-panel.push-from-left {
+      animation: flowPushFromLeft 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+    }
+    .flow-panel.push-to-right {
+      animation: flowPushToRight 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+    }
+    @keyframes flowPushFromRight {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+    @keyframes flowPushToLeft {
+      from { transform: translateX(0); }
+      to { transform: translateX(-30%); }
+    }
+    @keyframes flowPushFromLeft {
+      from { transform: translateX(-30%); }
+      to { transform: translateX(0); }
+    }
+    @keyframes flowPushToRight {
+      from { transform: translateX(0); }
+      to { transform: translateX(100%); }
+    }
+
+    /* ── LDP (Listing Detail Page) ── */
+    .ldp {
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      font-family: -apple-system, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .ldp__scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ldp__scroll::-webkit-scrollbar { display: none; }
+
+    /* LDP Image Carousel */
+    .ldp__carousel {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .ldp__carousel-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .ldp__carousel-slide {
+      flex: 0 0 100%;
+      height: 100%;
+    }
+    .ldp__carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .ldp__carousel-scrim-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 85px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .ldp__carousel-scrim-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 85px;
+      opacity: 0.4;
+      background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.056) 11%, rgba(0,0,0,0.113) 21%, rgba(0,0,0,0.171) 30%, rgba(0,0,0,0.23) 38%, rgba(0,0,0,0.29) 45%, rgba(0,0,0,0.351) 52%, rgba(0,0,0,0.414) 58%, rgba(0,0,0,0.479) 64%, rgba(0,0,0,0.546) 69%, rgba(0,0,0,0.615) 74%, rgba(0,0,0,0.686) 79%, rgba(0,0,0,0.76) 84%, rgba(0,0,0,0.837) 89%, rgba(0,0,0,0.917) 95%, rgb(0,0,0) 100%);
+      pointer-events: none;
+    }
+    .ldp__carousel-dots {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      border-radius: 999px;
+    }
+    .ldp__carousel-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.4);
+      transition: width 0.2s ease, background 0.2s ease;
+    }
+    .ldp__carousel-dot.is-active {
+      width: 32px;
+      background: #fff;
+    }
+
+    /* LDP Header (floating over carousel) */
+    .ldp__header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 54px 16px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+    }
+    .ldp__header-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: #1c1c1c;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .ldp__header-btn:active {
+      background: #333;
+    }
+    .ldp__header-btn svg {
+      color: #fff;
+    }
+
+    /* LDP Content */
+    .ldp__content {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .ldp__title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .ldp__title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 590;
+      line-height: 23px;
+      letter-spacing: -0.44px;
+      color: #1c1c1c;
+    }
+    .ldp__price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .ldp__price {
+      font-size: 16px;
+      font-weight: 590;
+      line-height: 21px;
+      letter-spacing: -0.31px;
+      color: #161616;
+      opacity: 0.9;
+    }
+    .ldp__shipping {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      color: #6f6f6f;
+    }
+
+    /* LDP Selections (Option Chips) */
+    .ldp__selections {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .ldp__selection-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .ldp__selection-label {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 14px;
+      font-weight: 590;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #1c1c1c;
+    }
+    .ldp__selection-label .required {
+      color: #ce291a;
+      font-size: 12px;
+    }
+    .ldp__selection-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .ldp__chip {
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.05);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      border: none;
+      font-size: 14px;
+      font-weight: 590;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #1c1c1c;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .ldp__chip:active {
+      background: rgba(0,0,0,0.1);
+    }
+    .ldp__chip.is-selected {
+      background: #2d2d2d;
+      color: #fff;
+    }
+    .ldp__chip.is-sold-out {
+      text-decoration: line-through;
+      color: rgba(0,0,0,0.4);
+    }
+
+    /* LDP Social Proof */
+    .ldp__social {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(0,0,0,0.05);
+    }
+    .ldp__views {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      line-height: 16px;
+    }
+    .ldp__views-count {
+      font-weight: 590;
+      color: #1c1c1c;
+    }
+    .ldp__views-text {
+      font-weight: 400;
+      color: #7f7f7f;
+    }
+    .ldp__social-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .ldp__social-btn {
+      flex: 1;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.05);
+      border: none;
+      font-size: 14px;
+      font-weight: 590;
+      color: #1c1c1c;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .ldp__social-btn:active {
+      background: rgba(0,0,0,0.1);
+    }
+
+    /* LDP Seller Card */
+    .ldp__seller {
+      display: flex;
+      flex-direction: column;
+      background: #f3f3f3;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .ldp__seller-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: #f3f3f3;
+    }
+    .ldp__seller-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .ldp__seller-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #ddd;
+      object-fit: cover;
+    }
+    .ldp__seller-name {
+      font-size: 14px;
+      font-weight: 590;
+      line-height: 18px;
+      letter-spacing: -0.15px;
+      color: #161616;
+    }
+    .ldp__seller-msg-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: #1c1c1c;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .ldp__seller-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 8px;
+      background: #fafafa;
+    }
+    .ldp__seller-stat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .ldp__seller-stat-value {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 16px;
+      font-weight: 590;
+      line-height: 21px;
+      letter-spacing: -0.31px;
+      color: #161616;
+    }
+    .ldp__seller-stat-label {
+      font-size: 10px;
+      font-weight: 590;
+      line-height: 12px;
+      letter-spacing: 0.12px;
+      color: #393939;
+    }
+    .ldp__seller-divider {
+      width: 0;
+      height: 40px;
+      border-left: 1px solid rgba(0,0,0,0.1);
+    }
+
+    /* LDP Fixed Footer */
+    .ldp__footer {
+      position: relative;
+      padding: 16px;
+      padding-bottom: 32px;
+      background: #fff;
+      border-top: 1px solid #d2d2d2;
+      box-shadow: 0 -5px 16px rgba(0,0,0,0.1);
+    }
+    .ldp__footer-btn {
+      width: 100%;
+      height: 44px;
+      border-radius: 999px;
+      background: #F9DC00;
+      border: none;
+      font-size: 16px;
+      font-weight: 590;
+      line-height: 20px;
+      letter-spacing: -0.41px;
+      color: #1c1c1c;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .ldp__footer-btn:active {
+      background: #e5c800;
+    }
+    .ldp__home-indicator {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 135px;
+      height: 5px;
+      background: #000;
+      border-radius: 100px;
+    }
 
     /* ── Live show (Figma 18983:39043) ── */
     .live-show {
@@ -1323,6 +1775,13 @@
     body.view-buyer .live-show__header-follow { display: flex; }
     body.view-buyer .live-show__header-verified { display: inline-flex; }
     body.view-buyer .live-show__header-name-row { display: flex; align-items: center; gap: 4px; }
+    /* Disable all transitions during view switch for instant snap */
+    body.view-switching,
+    body.view-switching *,
+    body.view-switching *::before,
+    body.view-switching *::after {
+      transition: none !important;
+    }
     .live-show__header-name-row { display: flex; align-items: center; gap: 4px; }
     .live-show__rewards {
       width: 28px;
@@ -1759,15 +2218,54 @@
     /* Seller chat toolbar visibility */
     .live-show__cmd-wrap { display: flex; }
     body.view-buyer .live-show__cmd-wrap { display: none; }
-    body.view-buyer .live-show__chat-input { padding-left: 12px; }
+    body.view-buyer .live-show__chat-input { padding-left: 0; }
     /* Hide chat collapse button for buyers */
     body.view-buyer .live-show__chat-filter-row { display: none; }
+    /* Shop listings for buyers - hide seller controls, show buyer CTAs */
+    .live-shop-row__actions--seller { display: flex !important; }
+    .live-shop-row__actions--buyer { display: none !important; }
+    body.view-buyer .live-shop-row__actions--seller { display: none !important; }
+    body.view-buyer .live-shop-row__actions--buyer { display: flex !important; }
+    body.view-buyer #live-shop-panel-giveaway .live-shop-row__actions--buyer { display: none !important; }
+    body.view-buyer .live-shop-row { cursor: pointer; }
+    /* Hide pinned/running sections in shop for buyers */
+    body.view-buyer .live-shop-section-head--pinned { display: none !important; }
+    body.view-buyer .live-shop-section-head--running { display: none !important; }
+    body.view-buyer .live-shop-section-divider { display: none !important; }
+    /* Hide Offers and Tips tabs for buyers */
+    body.view-buyer #live-shop-tab-offers { display: none !important; }
+    body.view-buyer #live-shop-tab-tips { display: none !important; }
+    /* Change "Template" to "Multiple Options" for buyers */
+    body.view-buyer .live-shop-row[data-pin-type="template"] .live-shop-row__meta { font-size: 0; }
+    body.view-buyer .live-shop-row[data-pin-type="template"] .live-shop-row__meta::after { content: 'Multiple Options'; font-size: 13px; }
+    /* Hide auction # labels for buyers (e.g., "#1", "#2") */
+    body.view-buyer .live-show__template-label { display: none !important; }
+    body.view-buyer .live-shop-row__template-chip { display: none !important; }
+    /* Disable Shop Pinned State toggle for buyers */
+    body.view-buyer #ctrlShowRunningPinned { pointer-events: none; opacity: 0.4; }
+    body.view-buyer #ctrl-section-shop-pinned .ctrl-switch { opacity: 0.5; cursor: not-allowed; }
+    .live-shop-row__btn--buyer {
+      flex: 1;
+      height: 32px;
+      border-radius: 8px;
+      background: #F9DC00;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1c1c1c;
+      cursor: pointer;
+    }
     /* Buyer pinned product CTAs */
     .live-show__cta-row { display: none; flex: 1; gap: 12px; align-items: stretch; width: 100%; }
     .live-show__cta-row--buyer { display: none; }
     .live-show__cta-row--pre-auction { display: none; }
     .live-show__cta-row--active-auction { display: none; }
     body.view-buyer .live-show__cta-row--buyer:not(.live-show__cta-row--pre-auction):not(.live-show__cta-row--active-auction) { display: flex; margin-top: 12px; }
+    /* BIN and Flash Sale buyer swipe buttons */
+    body.view-buyer #pinned-bin .live-show__cta-row--buyer { display: flex !important; margin-top: 0; }
+    body.view-buyer #pinned-flash .live-show__cta-row--buyer { display: flex !important; margin-top: 0; }
+    body.view-buyer #pinned-bin-variant .live-show__cta-row--buyer { display: flex !important; margin-top: 0; }
+    body.view-buyer #pinned-flash-variant .live-show__cta-row--buyer { display: flex !important; margin-top: 0; }
     body.view-buyer .live-show__cta-row--pre-auction:not(.is-hidden) { display: flex; width: 100%; margin-top: 12px; }
     body.view-buyer .live-show__cta-row--active-auction.is-visible { display: flex; margin-top: 12px; }
     body.view-buyer .live-show__cta-btn--primary { display: none !important; }
@@ -2523,6 +3021,54 @@
         transition-duration: 0.01ms;
       }
     }
+    /* Buyer view: Full page shop with push transition from right */
+    body.view-buyer .live-shop-root {
+      z-index: 500;
+    }
+    body.view-buyer .live-shop-backdrop {
+      display: none;
+    }
+    body.view-buyer .live-shop-sheet {
+      top: 0;
+      bottom: 0;
+      height: 100%;
+      max-height: 100%;
+      border-radius: 0;
+      transform: translate3d(100%, 0, 0);
+    }
+    body.view-buyer .live-shop-root.is-open .live-shop-sheet {
+      transform: translate3d(0, 0, 0);
+    }
+    body.view-buyer .live-shop-notch {
+      display: none;
+    }
+    body.view-buyer .live-shop-sheet {
+      padding-top: max(44px, env(safe-area-inset-top, 44px));
+    }
+    body.view-buyer .live-shop-nav {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 16px;
+    }
+    body.view-buyer .live-shop-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    body.view-buyer .live-shop-close {
+      position: relative;
+      right: auto;
+      top: auto;
+      transform: none;
+      background: rgba(0, 0, 0, 0.05);
+    }
+    body.view-buyer .live-shop-close:active {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    .live-shop-back-btn {
+      display: none;
+    }
     /* Notch — h 24, handle 40×3 #e0e0e0, radius 30 */
     .live-shop-notch {
       flex-shrink: 0;
@@ -3102,9 +3648,6 @@
       -webkit-tap-highlight-color: transparent;
       box-sizing: border-box;
     }
-    .live-shop-row__btn:active {
-      opacity: 0.92;
-    }
     .live-shop-row__btn:disabled,
     .live-shop-row__btn.is-disabled {
       opacity: 0.4;
@@ -3331,6 +3874,500 @@
     }
     .listing-options-sheet__item--destructive .listing-options-sheet__icon img {
       filter: invert(27%) sepia(94%) saturate(5618%) hue-rotate(347deg) brightness(91%) contrast(95%);
+    }
+
+    /* ── Pre-bid Sheet ── */
+    .prebid-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 10000;
+      background: rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+    .prebid-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .prebid-sheet {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #fff;
+      border-radius: 16px 16px 0 0;
+      padding: 0 24px 34px;
+      transform: translateY(100%);
+      transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .prebid-overlay.is-open .prebid-sheet {
+      transform: translateY(0);
+    }
+    .prebid-sheet__handle {
+      display: flex;
+      justify-content: center;
+      padding: 12px 0;
+    }
+    .prebid-sheet__handle-bar {
+      width: 36px;
+      height: 5px;
+      background: #e0e0e0;
+      border-radius: 2.5px;
+    }
+    .prebid-sheet__title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1c1c1c;
+      text-align: center;
+      margin: 8px 0 12px;
+    }
+    .prebid-sheet__desc {
+      font-size: 15px;
+      font-weight: 400;
+      color: #1c1c1c;
+      text-align: center;
+      line-height: 1.4;
+      margin: 0 0 16px;
+    }
+    .prebid-sheet__desc strong {
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .prebid-sheet__status {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1c1c1c;
+      text-align: center;
+      margin: 0 0 20px;
+    }
+    .prebid-sheet__label {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1c1c1c;
+      margin: 0 0 4px;
+    }
+    .prebid-sheet__hint {
+      font-size: 14px;
+      font-weight: 400;
+      color: #6c6c6c;
+      margin: 0 0 12px;
+    }
+    .prebid-sheet__input-wrap {
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .prebid-sheet__input {
+      width: 100%;
+      height: 56px;
+      border: 1px solid #d2d2d2;
+      border-radius: 12px;
+      padding: 0 16px;
+      font-size: 18px;
+      font-weight: 500;
+      color: #1c1c1c;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+    .prebid-sheet__input:focus {
+      outline: none;
+      border-color: #1c1c1c;
+    }
+    .prebid-sheet__shipping {
+      font-size: 14px;
+      font-weight: 400;
+      color: #6c6c6c;
+      text-align: center;
+      margin: 0 0 16px;
+    }
+    .prebid-sheet__submit {
+      width: 100%;
+      height: 52px;
+      border-radius: 999px;
+      background: #1c1c1c;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .prebid-sheet__submit:active {
+      background: #333;
+    }
+    .prebid-sheet__footer {
+      font-size: 13px;
+      font-weight: 400;
+      color: #6c6c6c;
+      text-align: center;
+      line-height: 1.4;
+      margin: 16px 0 8px;
+    }
+    .prebid-sheet__link {
+      font-size: 14px;
+      font-weight: 500;
+      color: #007AFF;
+      text-align: center;
+      display: block;
+      margin-top: 12px;
+      text-decoration: none;
+    }
+
+    /* ── Checkout Sheet ── */
+    .checkout-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 10000;
+      background: rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+    .checkout-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .checkout-sheet {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #fff;
+      border-radius: 16px 16px 0 0;
+      padding: 0 0 34px;
+      transform: translateY(100%);
+      transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+      max-height: 85%;
+      overflow-y: auto;
+    }
+    .checkout-overlay.is-open .checkout-sheet {
+      transform: translateY(0);
+    }
+    .checkout-sheet__handle {
+      display: flex;
+      justify-content: center;
+      padding: 12px 0;
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 1;
+    }
+    .checkout-sheet__handle-bar {
+      width: 36px;
+      height: 5px;
+      background: #e0e0e0;
+      border-radius: 2.5px;
+    }
+    .checkout-sheet__product {
+      display: flex;
+      gap: 12px;
+      padding: 0 16px 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .checkout-sheet__product-img {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .checkout-sheet__product-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .checkout-sheet__product-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1c1c1c;
+      margin: 0 0 4px;
+      line-height: 1.3;
+    }
+    .checkout-sheet__product-avail {
+      font-size: 13px;
+      font-weight: 400;
+      color: #1c1c1c;
+      margin: 0 0 4px;
+    }
+    .checkout-sheet__product-avail::before {
+      content: '●';
+      color: #34C759;
+      margin-right: 4px;
+    }
+    .checkout-sheet__see-more {
+      font-size: 14px;
+      font-weight: 500;
+      color: #007AFF;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .checkout-sheet__row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .checkout-sheet__row--stacked {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .checkout-sheet__row-label {
+      font-size: 15px;
+      font-weight: 400;
+      color: #8e8e93;
+      margin: 0;
+    }
+    .checkout-sheet__row-value {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1c1c1c;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .checkout-sheet__row-value svg {
+      flex-shrink: 0;
+    }
+    .checkout-sheet__address {
+      text-align: right;
+    }
+    .checkout-sheet__address-name {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1c1c1c;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+    .checkout-sheet__address-line {
+      font-size: 14px;
+      font-weight: 400;
+      color: #1c1c1c;
+      margin: 2px 0 0;
+    }
+    .checkout-sheet__totals {
+      padding: 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .checkout-sheet__total-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .checkout-sheet__total-row:last-child {
+      margin-bottom: 0;
+    }
+    .checkout-sheet__total-label {
+      font-size: 15px;
+      font-weight: 400;
+      color: #8e8e93;
+      margin: 0;
+    }
+    .checkout-sheet__total-label--bold {
+      font-weight: 600;
+      color: #1c1c1c;
+    }
+    .checkout-sheet__total-value {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1c1c1c;
+      margin: 0;
+    }
+    .checkout-sheet__total-value--bold {
+      font-weight: 700;
+    }
+    .checkout-sheet__actions {
+      display: flex;
+      gap: 12px;
+      padding: 16px;
+    }
+    .checkout-sheet__btn {
+      height: 50px;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .checkout-sheet__btn--cancel {
+      flex: 0 0 auto;
+      padding: 0 24px;
+      background: #fff;
+      border: 1px solid #d2d2d2;
+      color: #1c1c1c;
+    }
+    .checkout-sheet__btn--confirm {
+      flex: 1;
+      border: none;
+      background: #1c1c1c;
+      color: #fff;
+    }
+    .checkout-sheet__btn--confirm:active {
+      background: #333;
+    }
+    .checkout-sheet__visa-icon {
+      width: 24px;
+      height: 16px;
+      background: #1a1f71;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── Options Sheet (Templates & Variants) ── */
+    .options-sheet-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 10000;
+      background: rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+    .options-sheet-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .options-sheet {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #fff;
+      border-radius: 16px 16px 0 0;
+      padding: 0 0 34px;
+      transform: translateY(100%);
+      transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+      max-height: 80%;
+      display: flex;
+      flex-direction: column;
+    }
+    .options-sheet-overlay.is-open .options-sheet {
+      transform: translateY(0);
+    }
+    .options-sheet__handle {
+      display: flex;
+      justify-content: center;
+      padding: 12px 0;
+      flex-shrink: 0;
+    }
+    .options-sheet__handle-bar {
+      width: 36px;
+      height: 5px;
+      background: #e0e0e0;
+      border-radius: 2.5px;
+    }
+    .options-sheet__header {
+      display: flex;
+      gap: 12px;
+      padding: 0 16px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      flex-shrink: 0;
+    }
+    .options-sheet__img {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .options-sheet__info {
+      flex: 1;
+      min-width: 0;
+    }
+    .options-sheet__title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1c1c1c;
+      margin: 0 0 4px;
+      line-height: 1.3;
+    }
+    .options-sheet__price {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1c1c1c;
+      margin: 0 0 4px;
+    }
+    .options-sheet__shipping {
+      font-size: 13px;
+      font-weight: 400;
+      color: #8e8e93;
+      margin: 0;
+    }
+    .options-sheet__body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+    .options-sheet__section {
+      margin-bottom: 20px;
+    }
+    .options-sheet__section:last-child {
+      margin-bottom: 0;
+    }
+    .options-sheet__label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1c1c1c;
+      margin: 0 0 10px;
+    }
+    .options-sheet__label .required {
+      color: #EF233C;
+    }
+    .options-sheet__chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .options-sheet__chip {
+      padding: 10px 16px;
+      border-radius: 8px;
+      background: #f5f5f5;
+      border: 1px solid #e0e0e0;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1c1c1c;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .options-sheet__chip.is-selected {
+      background: #1c1c1c;
+      border-color: #1c1c1c;
+      color: #fff;
+    }
+    .options-sheet__chip:not(.is-selected):active {
+      background: #e8e8e8;
+    }
+    .options-sheet__footer {
+      padding: 16px;
+      border-top: 1px solid #f0f0f0;
+      flex-shrink: 0;
+    }
+    .options-sheet__btn {
+      width: 100%;
+      height: 50px;
+      border-radius: 999px;
+      background: #F9DC00;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1c1c1c;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .options-sheet__btn:active {
+      background: #e5c800;
     }
 
   </style>
@@ -3650,7 +4687,7 @@
                         </div>
                         <div class="live-show__shop">
                           <div class="live-show__shop-badge" aria-label="56 listed"><span>56</span></div>
-                          <button type="button" class="live-show__shop-hit" id="live-show-shop-btn" aria-label="Open shop listings"></button>
+                          <button type="button" class="live-show__shop-hit" id="live-show-shop-btn" aria-label="Open shop listings" onclick="openShop()"></button>
                           <div class="live-show__shop-inner" aria-hidden="true">
                             <div class="live-show__shop-icon">
                               <img alt="" src="https://www.figma.com/api/mcp/asset/0dc5fa1c-4c26-4ba4-8c17-5e0d8b7f5ece" />
@@ -4059,7 +5096,22 @@
                           </div>
                         </div>
                       </div>
+                      <!-- Seller CTAs -->
                       <button type="button" class="live-show__bids-btn live-show__bids-btn--disabled" disabled><span>7 Purchases</span></button>
+                      <!-- Buyer CTAs -->
+                      <div class="live-show__cta-row live-show__cta-row--buyer" style="flex: 1;">
+                        <div class="live-show__swipe-btn" style="flex: 1;">
+                          <div class="live-show__swipe-fill" style="inset: 1px;">
+                            <div class="live-show__swipe-inner">
+                              <span class="live-show__swipe-text">Buy Now</span>
+                              <div class="live-show__swipe-arrows">
+                                <svg viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <svg viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     <!-- Pinned Item: Flash Sale Variant -->
@@ -4095,31 +5147,191 @@
                           <div class="live-show__flash-timer">12 Left · 00:20</div>
                         </div>
                       </div>
+                      <!-- Seller CTAs -->
                       <button type="button" class="live-show__bids-btn live-show__bids-btn--disabled" disabled><span>7 Purchases</span></button>
+                      <!-- Buyer CTAs -->
+                      <div class="live-show__cta-row live-show__cta-row--buyer" style="flex: 1;">
+                        <div class="live-show__swipe-btn" style="flex: 1;">
+                          <div class="live-show__swipe-fill" style="inset: 1px;">
+                            <div class="live-show__swipe-inner">
+                              <span class="live-show__swipe-text">Buy Now</span>
+                              <div class="live-show__swipe-arrows">
+                                <svg viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <svg viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="flow-panel" id="flow-2">
-              <div style="padding: var(--space-16); color: var(--content-secondary); font-size: 14px; line-height: 1.5;">
-                <strong style="color: var(--content-primary);">Flow 2</strong> — duplicate <code style="font-size:12px;">flow-1</code> markup, give the copy a new <code style="font-size:12px;">id</code>, and add a matching row under Controls → Flows in <code style="font-size:12px;">proto-toolbar.js</code> conventions (or run your <code style="font-size:12px;">/new-flow</code> workflow).
+            <!-- LDP (Listing Detail Page) for Templates -->
+            <div class="flow-panel" id="flow-ldp">
+              <div class="ldp" id="ldp-template">
+                <div class="ldp__scroll">
+                  <!-- Image Carousel -->
+                  <div class="ldp__carousel" id="ldp-carousel">
+                    <div class="ldp__carousel-track" id="ldp-carousel-track">
+                      <div class="ldp__carousel-slide"><img alt="" id="ldp-img-1" src="assets/pile-of-sneakers.jpg" /></div>
+                      <div class="ldp__carousel-slide"><img alt="" id="ldp-img-2" src="assets/pile-of-sneakers.jpg" /></div>
+                      <div class="ldp__carousel-slide"><img alt="" id="ldp-img-3" src="assets/pile-of-sneakers.jpg" /></div>
+                      <div class="ldp__carousel-slide"><img alt="" id="ldp-img-4" src="assets/pile-of-sneakers.jpg" /></div>
+                    </div>
+                    <div class="ldp__carousel-scrim-top"></div>
+                    <div class="ldp__carousel-scrim-bottom"></div>
+                    <div class="ldp__carousel-dots" id="ldp-carousel-dots">
+                      <div class="ldp__carousel-dot is-active" data-idx="0"></div>
+                      <div class="ldp__carousel-dot" data-idx="1"></div>
+                      <div class="ldp__carousel-dot" data-idx="2"></div>
+                      <div class="ldp__carousel-dot" data-idx="3"></div>
+                    </div>
+                    <!-- Floating Header -->
+                    <header class="ldp__header">
+                      <button type="button" class="ldp__header-btn" id="ldp-back-btn" onclick="closeLdp()" aria-label="Back">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                          <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </button>
+                      <button type="button" class="ldp__header-btn" id="ldp-more-btn" aria-label="More">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                          <circle cx="3" cy="8" r="1.5" fill="currentColor"/>
+                          <circle cx="8" cy="8" r="1.5" fill="currentColor"/>
+                          <circle cx="13" cy="8" r="1.5" fill="currentColor"/>
+                        </svg>
+                      </button>
+                    </header>
+                  </div>
+
+                  <!-- Content -->
+                  <div class="ldp__content">
+                    <!-- Title + Price -->
+                    <div class="ldp__title-block">
+                      <h1 class="ldp__title" id="ldp-title">Assorted Sneakers: Nikes, Addidas, and more</h1>
+                      <div class="ldp__price-row">
+                        <span class="ldp__price" id="ldp-price">$1</span>
+                        <span class="ldp__shipping">+ $7.50 Shipping + Taxes</span>
+                      </div>
+                    </div>
+
+                    <!-- Option Selections -->
+                    <div class="ldp__selections" id="ldp-selections">
+                      <div class="ldp__selection-group" data-dim="0">
+                        <div class="ldp__selection-label">Brand <span class="required">*</span></div>
+                        <div class="ldp__selection-chips">
+                          <button type="button" class="ldp__chip is-selected" data-value="Nike">Nike</button>
+                          <button type="button" class="ldp__chip" data-value="Adidas">Adidas</button>
+                          <button type="button" class="ldp__chip" data-value="Pumas">Pumas</button>
+                        </div>
+                      </div>
+                      <div class="ldp__selection-group" data-dim="1">
+                        <div class="ldp__selection-label">Size <span class="required">*</span></div>
+                        <div class="ldp__selection-chips">
+                          <button type="button" class="ldp__chip" data-value="8M">8M</button>
+                          <button type="button" class="ldp__chip" data-value="8.5M">8.5M</button>
+                          <button type="button" class="ldp__chip is-selected" data-value="9M">9M</button>
+                          <button type="button" class="ldp__chip" data-value="9.5M">9.5M</button>
+                          <button type="button" class="ldp__chip" data-value="10M">10M</button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Social Proof -->
+                    <div class="ldp__social">
+                      <div class="ldp__views">
+                        <span class="ldp__views-count">1.3k views</span>
+                        <span class="ldp__views-text">on this item</span>
+                      </div>
+                      <div class="ldp__social-actions">
+                        <button type="button" class="ldp__social-btn">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M3 7V17H7V7H3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M7 7L9 3H11L10 7H16C16.5523 7 17 7.44772 17 8V10L15 17H7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                          <span id="ldp-saves">61</span>
+                        </button>
+                        <button type="button" class="ldp__social-btn">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M15 7C15 7 16 8.5 16 10C16 11.5 15 13 15 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M3 8V12H6L10 16V4L6 8H3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                          Share
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Seller Card -->
+                    <div class="ldp__seller">
+                      <div class="ldp__seller-top">
+                        <div class="ldp__seller-info">
+                          <img class="ldp__seller-avatar" alt="" src="assets/6th-avatar.png" />
+                          <span class="ldp__seller-name" id="ldp-seller-name">6th_official</span>
+                        </div>
+                        <button type="button" class="ldp__seller-msg-btn" aria-label="Message seller">
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M2 3H14V12H3.6L2 13.6V3Z" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </button>
+                      </div>
+                      <div class="ldp__seller-bottom">
+                        <div class="ldp__seller-stat">
+                          <div class="ldp__seller-stat-value">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" fill="#1c1c1c"/><path d="M10 5L11.5 8.5L15 9L12.5 11.5L13 15L10 13.5L7 15L7.5 11.5L5 9L8.5 8.5L10 5Z" fill="#FFD700"/></svg>
+                          </div>
+                          <span class="ldp__seller-stat-label" style="text-decoration: underline;">Premier Shop</span>
+                        </div>
+                        <div class="ldp__seller-divider"></div>
+                        <div class="ldp__seller-stat">
+                          <div class="ldp__seller-stat-value">
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1L7.5 4.1L11 4.6L8.5 7L9.1 10.5L6 8.9L2.9 10.5L3.5 7L1 4.6L4.5 4.1L6 1Z" fill="#FFD700"/></svg>
+                            4.8
+                          </div>
+                          <span class="ldp__seller-stat-label">Rating</span>
+                        </div>
+                        <div class="ldp__seller-divider"></div>
+                        <div class="ldp__seller-stat">
+                          <div class="ldp__seller-stat-value">50k</div>
+                          <span class="ldp__seller-stat-label">Reviews</span>
+                        </div>
+                        <div class="ldp__seller-divider"></div>
+                        <div class="ldp__seller-stat">
+                          <div class="ldp__seller-stat-value">169k</div>
+                          <span class="ldp__seller-stat-label">Sold</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Fixed Footer -->
+                <div class="ldp__footer">
+                  <button type="button" class="ldp__footer-btn" id="ldp-request-btn" onclick="requestToRun()">Request to Run</button>
+                  <div class="ldp__home-indicator"></div>
+                </div>
               </div>
             </div>
+
           </div>
 
         </div>
 
         <!-- Live Listings — Figma 18742:45839 Page /Live Shop -->
         <div class="live-shop-root" id="live-shop-root" aria-hidden="true">
-          <div class="live-shop-backdrop" id="live-shop-backdrop" aria-hidden="true"></div>
+          <div class="live-shop-backdrop" id="live-shop-backdrop" aria-hidden="true" onclick="closeShop()"></div>
           <div class="live-shop-sheet" id="live-shop-sheet" role="dialog" aria-modal="true" aria-labelledby="live-shop-title" tabindex="-1">
             <div class="live-shop-notch" aria-hidden="true">
               <div class="live-shop-notch__handle"></div>
             </div>
             <header class="live-shop-nav">
+              <button type="button" class="live-shop-back-btn" id="live-shop-back" aria-label="Back" onclick="closeShop()">
+                <svg width="10" height="17" viewBox="0 0 10 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 1L2 8.5L9 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
               <h1 class="live-shop-title" id="live-shop-title">Live Listings</h1>
-              <button type="button" class="live-shop-close" id="live-shop-close" aria-label="Close">
+              <button type="button" class="live-shop-close" id="live-shop-close" aria-label="Close" onclick="closeShop()">
                 <img alt="" src="https://www.figma.com/api/mcp/asset/022f55cb-127c-4912-a046-9c494f13b2a7" width="20" height="20" />
               </button>
             </header>
@@ -4200,11 +5412,14 @@
                         <p class="live-shop-row__price js-shop-price">$1</p>
                         <p class="live-shop-row__timer js-shop-timer">00:10</p>
                       </div>
-                      <div class="live-shop-row__actions">
+                      <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn js-select-options-btn" data-select-type="template">Select Options</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
+                      </div>
+                      <div class="live-shop-row__actions live-shop-row__actions--buyer">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--buyer">Request to Run</button>
                       </div>
                     </div>
                   </article>
@@ -4222,11 +5437,14 @@
                         <p class="live-shop-row__price js-shop-price">$1 - $15</p>
                         <p class="live-shop-row__timer js-shop-timer">00:10</p>
                       </div>
-                      <div class="live-shop-row__actions">
+                      <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn js-select-options-btn" data-select-type="variant">Select Options</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
+                      </div>
+                      <div class="live-shop-row__actions live-shop-row__actions--buyer">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--buyer">Select Options</button>
                       </div>
                     </div>
                   </article>
@@ -4248,7 +5466,7 @@
                         <p class="live-shop-row__price js-shop-price">$1</p>
                         <p class="live-shop-row__timer js-shop-timer">00:10</p>
                       </div>
-                      <div class="live-shop-row__actions">
+                      <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn js-start-btn">Start</button>
                         <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
                           <img alt="" src="assets/icons/pin.svg" />
@@ -4256,6 +5474,9 @@
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
+                      </div>
+                      <div class="live-shop-row__actions live-shop-row__actions--buyer">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--buyer">Pre-bid</button>
                       </div>
                     </div>
                   </article>
@@ -4277,7 +5498,7 @@
                         <p class="live-shop-row__price js-shop-price">$12</p>
                         <p class="live-shop-row__timer js-shop-timer">00:10</p>
                       </div>
-                      <div class="live-shop-row__actions">
+                      <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn js-start-btn">Start</button>
                         <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
                           <img alt="" src="assets/icons/pin.svg" />
@@ -4285,6 +5506,9 @@
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
+                      </div>
+                      <div class="live-shop-row__actions live-shop-row__actions--buyer">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--buyer">Pre-bid</button>
                       </div>
                     </div>
                   </article>
@@ -4306,7 +5530,7 @@
                         <p class="live-shop-row__price js-shop-price">$45</p>
                         <p class="live-shop-row__timer js-shop-timer">00:10</p>
                       </div>
-                      <div class="live-shop-row__actions">
+                      <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn js-start-btn">Start</button>
                         <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
                           <img alt="" src="assets/icons/pin.svg" />
@@ -4314,6 +5538,9 @@
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
+                      </div>
+                      <div class="live-shop-row__actions live-shop-row__actions--buyer">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--buyer">Pre-bid</button>
                       </div>
                     </div>
                   </article>
@@ -4335,7 +5562,7 @@
                         <p class="live-shop-row__price js-shop-price">$25</p>
                         <p class="live-shop-row__timer js-shop-timer">00:10</p>
                       </div>
-                      <div class="live-shop-row__actions">
+                      <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn js-start-btn">Start</button>
                         <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
                           <img alt="" src="assets/icons/pin.svg" />
@@ -4343,6 +5570,9 @@
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
+                      </div>
+                      <div class="live-shop-row__actions live-shop-row__actions--buyer">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--buyer">Pre-bid</button>
                       </div>
                     </div>
                   </article>
@@ -4373,7 +5603,7 @@
                         </div>
                         <p class="live-shop-row__price">$65</p>
                       </div>
-                      <div class="live-shop-row__actions">
+                      <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading js-pin-btn">
                           <img class="live-shop-row__btn-icon" alt="" src="assets/icons/pin.svg" />
                           <span>Pin</span>
@@ -4381,6 +5611,9 @@
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
+                      </div>
+                      <div class="live-shop-row__actions live-shop-row__actions--buyer">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--buyer">Buy Now</button>
                       </div>
                     </div>
                   </article>
@@ -4400,7 +5633,7 @@
                         </div>
                         <p class="live-shop-row__price">$185</p>
                       </div>
-                      <div class="live-shop-row__actions">
+                      <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading js-pin-btn">
                           <img class="live-shop-row__btn-icon" alt="" src="assets/icons/pin.svg" />
                           <span>Pin</span>
@@ -4408,6 +5641,9 @@
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
+                      </div>
+                      <div class="live-shop-row__actions live-shop-row__actions--buyer">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--buyer">Buy Now</button>
                       </div>
                     </div>
                   </article>
@@ -4427,7 +5663,7 @@
                         </div>
                         <p class="live-shop-row__price">$24</p>
                       </div>
-                      <div class="live-shop-row__actions">
+                      <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading js-pin-btn">
                           <img class="live-shop-row__btn-icon" alt="" src="assets/icons/pin.svg" />
                           <span>Pin</span>
@@ -4435,6 +5671,9 @@
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
+                      </div>
+                      <div class="live-shop-row__actions live-shop-row__actions--buyer">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--buyer">Buy Now</button>
                       </div>
                     </div>
                   </article>
@@ -4454,7 +5693,7 @@
                         </div>
                         <p class="live-shop-row__price">$48</p>
                       </div>
-                      <div class="live-shop-row__actions">
+                      <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading js-pin-btn">
                           <img class="live-shop-row__btn-icon" alt="" src="assets/icons/pin.svg" />
                           <span>Pin</span>
@@ -4462,6 +5701,9 @@
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
+                      </div>
+                      <div class="live-shop-row__actions live-shop-row__actions--buyer">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--buyer">Buy Now</button>
                       </div>
                     </div>
                   </article>
@@ -4484,11 +5726,14 @@
                         </div>
                         <p class="live-shop-row__price">$120</p>
                       </div>
-                      <div class="live-shop-row__actions">
+                      <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn js-pin-btn">Pin</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
+                      </div>
+                      <div class="live-shop-row__actions live-shop-row__actions--buyer">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--buyer">Select Options</button>
                       </div>
                     </div>
                   </article>
@@ -4510,11 +5755,14 @@
                           <p class="live-shop-row__meta">OS • New w tag</p>
                         </div>
                       </div>
-                      <div class="live-shop-row__actions">
+                      <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn">Run Giveaway</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
+                      </div>
+                      <div class="live-shop-row__actions live-shop-row__actions--buyer">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--buyer">Enter Giveaway</button>
                       </div>
                     </div>
                   </article>
@@ -4529,11 +5777,14 @@
                           <p class="live-shop-row__meta">L • New w tag</p>
                         </div>
                       </div>
-                      <div class="live-shop-row__actions">
+                      <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn">Run Giveaway</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
+                      </div>
+                      <div class="live-shop-row__actions live-shop-row__actions--buyer">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--buyer">Enter Giveaway</button>
                       </div>
                     </div>
                   </article>
@@ -4548,11 +5799,14 @@
                           <p class="live-shop-row__meta">OS • New w tag</p>
                         </div>
                       </div>
-                      <div class="live-shop-row__actions">
+                      <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn">Run Giveaway</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
                           <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
                         </button>
+                      </div>
+                      <div class="live-shop-row__actions live-shop-row__actions--buyer">
+                        <button type="button" class="live-shop-row__btn live-shop-row__btn--buyer">Enter Giveaway</button>
                       </div>
                     </div>
                   </article>
@@ -4604,6 +5858,145 @@
           </div>
         </div>
 
+        <!-- Pre-bid Sheet (Buyer View) -->
+        <div class="prebid-overlay" id="prebidOverlay" aria-hidden="true" onclick="closePrebidSheet(event)">
+          <div class="prebid-sheet" id="prebidSheet" role="dialog" aria-modal="true" aria-labelledby="prebidTitle">
+            <div class="prebid-sheet__handle"><div class="prebid-sheet__handle-bar"></div></div>
+            <h2 class="prebid-sheet__title" id="prebidTitle">Place your Bid</h2>
+            <p class="prebid-sheet__desc">You are entering a max bid for <strong id="prebid-product-name">BRAND NEW STREETWEAR</strong>. By entering your max bid, we'll automatically place bids for you, up to that amount when this auction is run.</p>
+            <p class="prebid-sheet__status" id="prebid-status">Someone else is currently winning at $1.00</p>
+            <p class="prebid-sheet__label">Max Bid</p>
+            <p class="prebid-sheet__hint" id="prebid-hint">Enter a bid of at least $2.00</p>
+            <div class="prebid-sheet__input-wrap">
+              <input type="text" class="prebid-sheet__input" id="prebid-input" value="$2" />
+            </div>
+            <p class="prebid-sheet__shipping">+$5.48 Shipping</p>
+            <button type="button" class="prebid-sheet__submit" onclick="submitPrebid()">Submit</button>
+            <p class="prebid-sheet__footer">Bids are final. You can increase at anytime, but are not able to reduce or cancel your max bid.</p>
+            <a href="#" class="prebid-sheet__link" onclick="event.preventDefault();">How Max Bid Works</a>
+          </div>
+        </div>
+
+        <!-- Options Sheet (Buyer View - Templates & Variants) -->
+        <div class="options-sheet-overlay" id="optionsSheetOverlay" aria-hidden="true" onclick="closeOptionsSheet(event)">
+          <div class="options-sheet" id="optionsSheet" role="dialog" aria-modal="true">
+            <div class="options-sheet__handle"><div class="options-sheet__handle-bar"></div></div>
+            
+            <!-- Header with product info -->
+            <div class="options-sheet__header">
+              <img class="options-sheet__img" id="options-sheet-img" alt="" src="assets/pile-of-sneakers.jpg" />
+              <div class="options-sheet__info">
+                <p class="options-sheet__title" id="options-sheet-title">Assorted Sneakers: Nike, Adidas, and more</p>
+                <p class="options-sheet__price" id="options-sheet-price">$1</p>
+                <p class="options-sheet__shipping">+ $7.50 Shipping</p>
+              </div>
+            </div>
+            
+            <!-- Selection options -->
+            <div class="options-sheet__body">
+              <div class="options-sheet__section" id="options-sheet-brand">
+                <p class="options-sheet__label">Brand <span class="required">*</span></p>
+                <div class="options-sheet__chips">
+                  <button type="button" class="options-sheet__chip is-selected" data-value="Nike">Nike</button>
+                  <button type="button" class="options-sheet__chip" data-value="Adidas">Adidas</button>
+                  <button type="button" class="options-sheet__chip" data-value="Pumas">Pumas</button>
+                </div>
+              </div>
+              <div class="options-sheet__section" id="options-sheet-size">
+                <p class="options-sheet__label">Size <span class="required">*</span></p>
+                <div class="options-sheet__chips">
+                  <button type="button" class="options-sheet__chip is-selected" data-value="8M">8M</button>
+                  <button type="button" class="options-sheet__chip" data-value="8.5M">8.5M</button>
+                  <button type="button" class="options-sheet__chip" data-value="9M">9M</button>
+                  <button type="button" class="options-sheet__chip" data-value="9.5M">9.5M</button>
+                  <button type="button" class="options-sheet__chip" data-value="10M">10M</button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Footer with CTA -->
+            <div class="options-sheet__footer">
+              <button type="button" class="options-sheet__btn" id="options-sheet-btn" onclick="submitOptionsSheet()">Request to Run</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkout Sheet (Buyer View - BIN items) -->
+        <div class="checkout-overlay" id="checkoutOverlay" aria-hidden="true" onclick="closeCheckoutSheet(event)">
+          <div class="checkout-sheet" id="checkoutSheet" role="dialog" aria-modal="true">
+            <div class="checkout-sheet__handle"><div class="checkout-sheet__handle-bar"></div></div>
+            
+            <!-- Product Info -->
+            <div class="checkout-sheet__product">
+              <img class="checkout-sheet__product-img" id="checkout-product-img" alt="" src="assets/pile-of-sneakers.jpg" />
+              <div class="checkout-sheet__product-info">
+                <p class="checkout-sheet__product-title" id="checkout-product-title">2 cases= 24 boxes of SOUR PATCH KIDS Tropical Soft & Chewy Candy 3.5 Oz</p>
+                <p class="checkout-sheet__product-avail" id="checkout-product-avail">86 Available</p>
+                <button type="button" class="checkout-sheet__see-more">See More <svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4 4-4"/></svg></button>
+              </div>
+            </div>
+            
+            <!-- Qty & Price -->
+            <div class="checkout-sheet__row">
+              <p class="checkout-sheet__row-value">Qty 1 <svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4 4-4"/></svg></p>
+              <p class="checkout-sheet__row-value" id="checkout-price">$15.00</p>
+            </div>
+            
+            <!-- Promotion -->
+            <div class="checkout-sheet__row">
+              <p class="checkout-sheet__row-label">Promotion</p>
+              <p class="checkout-sheet__row-value"><svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4 4-4"/></svg></p>
+            </div>
+            
+            <!-- Payment -->
+            <div class="checkout-sheet__row">
+              <p class="checkout-sheet__row-label">Payment</p>
+              <p class="checkout-sheet__row-value">
+                <span class="checkout-sheet__visa-icon">
+                  <svg width="16" height="10" viewBox="0 0 16 10" fill="#fff"><path d="M6.5 8.5L7.5 1.5H9L8 8.5H6.5ZM4.5 1.5L3 6L2.5 3.5C2.5 3.5 2.3 2.5 1 2V1.5H3.5C4 1.5 4.3 1.8 4.5 2.5L5 5L6.5 1.5H8L5.5 8.5H4L4.5 1.5ZM13 8.5L14.5 1.5H13L12 6L11 3C11 3 10.8 2 10 2H9.5L9.5 1.5H12.5C13 1.5 13.3 1.8 13.5 2.5L14 5L13 8.5Z"/></svg>
+                </span>
+                Visa 9505 <svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4 4-4"/></svg>
+              </p>
+            </div>
+            
+            <!-- Address -->
+            <div class="checkout-sheet__row">
+              <p class="checkout-sheet__row-label">Address</p>
+              <div class="checkout-sheet__address">
+                <p class="checkout-sheet__address-name">Soh Tanaka <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#8e8e93" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 1.5l2 2-7 7H1.5v-2l7-7z"/></svg></p>
+                <p class="checkout-sheet__address-line">306 N Trotwood Ave</p>
+                <p class="checkout-sheet__address-line">San Pedro CA 90732-2734</p>
+              </div>
+            </div>
+            
+            <!-- Totals -->
+            <div class="checkout-sheet__totals">
+              <div class="checkout-sheet__total-row">
+                <p class="checkout-sheet__total-label">Subtotal</p>
+                <p class="checkout-sheet__total-value" id="checkout-subtotal">$15.00</p>
+              </div>
+              <div class="checkout-sheet__total-row">
+                <p class="checkout-sheet__total-label">Shipping</p>
+                <p class="checkout-sheet__total-value" id="checkout-shipping">$9.21</p>
+              </div>
+              <div class="checkout-sheet__total-row">
+                <p class="checkout-sheet__total-label">Est Tax</p>
+                <p class="checkout-sheet__total-value">$0.00</p>
+              </div>
+              <div class="checkout-sheet__total-row">
+                <p class="checkout-sheet__total-label checkout-sheet__total-label--bold">Total</p>
+                <p class="checkout-sheet__total-value checkout-sheet__total-value--bold" id="checkout-total">$24.21</p>
+              </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="checkout-sheet__actions">
+              <button type="button" class="checkout-sheet__btn checkout-sheet__btn--cancel" onclick="closeCheckoutSheet()">Cancel</button>
+              <button type="button" class="checkout-sheet__btn checkout-sheet__btn--confirm" onclick="confirmCheckout()">Confirm</button>
+            </div>
+          </div>
+        </div>
+
         <!-- Phone-level chrome: home indicator always on top of all app UI -->
         <div class="phone-home-indicator" id="phone-home-indicator" style="position:absolute;bottom:0;left:0;right:0;z-index:500"></div>
       </div>
@@ -4638,16 +6031,6 @@
         </div>
       </div>
       <div>
-        <div class="ctrl-section-label">Shop</div>
-        <div class="ctrl-row">
-          <span class="ctrl-label">Show Running/Pinned</span>
-          <label class="ctrl-switch">
-            <input type="checkbox" id="ctrlShowRunningPinned" checked onchange="onShowRunningPinnedChange()">
-            <span class="ctrl-switch-track"></span>
-          </label>
-        </div>
-      </div>
-      <div>
         <div class="ctrl-section-label">Pinned Item</div>
         <div class="ctrl-row">
           <span class="ctrl-label">Format</span>
@@ -4664,6 +6047,21 @@
             <option value="template">Template</option>
             <option value="variant">Variants</option>
           </select>
+        </div>
+      </div>
+      <div id="ctrl-section-shop-pinned" class="ctrl-section-collapsible">
+        <button type="button" class="ctrl-section-header" onclick="toggleCtrlSection('shop-pinned')">
+          <span class="ctrl-section-label" style="margin-bottom: 0;">Shop Pinned State</span>
+          <svg class="ctrl-section-chevron" id="ctrl-chevron-shop-pinned" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4 4-4"/></svg>
+        </button>
+        <div class="ctrl-section-body" id="ctrl-body-shop-pinned" style="display: none;">
+          <div class="ctrl-row">
+            <span class="ctrl-label">Show Running/Pinned</span>
+            <label class="ctrl-switch">
+              <input type="checkbox" id="ctrlShowRunningPinned" checked onchange="onShowRunningPinnedChange()">
+              <span class="ctrl-switch-track"></span>
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -4981,6 +6379,15 @@
       body.style.display = collapsed ? 'flex' : 'none';
       chevron.style.transform = collapsed ? '' : 'rotate(-90deg)';
     }
+    
+    function toggleCtrlSection(sectionId) {
+      var body = document.getElementById('ctrl-body-' + sectionId);
+      var chevron = document.getElementById('ctrl-chevron-' + sectionId);
+      if (!body || !chevron) return;
+      var isHidden = body.style.display === 'none';
+      body.style.display = isHidden ? 'block' : 'none';
+      chevron.classList.toggle('is-expanded', isHidden);
+    }
 
     function getControlPanelLayoutWidth() {
       var panel = document.getElementById('controlPanel');
@@ -5178,7 +6585,12 @@
     window.addEventListener('resize', function() { requestAnimationFrame(syncProtoTimestampCompact); });
 
     /* ── Pinned Item Controls ── */
+    var savedShowRunningPinnedState = true; // Store seller's toggle state
+    
     function onViewChange(view) {
+      // Disable transitions during view switch for instant snap
+      document.body.classList.add('view-switching');
+      
       // Update segmented control active state
       var segment = document.getElementById('ctrlViewSegment');
       var buttons = segment.querySelectorAll('.ctrl-segment-btn');
@@ -5186,14 +6598,32 @@
         btn.classList.toggle('is-active', btn.dataset.value === view);
       });
       
+      var showRunningPinnedCheckbox = document.getElementById('ctrlShowRunningPinned');
+      
       // Toggle buyer view class
       if (view === 'buyer') {
         document.body.classList.add('view-buyer');
+        // Save current state and force toggle off for buyers
+        if (showRunningPinnedCheckbox) {
+          savedShowRunningPinnedState = showRunningPinnedCheckbox.checked;
+          showRunningPinnedCheckbox.checked = false;
+          onShowRunningPinnedChange();
+        }
       } else {
         document.body.classList.remove('view-buyer');
+        // Restore seller's toggle state
+        if (showRunningPinnedCheckbox) {
+          showRunningPinnedCheckbox.checked = savedShowRunningPinnedState;
+          onShowRunningPinnedChange();
+        }
       }
       // Update swipe button text with current price
       updateBuyerSwipeButtons();
+      
+      // Re-enable transitions after a frame
+      requestAnimationFrame(function() {
+        document.body.classList.remove('view-switching');
+      });
     }
     
     function updateBuyerSwipeButtons() {
@@ -5635,6 +7065,14 @@
         if (shopList) {
           shopList.scrollTop = 0;
         }
+      }
+    }
+    
+    function closeShop() {
+      var shopRoot = document.getElementById('live-shop-root');
+      if (shopRoot) {
+        shopRoot.classList.remove('is-open');
+        shopRoot.setAttribute('aria-hidden', 'true');
       }
     }
 
@@ -6208,6 +7646,72 @@
               onSelectOptions(selectType);
             }, 120);
           }
+        });
+      });
+    })();
+
+    // Initialize buyer CTA buttons in shop listings
+    (function initBuyerShopButtons() {
+      document.querySelectorAll('.live-shop-row__actions--buyer .live-shop-row__btn--buyer').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          var row = btn.closest('.live-shop-row');
+          if (!row) return;
+          
+          var pinType = row.dataset.pinType;
+          var btnText = btn.textContent.trim();
+          
+          // Template: "Request to Run" -> Opens options sheet
+          if (pinType === 'template' && btnText === 'Request to Run') {
+            openOptionsSheet(row);
+            return;
+          }
+          
+          // Variant: "Select Options" -> Opens options sheet then pre-bid
+          if (pinType === 'variant' && btnText === 'Select Options') {
+            openOptionsSheet(row);
+            return;
+          }
+          
+          // BIN/Flash Variant: "Select Options" -> Opens options sheet then buy
+          if ((pinType === 'bin-variant' || pinType === 'flash-variant') && btnText === 'Select Options') {
+            openOptionsSheet(row);
+            return;
+          }
+          
+          // Auction: "Pre-bid" -> Open pre-bid sheet
+          if (pinType === 'auction' && btnText === 'Pre-bid') {
+            openPrebidSheet(row);
+            return;
+          }
+          
+          // BIN: "Buy Now" -> Open checkout sheet
+          if ((pinType === 'bin' || pinType === 'flash') && btnText === 'Buy Now') {
+            openCheckoutSheet(row);
+            return;
+          }
+          
+          // Giveaway: "Enter Giveaway" -> Show toast (placeholder)
+          if (pinType === 'giveaway' && btnText === 'Enter Giveaway') {
+            showLdpToast('Entered giveaway!');
+            return;
+          }
+        });
+      });
+      
+      // Make entire shop row clickable for buyer view -> always opens LDP
+      document.querySelectorAll('.live-shop-row').forEach(function(row) {
+        row.addEventListener('click', function(e) {
+          // Only for buyer view
+          if (!document.body.classList.contains('view-buyer')) return;
+          
+          // Don't trigger if clicking on a button
+          if (e.target.closest('button')) return;
+          
+          // Always open LDP
+          openLdp(row);
         });
       });
     })();
@@ -7804,6 +9308,528 @@
         }
       });
     });
+
+    // ==========================================
+    // LDP (Listing Detail Page) Navigation
+    // ==========================================
+    var ldpCarouselIdx = 0;
+    var ldpSourceRow = null;
+    var ldpOpenedFromShop = false;
+
+    function openLdp(shopRow) {
+      if (!shopRow) return;
+      ldpSourceRow = shopRow;
+      
+      // Check if shop is open (for buyer view flow)
+      var shopRoot = document.getElementById('live-shop-root');
+      var shopSheet = document.getElementById('live-shop-sheet');
+      var isBuyerView = document.body.classList.contains('view-buyer');
+      ldpOpenedFromShop = shopRoot && shopRoot.classList.contains('is-open');
+      
+      // Populate LDP with shop row data
+      var title = shopRow.dataset.pinTitle || 'Product';
+      var price = shopRow.dataset.pinPrice || '$1';
+      var img = shopRow.dataset.pinImg || '';
+      var pinType = shopRow.dataset.pinType || 'template';
+      
+      document.getElementById('ldp-title').textContent = title;
+      
+      // Configure LDP based on product type
+      var ldpRequestBtn = document.getElementById('ldp-request-btn');
+      if (pinType === 'variant') {
+        // Auction variant: show specific price, Pre-bid button
+        document.getElementById('ldp-price').textContent = '$1';
+        ldpRequestBtn.textContent = 'Pre-bid';
+        ldpRequestBtn.onclick = function() { preBidLdp(); };
+      } else if (pinType === 'bin' || pinType === 'flash' || pinType === 'bin-variant' || pinType === 'flash-variant') {
+        // BIN/Flash items: Buy Now button
+        document.getElementById('ldp-price').textContent = price;
+        ldpRequestBtn.textContent = 'Buy Now';
+        ldpRequestBtn.onclick = function() { buyNowLdp(); };
+      } else {
+        // Template: Request to Run
+        document.getElementById('ldp-price').textContent = price;
+        ldpRequestBtn.textContent = 'Request to Run';
+        ldpRequestBtn.onclick = function() { requestToRun(); };
+      }
+      
+      // Store pin type for chip selection updates
+      document.getElementById('ldp-template').dataset.pinType = pinType;
+      
+      // Show/hide option selections based on type (only for template and variants)
+      var ldpSelections = document.getElementById('ldp-selections');
+      if (pinType === 'template' || pinType === 'variant' || pinType === 'bin-variant' || pinType === 'flash-variant') {
+        ldpSelections.style.display = '';
+      } else {
+        ldpSelections.style.display = 'none';
+      }
+      
+      // Set carousel images
+      if (img) {
+        document.querySelectorAll('.ldp__carousel-slide img').forEach(function(imgEl) {
+          imgEl.src = img;
+        });
+      }
+      
+      // Reset carousel
+      ldpCarouselIdx = 0;
+      updateLdpCarousel();
+      
+      // Reset chip selections and update price
+      resetLdpChips();
+      updateLdpVariantPrice();
+      
+      var flow1 = document.getElementById('flow-1');
+      var flowLdp = document.getElementById('flow-ldp');
+      
+      // For buyer view: animate shop → LDP (shop pushes left with parallax, LDP enters from right)
+      if (ldpOpenedFromShop && isBuyerView && shopSheet) {
+        // Add transition to shop sheet for parallax push
+        shopSheet.style.transition = 'transform 0.35s cubic-bezier(0.32, 0.72, 0, 1)';
+        shopSheet.style.transform = 'translateX(-30%)';
+        
+        // Show LDP on top
+        flowLdp.classList.add('active', 'push-from-right');
+        
+        setTimeout(function() {
+          flowLdp.classList.remove('push-from-right');
+        }, 350);
+      } else {
+        // For seller view: standard flow-1 → LDP transition
+        flow1.classList.add('push-to-left');
+        flowLdp.classList.add('active', 'push-from-right');
+        
+        setTimeout(function() {
+          flow1.classList.remove('active', 'push-to-left');
+          flowLdp.classList.remove('push-from-right');
+        }, 350);
+        
+        // Close shop sheet for seller
+        if (shopRoot && shopRoot.classList.contains('is-open')) {
+          shopRoot.classList.remove('is-open');
+          shopRoot.setAttribute('aria-hidden', 'true');
+        }
+      }
+    }
+
+    function closeLdp() {
+      var flow1 = document.getElementById('flow-1');
+      var flowLdp = document.getElementById('flow-ldp');
+      var shopRoot = document.getElementById('live-shop-root');
+      var shopSheet = document.getElementById('live-shop-sheet');
+      var isBuyerView = document.body.classList.contains('view-buyer');
+      
+      // For buyer view: animate LDP → shop (LDP exits right, shop returns from left)
+      if (ldpOpenedFromShop && isBuyerView && shopSheet) {
+        // Animate shop back to center
+        shopSheet.style.transform = 'translateX(0)';
+        
+        // LDP exits to right
+        flowLdp.classList.add('push-to-right');
+        
+        setTimeout(function() {
+          flowLdp.classList.remove('active', 'push-to-right');
+          // Clean up shop sheet styles
+          shopSheet.style.transition = '';
+          shopSheet.style.transform = '';
+        }, 350);
+      } else {
+        // For seller view: standard LDP → flow-1 transition
+        flow1.classList.add('active', 'push-from-left');
+        flowLdp.classList.add('push-to-right');
+        
+        setTimeout(function() {
+          flowLdp.classList.remove('active', 'push-to-right');
+          flow1.classList.remove('push-from-left');
+        }, 350);
+      }
+      
+      ldpSourceRow = null;
+      ldpOpenedFromShop = false;
+    }
+
+    function updateLdpCarousel() {
+      var track = document.getElementById('ldp-carousel-track');
+      var dots = document.querySelectorAll('.ldp__carousel-dot');
+      
+      track.style.transform = 'translateX(' + (-ldpCarouselIdx * 100) + '%)';
+      dots.forEach(function(dot, idx) {
+        dot.classList.toggle('is-active', idx === ldpCarouselIdx);
+      });
+    }
+
+    function requestToRun() {
+      // Show confirmation toast
+      showLdpToast('Request sent!');
+      
+      // Close LDP after brief delay
+      setTimeout(function() {
+        closeLdp();
+      }, 800);
+    }
+    
+    function preBidLdp() {
+      // Show confirmation toast for pre-bid
+      var price = document.getElementById('ldp-price').textContent;
+      showLdpToast('Pre-bid placed at ' + price + '!');
+      
+      // Close LDP after brief delay
+      setTimeout(function() {
+        closeLdp();
+      }, 800);
+    }
+    
+    function buyNowLdp() {
+      // Show confirmation toast for buy now
+      var price = document.getElementById('ldp-price').textContent;
+      showLdpToast('Added to cart: ' + price);
+      
+      // Close LDP after brief delay
+      setTimeout(function() {
+        closeLdp();
+      }, 800);
+    }
+    
+    // Variant pricing map: brand -> size -> price
+    var variantPriceMap = {
+      'Nike': { '8M': '$3', '8.5M': '$4', '9M': '$5', '9.5M': '$7', '10M': '$10' },
+      'Adidas': { '8M': '$2', '8.5M': '$3', '9M': '$4', '9.5M': '$5', '10M': '$8' },
+      'Pumas': { '8M': '$1', '8.5M': '$2', '9M': '$3', '9.5M': '$4', '10M': '$6' }
+    };
+    
+    function resetLdpChips() {
+      // Reset all chips to first option selected
+      document.querySelectorAll('.ldp__selection-group').forEach(function(group) {
+        var chips = group.querySelectorAll('.ldp__chip');
+        chips.forEach(function(chip, idx) {
+          chip.classList.toggle('is-selected', idx === 0);
+        });
+      });
+    }
+    
+    function updateLdpVariantPrice() {
+      var ldp = document.getElementById('ldp-template');
+      if (ldp.dataset.pinType !== 'variant') return;
+      
+      // Get selected values
+      var brand = '';
+      var size = '';
+      
+      document.querySelectorAll('.ldp__selection-group').forEach(function(group) {
+        var selected = group.querySelector('.ldp__chip.is-selected');
+        if (selected) {
+          var label = group.querySelector('.ldp__selection-label');
+          if (label && label.textContent.includes('Brand')) {
+            brand = selected.dataset.value || selected.textContent.trim();
+          } else if (label && label.textContent.includes('Size')) {
+            size = selected.dataset.value || selected.textContent.trim();
+          }
+        }
+      });
+      
+      // Look up price
+      var price = '$1';
+      if (variantPriceMap[brand] && variantPriceMap[brand][size]) {
+        price = variantPriceMap[brand][size];
+      }
+      
+      document.getElementById('ldp-price').textContent = price;
+    }
+
+    function showLdpToast(msg) {
+      var toast = document.createElement('div');
+      toast.className = 'ldp__toast';
+      toast.textContent = msg;
+      toast.style.cssText = 'position:fixed;bottom:120px;left:50%;transform:translateX(-50%);padding:12px 24px;background:#1c1c1c;color:#fff;border-radius:12px;font-size:14px;font-weight:590;z-index:99999;opacity:0;transition:opacity 0.2s ease;';
+      document.body.appendChild(toast);
+      requestAnimationFrame(function() {
+        toast.style.opacity = '1';
+      });
+      setTimeout(function() {
+        toast.style.opacity = '0';
+        setTimeout(function() { toast.remove(); }, 200);
+      }, 1500);
+    }
+    
+    // ==========================================
+    // Pre-bid Sheet Functions
+    // ==========================================
+    var prebidProductRow = null;
+    
+    function openPrebidSheet(row) {
+      if (!row) return;
+      prebidProductRow = row;
+      
+      var title = row.dataset.pinTitle || 'this item';
+      var price = row.dataset.pinPrice || '$1';
+      var priceNum = parseInt(price.replace(/[^0-9]/g, '')) || 1;
+      var minBid = priceNum + 1;
+      
+      // Update sheet content
+      document.getElementById('prebid-product-name').textContent = title.toUpperCase();
+      document.getElementById('prebid-status').textContent = 'Someone else is currently winning at $' + priceNum + '.00';
+      document.getElementById('prebid-hint').textContent = 'Enter a bid of at least $' + minBid + '.00';
+      document.getElementById('prebid-input').value = '$' + minBid;
+      
+      // Show sheet
+      var overlay = document.getElementById('prebidOverlay');
+      overlay.classList.add('is-open');
+      overlay.setAttribute('aria-hidden', 'false');
+    }
+    
+    function closePrebidSheet(event) {
+      // Only close if clicking on overlay background, not the sheet itself
+      if (event && event.target.id !== 'prebidOverlay') return;
+      
+      var overlay = document.getElementById('prebidOverlay');
+      overlay.classList.remove('is-open');
+      overlay.setAttribute('aria-hidden', 'true');
+      prebidProductRow = null;
+    }
+    
+    function submitPrebid() {
+      var bidValue = document.getElementById('prebid-input').value;
+      
+      // Close sheet
+      var overlay = document.getElementById('prebidOverlay');
+      overlay.classList.remove('is-open');
+      overlay.setAttribute('aria-hidden', 'true');
+      
+      // Show confirmation toast
+      showLdpToast('Pre-bid placed at ' + bidValue + '!');
+      prebidProductRow = null;
+    }
+    
+    // ==========================================
+    // Checkout Sheet Functions
+    // ==========================================
+    var checkoutProductRow = null;
+    
+    function openCheckoutSheet(row) {
+      if (!row) return;
+      checkoutProductRow = row;
+      
+      var title = row.dataset.pinTitle || 'Product';
+      var price = row.dataset.pinPrice || '$15';
+      var img = row.dataset.pinImg || '';
+      var qty = row.dataset.pinQty || '1';
+      
+      // Parse price for calculations
+      var priceNum = parseFloat(price.replace(/[^0-9.]/g, '')) || 15;
+      var shipping = 9.21;
+      var total = priceNum + shipping;
+      
+      // Update sheet content
+      document.getElementById('checkout-product-title').textContent = title;
+      document.getElementById('checkout-product-img').src = img || 'assets/pile-of-sneakers.jpg';
+      document.getElementById('checkout-product-avail').textContent = qty + ' Available';
+      document.getElementById('checkout-price').textContent = '$' + priceNum.toFixed(2);
+      document.getElementById('checkout-subtotal').textContent = '$' + priceNum.toFixed(2);
+      document.getElementById('checkout-shipping').textContent = '$' + shipping.toFixed(2);
+      document.getElementById('checkout-total').textContent = '$' + total.toFixed(2);
+      
+      // Show sheet
+      var overlay = document.getElementById('checkoutOverlay');
+      overlay.classList.add('is-open');
+      overlay.setAttribute('aria-hidden', 'false');
+    }
+    
+    function closeCheckoutSheet(event) {
+      // If event passed, only close if clicking on overlay background
+      if (event && event.target.id !== 'checkoutOverlay') return;
+      
+      var overlay = document.getElementById('checkoutOverlay');
+      overlay.classList.remove('is-open');
+      overlay.setAttribute('aria-hidden', 'true');
+      checkoutProductRow = null;
+    }
+    
+    function confirmCheckout() {
+      var total = document.getElementById('checkout-total').textContent;
+      
+      // Close sheet
+      var overlay = document.getElementById('checkoutOverlay');
+      overlay.classList.remove('is-open');
+      overlay.setAttribute('aria-hidden', 'true');
+      
+      // Show confirmation toast
+      showLdpToast('Purchase confirmed! ' + total);
+      checkoutProductRow = null;
+    }
+    
+    // ==========================================
+    // Options Sheet Functions (Templates & Variants)
+    // ==========================================
+    var optionsSheetProductRow = null;
+    var optionsSheetType = null;
+    
+    function openOptionsSheet(row) {
+      if (!row) return;
+      optionsSheetProductRow = row;
+      
+      var title = row.dataset.pinTitle || 'Product';
+      var price = row.dataset.pinPrice || '$1';
+      var img = row.dataset.pinImg || '';
+      var pinType = row.dataset.pinType || 'template';
+      optionsSheetType = pinType;
+      
+      // Update sheet content
+      document.getElementById('options-sheet-title').textContent = title;
+      document.getElementById('options-sheet-price').textContent = price;
+      document.getElementById('options-sheet-img').src = img || 'assets/pile-of-sneakers.jpg';
+      
+      // Set CTA button text based on type
+      var btn = document.getElementById('options-sheet-btn');
+      if (pinType === 'variant') {
+        btn.textContent = 'Pre-bid';
+      } else if (pinType === 'bin-variant' || pinType === 'flash-variant') {
+        btn.textContent = 'Buy Now';
+      } else {
+        btn.textContent = 'Request to Run';
+      }
+      
+      // Reset chip selections
+      document.querySelectorAll('.options-sheet__chips').forEach(function(container) {
+        var chips = container.querySelectorAll('.options-sheet__chip');
+        chips.forEach(function(chip, idx) {
+          chip.classList.toggle('is-selected', idx === 0);
+        });
+      });
+      
+      // Update price for variants
+      if (pinType === 'variant') {
+        updateOptionsSheetPrice();
+      }
+      
+      // Show sheet
+      var overlay = document.getElementById('optionsSheetOverlay');
+      overlay.classList.add('is-open');
+      overlay.setAttribute('aria-hidden', 'false');
+    }
+    
+    function closeOptionsSheet(event) {
+      if (event && event.target.id !== 'optionsSheetOverlay') return;
+      
+      var overlay = document.getElementById('optionsSheetOverlay');
+      overlay.classList.remove('is-open');
+      overlay.setAttribute('aria-hidden', 'true');
+      optionsSheetProductRow = null;
+      optionsSheetType = null;
+    }
+    
+    function updateOptionsSheetPrice() {
+      if (optionsSheetType !== 'variant') return;
+      
+      var brand = '';
+      var size = '';
+      
+      var brandChip = document.querySelector('#options-sheet-brand .options-sheet__chip.is-selected');
+      var sizeChip = document.querySelector('#options-sheet-size .options-sheet__chip.is-selected');
+      
+      if (brandChip) brand = brandChip.dataset.value;
+      if (sizeChip) size = sizeChip.dataset.value;
+      
+      var price = '$1';
+      if (variantPriceMap[brand] && variantPriceMap[brand][size]) {
+        price = variantPriceMap[brand][size];
+      }
+      
+      document.getElementById('options-sheet-price').textContent = price;
+    }
+    
+    function submitOptionsSheet() {
+      var overlay = document.getElementById('optionsSheetOverlay');
+      overlay.classList.remove('is-open');
+      overlay.setAttribute('aria-hidden', 'true');
+      
+      var price = document.getElementById('options-sheet-price').textContent;
+      
+      if (optionsSheetType === 'variant') {
+        showLdpToast('Pre-bid placed at ' + price + '!');
+      } else if (optionsSheetType === 'bin-variant' || optionsSheetType === 'flash-variant') {
+        showLdpToast('Added to cart: ' + price);
+      } else {
+        showLdpToast('Request sent!');
+      }
+      
+      optionsSheetProductRow = null;
+      optionsSheetType = null;
+    }
+    
+    // Initialize options sheet chip selection
+    (function initOptionsSheetChips() {
+      document.querySelectorAll('.options-sheet__chips').forEach(function(container) {
+        container.addEventListener('click', function(e) {
+          var chip = e.target.closest('.options-sheet__chip');
+          if (!chip) return;
+          
+          container.querySelectorAll('.options-sheet__chip').forEach(function(c) {
+            c.classList.remove('is-selected');
+          });
+          chip.classList.add('is-selected');
+          
+          updateOptionsSheetPrice();
+        });
+      });
+    })();
+
+    // LDP Carousel touch/drag support
+    (function initLdpCarousel() {
+      var carousel = document.getElementById('ldp-carousel');
+      if (!carousel) return;
+      
+      var track = document.getElementById('ldp-carousel-track');
+      var startX = 0, deltaX = 0;
+      var maxIdx = 3;
+      
+      carousel.addEventListener('touchstart', function(e) {
+        startX = e.touches[0].clientX;
+        track.style.transition = 'none';
+      }, { passive: true });
+      
+      carousel.addEventListener('touchmove', function(e) {
+        deltaX = e.touches[0].clientX - startX;
+        var offset = (-ldpCarouselIdx * 100) + (deltaX / carousel.clientWidth * 100);
+        track.style.transform = 'translateX(' + offset + '%)';
+      }, { passive: true });
+      
+      carousel.addEventListener('touchend', function() {
+        track.style.transition = '';
+        if (Math.abs(deltaX) > 50) {
+          if (deltaX < 0 && ldpCarouselIdx < maxIdx) ldpCarouselIdx++;
+          if (deltaX > 0 && ldpCarouselIdx > 0) ldpCarouselIdx--;
+        }
+        deltaX = 0;
+        updateLdpCarousel();
+      }, { passive: true });
+      
+      // Dot clicks
+      document.querySelectorAll('.ldp__carousel-dot').forEach(function(dot) {
+        dot.addEventListener('click', function() {
+          ldpCarouselIdx = parseInt(dot.dataset.idx);
+          updateLdpCarousel();
+        });
+      });
+    })();
+
+    // LDP Chip selection
+    (function initLdpChips() {
+      document.querySelectorAll('.ldp__selection-chips').forEach(function(container) {
+        container.addEventListener('click', function(e) {
+          var chip = e.target.closest('.ldp__chip');
+          if (!chip || chip.classList.contains('is-sold-out')) return;
+          
+          // Deselect siblings
+          container.querySelectorAll('.ldp__chip').forEach(function(c) {
+            c.classList.remove('is-selected');
+          });
+          chip.classList.add('is-selected');
+          
+          // Update variant price when selection changes
+          updateLdpVariantPrice();
+        });
+      });
+    })();
 
     // Size sheet functions
     function openSizeSheet() {
