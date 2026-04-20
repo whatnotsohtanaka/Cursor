@@ -446,6 +446,33 @@
       opacity: 0.5;
       cursor: not-allowed;
     }
+    /* Segmented control */
+    .ctrl-segment {
+      display: flex;
+      background: rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 2px;
+      gap: 2px;
+    }
+    .ctrl-segment-btn {
+      flex: 1;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.6);
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .ctrl-segment-btn:hover {
+      color: rgba(255,255,255,0.8);
+    }
+    .ctrl-segment-btn.is-active {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+    }
 
     /* ── Hamburger button (hidden on desktop) ── */
     .proto-hamburger-btn {
@@ -1246,6 +1273,57 @@
       gap: 8px;
       flex-shrink: 0;
     }
+    /* === Buyer Header: Rating + Follow === */
+    .live-show__header-rating {
+      display: none;
+      align-items: center;
+      gap: 4px;
+      height: 20px;
+    }
+    .live-show__header-rating-star {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+    }
+    .live-show__header-rating-value {
+      font-size: 12px;
+      font-weight: 590;
+      line-height: 16px;
+      letter-spacing: 0;
+      color: rgba(255, 255, 255, 0.7);
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+    }
+    .live-show__header-follow {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      height: 20px;
+      padding: 3px 8px 4px;
+      border-radius: 999px;
+      background: #ffe414;
+      cursor: pointer;
+      border: none;
+    }
+    .live-show__header-follow-text {
+      font-size: 10px;
+      font-weight: 590;
+      line-height: 12px;
+      letter-spacing: 0.12px;
+      color: #161616;
+    }
+    .live-show__header-verified {
+      display: none;
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+    /* Buyer view shows rating + follow, hides sub */
+    body.view-buyer .live-show__header-sub { display: none; }
+    body.view-buyer .live-show__header-rating { display: flex; }
+    body.view-buyer .live-show__header-follow { display: flex; }
+    body.view-buyer .live-show__header-verified { display: inline-flex; }
+    body.view-buyer .live-show__header-name-row { display: flex; align-items: center; gap: 4px; }
+    .live-show__header-name-row { display: flex; align-items: center; gap: 4px; }
     .live-show__rewards {
       width: 28px;
       height: 28px;
@@ -1671,7 +1749,167 @@
       color: #fff;
       text-align: center;
       white-space: nowrap;
+      text-shadow: 0 0 1px rgba(0, 0, 0, 0.25);
     }
+    /* Seller vs Buyer side menu visibility */
+    .live-show__side-tools--seller { display: flex; }
+    .live-show__side-tools--buyer { display: none; }
+    body.view-buyer .live-show__side-tools--seller { display: none; }
+    body.view-buyer .live-show__side-tools--buyer { display: flex; }
+    /* Seller chat toolbar visibility */
+    .live-show__cmd-wrap { display: flex; }
+    body.view-buyer .live-show__cmd-wrap { display: none; }
+    body.view-buyer .live-show__chat-input { padding-left: 12px; }
+    /* Hide chat collapse button for buyers */
+    body.view-buyer .live-show__chat-filter-row { display: none; }
+    /* Buyer pinned product CTAs */
+    .live-show__cta-row { display: none; flex: 1; gap: 12px; align-items: stretch; width: 100%; }
+    .live-show__cta-row--buyer { display: none; }
+    .live-show__cta-row--pre-auction { display: none; }
+    .live-show__cta-row--active-auction { display: none; }
+    body.view-buyer .live-show__cta-row--buyer:not(.live-show__cta-row--pre-auction):not(.live-show__cta-row--active-auction) { display: flex; margin-top: 12px; }
+    body.view-buyer .live-show__cta-row--pre-auction:not(.is-hidden) { display: flex; width: 100%; margin-top: 12px; }
+    body.view-buyer .live-show__cta-row--active-auction.is-visible { display: flex; margin-top: 12px; }
+    body.view-buyer .live-show__cta-btn--primary { display: none !important; }
+    body.view-buyer .live-show__bids-btn { display: none !important; }
+    /* Buyer "Custom" button */
+    .live-show__cta-custom {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .live-show__cta-custom-text {
+      font-size: 16px;
+      font-weight: 590;
+      line-height: 20px;
+      letter-spacing: -0.41px;
+      color: #fff;
+    }
+    /* Swipe to bid/buy button */
+    .live-show__swipe-btn {
+      position: relative;
+      flex: 1;
+      height: 44px;
+      border: 1px solid #ffe414;
+      border-radius: 100px;
+      background: transparent;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .live-show__swipe-fill {
+      position: absolute;
+      inset: 1px 31px 1px 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+      border-radius: 30px;
+      background: #ffe414;
+    }
+    .live-show__swipe-inner {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .live-show__swipe-text {
+      font-size: 16px;
+      font-weight: 590;
+      line-height: 20px;
+      letter-spacing: -0.41px;
+      color: #000;
+      white-space: nowrap;
+    }
+    .live-show__swipe-arrows {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-left: 4px;
+    }
+    .live-show__swipe-arrows svg {
+      width: 8px;
+      height: 14px;
+    }
+    .live-show__swipe-arrows svg:last-child {
+      opacity: 0.5;
+      margin-left: -2px;
+    }
+    /* Awaiting next product CTA */
+    .live-show__cta-awaiting {
+      display: none;
+      width: 100%;
+    }
+    body.view-buyer #pinned-empty .live-show__cta-btn--primary { display: none; }
+    body.view-buyer #pinned-empty .live-show__cta-awaiting { display: flex; }
+    .live-show__cta-awaiting-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      width: 100%;
+      height: 44px;
+      border-radius: 999px;
+      background: rgba(118, 118, 128, 0.24);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      border: none;
+      cursor: default;
+    }
+    .live-show__cta-awaiting-text {
+      font-size: 16px;
+      font-weight: 590;
+      line-height: 20px;
+      letter-spacing: -0.41px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    /* Shipping line */
+    .live-show__shipping {
+      display: none;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: rgba(255, 255, 255, 0.7);
+      margin: 0;
+    }
+    body.view-buyer .live-show__shipping { display: block; }
+    /* Hide seller-specific UI in buyer mode */
+    body.view-buyer .live-show__dual-ctas { display: none !important; }
+    body.view-buyer .live-show__attr-picker { display: none !important; }
+    /* Keep header and chat visible for buyer even when seller is selecting options */
+    body.view-buyer .live-show__header.is-hidden { transform: none !important; opacity: 1 !important; pointer-events: auto !important; }
+    body.view-buyer .live-show__row-chat.is-hidden { transform: none !important; opacity: 1 !important; pointer-events: auto !important; }
+    body.view-buyer #select-options-close { display: none !important; }
+    body.view-buyer .live-show__commerce.is-selecting { padding-top: 0 !important; }
+    /* Hide pinned product for buyer until seller officially pins it */
+    body.view-buyer .live-show__dock:not(.is-officially-pinned) .live-show__commerce[data-pinned] { display: none !important; }
+    body.view-buyer .live-show__dock:not(.is-officially-pinned) #pinned-empty { display: block !important; }
+    body.view-buyer .live-show__dock.is-officially-pinned #pinned-empty { display: none !important; }
+    /* When seller is selecting options, buyer should see the PINNED product, not the preview */
+    body.view-buyer .live-show__dock.is-selecting-options .live-show__commerce[data-pinned] { display: none !important; }
+    body.view-buyer .live-show__dock.is-selecting-options[data-pinned-type="auction"] #pinned-auction { display: block !important; }
+    body.view-buyer .live-show__dock.is-selecting-options[data-pinned-type="template"] #pinned-template { display: block !important; }
+    body.view-buyer .live-show__dock.is-selecting-options[data-pinned-type="variant"] #pinned-variant { display: block !important; }
+    body.view-buyer .live-show__dock.is-selecting-options[data-pinned-type="bin"] #pinned-bin { display: block !important; }
+    body.view-buyer .live-show__dock.is-selecting-options[data-pinned-type="flash"] #pinned-flash { display: block !important; }
+    /* Qty line visibility */
+    .live-show__product-qty {
+      display: none;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: rgba(255, 255, 255, 0.7);
+      margin: 0;
+    }
+    body.view-buyer .live-show__product-qty { display: none; }
     .live-show__shop {
       position: relative;
       width: 48px;
@@ -2642,6 +2880,31 @@
     .live-shop-section-divider.is-visible {
       display: block;
     }
+    /* Hide running/pinned UI when toggle is off */
+    .hide-running-pinned .live-shop-section-head--running,
+    .hide-running-pinned .live-shop-section-head--pinned,
+    .hide-running-pinned .live-shop-section-divider {
+      display: none !important;
+    }
+    /* Reset row visual states when toggle is off */
+    .hide-running-pinned .live-shop-row.is-pinned .js-pin-btn {
+      background: rgba(0, 0, 0, 0.04) !important;
+    }
+    .hide-running-pinned .live-shop-row.is-pinned .js-pin-btn > img {
+      filter: none !important;
+    }
+    .hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__timer {
+      display: none !important;
+    }
+    .hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__actions {
+      display: flex !important;
+    }
+    .hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__template-chip {
+      display: none !important;
+    }
+    .hide-running-pinned .live-shop-row.is-auction-active .live-shop-prebid {
+      display: flex !important;
+    }
     /* Product row — gap 12 py 8, thumb 140 r8 */
     .live-shop-row {
       display: flex;
@@ -3234,8 +3497,23 @@
                       <img alt="" width="32" height="32" src="assets/6th-avatar.png" />
                     </div>
                     <div class="live-show__header-meta">
-                      <p class="live-show__header-name">6th_official</p>
+                      <div class="live-show__header-name-row">
+                        <p class="live-show__header-name">6th_official</p>
+                        <svg class="live-show__header-verified" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                          <path d="M8 0L9.79 1.79L12.31 1.42L13.08 3.84L15.5 4.61L15.13 7.13L17 8.92L15.5 10.92L15.87 13.44L13.45 14.21L12.68 16.63L10.16 16.26L8.37 18.15L6.58 16.36L4.06 16.73L3.29 14.31L0.87 13.54L1.24 11.02L-0.65 9.23L1.24 7.23L0.87 4.71L3.29 3.94L4.06 1.52L6.58 1.89L8.37 0.1L8 0Z" fill="#3897F0"/>
+                          <path d="M6.5 8L7.5 9L10 6.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </div>
                       <p class="live-show__header-sub">Show Time: <span id="live-show-show-timer">00:31:28</span></p>
+                      <div class="live-show__header-rating">
+                        <svg class="live-show__header-rating-star" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                          <path d="M6 1L7.5 4.5L11 5L8.5 7.5L9.2 11L6 9.2L2.8 11L3.5 7.5L1 5L4.5 4.5L6 1Z" fill="#FFE414"/>
+                        </svg>
+                        <span class="live-show__header-rating-value">4.9</span>
+                        <button type="button" class="live-show__header-follow">
+                          <span class="live-show__header-follow-text">Follow</span>
+                        </button>
+                      </div>
                     </div>
                     <div class="live-show__header-controls">
                       <div class="live-show__rewards" aria-hidden="true">
@@ -3320,7 +3598,8 @@
                         </div>
                       </div>
                       <div class="live-show__side">
-                        <div class="live-show__side-tools">
+                        <!-- Seller Side Menu -->
+                        <div class="live-show__side-tools live-show__side-tools--seller">
                           <div class="live-show__side-item">
                             <div class="live-show__side-icon"><img class="live-show__icon-img live-show__icon-img--more" src="assets/icons/more.svg" width="20" height="4" alt="" /></div>
                             <p class="live-show__side-label">More</p>
@@ -3346,6 +3625,29 @@
                             <p class="live-show__side-label">Add</p>
                           </div>
                         </div>
+                        <!-- Buyer Side Menu -->
+                        <div class="live-show__side-tools live-show__side-tools--buyer">
+                          <div class="live-show__side-item">
+                            <div class="live-show__side-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 14C5.10457 14 6 13.1046 6 12C6 10.8954 5.10457 10 4 10C2.89543 10 2 10.8954 2 12C2 13.1046 2.89543 14 4 14Z" fill="white"/><path d="M14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12Z" fill="white"/><path d="M22 12C22 13.1046 21.1046 14 20 14C18.8954 14 18 13.1046 18 12C18 10.8954 18.8954 10 20 10C21.1046 10 22 10.8954 22 12Z" fill="white"/></svg></div>
+                            <p class="live-show__side-label">More</p>
+                          </div>
+                          <div class="live-show__side-item">
+                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="https://www.figma.com/api/mcp/asset/66e4e63e-d02c-4a41-98f2-9b6e2a0fb1cf" /></div>
+                            <p class="live-show__side-label">Boost</p>
+                          </div>
+                          <div class="live-show__side-item">
+                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="https://www.figma.com/api/mcp/asset/5148ef51-4ad8-4001-831d-9ef1712fae77" /></div>
+                            <p class="live-show__side-label">Clip</p>
+                          </div>
+                          <div class="live-show__side-item">
+                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="https://www.figma.com/api/mcp/asset/bb35feaa-1e0b-4968-bacc-6298345e6c3f" /></div>
+                            <p class="live-show__side-label">Share</p>
+                          </div>
+                          <div class="live-show__side-item">
+                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="https://www.figma.com/api/mcp/asset/7a10612a-6d25-410a-be9e-755f74164bc7" /></div>
+                            <p class="live-show__side-label">Wallet</p>
+                          </div>
+                        </div>
                         <div class="live-show__shop">
                           <div class="live-show__shop-badge" aria-label="56 listed"><span>56</span></div>
                           <button type="button" class="live-show__shop-hit" id="live-show-shop-btn" aria-label="Open shop listings"></button>
@@ -3361,6 +3663,12 @@
                     <!-- Empty State: Choose Product -->
                     <div class="live-show__commerce" id="pinned-empty" hidden>
                       <button type="button" class="live-show__cta-btn live-show__cta-btn--primary" onclick="openShop()">Choose Product</button>
+                      <!-- Buyer: Awaiting Next Product -->
+                      <div class="live-show__cta-awaiting">
+                        <button type="button" class="live-show__cta-awaiting-btn" disabled>
+                          <span class="live-show__cta-awaiting-text">Awaiting Next Product</span>
+                        </button>
+                      </div>
                     </div>
                     <!-- Pinned Item: Auction (default for Seller) — Figma 696:45100 -->
                     <div class="live-show__commerce" id="pinned-auction" data-pinned="auction">
@@ -3387,6 +3695,7 @@
                                 <div class="live-show__product-meta">
                                   <span>Size M8.5</span><span>•</span><span>New</span>
                                 </div>
+                                <p class="live-show__shipping">$4.13 Shipping + Taxes</p>
                               </div>
                               <div class="live-show__product-right">
                                 <p class="live-show__product-price" id="auction-price">$1</p>
@@ -3399,8 +3708,32 @@
                           </div>
                         </div>
                       </div>
+                      <!-- Seller CTAs -->
                       <button type="button" class="live-show__cta-btn live-show__cta-btn--primary" id="auction-start-btn" onclick="startAuction()">Start Auction</button>
                       <button type="button" class="live-show__bids-btn live-show__bids-btn--disabled" id="auction-bids-btn" style="display:none" disabled><span id="auction-bids-count">0 Bids</span></button>
+                      <!-- Buyer CTAs: Pre-auction (hasn't started) -->
+                      <div class="live-show__cta-row live-show__cta-row--buyer live-show__cta-row--pre-auction" id="auction-buyer-pre">
+                        <button type="button" class="live-show__cta-awaiting-btn" disabled>
+                          <span class="live-show__cta-awaiting-text">Auction Hasn't Started</span>
+                        </button>
+                      </div>
+                      <!-- Buyer CTAs: Active auction -->
+                      <div class="live-show__cta-row live-show__cta-row--buyer live-show__cta-row--active-auction" id="auction-buyer-active">
+                        <button type="button" class="live-show__cta-custom">
+                          <span class="live-show__cta-custom-text">Custom</span>
+                        </button>
+                        <div class="live-show__swipe-btn" id="auction-swipe-btn">
+                          <div class="live-show__swipe-fill">
+                            <div class="live-show__swipe-inner">
+                              <span class="live-show__swipe-text" id="auction-swipe-text">Bid $1</span>
+                              <div class="live-show__swipe-arrows">
+                                <svg viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <svg viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     <!-- Pinned Item: Buy It Now — Figma 275:32584 -->
@@ -3417,6 +3750,7 @@
                                 <div class="live-show__product-meta">
                                   <span>Size M8.5</span><span>•</span><span>New</span>
                                 </div>
+                                <p class="live-show__shipping">$4.13 Shipping + Taxes</p>
                               </div>
                               <div class="live-show__product-right">
                                 <p class="live-show__product-price" id="bin-price">$50.00</p>
@@ -3426,7 +3760,22 @@
                           </div>
                         </div>
                       </div>
+                      <!-- Seller CTAs -->
                       <button type="button" class="live-show__bids-btn live-show__bids-btn--disabled" id="bin-purchases-btn" disabled><span id="bin-purchases-count">0 Purchases</span></button>
+                      <!-- Buyer CTAs -->
+                      <div class="live-show__cta-row live-show__cta-row--buyer" style="flex: 1;">
+                        <div class="live-show__swipe-btn" id="bin-swipe-btn" style="flex: 1;">
+                          <div class="live-show__swipe-fill" style="inset: 1px;">
+                            <div class="live-show__swipe-inner">
+                              <span class="live-show__swipe-text">Buy Now</span>
+                              <div class="live-show__swipe-arrows">
+                                <svg viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <svg viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     <!-- Pinned Item: Flash Sale — Figma 275:32588 -->
@@ -3443,6 +3792,7 @@
                                 <div class="live-show__product-meta">
                                   <span>Size M8.5</span><span>•</span><span>New</span>
                                 </div>
+                                <p class="live-show__shipping">$4.13 Shipping + Taxes</p>
                               </div>
                               <div class="live-show__product-right">
                                 <p class="live-show__product-price live-show__product-price--strike">$100.00</p>
@@ -3462,7 +3812,22 @@
                           <div class="live-show__flash-timer">12 Left · 00:20</div>
                         </div>
                       </div>
+                      <!-- Seller CTAs -->
                       <button type="button" class="live-show__bids-btn live-show__bids-btn--disabled" disabled><span>7 Purchases</span></button>
+                      <!-- Buyer CTAs -->
+                      <div class="live-show__cta-row live-show__cta-row--buyer" style="flex: 1;">
+                        <div class="live-show__swipe-btn" style="flex: 1;">
+                          <div class="live-show__swipe-fill" style="inset: 1px;">
+                            <div class="live-show__swipe-inner">
+                              <span class="live-show__swipe-text">Buy Now</span>
+                              <div class="live-show__swipe-arrows">
+                                <svg viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <svg viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     <!-- Pinned Item: Template — Figma 18742:45859 -->
@@ -3491,6 +3856,7 @@
                                 <div class="live-show__product-meta" id="template-meta">
                                   <span id="template-meta-brand">Nike</span><span>•</span><span id="template-meta-size">10M</span><span>•</span><span>New</span>
                                 </div>
+                                <p class="live-show__shipping">$4.13 Shipping + Taxes</p>
                               </div>
                               <div class="live-show__product-right">
                                 <p class="live-show__product-price" id="template-price">$1</p>
@@ -3546,6 +3912,29 @@
                         <button type="button" class="live-show__cta-btn live-show__cta-btn--tertiary" id="template-post-bids-btn" disabled><span id="template-post-bids-count">0 Bids</span></button>
                         <button type="button" class="live-show__cta-btn live-show__cta-btn--primary" onclick="runNextTemplate()">Run Next</button>
                       </div>
+                      <!-- Buyer CTAs: Pre-auction (hasn't started) -->
+                      <div class="live-show__cta-row live-show__cta-row--buyer live-show__cta-row--pre-auction" id="template-buyer-pre">
+                        <button type="button" class="live-show__cta-awaiting-btn" disabled>
+                          <span class="live-show__cta-awaiting-text">Auction Hasn't Started</span>
+                        </button>
+                      </div>
+                      <!-- Buyer CTAs: Active auction -->
+                      <div class="live-show__cta-row live-show__cta-row--buyer live-show__cta-row--active-auction" id="template-buyer-active">
+                        <button type="button" class="live-show__cta-custom">
+                          <span class="live-show__cta-custom-text">Custom</span>
+                        </button>
+                        <div class="live-show__swipe-btn" id="template-swipe-btn">
+                          <div class="live-show__swipe-fill">
+                            <div class="live-show__swipe-inner">
+                              <span class="live-show__swipe-text" id="template-swipe-text">Bid $1</span>
+                              <div class="live-show__swipe-arrows">
+                                <svg viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <svg viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     <!-- Pinned Item: Auction Variant — Figma 14973:44700 -->
@@ -3573,6 +3962,7 @@
                                 <div class="live-show__product-meta" id="variant-meta">
                                   <span id="variant-meta-color">Black/White</span><span>·</span><span id="variant-meta-size">9M</span><span>·</span><span>New</span>
                                 </div>
+                                <p class="live-show__shipping">$4.13 Shipping + Taxes</p>
                                 <p class="live-show__product-qty" id="variant-qty">12 Left</p>
                               </div>
                               <div class="live-show__product-right">
@@ -3621,6 +4011,29 @@
                         <button type="button" class="live-show__cta-btn live-show__cta-btn--primary" onclick="startVariantAuction()">Start Auction</button>
                       </div>
                       <button type="button" class="live-show__bids-btn live-show__bids-btn--disabled" id="variant-bids-btn" style="display:none" disabled><span id="variant-bids-count">0 Bids</span></button>
+                      <!-- Buyer CTAs: Pre-auction (hasn't started) -->
+                      <div class="live-show__cta-row live-show__cta-row--buyer live-show__cta-row--pre-auction" id="variant-buyer-pre">
+                        <button type="button" class="live-show__cta-awaiting-btn" disabled>
+                          <span class="live-show__cta-awaiting-text">Auction Hasn't Started</span>
+                        </button>
+                      </div>
+                      <!-- Buyer CTAs: Active auction -->
+                      <div class="live-show__cta-row live-show__cta-row--buyer live-show__cta-row--active-auction" id="variant-buyer-active">
+                        <button type="button" class="live-show__cta-custom">
+                          <span class="live-show__cta-custom-text">Custom</span>
+                        </button>
+                        <div class="live-show__swipe-btn" id="variant-swipe-btn">
+                          <div class="live-show__swipe-fill">
+                            <div class="live-show__swipe-inner">
+                              <span class="live-show__swipe-text" id="variant-swipe-text">Bid $1</span>
+                              <div class="live-show__swipe-arrows">
+                                <svg viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <svg viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     <!-- Pinned Item: BIN Variant -->
@@ -4218,10 +4631,20 @@
         <div class="ctrl-section-label">View</div>
         <div class="ctrl-row">
           <span class="ctrl-label">Perspective</span>
-          <select class="ctrl-select" id="ctrlView" onchange="onViewChange()">
-            <option value="seller" selected>Seller</option>
-            <option value="buyer">Buyer</option>
-          </select>
+          <div class="ctrl-segment" id="ctrlViewSegment">
+            <button type="button" class="ctrl-segment-btn is-active" data-value="seller" onclick="onViewChange('seller')">Seller</button>
+            <button type="button" class="ctrl-segment-btn" data-value="buyer" onclick="onViewChange('buyer')">Buyer</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="ctrl-section-label">Shop</div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">Show Running/Pinned</span>
+          <label class="ctrl-switch">
+            <input type="checkbox" id="ctrlShowRunningPinned" checked onchange="onShowRunningPinnedChange()">
+            <span class="ctrl-switch-track"></span>
+          </label>
         </div>
       </div>
       <div>
@@ -4755,9 +5178,226 @@
     window.addEventListener('resize', function() { requestAnimationFrame(syncProtoTimestampCompact); });
 
     /* ── Pinned Item Controls ── */
-    function onViewChange() {
-      var view = document.getElementById('ctrlView').value;
-      console.log('View changed to:', view);
+    function onViewChange(view) {
+      // Update segmented control active state
+      var segment = document.getElementById('ctrlViewSegment');
+      var buttons = segment.querySelectorAll('.ctrl-segment-btn');
+      buttons.forEach(function(btn) {
+        btn.classList.toggle('is-active', btn.dataset.value === view);
+      });
+      
+      // Toggle buyer view class
+      if (view === 'buyer') {
+        document.body.classList.add('view-buyer');
+      } else {
+        document.body.classList.remove('view-buyer');
+      }
+      // Update swipe button text with current price
+      updateBuyerSwipeButtons();
+    }
+    
+    function updateBuyerSwipeButtons() {
+      // Auction swipe button - show next bid price (current + $1)
+      var auctionSwipeText = document.getElementById('auction-swipe-text');
+      if (auctionSwipeText) {
+        var nextBid = auctionPrice + 1;
+        auctionSwipeText.textContent = 'Bid $' + nextBid;
+      }
+      
+      // Template auction swipe button
+      var templateSwipeText = document.getElementById('template-swipe-text');
+      if (templateSwipeText && typeof templatePrice !== 'undefined') {
+        var nextTemplateBid = templatePrice + 1;
+        templateSwipeText.textContent = 'Bid $' + nextTemplateBid;
+      }
+      
+      // Variant auction swipe button
+      var variantSwipeText = document.getElementById('variant-swipe-text');
+      if (variantSwipeText && typeof variantPrice !== 'undefined') {
+        var nextVariantBid = variantPrice + 1;
+        variantSwipeText.textContent = 'Bid $' + nextVariantBid;
+      }
+    }
+
+    function onShowRunningPinnedChange() {
+      var checkbox = document.getElementById('ctrlShowRunningPinned');
+      var isOn = checkbox.checked;
+      var shopRoot = document.getElementById('live-shop-root');
+      
+      if (isOn) {
+        shopRoot.classList.remove('hide-running-pinned');
+        // Restore pinned/running items to their special sections
+        restoreRunningPinnedPositions();
+      } else {
+        shopRoot.classList.add('hide-running-pinned');
+        // Move pinned/running items back to normal listing positions
+        resetRunningPinnedPositions();
+      }
+    }
+    
+    function resetRunningPinnedPositions() {
+      // Move all pinned and running items back to their normal listing positions
+      var auctionPanel = document.getElementById('live-shop-panel-auction');
+      var binPanel = document.getElementById('live-shop-panel-buy-now');
+      var auctionListingsSection = document.getElementById('auction-listings-section');
+      var binListingsSection = document.getElementById('bin-listings-section');
+      
+      // Handle auction tab items
+      if (auctionPanel && auctionListingsSection) {
+        var pinnedRows = auctionPanel.querySelectorAll('.live-shop-row.is-pinned, .live-shop-row.is-auction-active');
+        pinnedRows.forEach(function(row) {
+          var rowType = row.dataset.pinType;
+          if (rowType === 'template') {
+            // Template goes right after listings header
+            auctionListingsSection.after(row);
+          } else if (rowType === 'variant') {
+            // Variant goes after template
+            var templateRow = auctionPanel.querySelector('.live-shop-row[data-pin-type="template"]');
+            if (templateRow) {
+              templateRow.after(row);
+            } else {
+              auctionListingsSection.after(row);
+            }
+          } else {
+            // Standard auctions go to end of auction panel
+            auctionPanel.appendChild(row);
+          }
+        });
+      }
+      
+      // Handle BIN tab items
+      if (binPanel && binListingsSection) {
+        var pinnedBinRows = binPanel.querySelectorAll('.live-shop-row.is-pinned');
+        pinnedBinRows.forEach(function(row) {
+          // BINs go to end of BIN panel
+          binPanel.appendChild(row);
+        });
+      }
+    }
+    
+    function isShowRunningPinnedOn() {
+      var checkbox = document.getElementById('ctrlShowRunningPinned');
+      return checkbox ? checkbox.checked : true;
+    }
+    
+    function positionRowForPinned(row, pinnedSectionId) {
+      if (!row) return;
+      var rowType = row.dataset.pinType;
+      
+      if (isShowRunningPinnedOn()) {
+        // Show in pinned section
+        var pinnedSection = document.getElementById(pinnedSectionId);
+        if (pinnedSection) {
+          pinnedSection.classList.add('is-visible');
+          pinnedSection.after(row);
+          updateListingsDivider();
+          if (pinnedSectionId === 'bin-pinned-section') {
+            updateBinListingsDivider();
+          }
+        }
+      } else {
+        // Keep in normal listings position
+        if (rowType === 'bin' || rowType === 'bin-variant') {
+          var binPanel = document.getElementById('live-shop-panel-buy-now');
+          if (binPanel) binPanel.appendChild(row);
+        } else if (rowType === 'template') {
+          var auctionListingsSection = document.getElementById('auction-listings-section');
+          if (auctionListingsSection) auctionListingsSection.after(row);
+        } else if (rowType === 'variant') {
+          var templateRow = document.querySelector('.live-shop-row[data-pin-type="template"]');
+          if (templateRow) {
+            templateRow.after(row);
+          } else {
+            var auctionListingsSection = document.getElementById('auction-listings-section');
+            if (auctionListingsSection) auctionListingsSection.after(row);
+          }
+        } else {
+          var auctionPanel = document.getElementById('live-shop-panel-auction');
+          if (auctionPanel) auctionPanel.appendChild(row);
+        }
+      }
+    }
+    
+    function positionRowForAuction(row) {
+      if (!row) return;
+      var rowType = row.dataset.pinType;
+      var auctionListingsSection = document.getElementById('auction-listings-section');
+      
+      if (isShowRunningPinnedOn()) {
+        // Show in "Running Now" section
+        var runningSection = document.getElementById('running-now-section');
+        if (runningSection) {
+          runningSection.classList.add('is-visible');
+          runningSection.after(row);
+          updateListingsDivider();
+        }
+      } else {
+        // Keep in normal listings position
+        if (rowType === 'template') {
+          if (auctionListingsSection) auctionListingsSection.after(row);
+        } else if (rowType === 'variant') {
+          var templateRow = document.querySelector('.live-shop-row[data-pin-type="template"]');
+          if (templateRow) {
+            templateRow.after(row);
+          } else if (auctionListingsSection) {
+            auctionListingsSection.after(row);
+          }
+        } else {
+          var auctionPanel = document.getElementById('live-shop-panel-auction');
+          if (auctionPanel) auctionPanel.appendChild(row);
+        }
+      }
+    }
+    
+    function restoreRunningPinnedPositions() {
+      // Move pinned and running items back to their special sections
+      var auctionPanel = document.getElementById('live-shop-panel-auction');
+      var binPanel = document.getElementById('live-shop-panel-buy-now');
+      var runningSection = document.getElementById('running-now-section');
+      var pinnedSection = document.getElementById('pinned-section');
+      var binPinnedSection = document.getElementById('bin-pinned-section');
+      var listingsDivider = document.getElementById('listings-divider');
+      var binListingsDivider = document.getElementById('bin-listings-divider');
+      
+      // Handle running items in auction tab
+      if (auctionPanel && runningSection) {
+        var runningRows = auctionPanel.querySelectorAll('.live-shop-row.is-auction-active');
+        runningRows.forEach(function(row) {
+          runningSection.after(row);
+        });
+        if (runningRows.length > 0) {
+          runningSection.classList.add('is-visible');
+          if (listingsDivider) listingsDivider.classList.add('is-visible');
+        }
+      }
+      
+      // Handle pinned items in auction tab
+      if (auctionPanel && pinnedSection) {
+        var pinnedRows = auctionPanel.querySelectorAll('.live-shop-row.is-pinned:not(.is-auction-active)');
+        pinnedRows.forEach(function(row) {
+          pinnedSection.after(row);
+        });
+        if (pinnedRows.length > 0) {
+          pinnedSection.classList.add('is-visible');
+          if (listingsDivider) listingsDivider.classList.add('is-visible');
+        }
+      }
+      
+      // Handle pinned items in BIN tab
+      if (binPanel && binPinnedSection) {
+        var pinnedBinRows = binPanel.querySelectorAll('.live-shop-row.is-pinned');
+        pinnedBinRows.forEach(function(row) {
+          binPinnedSection.after(row);
+        });
+        if (pinnedBinRows.length > 0) {
+          binPinnedSection.classList.add('is-visible');
+          if (binListingsDivider) binListingsDivider.classList.add('is-visible');
+        }
+      }
+      
+      // Make sure dividers are properly updated
+      updateListingsDivider();
+      updateBinListingsDivider();
     }
 
     function onPinnedChange() {
@@ -4804,8 +5444,185 @@
       showPinnedPanel(targetPinned);
     }
 
-    var currentlyPinnedType = 'auction'; // Track which type is currently pinned
-    var currentlyPinnedRow = null; // Track the currently pinned shop row
+    /* ══════════════════════════════════════════════════════════════════════════
+       PINNED PRODUCT STATE MACHINE
+       Single source of truth for what's pinned and its current state.
+       
+       Key concept: SELLER view and BUYER view can show different things.
+       - Seller sees what they're currently working on (selecting, previewing)
+       - Buyer sees only what's officially pinned
+       ══════════════════════════════════════════════════════════════════════════ */
+    var PinnedState = {
+      // === BUYER-VISIBLE STATE (what buyer sees) ===
+      // What is officially pinned and visible to buyers
+      pinned: {
+        type: null,        // 'auction', 'template', 'variant', 'bin', etc.
+        shopRow: null,     // Reference to shop row element
+        isRunning: false   // Is an auction currently running?
+      },
+      
+      // === SELLER-ONLY STATE (what seller is working on) ===
+      // What seller is currently previewing/selecting (may differ from pinned)
+      preview: {
+        type: null,
+        shopRow: null,
+        isSelecting: false  // Is attribute picker open?
+      },
+      
+      // Auction details (for the currently running auction)
+      auction: {
+        timeLeft: 10,
+        bids: 0,
+        price: 1,
+        winner: null,
+        lastBidder: null
+      },
+      
+      // === METHODS ===
+      
+      // Pin a product (makes it visible to buyers)
+      pin: function(type, shopRow) {
+        this.pinned.type = type;
+        this.pinned.shopRow = shopRow || null;
+        // Clear preview state when officially pinning
+        this.preview.type = null;
+        this.preview.shopRow = null;
+        this.preview.isSelecting = false;
+        this._updateDOM();
+        console.log('[PinnedState] Pinned:', type);
+      },
+      
+      // Unpin (nothing visible to buyers)
+      unpin: function() {
+        this.pinned.type = null;
+        this.pinned.shopRow = null;
+        this.pinned.isRunning = false;
+        this.preview.type = null;
+        this.preview.shopRow = null;
+        this.preview.isSelecting = false;
+        this.auction = { timeLeft: 10, bids: 0, price: 1, winner: null, lastBidder: null };
+        this._updateDOM();
+        console.log('[PinnedState] Unpinned');
+      },
+      
+      // Seller starts previewing a new product (buyer still sees previous pinned item)
+      startPreview: function(type, shopRow) {
+        this.preview.type = type;
+        this.preview.shopRow = shopRow || null;
+        this.preview.isSelecting = true;
+        this._updateDOM();
+        console.log('[PinnedState] Previewing:', type, '(Buyer still sees:', this.pinned.type, ')');
+      },
+      
+      // Seller confirms the preview as the new pinned item
+      confirmPreview: function() {
+        if (this.preview.type) {
+          this.pinned.type = this.preview.type;
+          this.pinned.shopRow = this.preview.shopRow;
+        }
+        this.preview.type = null;
+        this.preview.shopRow = null;
+        this.preview.isSelecting = false;
+        this._updateDOM();
+        console.log('[PinnedState] Confirmed pin:', this.pinned.type);
+      },
+      
+      // Seller cancels preview (buyer still sees original pinned item)
+      cancelPreview: function() {
+        this.preview.type = null;
+        this.preview.shopRow = null;
+        this.preview.isSelecting = false;
+        this._updateDOM();
+        console.log('[PinnedState] Cancelled preview, buyer still sees:', this.pinned.type);
+      },
+      
+      // Start auction on currently pinned item
+      startAuction: function(price) {
+        this.pinned.isRunning = true;
+        this.auction.price = price || 1;
+        this.auction.bids = 0;
+        this.auction.timeLeft = 10;
+        this.auction.winner = null;
+        this.auction.lastBidder = null;
+        this._updateDOM();
+        console.log('[PinnedState] Auction started on:', this.pinned.type);
+      },
+      
+      // End auction
+      endAuction: function() {
+        this.pinned.isRunning = false;
+        this._updateDOM();
+        console.log('[PinnedState] Auction ended');
+      },
+      
+      // Update auction details
+      updateAuction: function(updates) {
+        Object.assign(this.auction, updates);
+      },
+      
+      // === HELPERS ===
+      
+      hasPinnedProduct: function() {
+        return this.pinned.type !== null;
+      },
+      
+      isAuctionType: function(type) {
+        var t = type || this.pinned.type;
+        return ['auction', 'template', 'variant'].includes(t);
+      },
+      
+      isBinType: function(type) {
+        var t = type || this.pinned.type;
+        return ['bin', 'bin-variant', 'flash', 'flash-variant'].includes(t);
+      },
+      
+      // === DOM SYNC ===
+      
+      _updateDOM: function() {
+        var dock = document.querySelector('.live-show__dock');
+        if (!dock) return;
+        
+        // Buyer sees pinned product (not preview)
+        dock.classList.toggle('is-officially-pinned', this.pinned.type !== null);
+        
+        // Store the pinned type as a data attribute for CSS targeting
+        if (this.pinned.type) {
+          dock.dataset.pinnedType = this.pinned.type;
+        } else {
+          delete dock.dataset.pinnedType;
+        }
+        
+        // Track if seller is selecting options
+        dock.classList.toggle('is-selecting-options', this.preview.isSelecting);
+        
+        // Track if auction is running
+        dock.classList.toggle('is-auction-running', this.pinned.isRunning);
+      },
+      
+      // For debugging
+      getState: function() {
+        return {
+          pinned: {
+            type: this.pinned.type,
+            shopRow: this.pinned.shopRow ? this.pinned.shopRow.dataset.pinType : null,
+            isRunning: this.pinned.isRunning
+          },
+          preview: {
+            type: this.preview.type,
+            shopRow: this.preview.shopRow ? this.preview.shopRow.dataset.pinType : null,
+            isSelecting: this.preview.isSelecting
+          },
+          auction: { ...this.auction }
+        };
+      }
+    };
+    
+    // Expose to window for debugging in console
+    window.PinnedState = PinnedState;
+    
+    // Legacy compatibility - these will be deprecated
+    var currentlyPinnedType = 'auction';
+    var currentlyPinnedRow = null;
 
     function openShop() {
       var shopRoot = document.getElementById('live-shop-root');
@@ -4823,6 +5640,7 @@
 
     function showPinnedPanel(targetPinned, updateState) {
       var panels = document.querySelectorAll('[data-pinned]');
+      
       panels.forEach(function (p) {
         p.hidden = p.getAttribute('data-pinned') !== targetPinned;
       });
@@ -4831,9 +5649,14 @@
       var emptyPanel = document.getElementById('pinned-empty');
       if (emptyPanel) emptyPanel.hidden = true;
       
-      // Only update state if explicitly requested (default true for backwards compatibility)
+      // Update state machine and legacy variables
       if (updateState !== false) {
+        // Official pin
         currentlyPinnedType = targetPinned;
+        PinnedState.pin(targetPinned, currentlyPinnedRow);
+      } else {
+        // Preview only (selecting options) - buyer still sees previous pinned item
+        PinnedState.startPreview(targetPinned, currentlyPinnedRow);
       }
       
       // Reset auctions when switching away
@@ -4872,17 +5695,11 @@
         unpinShopRow(currentlyPinnedRow, true);
       }
       
-      // Move the row to the appropriate Pinned section based on type
+      // Move the row to the appropriate Pinned section based on type (or keep in place if toggle is off)
       var pinnedSectionId = (type === 'bin' || type === 'bin-variant') ? 'bin-pinned-section' : 'pinned-section';
-      var pinnedSection = document.getElementById(pinnedSectionId);
-      if (pinnedSection && row) {
-        pinnedSection.classList.add('is-visible');
-        pinnedSection.after(row);
-        row.classList.add('is-pinned');
-        currentlyPinnedRow = row;
-        updateListingsDivider();
-        updateBinListingsDivider();
-      }
+      row.classList.add('is-pinned');
+      currentlyPinnedRow = row;
+      positionRowForPinned(row, pinnedSectionId);
       
       // Update panel content
       var thumbImg = panel.querySelector('.live-show__product-thumb img');
@@ -5045,13 +5862,8 @@
       row.classList.add('is-auction-active');
       activeShopAuctionRow = row;
       
-      // Show "Running Now" section and move the row there
-      var runningSection = document.getElementById('running-now-section');
-      if (runningSection) {
-        runningSection.classList.add('is-visible');
-        runningSection.after(row);
-        updateListingsDivider();
-      }
+      // Position the row based on toggle state
+      positionRowForAuction(row);
       
       // Start the appropriate auction based on pin type
       var type = row.dataset.pinType;
@@ -5269,6 +6081,8 @@
         if (emptyPanel) {
           emptyPanel.hidden = false;
         }
+        // Update state machine
+        PinnedState.unpin();
       }
       
       if (currentlyPinnedRow === row) {
@@ -5792,6 +6606,11 @@
       var priceEl = document.getElementById('auction-price');
       var winningRow = document.getElementById('auction-winning-row');
       var lastBidEl = document.getElementById('auction-last-bid');
+      var buyerPreCta = document.getElementById('auction-buyer-pre');
+      var buyerActiveCta = document.getElementById('auction-buyer-active');
+      
+      // Update state machine
+      PinnedState.startAuction(auctionPrice);
       
       // Disable all start buttons while auction is running
       disableAllStartButtons();
@@ -5803,6 +6622,10 @@
       timerEl.classList.remove('live-show__product-timer--pre');
       winningRow.style.display = 'none';
       lastBidEl.style.display = 'none';
+      
+      // Switch buyer CTAs from pre-auction to active
+      if (buyerPreCta) buyerPreCta.classList.add('is-hidden');
+      if (buyerActiveCta) buyerActiveCta.classList.add('is-visible');
       
       // Find and update the corresponding shop row if not already set
       if (!activeShopAuctionRow && currentlyPinnedRow && currentlyPinnedRow.dataset.pinType === 'auction') {
@@ -5816,13 +6639,8 @@
         var pinnedSection = document.getElementById('pinned-section');
         if (pinnedSection) pinnedSection.classList.remove('is-visible');
         
-        // Show "Running Now" section and move the row there
-        var runningSection = document.getElementById('running-now-section');
-        if (runningSection) {
-          runningSection.classList.add('is-visible');
-          runningSection.after(shopRow);
-          updateListingsDivider();
-        }
+        // Position the row based on toggle state
+        positionRowForAuction(shopRow);
       }
       
       // Reset auction state
@@ -5907,9 +6725,15 @@
       
       // Sync with shop row
       syncShopRowWithAuction(auctionPrice, auctionTimeLeft, auctionBids);
+      
+      // Update buyer swipe button with new price
+      updateBuyerSwipeButtons();
     }
 
     function endAuction() {
+      // Update state machine
+      PinnedState.endAuction();
+      
       var timerEl = document.getElementById('auction-timer');
       timerEl.textContent = 'Sold';
       timerEl.classList.add('live-show__product-timer--sold');
@@ -5959,6 +6783,8 @@
       var priceEl = document.getElementById('auction-price');
       var winningRow = document.getElementById('auction-winning-row');
       var lastBidEl = document.getElementById('auction-last-bid');
+      var buyerPreCta = document.getElementById('auction-buyer-pre');
+      var buyerActiveCta = document.getElementById('auction-buyer-active');
       
       startBtn.style.display = 'flex';
       bidsBtn.style.display = 'none';
@@ -5973,6 +6799,10 @@
       auctionPrice = 1;
       currentWinner = null;
       lastBidder = null;
+      
+      // Reset buyer CTAs to pre-auction state
+      if (buyerPreCta) buyerPreCta.classList.remove('is-hidden');
+      if (buyerActiveCta) buyerActiveCta.classList.remove('is-visible');
       
       // Reset winning text to "is winning!" (in case it was changed to "won!")
       var winningText = winningRow.querySelector('.live-show__winning-text');
@@ -6001,6 +6831,9 @@
         closeSelectOptions();
       }
       
+      // Update state machine
+      PinnedState.startAuction(templatePrice);
+      
       // Disable all start buttons while auction is running
       disableAllStartButtons();
       
@@ -6018,6 +6851,12 @@
       winningRow.style.display = 'none';
       lastBidEl.style.display = 'none';
       if (attrPicker) attrPicker.classList.remove('is-visible');
+      
+      // Switch buyer CTAs from pre-auction to active
+      var buyerPreCta = document.getElementById('template-buyer-pre');
+      var buyerActiveCta = document.getElementById('template-buyer-active');
+      if (buyerPreCta) buyerPreCta.classList.add('is-hidden');
+      if (buyerActiveCta) buyerActiveCta.classList.add('is-visible');
       
       // Find and update the corresponding shop row if not already set
       if (!activeShopAuctionRow) {
@@ -6039,12 +6878,8 @@
           var pinnedSection = document.getElementById('pinned-section');
           if (pinnedSection) pinnedSection.classList.remove('is-visible');
           
-          // Show "Running Now" section and move the row there
-          var runningSection = document.getElementById('running-now-section');
-          if (runningSection) {
-            runningSection.classList.add('is-visible');
-            runningSection.after(shopRow);
-          }
+          // Position the row based on toggle state
+          positionRowForAuction(shopRow);
           
           // Clear the default pinned row if it was the regular auction
           if (currentlyPinnedRow && currentlyPinnedRow !== shopRow) {
@@ -6068,11 +6903,8 @@
         var pinnedSection = document.getElementById('pinned-section');
         if (pinnedSection) pinnedSection.classList.remove('is-visible');
         
-        var runningSection = document.getElementById('running-now-section');
-        if (runningSection) {
-          runningSection.classList.add('is-visible');
-          runningSection.after(activeShopAuctionRow);
-        }
+        // Position the row based on toggle state
+        positionRowForAuction(activeShopAuctionRow);
       }
       
       templateTimeLeft = 10;
@@ -6164,9 +6996,15 @@
       
       // Sync with shop row
       syncShopRowWithAuction(templatePrice, templateTimeLeft, templateBids);
+      
+      // Update buyer swipe button with new price
+      updateBuyerSwipeButtons();
     }
 
     function endTemplateAuction() {
+      // Update state machine
+      PinnedState.endAuction();
+      
       var timerEl = document.getElementById('template-timer');
       timerEl.textContent = 'Sold';
       timerEl.classList.add('live-show__product-timer--sold');
@@ -6297,6 +7135,12 @@
       var postAuction = document.getElementById('template-post-auction');
       postAuction.style.display = 'none';
       
+      // Reset buyer CTAs to pre-auction state
+      var buyerPreCta = document.getElementById('template-buyer-pre');
+      var buyerActiveCta = document.getElementById('template-buyer-active');
+      if (buyerPreCta) buyerPreCta.classList.remove('is-hidden');
+      if (buyerActiveCta) buyerActiveCta.classList.remove('is-visible');
+      
       // Increment template run count
       templateRunCount++;
       var templateNumberEl = document.getElementById('template-number');
@@ -6390,6 +7234,9 @@
         closeSelectOptions();
       }
       
+      // Update state machine
+      PinnedState.startAuction(variantPrice);
+      
       // Disable all start buttons while auction is running
       disableAllStartButtons();
       
@@ -6407,6 +7254,12 @@
       winningRow.style.display = 'none';
       lastBidEl.style.display = 'none';
       if (attrPicker) attrPicker.classList.remove('is-visible');
+      
+      // Switch buyer CTAs from pre-auction to active
+      var buyerPreCta = document.getElementById('variant-buyer-pre');
+      var buyerActiveCta = document.getElementById('variant-buyer-active');
+      if (buyerPreCta) buyerPreCta.classList.add('is-hidden');
+      if (buyerActiveCta) buyerActiveCta.classList.add('is-visible');
       
       // Find and update the corresponding shop row if not already set
       if (!activeShopAuctionRow) {
@@ -6428,12 +7281,8 @@
           var pinnedSection = document.getElementById('pinned-section');
           if (pinnedSection) pinnedSection.classList.remove('is-visible');
           
-          // Show "Running Now" section and move the row there
-          var runningSection = document.getElementById('running-now-section');
-          if (runningSection) {
-            runningSection.classList.add('is-visible');
-            runningSection.after(shopRow);
-          }
+          // Position the row based on toggle state
+          positionRowForAuction(shopRow);
           
           // Clear the default pinned row if it was a different item
           if (currentlyPinnedRow && currentlyPinnedRow !== shopRow) {
@@ -6457,11 +7306,8 @@
         var pinnedSection = document.getElementById('pinned-section');
         if (pinnedSection) pinnedSection.classList.remove('is-visible');
         
-        var runningSection = document.getElementById('running-now-section');
-        if (runningSection) {
-          runningSection.classList.add('is-visible');
-          runningSection.after(activeShopAuctionRow);
-        }
+        // Position the row based on toggle state
+        positionRowForAuction(activeShopAuctionRow);
       }
       
       variantTimeLeft = 10;
@@ -6553,9 +7399,15 @@
       
       // Sync with shop row
       syncShopRowWithAuction(variantPrice, variantTimeLeft, variantBids);
+      
+      // Update buyer swipe button with new price
+      updateBuyerSwipeButtons();
     }
 
     function endVariantAuction() {
+      // Update state machine
+      PinnedState.endAuction();
+      
       var timerEl = document.getElementById('variant-timer');
       timerEl.textContent = 'Sold';
       timerEl.classList.add('live-show__product-timer--sold');
@@ -6719,6 +7571,9 @@
         }
         currentSelectType = type;
         selectOptionsActive = true;
+        
+        // Update state machine - seller is selecting options (buyer still sees previous item)
+        PinnedState.startPreview(type, selectOptionsShopRow);
       } else {
         // Pin Product mode - update meta with selections and close
         if (currentAttrPicker) {
@@ -6738,6 +7593,9 @@
         rowChat.classList.remove('is-hidden');
         closeBtn.classList.remove('is-visible');
         
+        // Update state machine - seller confirms pin (now visible to buyer)
+        PinnedState.confirmPreview();
+        
         // NOW actually pin the product - update state
         showPinnedPanel(currentSelectType, true);
         
@@ -6751,18 +7609,12 @@
           // Update shop row meta and price based on selected options
           updateShopRowWithSelections(selectOptionsShopRow, currentSelectType);
           
-          // Pin the current row to the correct section based on type
+          // Pin the current row to the correct section based on type (or keep in place if toggle is off)
           var rowType = selectOptionsShopRow.dataset.pinType;
           var pinnedSectionId = (rowType === 'bin' || rowType === 'bin-variant') ? 'bin-pinned-section' : 'pinned-section';
-          var pinnedSection = document.getElementById(pinnedSectionId);
-          if (pinnedSection) {
-            pinnedSection.classList.add('is-visible');
-            pinnedSection.after(selectOptionsShopRow);
-            selectOptionsShopRow.classList.add('is-pinned');
-            currentlyPinnedRow = selectOptionsShopRow;
-            updateListingsDivider();
-            updateBinListingsDivider();
-          }
+          selectOptionsShopRow.classList.add('is-pinned');
+          currentlyPinnedRow = selectOptionsShopRow;
+          positionRowForPinned(selectOptionsShopRow, pinnedSectionId);
         }
         
         // Product is now pinned - clear the "from shop" state
@@ -7109,13 +7961,11 @@
         currentlyPinnedRow = defaultRow;
         currentlyPinnedType = 'auction';
         
-        // Show "Pinned" section and move the row there
-        var pinnedSection = document.getElementById('pinned-section');
-        if (pinnedSection) {
-          pinnedSection.classList.add('is-visible');
-          pinnedSection.after(defaultRow);
-          updateListingsDivider();
-        }
+        // Initialize state machine with default pinned product
+        PinnedState.pin('auction', defaultRow);
+        
+        // Position in pinned section (or keep in place if toggle is off)
+        positionRowForPinned(defaultRow, 'pinned-section');
       }
     })();
 
