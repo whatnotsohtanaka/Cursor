@@ -2232,12 +2232,47 @@
     body.view-buyer .live-shop-section-head--pinned { display: none !important; }
     body.view-buyer .live-shop-section-head--running { display: none !important; }
     body.view-buyer .live-shop-section-divider { display: none !important; }
+    /* Buyer view: hide running and pinned auction items from shop entirely */
+    body.view-buyer .live-shop-row.is-auction-active { display: none !important; }
+    body.view-buyer .live-shop-row.is-pinned { display: none !important; }
+    /* Buyer view: restore original listing order using flexbox with data-original-order */
+    body.view-buyer #live-shop-panel-auction:not([hidden]) { display: flex; flex-direction: column; }
+    body.view-buyer #live-shop-panel-auction > * { order: 100; }
+    body.view-buyer #live-shop-panel-auction #running-now-section { order: -2 !important; }
+    body.view-buyer #live-shop-panel-auction #pinned-section { order: -1 !important; }
+    body.view-buyer #live-shop-panel-auction #auction-listings-section { order: 0 !important; }
+    body.view-buyer #live-shop-panel-auction .live-shop-row[data-original-order="1"] { order: 1 !important; }
+    body.view-buyer #live-shop-panel-auction .live-shop-row[data-original-order="2"] { order: 2 !important; }
+    body.view-buyer #live-shop-panel-auction .live-shop-row[data-original-order="3"] { order: 3 !important; }
+    body.view-buyer #live-shop-panel-auction .live-shop-row[data-original-order="4"] { order: 4 !important; }
+    body.view-buyer #live-shop-panel-auction .live-shop-row[data-original-order="5"] { order: 5 !important; }
+    body.view-buyer #live-shop-panel-auction .live-shop-row[data-original-order="6"] { order: 6 !important; }
+    body.view-buyer #live-shop-panel-buy-now:not([hidden]) { display: flex; flex-direction: column; }
+    body.view-buyer #live-shop-panel-buy-now > * { order: 100; }
+    body.view-buyer #live-shop-panel-buy-now .live-shop-section-head { order: 0 !important; }
+    body.view-buyer #live-shop-panel-buy-now .live-shop-row[data-original-order="1"] { order: 1 !important; }
+    body.view-buyer #live-shop-panel-buy-now .live-shop-row[data-original-order="2"] { order: 2 !important; }
+    body.view-buyer #live-shop-panel-buy-now .live-shop-row[data-original-order="3"] { order: 3 !important; }
+    body.view-buyer #live-shop-panel-buy-now .live-shop-row[data-original-order="4"] { order: 4 !important; }
+    body.view-buyer #live-shop-panel-buy-now .live-shop-row[data-original-order="5"] { order: 5 !important; }
+    /* Buyer view: hide dynamic price/bids, show starting price from data attribute */
+    body.view-buyer .live-shop-row .live-shop-row__price.js-shop-price { font-size: 0; visibility: hidden; position: relative; }
+    body.view-buyer .live-shop-row .live-shop-row__price.js-shop-price::after { 
+      content: attr(data-start-price);
+      visibility: visible;
+      font-size: 13px; 
+      font-weight: 600;
+      color: #000;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
     /* Hide Offers and Tips tabs for buyers */
     body.view-buyer #live-shop-tab-offers { display: none !important; }
     body.view-buyer #live-shop-tab-tips { display: none !important; }
-    /* Change "Template" to "Multiple Options" for buyers */
+    /* Change "Template" to "Open Pull" for buyers */
     body.view-buyer .live-shop-row[data-pin-type="template"] .live-shop-row__meta { font-size: 0; }
-    body.view-buyer .live-shop-row[data-pin-type="template"] .live-shop-row__meta::after { content: 'Multiple Options'; font-size: 13px; }
+    body.view-buyer .live-shop-row[data-pin-type="template"] .live-shop-row__meta::after { content: 'Open Pull'; font-size: 13px; }
     /* Hide auction # labels for buyers (e.g., "#1", "#2") */
     body.view-buyer .live-show__template-label { display: none !important; }
     body.view-buyer .live-shop-row__template-chip { display: none !important; }
@@ -3442,7 +3477,13 @@
     .hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__timer {
       display: none !important;
     }
-    .hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__actions {
+    .hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__actions--seller {
+      display: flex !important;
+    }
+    body.view-buyer.hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__actions--seller {
+      display: none !important;
+    }
+    body.view-buyer.hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__actions--buyer {
       display: flex !important;
     }
     .hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__template-chip {
@@ -3664,6 +3705,13 @@
     }
     .live-shop-row.is-auction-active .live-shop-prebid {
       display: none;
+    }
+    /* Buyer view: hide seller CTAs, show buyer CTAs for active auction rows */
+    body.view-buyer .live-shop-row.is-auction-active .live-shop-row__actions--seller {
+      display: none !important;
+    }
+    body.view-buyer .live-shop-row.is-auction-active .live-shop-row__actions--buyer {
+      display: flex !important;
     }
     .live-shop-row__timer {
       display: none;
@@ -5398,7 +5446,7 @@
                     <p class="live-shop-section-title">Listings (6)</p>
                   </div>
                   <!-- Template Auction -->
-                  <article class="live-shop-row" data-pin-type="template" data-pin-title="Assorted Sneakers: Nike, Adidas, and more" data-pin-meta="Template" data-pin-price="$1" data-pin-img="assets/pile-of-sneakers.jpg">
+                  <article class="live-shop-row" data-pin-type="template" data-original-order="1" data-pin-title="Assorted Sneakers: Nike, Adidas, and more" data-pin-meta="Template" data-pin-price="$1" data-pin-img="assets/pile-of-sneakers.jpg">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="assets/pile-of-sneakers.jpg" />
                     </div>
@@ -5424,7 +5472,7 @@
                     </div>
                   </article>
                   <!-- Variant Auction -->
-                  <article class="live-shop-row" data-pin-type="variant" data-pin-title="Nike Air Max Black" data-pin-meta="Multiple Options" data-pin-price="$1 - $15" data-pin-img="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408">
+                  <article class="live-shop-row" data-pin-type="variant" data-original-order="2" data-pin-title="Nike Air Max Black" data-pin-meta="Multiple Options" data-pin-price="$1 - $15" data-pin-img="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408" />
                     </div>
@@ -5449,7 +5497,7 @@
                     </div>
                   </article>
                   <!-- Standard Auction -->
-                  <article class="live-shop-row" data-pin-type="auction" data-pin-title="Supreme Logo Patch Backpack" data-pin-meta="New w tag" data-pin-price="$1" data-pin-img="https://www.figma.com/api/mcp/asset/34cbbbdf-ef28-417c-b15b-8208a1919c19">
+                  <article class="live-shop-row" data-pin-type="auction" data-original-order="3" data-pin-title="Supreme Logo Patch Backpack" data-pin-meta="New w tag" data-pin-price="$1" data-pin-img="https://www.figma.com/api/mcp/asset/34cbbbdf-ef28-417c-b15b-8208a1919c19">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/34cbbbdf-ef28-417c-b15b-8208a1919c19" />
                       <div class="live-shop-prebid" aria-hidden="true">
@@ -5481,7 +5529,7 @@
                     </div>
                   </article>
                   <!-- Standard Auction -->
-                  <article class="live-shop-row" data-pin-type="auction" data-pin-title="Bape Socks Black" data-pin-meta="OS • New w tag" data-pin-price="$12" data-pin-img="https://www.figma.com/api/mcp/asset/2ddeb315-a14a-406f-a444-9de25439d580">
+                  <article class="live-shop-row" data-pin-type="auction" data-original-order="4" data-pin-title="Bape Socks Black" data-pin-meta="OS • New w tag" data-pin-price="$12" data-pin-img="https://www.figma.com/api/mcp/asset/2ddeb315-a14a-406f-a444-9de25439d580">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/2ddeb315-a14a-406f-a444-9de25439d580" />
                       <div class="live-shop-prebid" aria-hidden="true">
@@ -5513,7 +5561,7 @@
                     </div>
                   </article>
                   <!-- Standard Auction -->
-                  <article class="live-shop-row" data-pin-type="auction" data-pin-title="Nike Air Max 90" data-pin-meta="Size 10 • New w box" data-pin-price="$45" data-pin-img="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408">
+                  <article class="live-shop-row" data-pin-type="auction" data-original-order="5" data-pin-title="Nike Air Max 90" data-pin-meta="Size 10 • New w box" data-pin-price="$45" data-pin-img="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408" />
                       <div class="live-shop-prebid" aria-hidden="true">
@@ -5545,7 +5593,7 @@
                     </div>
                   </article>
                   <!-- Standard Auction -->
-                  <article class="live-shop-row" data-pin-type="auction" data-pin-title="Stussy Logo Hoodie" data-pin-meta="L • Pre-owned" data-pin-price="$25" data-pin-img="https://www.figma.com/api/mcp/asset/87553d74-ba47-429c-a9b7-3fb5e710947d">
+                  <article class="live-shop-row" data-pin-type="auction" data-original-order="6" data-pin-title="Stussy Logo Hoodie" data-pin-meta="L • Pre-owned" data-pin-price="$25" data-pin-img="https://www.figma.com/api/mcp/asset/87553d74-ba47-429c-a9b7-3fb5e710947d">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/87553d74-ba47-429c-a9b7-3fb5e710947d" />
                       <div class="live-shop-prebid" aria-hidden="true">
@@ -5587,7 +5635,7 @@
                   <div class="live-shop-section-head" id="bin-listings-section">
                     <p class="live-shop-section-title">Listings (5)</p>
                   </div>
-                  <article class="live-shop-row" data-pin-type="bin" data-pin-title="Carhartt Denim Jacket" data-pin-meta="XL • New w tag" data-pin-price="$65" data-pin-qty="1" data-pin-img="https://www.figma.com/api/mcp/asset/87553d74-ba47-429c-a9b7-3fb5e710947d">
+                  <article class="live-shop-row" data-pin-type="bin" data-original-order="1" data-pin-title="Carhartt Denim Jacket" data-pin-meta="XL • New w tag" data-pin-price="$65" data-pin-qty="1" data-pin-img="https://www.figma.com/api/mcp/asset/87553d74-ba47-429c-a9b7-3fb5e710947d">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/87553d74-ba47-429c-a9b7-3fb5e710947d" />
                       <div class="live-shop-prebid" aria-hidden="true">
@@ -5617,7 +5665,7 @@
                       </div>
                     </div>
                   </article>
-                  <article class="live-shop-row" data-pin-type="bin" data-pin-title="Supreme Logo Patch Backpack" data-pin-meta="OS • New w tag" data-pin-price="$185" data-pin-qty="1" data-pin-img="https://www.figma.com/api/mcp/asset/34cbbbdf-ef28-417c-b15b-8208a1919c19">
+                  <article class="live-shop-row" data-pin-type="bin" data-original-order="2" data-pin-title="Supreme Logo Patch Backpack" data-pin-meta="OS • New w tag" data-pin-price="$185" data-pin-qty="1" data-pin-img="https://www.figma.com/api/mcp/asset/34cbbbdf-ef28-417c-b15b-8208a1919c19">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/34cbbbdf-ef28-417c-b15b-8208a1919c19" />
                       <div class="live-shop-prebid" aria-hidden="true">
@@ -5647,7 +5695,7 @@
                       </div>
                     </div>
                   </article>
-                  <article class="live-shop-row" data-pin-type="bin" data-pin-title="Bape Socks Black" data-pin-meta="OS • New w tag" data-pin-price="$24" data-pin-qty="2" data-pin-img="https://www.figma.com/api/mcp/asset/2ddeb315-a14a-406f-a444-9de25439d580">
+                  <article class="live-shop-row" data-pin-type="bin" data-original-order="3" data-pin-title="Bape Socks Black" data-pin-meta="OS • New w tag" data-pin-price="$24" data-pin-qty="2" data-pin-img="https://www.figma.com/api/mcp/asset/2ddeb315-a14a-406f-a444-9de25439d580">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/2ddeb315-a14a-406f-a444-9de25439d580" />
                       <div class="live-shop-prebid" aria-hidden="true">
@@ -5677,7 +5725,7 @@
                       </div>
                     </div>
                   </article>
-                  <article class="live-shop-row" data-pin-type="bin" data-pin-title="Carhartt Denim Jeans" data-pin-meta="32 • New w tag" data-pin-price="$48" data-pin-qty="1" data-pin-img="https://www.figma.com/api/mcp/asset/c0dd143a-f30c-46af-a437-0b082298ba8c">
+                  <article class="live-shop-row" data-pin-type="bin" data-original-order="4" data-pin-title="Carhartt Denim Jeans" data-pin-meta="32 • New w tag" data-pin-price="$48" data-pin-qty="1" data-pin-img="https://www.figma.com/api/mcp/asset/c0dd143a-f30c-46af-a437-0b082298ba8c">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/c0dd143a-f30c-46af-a437-0b082298ba8c" />
                       <div class="live-shop-prebid" aria-hidden="true">
@@ -5707,7 +5755,7 @@
                       </div>
                     </div>
                   </article>
-                  <article class="live-shop-row" data-pin-type="bin-variant" data-pin-title="Tops: Lulu Lemon, Commense, Alo, and more" data-pin-meta="Multiple Options" data-pin-price="$120" data-pin-qty="5" data-pin-img="https://www.figma.com/api/mcp/asset/ae1a2046-341e-4821-86d1-6d22a9b37885">
+                  <article class="live-shop-row" data-pin-type="bin-variant" data-original-order="5" data-pin-title="Tops: Lulu Lemon, Commense, Alo, and more" data-pin-meta="Multiple Options" data-pin-price="$120" data-pin-qty="5" data-pin-img="https://www.figma.com/api/mcp/asset/ae1a2046-341e-4821-86d1-6d22a9b37885">
                     <div class="live-shop-row__thumb-wrap">
                       <img alt="" src="https://www.figma.com/api/mcp/asset/ae1a2046-341e-4821-86d1-6d22a9b37885" />
                       <div class="live-shop-prebid" aria-hidden="true">
@@ -7713,6 +7761,15 @@
           // Always open LDP
           openLdp(row);
         });
+      });
+      
+      // Set starting prices as data attributes for buyer view
+      document.querySelectorAll('.live-shop-row').forEach(function(row) {
+        var startPrice = row.dataset.pinPrice || '';
+        var priceEl = row.querySelector('.live-shop-row__price.js-shop-price');
+        if (priceEl && startPrice) {
+          priceEl.dataset.startPrice = startPrice;
+        }
       });
     })();
 
