@@ -4826,7 +4826,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/21/26 @ 9:45am';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/21/26 @ 2:32pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -6526,9 +6526,26 @@
       if (ts && window.PROTO_TIMESTAMP) ts.textContent = PROTO_TIMESTAMP;
     })();
 
-    /* ── Share link (copies LIVE_URL, shows toast) ── */
+    /* ── Share link (copies LIVE_URL + current ?view=…, shows toast) ── */
+    function getSharePageUrl() {
+      try {
+        var loc = window.location;
+        if (loc.protocol === 'file:' || loc.hostname === 'localhost' || loc.hostname === '127.0.0.1') {
+          return loc.href;
+        }
+      } catch (e) {}
+      if (window.LIVE_URL) {
+        try {
+          var u = new URL(window.LIVE_URL);
+          u.search = window.location.search || '';
+          u.hash = window.location.hash || '';
+          return u.toString();
+        } catch (e) {}
+      }
+      return window.location.href;
+    }
     function copyShareLink() {
-      var url = window.LIVE_URL || window.location.href;
+      var url = getSharePageUrl();
       var toast = document.getElementById('protoHeaderToast');
       var btn = document.getElementById('protoShareBtn');
       function showToast(msg, flash) {
@@ -7132,6 +7149,33 @@
 
     /* ── Pinned Item Controls ── */
     var savedShowRunningPinnedState = true; // Store seller's toggle state
+
+    /* Shareable perspective: ?view=buyer | ?view=both (seller = default; strip ?view=seller) */
+    var PERSPECTIVE_URL_PARAM = 'view';
+    function getPerspectiveFromUrl() {
+      try {
+        var q = new URLSearchParams(window.location.search || '');
+        if (!q.has(PERSPECTIVE_URL_PARAM)) return 'seller';
+        var v = String(q.get(PERSPECTIVE_URL_PARAM) || '').toLowerCase();
+        if (v === 'buyer' || v === 'both' || v === 'seller') return v;
+      } catch (e) {}
+      return 'seller';
+    }
+    function syncPerspectiveToUrl(view) {
+      try {
+        var u = new URL(window.location.href);
+        if (view === 'seller') {
+          u.searchParams.delete(PERSPECTIVE_URL_PARAM);
+        } else {
+          u.searchParams.set(PERSPECTIVE_URL_PARAM, view);
+        }
+        var next = u.pathname + u.search + u.hash;
+        var cur = window.location.pathname + window.location.search + window.location.hash;
+        if (next !== cur && history.replaceState) {
+          history.replaceState({ view: view }, '', next);
+        }
+      } catch (e) {}
+    }
     
     function onViewChange(view) {
       // Disable transitions during view switch for instant snap
@@ -7205,6 +7249,8 @@
       }
       // Update swipe button text with current price
       updateBuyerSwipeButtons();
+
+      syncPerspectiveToUrl(view);
       
       // Re-enable transitions after a frame
       requestAnimationFrame(function() {
@@ -11436,6 +11482,13 @@
         
         lastScrollTop = scrollTop;
       }, { passive: true });
+    })();
+
+    window.addEventListener('popstate', function() {
+      onViewChange(getPerspectiveFromUrl());
+    });
+    (function initPerspectiveFromUrl() {
+      onViewChange(getPerspectiveFromUrl());
     })();
   </script>
   <script src="assets/live-show.js?v=buyer-shop-isolation"></script>
