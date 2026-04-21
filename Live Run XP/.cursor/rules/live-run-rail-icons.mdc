@@ -1,0 +1,34 @@
+---
+description: Live Run right rail (seller/buyer side menu) icons are frozen Figma exports — do not swap paths casually.
+globs: "**/index.html"
+alwaysApply: false
+---
+
+# Live Run — right rail icons (frozen)
+
+The **live show right rail** (`live-show__side-tools--seller` / `live-show__side-tools--buyer` in `index.html`) uses **only** these `src` values. Do **not** change them to `assets/icons/*`, inline SVG, or Figma MCP URLs unless the user explicitly asks to update the rail artwork.
+
+| Slot (seller) | Canonical file |
+|----------------|------------------|
+| More | `assets/figma/icon-more-dots-horizontal.svg` |
+| Promote | `assets/figma/icon-rail-promote.svg` |
+| Clip | `assets/figma/icon-movie-clapper.svg` |
+| Share | `assets/figma/icon-share.svg` |
+| Switch | `assets/figma/icon-camera-rotate.svg` |
+| Add | `assets/figma/icon-plus-circle.svg` |
+
+| Slot (buyer) | Canonical file |
+|----------------|------------------|
+| More | `assets/figma/icon-more-dots-horizontal.svg` |
+| Boost | `assets/figma/icon-rail-boost.svg` |
+| Clip | `assets/figma/icon-movie-clapper.svg` |
+| Share | `assets/figma/icon-share.svg` |
+| Wallet | `assets/figma/icon-rail-wallet.svg` |
+
+- `icon-rail-promote.svg` — frozen megaphone / promote stroke (legacy hand asset, lives under `assets/figma/` for one rail root).
+- `icon-rail-boost.svg` — **same paths as** `icon-upvote.svg` (Figma Dev export: three chevrons = Boost). Do not replace with lightning bolt unless design updates.
+- `icon-rail-wallet.svg` — filled wallet + snap (matches other Figma rail icons’ `fill="var(--fill-0, white)"` vocabulary).
+
+Other rail files are Dev Mode / MCP exports under `assets/figma/`.
+
+If a rail icon must change: update the **SVG file** in `assets/figma/` (or add a new file there) and then update this rule table and the single HTML block — do not scatter alternate paths.

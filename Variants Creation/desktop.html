@@ -166,6 +166,9 @@
     .creation { display: flex; flex-wrap: wrap; gap: 32px; padding: 0 24px 24px; flex: 1; align-items: flex-start; }
     .creation-left { flex: 1; min-width: 560px; display: flex; flex-direction: column; gap: 32px; }
     .creation-right { width: 360px; flex-shrink: 0; display: flex; flex-direction: column; gap: 32px; }
+    #pricingCardMount:empty { display: none; }
+    #pricingCardMount { margin-bottom: 0; }
+    #pricingCardMount #pricingCard { box-shadow: none; padding: 0; border-radius: 0; }
 
     /* ═══ CARDS ═══ */
     .card { background: var(--bg-base); border-radius: var(--card-radius); box-shadow: var(--card-shadow); padding: 24px; display: flex; flex-direction: column; gap: 16px; }
@@ -230,6 +233,7 @@
     .vm-table-wrapper { border: 1px solid var(--stroke-subtle); border-radius: 16px; overflow: hidden; }
     .vm-section { display: flex; flex-direction: column; gap: 12px; }
     .vm-title { font-size: 16px; font-weight: 600; line-height: 24px; letter-spacing: -0.16px; color: var(--text-primary); height: auto; }
+    .vm-subtitle { font-size: 14px; line-height: 20px; letter-spacing: -0.14px; color: var(--text-tertiary); margin-top: -4px; margin-bottom: 4px; }
     #optionRowsMount:empty { display: none; }
     #optionRowsMount { display: flex; flex-direction: column; gap: 12px; }
     .option-row { display: flex; gap: 12px; align-items: center; }
@@ -254,8 +258,9 @@
     .btn-pill { height: 36px; padding: 0 16px; border-radius: 999px; border: none; font-family: var(--font); font-size: 14px; font-weight: 600; line-height: 20px; letter-spacing: -0.14px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
     .btn-pill-tertiary { background: var(--chip-unselected); color: var(--text-primary); }
     .btn-pill-tertiary:hover { background: #e8e8e8; }
-    .btn-preset { height: 36px; padding: 0 16px; border-radius: 999px; border: none; background: var(--chip-unselected); font-family: var(--font); font-size: 14px; font-weight: 600; line-height: 20px; letter-spacing: -0.14px; color: var(--text-primary); cursor: pointer; transition: background 0.15s; }
+    .btn-preset { height: 36px; padding: 0 16px; border-radius: 999px; border: none; background: var(--chip-unselected); font-family: var(--font); font-size: 14px; font-weight: 600; line-height: 20px; letter-spacing: -0.14px; color: var(--text-primary); cursor: pointer; transition: background 0.15s, opacity 0.15s; }
     .btn-preset:hover { background: #e8e8e8; }
+    .btn-preset.disabled, .btn-pill-tertiary.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
     .pt-group-select { appearance: none; border: none; background: transparent; font-family: var(--font); font-size: 14px; font-weight: 590; color: var(--text-primary); cursor: pointer; padding: 0 18px 0 0; background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23999' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right center; outline: none; }
 
     /* ═══ PRODUCT TABLE ═══ */
@@ -618,9 +623,12 @@
           <!-- VARIANT MANAGER -->
           <div class="vm-section" id="vmSection">
             <div class="vm-title">Variant Manager</div>
+            <div class="vm-subtitle">Add up to 3 options.</div>
             <div id="optionRowsMount"></div>
             <div class="vm-toolbar" id="vmToolbar"></div>
           </div>
+          <!-- PRICING CARD MOUNT (when variants exist) -->
+          <div id="pricingCardMount"></div>
           <!-- PRODUCT TABLE -->
           <div class="vm-table-wrapper" id="productTableMount"></div>
         </div>
@@ -629,7 +637,7 @@
       <!-- RIGHT RAIL -->
       <div class="creation-right">
         <!-- PRICING -->
-        <div class="card">
+        <div class="card" id="pricingCard">
           <span class="card-title card-title-sm">Pricing</span>
           <div class="seg-control" id="pricingSegControl">
             <button class="seg-tab active" onclick="setPricingTab(this,'auction')">Auction</button>
@@ -938,12 +946,12 @@ const PROTO_TIMESTAMP_SHORT = (() => {
 const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/variants-creation/desktop.html';
 
 const SNEAKER_PRESETS = [
-  { key: 'size', label: 'Size', values: ['10M', '10.5M', '11M', '11.5M'], allowCustom: false },
+  { key: 'size', label: 'Size', values: ['10M', '10.5M', '11M', '11.5M'], allowCustom: true, validateCustom: 'size' },
   { key: 'color', label: 'Color', values: ['White / Black', 'White / Brown'], allowCustom: true },
   { key: 'condition', label: 'Condition', values: ['New', 'New w Defects'], allowCustom: false }
 ];
 const FASHION_PRESETS = [
-  { key: 'size', label: 'Size', values: ['M', 'L', 'XL'], allowCustom: false },
+  { key: 'size', label: 'Size', values: ['M', 'L', 'XL'], allowCustom: true, validateCustom: 'size' },
   { key: 'color', label: 'Color', values: ['Black', 'White', 'Navy'], allowCustom: true },
   { key: 'condition', label: 'Condition', values: ['New', 'New w Defects'], allowCustom: false }
 ];
@@ -956,6 +964,17 @@ const PRESET_SUGGESTIONS = {
 };
 function getActivePresets() {
   return selectedCategory === 'Sneakers' ? SNEAKER_PRESETS : FASHION_PRESETS;
+}
+
+function validateCustomValue(preset, value) {
+  if (!preset || !preset.validateCustom) return true;
+  if (preset.validateCustom === 'size') {
+    // Valid size patterns: numeric (22), numeric with M/W/Y suffix (10M, 7.5W, 5Y), or standard fashion sizes
+    const sizePattern = /^(\d+\.?\d*)(M|W|Y|C)?$/i;
+    const fashionSizes = ['XXS','XS','S','M','L','XL','XXL','3XL','4XL','ONE SIZE'];
+    return sizePattern.test(value) || fashionSizes.includes(value.toUpperCase());
+  }
+  return true;
 }
 const CATEGORIES = ['Sneakers', 'Streetwear', 'Mens Fashion'];
 let selectedCategory = 'Sneakers';
@@ -971,6 +990,7 @@ let mainPrice = '';
 let auctionStartPrice = '1';
 let activePricingFormat = 'auction';
 let priceCommitted = false;
+let mainFlashSaleOn = false;
 
 const FILLED_DATA = {
   category: 'Sneakers',
@@ -1034,6 +1054,7 @@ function applyFormState() {
   auctionStartPrice = '1';
   activePricingFormat = 'auction';
   priceCommitted = false;
+  mainFlashSaleOn = false;
   openParentRows.clear();
   if (isNullState) {
     applyNullForm();
@@ -1315,7 +1336,9 @@ function onOptionNameBlur(id, el) {
   const val = el.value.trim();
   const row = optionRows.find(r => r.id === id);
   if (row) row.name = val;
+  renderToolbar();
   renderProductTable();
+  syncConditionFieldVisibility();
 }
 let typeaheadHighlight = -1;
 let typeaheadCloseTimer = null;
@@ -1418,7 +1441,9 @@ function onOptionValuesInput(id, input) {
   const preset = getActivePresets().find(p => p.label.toLowerCase() === key);
   const canCustom = preset ? preset.allowCustom !== false : true;
   const exactMatch = query && filtered.some(v => v.toLowerCase() === query);
-  const showCustom = canCustom && query && !exactMatch && !row.values.some(v => v.toLowerCase() === query);
+  const customValue = input.value.trim();
+  const isValidCustom = canCustom && customValue && !exactMatch && !row.values.some(v => v.toLowerCase() === query) && validateCustomValue(preset, customValue);
+  const showCustom = isValidCustom;
   if (filtered.length === 0 && !showCustom) {
     typeaheadHighlight = -1;
     dropdown.innerHTML = '<div class="typeahead-empty">No matching options</div>';
@@ -1564,7 +1589,39 @@ function renderAll() {
   renderProductTable();
   syncMainQtyState();
   syncCustomizeToggleVisibility();
+  syncPricingCardPosition();
+  syncConditionFieldVisibility();
   if (wasOn && toggle) toggle.classList.add('on');
+}
+
+function syncConditionFieldVisibility() {
+  const conditionField = document.getElementById('selectCondition');
+  if (!conditionField) return;
+  const hasConditionVariant = optionRows.some(r => r.name && r.name.toLowerCase() === 'condition');
+  conditionField.style.display = hasConditionVariant ? 'none' : '';
+}
+
+function syncPricingCardPosition() {
+  const pricingCard = document.getElementById('pricingCard');
+  const mountInLeft = document.getElementById('pricingCardMount');
+  const rightRail = document.querySelector('.creation-right');
+  console.log('syncPricingCardPosition:', { pricingCard: !!pricingCard, mountInLeft: !!mountInLeft, rightRail: !!rightRail });
+  if (!pricingCard || !mountInLeft || !rightRail) return;
+  
+  const filledRows = optionRows.filter(r => r.name && r.values.length);
+  const hasVariants = filledRows.length > 0;
+  const isInRightRail = pricingCard.closest('.creation-right') !== null;
+  const isInLeftMount = pricingCard.parentElement === mountInLeft;
+  
+  console.log('syncPricingCardPosition state:', { hasVariants, isInRightRail, isInLeftMount, filledRowsCount: filledRows.length });
+  
+  if (hasVariants && isInRightRail) {
+    console.log('Moving pricing card to left column');
+    mountInLeft.appendChild(pricingCard);
+  } else if (!hasVariants && isInLeftMount) {
+    console.log('Moving pricing card back to right rail');
+    rightRail.insertBefore(pricingCard, rightRail.firstChild);
+  }
 }
 
 function renderOptionRows() {
@@ -1625,10 +1682,15 @@ function renderToolbar() {
   const mount = document.getElementById('vmToolbar');
   const used = getUsedPresetKeys();
   const available = getActivePresets().filter(p => !used.includes(p.key));
+  // Count all option rows (including empty ones being edited) to determine if max is reached
+  const optionCount = optionRows.length;
+  const maxReached = optionCount >= 3;
+  const disabledAttr = maxReached ? ' disabled' : '';
+  const disabledClass = maxReached ? ' disabled' : '';
   const presets = available.map(p =>
-    `<button class="btn-preset" onclick="addPresetOption('${p.key}')">${p.label}</button>`
+    `<button class="btn-preset${disabledClass}" onclick="addPresetOption('${p.key}')"${disabledAttr}>${p.label}</button>`
   ).join('');
-  mount.innerHTML = `${presets}<button class="btn-pill btn-pill-tertiary" onclick="addEmptyOption()">${svgPlus} Add Option</button>`;
+  mount.innerHTML = `${presets}<button class="btn-pill btn-pill-tertiary${disabledClass}" onclick="addEmptyOption()"${disabledAttr}>${svgPlus} Add Option</button>`;
 }
 
 function renderGroupByOptions(filledRows) {
@@ -1761,8 +1823,14 @@ function buildPriceCell(key) {
 function renderProductTable() {
   const mount = document.getElementById('productTableMount');
   const filledRows = optionRows.filter(r => r.name && r.values.length);
-  if (filledRows.length === 0) { mount.innerHTML = ''; mount.style.display = 'none'; return; }
+  if (filledRows.length === 0) { 
+    mount.innerHTML = ''; 
+    mount.style.display = 'none'; 
+    syncPricingCardPosition();
+    return; 
+  }
   mount.style.display = '';
+  syncPricingCardPosition();
   ensureVariantQty();
 
   if (!filledRows.some(r => r.name === groupByName)) groupByName = filledRows[0].name;
@@ -1782,8 +1850,8 @@ function renderProductTable() {
   const childCombos = otherRows.length ? generateCombinations(otherRows) : [];
   let html = `<table class="product-table"><thead><tr>
     <th style="width:auto;">${groupByHeader}</th>
-    <th style="width:160px;">Quantity <span class="sort-icon">⇅</span></th>
-    <th style="width:160px;">Price &amp; Format <span class="sort-icon">⇅</span></th>
+    <th style="width:160px;">Quantity</th>
+    <th style="width:160px;">Price &amp; Format</th>
   </tr></thead><tbody>`;
 
   groupRow.values.forEach(val => {
@@ -1845,8 +1913,8 @@ function buildFlatTable(values) {
   ensureVariantQty();
   let html = `<table class="product-table"><thead><tr>
     <th>Product <span class="sort-icon">⇅</span></th>
-    <th style="width:160px;">Quantity <span class="sort-icon">⇅</span></th>
-    <th style="width:160px;">Price &amp; Format <span class="sort-icon">⇅</span></th>
+    <th style="width:160px;">Quantity</th>
+    <th style="width:160px;">Price &amp; Format</th>
   </tr></thead><tbody>`;
   values.forEach(c => {
     const qty = variantQty[c] ?? 0;
@@ -1908,11 +1976,13 @@ function syncCustomizeToggleVisibility() {
 function syncMainQtyState() {
   const row = document.getElementById('mainQtyRow');
   if (!row) return;
-  const hasVariants = optionRows.some(r => r.name && r.values.length);
+  const filledRows = optionRows.filter(r => r.name && r.values.length);
+  const hasVariants = filledRows.length > 0;
   const valEl = document.getElementById('mainQtyValue');
   if (hasVariants) {
     row.classList.add('disabled');
-    const total = Object.values(variantQty).reduce((s, v) => s + (v || 0), 0);
+    const validKeys = getAllVariantKeys(filledRows);
+    const total = validKeys.reduce((s, k) => s + (variantQty[k] || 0), 0);
     if (valEl) valEl.value = total;
   } else {
     row.classList.remove('disabled');
@@ -2054,7 +2124,15 @@ function variantHasPrice(key) {
 function getVariantPriceDisplay(key) {
   if (key && variantPrice[key] != null) {
     const vp = variantPrice[key];
-    if (typeof vp === 'object') return '$' + vp.price;
+    if (typeof vp === 'object') {
+      if (vp.flashSale) {
+        const base = parseFloat(vp.price);
+        const discount = base * 0.25;
+        const sale = base - discount;
+        return `<span class="flash-strike">$${base.toFixed(2)}</span> $${sale.toFixed(2)}`;
+      }
+      return '$' + vp.price;
+    }
     return '$' + vp;
   }
   if (!priceCommitted) return '$--';
@@ -2063,6 +2141,12 @@ function getVariantPriceDisplay(key) {
   }
   if (activePricingFormat === 'bin') {
     if (!mainPrice) return '$--';
+    if (mainFlashSaleOn) {
+      const base = parseFloat(mainPrice);
+      const discount = base * 0.25;
+      const sale = base - discount;
+      return `<span class="flash-strike">$${base.toFixed(2)}</span> $${sale.toFixed(2)}`;
+    }
     return '$' + mainPrice;
   }
   return '$--';
@@ -2071,10 +2155,14 @@ function getVariantPriceDisplay(key) {
 function getActivePriceFormatLabel(key) {
   if (key && variantPrice[key] != null) {
     const vp = variantPrice[key];
-    if (typeof vp === 'object') return vp.format === 'auction' ? 'Auction' : 'Buy Now';
+    if (typeof vp === 'object') {
+      if (vp.flashSale) return 'Flash Sale';
+      return vp.format === 'auction' ? 'Auction' : 'Buy Now';
+    }
     return activePricingFormat === 'auction' ? 'Auction' : 'Buy Now';
   }
   if (!priceCommitted) return 'Price & Format';
+  if (activePricingFormat === 'bin' && mainFlashSaleOn) return 'Flash Sale';
   if (activePricingFormat === 'auction') return 'Auction';
   if (activePricingFormat === 'bin') return 'Buy Now';
   return 'Price & Format';
@@ -2133,6 +2221,19 @@ function openPriceFormatDialog(key, el) {
   if (key) {
     const toggle = document.getElementById('customizeVariantToggle');
     if (toggle && !toggle.classList.contains('on')) toggle.classList.add('on');
+  }
+
+  // Sync flash sale toggle with global state or variant-specific state
+  const pfFlashToggle = document.querySelector('#pfBin .pf-setting .toggle');
+  const pfFlashDetails = document.getElementById('pfFlashDetails');
+  const pfAcceptOffers = document.getElementById('pfAcceptOffers');
+  if (pfFlashToggle) {
+    const variantFlashOn = vp && typeof vp === 'object' && vp.flashSale;
+    const shouldBeOn = variantFlashOn || (vpFormat === 'bin' && mainFlashSaleOn);
+    pfFlashToggle.classList.toggle('on', shouldBeOn);
+    if (pfFlashDetails) pfFlashDetails.style.display = shouldBeOn ? '' : 'none';
+    if (pfAcceptOffers) pfAcceptOffers.style.display = shouldBeOn ? 'none' : '';
+    if (shouldBeOn) updatePfFlashInfo();
   }
 
   document.getElementById('priceFormatDialog').classList.add('open');
@@ -2201,7 +2302,9 @@ function savePriceFormat() {
   }
 
   if (raw) {
-    variantPrice[pfVariantKey] = { format: pfFormat, price: raw };
+    const pfFlashToggle = document.querySelector('#pfBin .pf-setting .toggle');
+    const flashSaleOn = pfFormat === 'bin' && pfFlashToggle && pfFlashToggle.classList.contains('on');
+    variantPrice[pfVariantKey] = { format: pfFormat, price: raw, flashSale: flashSaleOn };
     const toggle = document.getElementById('customizeVariantToggle');
     if (toggle && !toggle.classList.contains('on')) toggle.classList.add('on');
   }
@@ -2218,10 +2321,12 @@ function cancelPriceFormat() {
 
 function toggleMainFlashSale(toggle) {
   const isOn = toggle.classList.contains('on');
+  mainFlashSaleOn = isOn;
   const details = document.getElementById('mainFlashDetails');
   if (details) details.style.display = isOn ? '' : 'none';
   const acceptOffers = document.getElementById('mainAcceptOffers');
   if (acceptOffers) acceptOffers.style.display = isOn ? 'none' : '';
+  renderProductTable();
   const priceField = document.getElementById('priceField');
   if (isOn) {
     const hasPrice = !!mainPrice;
@@ -2468,6 +2573,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   });
+
 });
 </script>
 </body>
