@@ -3628,11 +3628,6 @@
     </div>
     <div class="edit-scroll">
 
-      <!-- Null state description -->
-      <div id="editNullDesc" style="display:none;padding:8px 16px 12px">
-        <div style="font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create a template to reuse over and over. Start with a type, then add 1–2 brands and a size range. <span style="color:#005ae1;cursor:pointer">Learn more</span></div>
-      </div>
-
       <div style="position:relative">
         <div class="edit-field" onclick="openCategorySheet();dismissTooltip('tooltip1')" style="cursor:pointer">
           <div class="edit-field-label">Category <span class="required">*</span></div>
@@ -4086,7 +4081,7 @@
             <div style="font-size:22px;font-weight:600;line-height:28px;color:#161616">What will you be selling?</div>
             <div style="font-size:15px;font-weight:400;line-height:21px;color:#6a6a6a">Based on your past shows, we've pre-selected some types. Adjust to fit your future shows. We'll generate a template for each.</div>
           </div>
-          <div id="nuxTypeGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%"></div>
+          <div id="nuxTypeList" style="display:flex;flex-direction:column;gap:0;width:100%"></div>
         </div>
         <div style="flex-shrink:0;padding:0 16px 0">
           <button id="nuxTypesCta" onclick="generateTemplatesFromNux()" disabled style="width:100%;height:48px;border-radius:999px;background:#e0e0e0;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#999;cursor:not-allowed;transition:background 0.2s,color 0.2s">Generate Templates</button>
@@ -4204,7 +4199,7 @@
       <div id="tplTypePickerList" style="display:flex;flex-direction:column;width:100%"></div>
     </div>
     <div style="flex-shrink:0;padding:0 16px 0">
-      <button id="tplTypePickerCta" onclick="confirmTplTypePicker()" disabled style="width:100%;height:48px;border-radius:999px;background:#e0e0e0;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#999;cursor:not-allowed;transition:background 0.2s,color 0.2s">Continue</button>
+      <button id="tplTypePickerCta" onclick="confirmTplTypePicker()" disabled style="width:100%;height:48px;border-radius:999px;background:#e0e0e0;border:none;font-family:var(--font);font-size:16px;font-weight:600;letter-spacing:-0.41px;color:#999;cursor:not-allowed;transition:background 0.2s,color 0.2s">Create Template</button>
     </div>
     <div style="height:32px;overflow:hidden;width:375px;position:relative;flex-shrink:0">
       <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:135px;height:5px;background:#222;border-radius:100px"></div>
@@ -5186,30 +5181,56 @@ function tryItOut() {
 
 let nuxSelectedTypes = new Set();
 
+/** Same category key and ordering as new-seller onboard step 2 (`renderTypeList` → `getTypesForCategory`). */
+function getNuxTypeSelectTypes() {
+  return getTypesForCategory("Women's Contemporary");
+}
+
 function configureNuxTypeGrid() {
-  const grid = document.getElementById('nuxTypeGrid');
-  nuxSelectedTypes = new Set(['tops', 'leggings', 'pants']);
-  grid.innerHTML = fashionTypes.map(t => {
-    const selected = nuxSelectedTypes.has(t.id);
-    return `<button id="nuxTypeBtn_${t.id}" onclick="toggleNuxType('${t.id}')" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px 8px 24px;background:#f3f3f3;border:4px solid transparent;border-radius:8px;cursor:pointer;font-family:var(--font);transition:all 0.15s ease">
-      <div style="font-size:12px;font-weight:600;line-height:16px;color:#161616;text-align:center;width:100%">${t.label}</div>
-      <img src="${t.img}" alt="" style="width:65px;height:65px;object-fit:contain;pointer-events:none">
-      <div class="type-card-ring" style="display:${selected ? 'block' : 'none'};position:absolute;inset:-4px;border-radius:8px;border:2px solid #2d2d2d;pointer-events:none"></div>
-    </button>`;
-  }).join('');
+  const list = document.getElementById('nuxTypeList');
+  if (!list) return;
+  const allowedIds = new Set(getNuxTypeSelectTypes().map(t => t.id));
+  const preferred = ['tops', 'pants', 'dresses'];
+  nuxSelectedTypes = new Set(preferred.filter(id => allowedIds.has(id)));
+  renderNuxTypeSelectList(list);
   updateNuxTypesCta();
+}
+
+function renderNuxTypeSelectList(container) {
+  const typesForCategory = getNuxTypeSelectTypes();
+  if (!typesForCategory.length) {
+    container.innerHTML = '';
+    return;
+  }
+  const sel = nuxSelectedTypes;
+  container.innerHTML = typesForCategory.map((t, idx) => `
+    <button type="button" id="nuxTypeBtn_${t.id}" onclick="toggleNuxType('${t.id}')" style="height:56px;border:none;background:white;display:flex;align-items:center;gap:12px;padding:12px 0;cursor:pointer;width:100%;text-align:left;border-bottom:${idx === typesForCategory.length - 1 ? 'none' : '1px solid rgba(0,0,0,0.1)'}">
+      <div style="flex:1;font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">${t.label}</div>
+      <div class="type-list-check" style="width:20px;height:20px;border-radius:4px;border:1px solid ${sel.has(t.id) ? '#1c1c1c' : '#aaa'};background:${sel.has(t.id) ? '#1c1c1c' : 'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s ease">
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:${sel.has(t.id) ? 1 : 0};transition:opacity 0.15s ease"><path d="M4 10l4 4 8-8"/></svg>
+      </div>
+    </button>
+  `).join('');
+}
+
+function refreshNuxTypeListChecks() {
+  document.querySelectorAll('[id^="nuxTypeBtn_"]').forEach(btn => {
+    const check = btn.querySelector('.type-list-check');
+    const icon = check ? check.querySelector('svg') : null;
+    const id = btn.id.replace('nuxTypeBtn_', '');
+    const on = nuxSelectedTypes.has(id);
+    if (check) {
+      check.style.borderColor = on ? '#1c1c1c' : '#aaa';
+      check.style.background = on ? '#1c1c1c' : 'transparent';
+    }
+    if (icon) icon.style.opacity = on ? '1' : '0';
+  });
 }
 
 function toggleNuxType(id) {
   if (nuxSelectedTypes.has(id)) nuxSelectedTypes.delete(id);
   else nuxSelectedTypes.add(id);
-
-  fashionTypes.forEach(t => {
-    const btn = document.getElementById('nuxTypeBtn_' + t.id);
-    if (!btn) return;
-    const ring = btn.querySelector('.type-card-ring');
-    if (ring) ring.style.display = nuxSelectedTypes.has(t.id) ? 'block' : 'none';
-  });
+  refreshNuxTypeListChecks();
   updateNuxTypesCta();
 }
 
@@ -5515,7 +5536,7 @@ function openEditPage(templateIndex, returnTo, prefillType) {
   if (isNull) {
     titleLabel.style.display = 'none';
     titleInput.value = '';
-    titleInput.placeholder = 'Title';
+    titleInput.placeholder = isChocolateEditSkuContext(editCategoryLabel, typeToSelect) ? 'Assorted Chocolates' : 'Title';
     titleInput.style.fontWeight = '400';
     titleInput.style.color = '#545454';
   } else {
@@ -5546,8 +5567,6 @@ function openEditPage(templateIndex, returnTo, prefillType) {
   }
 
   // Null state UI
-  document.getElementById('editNullDesc').style.display = isNull ? 'block' : 'none';
-
   // Reset tooltips
   ['tooltip1', 'tooltip2', 'tooltip3'].forEach(id => {
     const t = document.getElementById(id);
@@ -5634,12 +5653,7 @@ function openEditPage(templateIndex, returnTo, prefillType) {
     }
   }
 
-  const typeField = document.getElementById('typeChipsField');
-  const sizeField = document.getElementById('sizeChipsField');
-  const conditionField = document.getElementById('conditionChipsField');
-  if (typeField) typeField.style.display = isChocolateTemplate ? 'none' : '';
-  if (sizeField) sizeField.style.display = isChocolateTemplate ? 'none' : '';
-  if (conditionField) conditionField.style.display = isChocolateTemplate ? 'none' : '';
+  syncChocolateFieldVisibility();
 
   // Generate title from current selections
   updateGeneratedTitle();
@@ -5704,6 +5718,8 @@ function openEditPage(templateIndex, returnTo, prefillType) {
     }
     editPage.classList.add('active');
   }
+
+  requestAnimationFrame(() => { syncChocolateFieldVisibility(); });
 
   // Show tooltip 1 on first template edit/create
   if (nuxFirstTime) {
@@ -6634,6 +6650,18 @@ function updateGeneratedTitle() {
   const typeChips = document.getElementById('typeChips');
   const activeType = typeChips ? typeChips.querySelector('.edit-chip-on') : null;
   const typeName = activeType ? activeType.textContent : '';
+  const cat = getEditCategoryName();
+  const titleInput = document.getElementById('editTitleInput');
+  if (!titleInput) return;
+
+  if (isChocolateEditSkuContext(cat, typeName)) {
+    if (!titleInput.value.trim()) {
+      titleInput.value = '';
+      titleInput.placeholder = 'Assorted Chocolates';
+    }
+    return;
+  }
+
   const brandsRaw = document.getElementById('editBrands').textContent;
   const brands = (brandsRaw && brandsRaw !== 'Brand(s)') ? brandsRaw : '';
 
@@ -6649,8 +6677,8 @@ function updateGeneratedTitle() {
     title = 'Assorted ' + typeName;
   }
 
-  const titleInput = document.getElementById('editTitleInput');
-  if (titleInput) titleInput.value = title;
+  titleInput.value = title;
+  if (!titleInput.value.trim()) titleInput.placeholder = 'Title';
 }
 
 // Category bottom sheet
@@ -6886,8 +6914,6 @@ function closeCategorySheet() {
 function openTypeCategorySheet(target) {
   typeCategoryTarget = target === 'tpl' ? 'tpl' : 'step2';
   typeCategoryView = 'root';
-  pendingCategoryAutoTypeIdsStep2 = null;
-  pendingCategoryAutoTypeIdsTpl = null;
   const search = document.getElementById('typeCategorySearchField');
   if (search) search.value = '';
   renderTypeCategoryList();
@@ -6970,47 +6996,20 @@ function selectTypeCategory(cat) {
     openWomensFashionL2(true);
     return;
   }
-  const autoTypeIds = getAutoTemplateTypeIds(cat);
   if (typeCategoryTarget === 'tpl') {
     tplPickerCategoryLabel = cat;
     tplPickerSelectedTypes.clear();
-    pendingCategoryAutoTypeIdsTpl = (autoTypeIds && autoTypeIds.length) ? [...autoTypeIds] : null;
-    if (!pendingCategoryAutoTypeIdsTpl) {
-      renderTypeList('tplTypePickerList', 'tplPick_', tplPickerSelectedTypes, 'toggleTplPickerType');
-    }
-    const cta = document.getElementById('tplTypePickerCta');
-    if (cta) {
-      if ((pendingCategoryAutoTypeIdsTpl && pendingCategoryAutoTypeIdsTpl.length > 0) || tplPickerSelectedTypes.size > 0) {
-        cta.disabled = false;
-        cta.style.background = '#f9dc00';
-        cta.style.color = '#161616';
-        cta.style.cursor = 'pointer';
-      } else {
-        cta.disabled = true;
-        cta.style.background = '#e0e0e0';
-        cta.style.color = '#999';
-        cta.style.cursor = 'not-allowed';
-      }
-    }
+    renderTypeList('tplTypePickerList', 'tplPick_', tplPickerSelectedTypes, 'toggleTplPickerType');
+    updateTplPickerCta();
   } else {
     step2CategoryLabel = cat;
     selectedTypes.clear();
-    pendingCategoryAutoTypeIdsStep2 = (autoTypeIds && autoTypeIds.length) ? [...autoTypeIds] : null;
-    if (!pendingCategoryAutoTypeIdsStep2) {
-      renderTypeList('step2TypeList', 'typeBtn_', selectedTypes, 'toggleType');
-      updateStep2Cta();
-    }
+    renderTypeList('step2TypeList', 'typeBtn_', selectedTypes, 'toggleType');
+    updateStep2Cta();
   }
   recentTypeCategories = [cat, ...recentTypeCategories.filter(c => c !== cat)].slice(0, 3);
   syncTypeCategoryDisplays();
   closeTypeCategorySheet();
-  if (typeCategoryTarget === 'tpl' && autoTypeIds && autoTypeIds.length) {
-    setTimeout(() => { confirmTplTypePicker(); }, 220);
-    return;
-  }
-  if (typeCategoryTarget === 'step2' && autoTypeIds && autoTypeIds.length) {
-    setTimeout(() => { showStep2Loader(); }, 220);
-  }
 }
 
 function applyCategoryConfig(categoryName) {
@@ -7041,16 +7040,26 @@ function applyCategoryConfig(categoryName) {
   updateGeneratedTitle();
 }
 
+function isChocolateEditSkuContext(categoryLabel, activeTypeLabel) {
+  const c = categoryLabel || '';
+  const t = activeTypeLabel || '';
+  if (/chocolate/i.test(c) || /chocolate/i.test(t)) return true;
+  const ids = CATEGORY_TYPE_IDS[c];
+  return Array.isArray(ids) && ids.length === 1 && ids[0] === 'chocolates';
+}
+
 function syncChocolateFieldVisibility() {
-  const cat = (document.getElementById('editCategory') || {}).textContent || '';
+  const cat = getEditCategoryName();
   const activeType = (document.querySelector('#typeChips .edit-chip-on') || {}).textContent || '';
-  const isChocolate = /chocolate/i.test(cat) || /chocolate/i.test(activeType);
+  const showTypeRow = shouldShowEditTypeField(cat);
+  const chocSku = isChocolateEditSkuContext(cat, activeType);
+  const showSizeCondition = showTypeRow && !chocSku;
   const typeField = document.getElementById('typeChipsField');
   const sizeField = document.getElementById('sizeChipsField');
   const conditionField = document.getElementById('conditionChipsField');
-  if (typeField) typeField.style.display = isChocolate ? 'none' : '';
-  if (sizeField) sizeField.style.display = isChocolate ? 'none' : '';
-  if (conditionField) conditionField.style.display = isChocolate ? 'none' : '';
+  if (typeField) typeField.style.display = showTypeRow ? '' : 'none';
+  if (sizeField) sizeField.style.display = showSizeCondition ? '' : 'none';
+  if (conditionField) conditionField.style.display = showSizeCondition ? '' : 'none';
 }
 
 function selectCategory(cat) {
@@ -7711,8 +7720,6 @@ let tplPickerCategoryLabel = "Women's Contemporary";
 let typeCategoryTarget = 'step2';
 let recentTypeCategories = ["Women's Fashion", 'Chocolate', "Women's Contemporary"];
 let typeCategoryView = 'root';
-let pendingCategoryAutoTypeIdsStep2 = null;
-let pendingCategoryAutoTypeIdsTpl = null;
 
 const WOMENS_FASHION_SUBCATEGORIES = [
   "Women's Contemporary",
@@ -7790,8 +7797,9 @@ function toggleType(id) {
 function updateStep2Cta() {
   const cta = document.getElementById('step2Cta');
   if (!cta) return;
-  const hasAutoFlow = !!getAutoTemplateTypeIds(step2CategoryLabel);
-  if (selectedTypes.size > 0 || hasAutoFlow) {
+  const types = getTypesForCategory(step2CategoryLabel);
+  const canProceed = selectedTypes.size > 0 || types.length === 0;
+  if (canProceed) {
     cta.disabled = false;
     cta.style.background = '#f9dc00';
     cta.style.color = '#161616';
@@ -7820,12 +7828,14 @@ function getTypesForCategory(categoryLabel) {
   return [];
 }
 
-function getAutoTemplateTypeIds(categoryLabel) {
-  // Auto-generate when category has 0 or 1 available type.
-  const ids = CATEGORY_TYPE_IDS[categoryLabel];
-  if (!ids || ids.length === 0) return ['accessories'];
-  if (ids.length === 1) return [...new Set(ids)];
-  return null;
+/** Edit page: show Type row only when category maps to selectable fashion types (same as type picker). */
+function shouldShowEditTypeField(categoryLabel) {
+  const key = categoryLabel && String(categoryLabel).trim();
+  if (!key) return true;
+  if (Object.prototype.hasOwnProperty.call(CATEGORY_TYPE_IDS, key)) {
+    return getTypesForCategory(key).length > 0;
+  }
+  return true;
 }
 
 function getTargetCategoryLabel(containerId) {
@@ -8306,10 +8316,6 @@ function showStep2Loader() {
   }, 250);
 
   setTimeout(() => {
-    if (pendingCategoryAutoTypeIdsStep2 && pendingCategoryAutoTypeIdsStep2.length > 0) {
-      selectedTypes = new Set(pendingCategoryAutoTypeIdsStep2);
-      pendingCategoryAutoTypeIdsStep2 = null;
-    }
     loader.style.display = 'none';
     loader.style.opacity = '';
     loader.style.transition = '';
@@ -9741,16 +9747,31 @@ function toggleConsistentTpl() {
   }
 }
 
+function updateTplPickerCta() {
+  const cta = document.getElementById('tplTypePickerCta');
+  if (!cta) return;
+  const types = getTypesForCategory(tplPickerCategoryLabel);
+  const count = tplPickerSelectedTypes.size;
+  const canProceed = count > 0 || types.length === 0;
+  if (canProceed) {
+    cta.disabled = false;
+    cta.style.background = '#f9dc00';
+    cta.style.color = '#161616';
+    cta.style.cursor = 'pointer';
+  } else {
+    cta.disabled = true;
+    cta.style.background = '#e0e0e0';
+    cta.style.color = '#999';
+    cta.style.cursor = 'not-allowed';
+  }
+}
+
 function openTplTypePicker(returnTo) {
   tplPickerReturnTo = returnTo;
   tplPickerSelectedTypes.clear();
   syncTypeCategoryDisplays();
   renderTypeList('tplTypePickerList', 'tplPick_', tplPickerSelectedTypes, 'toggleTplPickerType');
-  const cta = document.getElementById('tplTypePickerCta');
-  cta.disabled = true;
-  cta.style.background = '#e0e0e0';
-  cta.style.color = '#999';
-  cta.style.cursor = 'not-allowed';
+  updateTplPickerCta();
   const loader = document.getElementById('tplPickerLoader');
   if (loader) loader.style.display = 'none';
   const picker = document.getElementById('tplTypePicker');
@@ -9773,19 +9794,7 @@ function toggleTplPickerType(typeId) {
     tplPickerSelectedTypes.add(typeId);
   }
   refreshTypeListChecks('tplPick_', tplPickerSelectedTypes);
-  const cta = document.getElementById('tplTypePickerCta');
-  const count = tplPickerSelectedTypes.size;
-  if (count > 0) {
-    cta.disabled = false;
-    cta.style.background = '#f9dc00';
-    cta.style.color = '#161616';
-    cta.style.cursor = 'pointer';
-  } else {
-    cta.disabled = true;
-    cta.style.background = '#e0e0e0';
-    cta.style.color = '#999';
-    cta.style.cursor = 'not-allowed';
-  }
+  updateTplPickerCta();
 }
 
 function closeTplTypePicker() {
@@ -9796,17 +9805,14 @@ function closeTplTypePicker() {
 }
 
 function confirmTplTypePicker() {
-  if (tplPickerSelectedTypes.size === 0 && pendingCategoryAutoTypeIdsTpl && pendingCategoryAutoTypeIdsTpl.length > 0) {
-    tplPickerSelectedTypes = new Set(pendingCategoryAutoTypeIdsTpl);
-    pendingCategoryAutoTypeIdsTpl = null;
-  }
+  const typesAvailable = getTypesForCategory(tplPickerCategoryLabel);
   const count = tplPickerSelectedTypes.size;
-  if (count === 0) return;
+  if (count === 0 && typesAvailable.length > 0) return;
   const picker = document.getElementById('tplTypePicker');
 
-  if (count === 1) {
-    const typeId = [...tplPickerSelectedTypes][0];
-    const ft = fashionTypes.find(t => t.id === typeId);
+  if (count <= 1) {
+    const typeId = count === 1 ? [...tplPickerSelectedTypes][0] : null;
+    const ft = typeId ? fashionTypes.find(t => t.id === typeId) : null;
     picker.style.transform = 'translateY(100%)';
     picker.style.opacity = '0';
     setTimeout(() => { picker.style.display = 'none'; }, 400);

@@ -3632,6 +3632,51 @@
         pointer-events: auto;
       }
     }
+    /* Color suggestion chips (typeahead) */
+    .vm-color-input-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .vm-color-row-inner {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+    }
+    .vm-color-row-inner .vm-input-wrap {
+      flex: 1;
+    }
+    .vm-color-row-inner .vm-sheet-row-delete {
+      align-self: center;
+    }
+    .vm-color-suggestions {
+      display: none;
+      flex-wrap: wrap;
+      gap: 8px;
+      width: 100%;
+    }
+    .vm-color-suggestions.visible {
+      display: flex;
+    }
+    .vm-color-suggest-chip {
+      display: inline-flex;
+      align-items: center;
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      background: rgba(0, 0, 0, 0.03);
+      font-size: 14px;
+      font-weight: 500;
+      font-family: var(--font);
+      color: #1c1c1c;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .vm-color-suggest-chip:active {
+      background: rgba(0, 0, 0, 0.08);
+      border-color: rgba(0, 0, 0, 0.15);
+    }
     .vm-pill-add {
       height: 28px;
       padding: 4px 12px;
@@ -7131,7 +7176,7 @@
           <div style="padding:12px 0 16px;display:flex;flex-direction:column;gap:8px">
             <div style="font-size:14px;font-weight:590;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c;padding:0 16px">Condition <span style="color:#ce291a">*</span></div>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:0 16px" class="hide-scrollbar">
-              <span class="edit-chip edit-chip-on" onclick="selectSingleChip(this)">New w Tag</span>
+              <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">New w Tag</span>
               <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">New w/out Tag</span>
               <span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">New w Defect</span>
             </div>
@@ -11509,8 +11554,8 @@ function syncProductFormFieldsFromSavedVariants() {
       } else {
         const chipsWrap = condEl.querySelector('.hide-scrollbar');
         if (chipsWrap) {
-          chipsWrap.innerHTML = preset.listingConditions.map((c, i) =>
-            `<span class="edit-chip ${i === 0 ? 'edit-chip-on' : 'edit-chip-off'}" onclick="selectSingleChip(this)">${escapeHtmlVm(c)}</span>`
+          chipsWrap.innerHTML = preset.listingConditions.map((c) =>
+            `<span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">${escapeHtmlVm(c)}</span>`
           ).join('');
         }
         condEl.style.display = '';
@@ -11519,7 +11564,7 @@ function syncProductFormFieldsFromSavedVariants() {
       const chipsWrap = condEl.querySelector('.hide-scrollbar');
       if (chipsWrap) {
         chipsWrap.innerHTML =
-          '<span class="edit-chip edit-chip-on" onclick="selectSingleChip(this)">New w Tag</span>' +
+          '<span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">New w Tag</span>' +
           '<span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">New w/out Tag</span>' +
           '<span class="edit-chip edit-chip-off" onclick="selectSingleChip(this)">New w Defect</span>';
       }
@@ -13324,6 +13369,11 @@ function vmSyncPendingColorsFromInputs() {
 const VM_COLOR_TRASH_SVG =
   '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="1.5" aria-hidden="true"><path d="M5.5 7h9l-1 10h-7L5.5 7z"/><path d="M8 7V5.5a1 1 0 011-1h2a1 1 0 011 1V7"/><path d="M3.5 7h13"/></svg>';
 
+const VM_COMMON_COLORS = [
+  'Black', 'White', 'Gray', 'Navy', 'Blue', 'Red', 'Pink', 'Green',
+  'Brown', 'Tan', 'Beige', 'Cream', 'Yellow', 'Orange', 'Purple', 'Multi'
+];
+
 function vmUpdateWdsInputWrapState(wrap) {
   if (!(wrap instanceof HTMLElement)) return;
   if (wrap.classList.contains('product-category-field')) {
@@ -13405,6 +13455,68 @@ function vmBindProductBrandField() {
   sync();
 }
 
+function vmGetUsedColors() {
+  const mount = document.getElementById('vmColorInputsMount');
+  if (!mount) return new Set();
+  const inputs = [...mount.querySelectorAll('.vm-color-row-input')];
+  return new Set(inputs.map(i => i.value.trim().toLowerCase()).filter(Boolean));
+}
+
+function vmUpdateColorSuggestions(input, suggestionsEl) {
+  const query = input.value.trim().toLowerCase();
+  const used = vmGetUsedColors();
+  
+  // Only show suggestions when user has started typing
+  if (!query) {
+    suggestionsEl.innerHTML = '';
+    suggestionsEl.classList.remove('visible');
+    return;
+  }
+  
+  const available = VM_COMMON_COLORS.filter(c => {
+    const lower = c.toLowerCase();
+    if (used.has(lower) && lower !== query) return false;
+    return lower.startsWith(query) || lower.includes(query);
+  });
+  suggestionsEl.innerHTML = '';
+  
+  // Hide only if no matches
+  if (available.length === 0) {
+    suggestionsEl.classList.remove('visible');
+    return;
+  }
+  available.slice(0, 8).forEach(color => {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'vm-color-suggest-chip';
+    chip.textContent = color;
+    chip.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      input.value = color;
+      vmUpdateWdsInputWrapState(input.closest('.vm-input-wrap'));
+      vmSyncColorDoneState();
+      suggestionsEl.classList.remove('visible');
+      vmUpdateAllColorSuggestions();
+    });
+    suggestionsEl.appendChild(chip);
+  });
+  suggestionsEl.classList.add('visible');
+}
+
+function vmUpdateAllColorSuggestions() {
+  const mount = document.getElementById('vmColorInputsMount');
+  if (!mount) return;
+  const rows = [...mount.querySelectorAll('.vm-color-input-row')];
+  rows.forEach(row => {
+    const input = row.querySelector('.vm-color-row-input');
+    const suggestions = row.querySelector('.vm-color-suggestions');
+    if (input && suggestions && document.activeElement === input) {
+      vmUpdateColorSuggestions(input, suggestions);
+    }
+  });
+}
+
 function createVmColorRowEl(val, idx, totalRows) {
   const showTrash = totalRows > 1;
   const row = document.createElement('div');
@@ -13422,9 +13534,12 @@ function createVmColorRowEl(val, idx, totalRows) {
   input.type = 'text';
   input.className = 'vm-input-field vm-color-row-input';
   input.autocomplete = 'off';
-  input.inputMode = 'none';
+  input.inputMode = 'text';
   input.value = val;
-  input.addEventListener('input', vmSyncColorDoneState);
+  input.addEventListener('input', () => {
+    vmSyncColorDoneState();
+    vmUpdateColorSuggestions(input, suggestions);
+  });
   const clearBtn = document.createElement('button');
   clearBtn.type = 'button';
   clearBtn.className = 'vm-input-clear';
@@ -13435,12 +13550,17 @@ function createVmColorRowEl(val, idx, totalRows) {
   ctrlRow.appendChild(clearBtn);
   wrap.appendChild(lab);
   wrap.appendChild(ctrlRow);
+  
   vmBindWdsTextWrap(wrap);
   wrap.addEventListener('click', (e) => {
     if (e.target.closest('.vm-input-clear')) return;
     input.focus();
   });
-  row.appendChild(wrap);
+  
+  const rowInner = document.createElement('div');
+  rowInner.className = 'vm-color-row-inner';
+  rowInner.appendChild(wrap);
+  
   if (showTrash) {
     const del = document.createElement('button');
     del.type = 'button';
@@ -13448,8 +13568,25 @@ function createVmColorRowEl(val, idx, totalRows) {
     del.setAttribute('aria-label', 'Remove color');
     del.innerHTML = VM_COLOR_TRASH_SVG;
     del.addEventListener('click', () => vmRemoveColorRow(del));
-    row.appendChild(del);
+    rowInner.appendChild(del);
   }
+  
+  row.appendChild(rowInner);
+  
+  const suggestions = document.createElement('div');
+  suggestions.className = 'vm-color-suggestions';
+  row.appendChild(suggestions);
+  
+  input.addEventListener('focus', () => {
+    vmUpdateColorSuggestions(input, suggestions);
+  });
+  input.addEventListener('blur', () => {
+    setTimeout(() => {
+      if (!suggestions.contains(document.activeElement)) {
+        suggestions.classList.remove('visible');
+      }
+    }, 150);
+  });
   return row;
 }
 

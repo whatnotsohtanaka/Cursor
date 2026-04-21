@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Soh's Prototypes</title>
+  <style>
+    :root {
+      --font: -apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+      --bg: #f5f5f5;
+      --surface: #fff;
+      --text: #121212;
+      --muted: #6a6a6a;
+      --border: #e5e5e5;
+      --header: #1d1d1d;
+      --accent: #ffe414;
+      --link: #0b57d0;
+      --radius: 12px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.45;
+    }
+    .top {
+      background: var(--header);
+      color: rgba(255,255,255,0.92);
+      padding: 18px 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .top h1 {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 20px 48px;
+    }
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    thead th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      background: #fafafa;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    thead th.sortable {
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s, color 0.15s;
+    }
+    thead th.sortable:hover {
+      background: #f0f0f0;
+      color: var(--text);
+    }
+    thead th.sortable:focus-visible {
+      outline: 2px solid #0b57d0;
+      outline-offset: -2px;
+    }
+    thead th.sort-active {
+      color: var(--text);
+    }
+    thead th .sort-glyph {
+      display: inline-block;
+      min-width: 1em;
+      margin-left: 4px;
+      font-size: 11px;
+      opacity: 0.9;
+    }
+    tbody td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+    tbody tr:hover td {
+      background: #fcfcfc;
+    }
+    .date-cell {
+      font-variant-numeric: tabular-nums;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .team-cell {
+      white-space: nowrap;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .name-link {
+      font-weight: 600;
+      color: var(--link);
+      text-decoration: none;
+    }
+    .name-link:hover {
+      text-decoration: underline;
+    }
+    .cell-link {
+      color: var(--link);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .cell-link:hover {
+      text-decoration: underline;
+    }
+    .empty-cell {
+      color: #b0b0b0;
+      font-size: 13px;
+    }
+    td.note-cell {
+      vertical-align: top;
+      min-width: 200px;
+      max-width: 320px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+    .row-note {
+      display: block;
+      width: 100%;
+      min-height: 44px;
+      margin: 0;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      font: inherit;
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--text);
+      background: rgba(0,0,0,0.02);
+      resize: vertical;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    }
+    .row-note::placeholder {
+      color: #b0b0b0;
+    }
+    .row-note:hover {
+      background: rgba(0,0,0,0.04);
+    }
+    .row-note:focus {
+      outline: none;
+      border-color: #c4c4c4;
+      background: var(--surface);
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <h1>Soh's Prototypes</h1>
+  </header>
+
+  <div class="wrap">
+    <div class="card table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th
+              scope="col"
+              id="th-updated"
+              class="sortable sort-active"
+              tabindex="0"
+              data-sort-key="updated"
+              aria-sort="descending"
+              title="Sort by date — click to toggle newest ↔ oldest"
+            >Date updated<span class="sort-glyph" aria-hidden="true">↓</span></th>
+            <th
+              scope="col"
+              id="th-name"
+              class="sortable"
+              tabindex="0"
+              data-sort-key="title"
+              aria-sort="none"
+              title="Sort by name — click to toggle A–Z ↔ Z–A"
+            >Name<span class="sort-glyph" aria-hidden="true"></span></th>
+            <th
+              scope="col"
+              id="th-team"
+              class="sortable"
+              tabindex="0"
+              data-sort-key="team"
+              aria-sort="none"
+              title="Sort by team — click to toggle A–Z ↔ Z–A"
+            >Team<span class="sort-glyph" aria-hidden="true"></span></th>
+            <th scope="col">PRD</th>
+            <th scope="col">Figma</th>
+            <th scope="col">Notes</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!--
+    Paths in `href` are relative to this file (Cursor repo root). `updated` is YYYY-MM-DD for sorting.
+    Optional `team`; if omitted, name/id/href containing "variant" or "template" → "Inventory".
+    One row per project: if a folder has multiple versions (v1, v2, hub), link only the latest HTML here.
+  -->
+  <script>
+    const PRD_VARIANTS =
+      'https://docs.google.com/document/d/1Hr9BI1rszc3mk-bpH511IIkmtbrsUhWMXqyGSzJ9DbY/edit?tab=t.0#heading=h.j5sk7xjejuu4';
+    const PRD_TEMPLATES =
+      'https://docs.google.com/document/d/1XgTB1g1TN3eQT-mT_pGFhWmcdzeDAfr4oNBYjimfX1A/edit?tab=t.0#heading=h.uat7go897u7x';
+    const PRD_TEMPLATES_CATEGORY_TAB =
+      'https://docs.google.com/document/d/1XgTB1g1TN3eQT-mT_pGFhWmcdzeDAfr4oNBYjimfX1A/edit?tab=t.mr4aamoapk2f';
+
+    const FIGMA_VARIANTS_MOBILE =
+      'https://www.figma.com/design/Efq06B5ZlyOhHXIKojFhFd/Product-Creation---Management?node-id=15647-103655&m=dev';
+    const FIGMA_VARIANTS_DESKTOP =
+      'https://www.figma.com/design/Efq06B5ZlyOhHXIKojFhFd/Product-Creation---Management?node-id=19889-301778&m=dev';
+    const FIGMA_TEMPLATES_NUX =
+      'https://www.figma.com/design/Efq06B5ZlyOhHXIKojFhFd/Product-Creation---Management?node-id=11049-81247&t=g3CBoYb6Jii1v3EA-11';
+    const FIGMA_SELECTION_V1 =
+      'https://www.figma.com/design/Efq06B5ZlyOhHXIKojFhFd/Product-Creation---Management?node-id=13309-86802&t=EWm9w18TULUlYIQZ-11';
+    const FIGMA_LIVE_RUN =
+      'https://www.figma.com/design/Efq06B5ZlyOhHXIKojFhFd/Product-Creation---Management?node-id=18983-39043&m=dev';
+    const FIGMA_CATEGORY_ASSETS =
+      'https://www.figma.com/design/Efq06B5ZlyOhHXIKojFhFd/Product-Creation---Management?node-id=20404-98854&m=dev';
+
+    const PROTOTYPES = [
+      {
+        id: 'variants-creation-mobile',
+        name: 'Variants Creation — Mobile',
+        href: 'Variants Creation/index.html',
+        updated: '2026-04-21',
+        prd: PRD_VARIANTS,
+        figma: FIGMA_VARIANTS_MOBILE
+      },
+      {
+        id: 'variants-creation-desktop',
+        name: 'Variants Creation — Desktop',
+        href: 'Variants Creation/desktop.html',
+        updated: '2026-04-21',
+        prd: PRD_VARIANTS,
+        figma: FIGMA_VARIANTS_DESKTOP
+      },
+      {
+        id: 'live-run-xp',
+        name: 'Live Run XP (Templates & Variants)',
+        href: 'Live Run XP/index.html',
+        updated: '2026-04-21',
+        prd: '',
+        figma: FIGMA_LIVE_RUN
+      },
+      {
+        id: 'category-assets-guide',
+        name: 'Category Assets Guide',
+        href: 'Category Assets Guide/index.html',
+        updated: '2026-04-21',
+        prd: PRD_TEMPLATES_CATEGORY_TAB,
+        figma: FIGMA_CATEGORY_ASSETS,
+        team: 'Inventory'
+      },
+      {
+        id: 'templates-nux',
+        name: 'Templates NUX',
+        href: 'Templates NUX/v3.html',
+        updated: '2026-04-21',
+        prd: PRD_TEMPLATES,
+        figma: FIGMA_TEMPLATES_NUX
+      },
+      {
+        id: 'variants-selection-logic',
+        name: 'Variants Selection Logic',
+        href: 'Variants Selection Logic/v1.html',
+        updated: '2026-04-21',
+        prd: 'https://docs.google.com/document/d/1Hr9BI1rszc3mk-bpH511IIkmtbrsUhWMXqyGSzJ9DbY/edit?usp=sharing',
+        figma: FIGMA_SELECTION_V1
+      },
+      {
+        id: 'variants-management',
+        name: 'Variants Management',
+        href: 'Variants Management/Variants Management v3.html',
+        updated: '2026-04-21',
+        prd: PRD_VARIANTS,
+        figma: ''
+      }
+    ];
+
+    const ROW_NOTES_KEY = 'prototype-index-row-notes-v3';
+    const rowsEl = document.getElementById('rows');
+    const thUpdated = document.getElementById('th-updated');
+    const thName = document.getElementById('th-name');
+    const thTeam = document.getElementById('th-team');
+
+    function getRowNotesMap() {
+      try {
+        const raw = localStorage.getItem(ROW_NOTES_KEY);
+        const o = raw ? JSON.parse(raw) : {};
+        return typeof o === 'object' && o !== null && !Array.isArray(o) ? o : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveRowNote(id, text) {
+      const map = getRowNotesMap();
+      map[id] = text;
+      try {
+        localStorage.setItem(ROW_NOTES_KEY, JSON.stringify(map));
+      } catch {
+        /* ignore quota */
+      }
+    }
+
+    /** @type {'updated' | 'title' | 'team'} */
+    let sortKey = 'updated';
+    /** @type {'asc' | 'desc'} */
+    let sortDir = 'desc';
+
+    function parseDate(s) {
+      const t = Date.parse(s);
+      return Number.isNaN(t) ? 0 : t;
+    }
+
+    function teamLabel(p) {
+      if (p.team != null && String(p.team).trim() !== '') {
+        return String(p.team).trim();
+      }
+      const hay = `${p.name} ${p.id} ${p.href || ''}`.toLowerCase();
+      if (hay.includes('variant') || hay.includes('template')) {
+        return 'Inventory';
+      }
+      return '—';
+    }
+
+    function sortedRows() {
+      const dir = sortDir === 'asc' ? 1 : -1;
+      const copy = [...PROTOTYPES];
+      copy.sort((a, b) => {
+        let cmp = 0;
+        if (sortKey === 'updated') {
+          cmp = parseDate(a.updated) - parseDate(b.updated);
+        } else if (sortKey === 'team') {
+          cmp = teamLabel(a).localeCompare(teamLabel(b), undefined, { sensitivity: 'base' });
+          if (cmp === 0) {
+            cmp = String(a.name).localeCompare(String(b.name), undefined, { sensitivity: 'base' });
+          }
+        } else {
+          cmp = String(a.name).localeCompare(String(b.name), undefined, { sensitivity: 'base' });
+        }
+        return cmp * dir;
+      });
+      return copy;
+    }
+
+    function updateSortHeaders() {
+      const sortables = [thUpdated, thName, thTeam];
+      for (const th of sortables) {
+        const key = th.dataset.sortKey;
+        const active = key === sortKey;
+        th.classList.toggle('sort-active', active);
+        const glyph = th.querySelector('.sort-glyph');
+        if (!active) {
+          th.setAttribute('aria-sort', 'none');
+          glyph.textContent = '';
+        } else {
+          th.setAttribute('aria-sort', sortDir === 'asc' ? 'ascending' : 'descending');
+          glyph.textContent = sortDir === 'desc' ? '↓' : '↑';
+        }
+      }
+    }
+
+    /** @param {'updated' | 'title' | 'team'} key */
+    function applySort(key) {
+      if (sortKey === key) {
+        sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortKey = key;
+        sortDir = key === 'updated' ? 'desc' : 'asc';
+      }
+      updateSortHeaders();
+      renderRows();
+    }
+
+    function bindSortHeader(th) {
+      th.addEventListener('click', () => applySort(th.dataset.sortKey));
+      th.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          applySort(th.dataset.sortKey);
+        }
+      });
+    }
+
+    function linkHtml(url, label) {
+      if (!url) {
+        return '<span class="empty-cell">—</span>';
+      }
+      const safe = String(url).replace(/"/g, '&quot;');
+      const lab = label || 'Open';
+      return `<a class="cell-link" href="${safe}" target="_blank" rel="noopener noreferrer">${lab}</a>`;
+    }
+
+    function renderRows() {
+      const rows = sortedRows();
+      const notesMap = getRowNotesMap();
+      rowsEl.innerHTML = rows
+        .map((p) => {
+          const nameHref = String(p.href).replace(/"/g, '&quot;');
+          const noteVal = notesMap[p.id] != null ? String(notesMap[p.id]) : '';
+          const noteEscaped = escapeHtml(noteVal);
+          return `<tr data-id="${escapeHtml(p.id)}">
+            <td class="date-cell">${escapeHtml(p.updated || '—')}</td>
+            <td><a class="name-link" href="${nameHref}" target="_blank" rel="noopener noreferrer">${escapeHtml(p.name)}</a></td>
+            <td class="team-cell">${escapeHtml(teamLabel(p))}</td>
+            <td>${linkHtml(p.prd, 'PRD')}</td>
+            <td>${linkHtml(p.figma, 'Figma')}</td>
+            <td class="note-cell"><textarea class="row-note" data-id="${escapeHtml(p.id)}" rows="2" spellcheck="true" placeholder="Add note…" aria-label="Notes for ${escapeHtml(p.name)}">${noteEscaped}</textarea></td>
+          </tr>`;
+        })
+        .join('');
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    bindSortHeader(thUpdated);
+    bindSortHeader(thName);
+    bindSortHeader(thTeam);
+
+    rowsEl.addEventListener('input', (e) => {
+      const ta = e.target.closest('.row-note');
+      if (!ta || !rowsEl.contains(ta)) return;
+      const id = ta.dataset.id;
+      if (id) saveRowNote(id, ta.value);
+    });
+
+    rowsEl.addEventListener('pointerdown', (e) => {
+      const cell = e.target.closest('.note-cell');
+      if (!cell || !rowsEl.contains(cell) || e.target.closest('.row-note')) return;
+      const ta = cell.querySelector('.row-note');
+      if (ta) ta.focus();
+    });
+
+    updateSortHeaders();
+    renderRows();
+  </script>
+</body>
+</html>
