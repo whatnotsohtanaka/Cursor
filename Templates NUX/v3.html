@@ -1897,6 +1897,25 @@
     .edit-chip-on { background: #1c1c1c; color: white; }
     .edit-chip-off { background: rgba(0,0,0,0.05); color: #1c1c1c; }
 
+    /* Auction lot tag (lobby pinned + live selection) */
+    .auction-lot-chip {
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+      letter-spacing: 0.02em;
+      color: white;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
     .edit-media-field {
       margin: 0 16px 12px;
       border: 1px solid #d2d2d2;
@@ -2517,13 +2536,14 @@
         </div>
         <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid white"></div>
       </div>
-      <div style="display:flex;gap:12px;align-items:center">
+      <div style="display:flex;gap:12px;align-items:flex-start">
         <div id="pinnedThumb" style="width:48px;height:48px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;background:rgba(255,255,255,0.1)">
           <img id="pinnedImg" src="" style="width:100%;height:100%;object-fit:cover;display:none" alt="">
         </div>
-        <div style="flex:1;display:flex;flex-direction:column;min-height:44px;justify-content:center">
+        <div style="flex:1;display:flex;flex-direction:column;min-height:44px;justify-content:flex-start">
           <div style="display:flex;align-items:flex-start;justify-content:space-between">
-            <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+            <div style="flex:1;display:flex;flex-direction:column;gap:6px">
+              <span id="pinnedAuctionLabel" class="auction-lot-chip" style="display:none;align-self:flex-start"></span>
               <div id="pinnedTitle" style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:white"></div>
               <div id="pinnedAttrs" style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:white"></div>
             </div>
@@ -4597,9 +4617,13 @@
 
     <!-- Bottom content: Product + Selectors + CTAs -->
     <div style="position:absolute;bottom:0;left:0;right:0;z-index:3;display:flex;flex-direction:column;gap:12px;padding:0 16px">
-      <!-- Product Details Row -->
-      <div style="display:flex;gap:12px;align-items:flex-start">
-        <div style="flex:1;display:flex;flex-direction:column;min-height:44px;justify-content:center">
+      <!-- Product Details Row (48px thumb matches lobby pinned) -->
+      <div style="display:flex;gap:12px;align-items:center">
+        <div id="liveProductThumb" style="width:48px;height:48px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;background:rgba(255,255,255,0.1)">
+          <img id="liveProductImg" src="icons/icon-tops.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;min-height:44px;justify-content:center;gap:6px">
+          <span id="liveAuctionChip" class="auction-lot-chip" style="display:none;align-self:flex-start"></span>
           <div style="display:flex;align-items:flex-start;justify-content:space-between">
             <div style="flex:1;display:flex;flex-direction:column;gap:2px">
               <div id="liveProductTitle" style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:white">Lulu Lemon - Women's Contemporary</div>
@@ -8626,6 +8650,43 @@ let pinnedProductTipShown = false;
 let hasEverPinned = false;
 let hasEditedFromShop = false;
 let pinnedShopIndex = -1;
+let lobbyAuctionLotSeq = 0;
+
+function assignAuctionLotIfNeeded(record) {
+  if (!record) return;
+  if (record.auctionLot == null) record.auctionLot = ++lobbyAuctionLotSeq;
+}
+
+function auctionChipText(record) {
+  if (!record || record.auctionLot == null) return '';
+  return '#' + record.auctionLot;
+}
+
+function syncPinnedAuctionLine(record) {
+  const lab = document.getElementById('pinnedAuctionLabel');
+  if (!lab) return;
+  if (!record) {
+    lab.textContent = '';
+    lab.style.display = 'none';
+    return;
+  }
+  assignAuctionLotIfNeeded(record);
+  lab.textContent = auctionChipText(record);
+  lab.style.display = 'inline-flex';
+}
+
+function syncLiveAuctionChip(record) {
+  const chip = document.getElementById('liveAuctionChip');
+  if (!chip) return;
+  if (!record) {
+    chip.textContent = '';
+    chip.style.display = 'none';
+    return;
+  }
+  assignAuctionLotIfNeeded(record);
+  chip.textContent = auctionChipText(record);
+  chip.style.display = 'inline-flex';
+}
 
 function updateShopListingPinState(idx, pinned) {
   const list = document.getElementById('shopProductList');
@@ -8653,6 +8714,7 @@ function unpinProduct(idx) {
   pinnedShopIndex = -1;
   updateShopListingPinState(idx, false);
   document.getElementById('lobbyPinnedProduct').style.display = 'none';
+  syncPinnedAuctionLine(null);
   document.getElementById('lobbyDefaultCta').style.display = 'block';
   document.getElementById('lobbySideMenu').style.bottom = '104px';
 }
@@ -9057,24 +9119,12 @@ function refreshAllViews(listingId) {
     const pinnedPrice = document.getElementById('pinnedPrice');
     if (pinnedTitle) pinnedTitle.textContent = record.title;
     if (pinnedPrice) pinnedPrice.textContent = record.price;
+    syncPinnedAuctionLine(record);
     if (record.type === 'template') {
       const pinnedThumb = document.getElementById('pinnedThumb');
       if (pinnedThumb) {
         pinnedThumb.innerHTML = templateThumbLayersHTML(resolveTemplateThumbIcon());
       }
-    }
-  }
-
-  // Live product overlay
-  if (record.type === 'template' || record.icon) {
-    const liveImgEl = document.getElementById('liveProductImg');
-    const detailImgEl = document.getElementById('detailHeroImg');
-    if (record.type === 'template') {
-      if (liveImgEl) liveImgEl.src = TEMPLATE_THUMB_MARK_ASSET;
-      if (detailImgEl) detailImgEl.src = TEMPLATE_THUMB_MARK_ASSET;
-    } else {
-      if (record.icon && liveImgEl && liveImgEl.src.includes('icon-')) liveImgEl.src = record.icon;
-      if (record.icon && detailImgEl && detailImgEl.src.includes('icon-')) detailImgEl.src = record.icon;
     }
   }
 
@@ -9088,10 +9138,26 @@ function refreshAllViews(listingId) {
     }
   }
 
-  // Live show overlay
+  // Live show overlay (same listing as selection step)
   const liveTitle = document.getElementById('liveProductTitle');
   if (liveTitle && liveTitle.dataset.listingId == listingId) {
     liveTitle.textContent = record.title;
+    syncLiveAuctionChip(record);
+    const liveThumb = document.getElementById('liveProductThumb');
+    if (liveThumb) {
+      if (record.type === 'template') {
+        liveThumb.innerHTML = templateThumbLayersHTML(resolveTemplateThumbIcon());
+      } else if (record.icon) {
+        liveThumb.innerHTML = '<img id="liveProductImg" src="' + record.icon + '" alt="" style="width:100%;height:100%;object-fit:cover;display:block">';
+      }
+    }
+  }
+
+  const detailImgEl = document.getElementById('detailHeroImg');
+  if (record.type === 'template') {
+    if (detailImgEl) detailImgEl.src = TEMPLATE_THUMB_MARK_ASSET;
+  } else if (record.icon && detailImgEl && String(detailImgEl.src || '').includes('icon-')) {
+    detailImgEl.src = record.icon;
   }
 }
 
@@ -9241,8 +9307,14 @@ function openLiveShow(templateIndex) {
   liveTitleEl.dataset.listingId = shopRow ? shopRow.dataset.listingId : '';
 
   const liveIcon = (storeRec && storeRec.type === 'template') ? TEMPLATE_THUMB_MARK_ASSET : (tpl.icon || 'icons/icon-tops.png');
-  const liveImgEl = document.getElementById('liveProductImg');
-  if (liveImgEl) liveImgEl.src = liveIcon;
+  const liveThumb = document.getElementById('liveProductThumb');
+  if (liveThumb) {
+    if (storeRec && storeRec.type === 'template') {
+      liveThumb.innerHTML = templateThumbLayersHTML(resolveTemplateThumbIcon());
+    } else {
+      liveThumb.innerHTML = '<img id="liveProductImg" src="' + liveIcon + '" alt="" style="width:100%;height:100%;object-fit:cover;display:block">';
+    }
+  }
 
   selectedBrand = hasBrands ? brands[0] : null;
   selectedSize = sizes.length > 0 ? sizes[0] : null;
@@ -9277,6 +9349,7 @@ function openLiveShow(templateIndex) {
   const selectionUI = document.getElementById('liveSelectionUI');
   selectionUI.style.display = (hasBrands || liveShowHasSizeSection) ? '' : 'none';
   updateLiveAttrs();
+  syncLiveAuctionChip(storeRec);
 
   // No selectable attributes -> skip overlay and pin immediately.
   if (!hasBrands && !liveShowHasSizeSection) {
@@ -9377,6 +9450,8 @@ function pinListingDirectly(idx, shopRow, storeRec) {
   const attrs = directParts.join(' • ');
   document.getElementById('pinnedTitle').textContent = title;
   document.getElementById('pinnedAttrs').textContent = attrs;
+  const pinnedRec = storeRec || (shopRow && shopRow.dataset.listingId ? findListing(parseInt(shopRow.dataset.listingId, 10)) : null);
+  syncPinnedAuctionLine(pinnedRec);
 
   const tpl = storeRec && storeRec.typeId ? fashionTypes.find(ft => ft.id === storeRec.typeId) : null;
   currentLiveTemplate = tpl || null;
@@ -9446,11 +9521,13 @@ function pinProduct() {
     const attrs = document.getElementById('liveProductAttrs').textContent;
     document.getElementById('pinnedTitle').textContent = title;
     document.getElementById('pinnedAttrs').textContent = attrs;
+    const pinRec = pinnedRow ? findListing(parseInt(pinnedRow.dataset.listingId, 10)) : null;
+    syncPinnedAuctionLine(pinRec);
 
     const pinnedThumb = document.getElementById('pinnedThumb');
     const pinnedImgEl = document.getElementById('pinnedImg');
     if (pinnedThumb && pinnedImgEl) {
-      const rec = pinnedRow ? findListing(parseInt(pinnedRow.dataset.listingId)) : null;
+      const rec = pinRec;
       if (rec && rec.type === 'template') {
         pinnedThumb.innerHTML = templateThumbLayersHTML(resolveTemplateThumbIcon());
       } else if (currentLiveTemplate) {
@@ -9500,6 +9577,7 @@ function pinProduct() {
 
 function closeLiveShow() {
   clearAllLiveTips();
+  syncLiveAuctionChip(null);
   const overlay = document.getElementById('liveShowOverlay');
   overlay.style.transition = 'opacity 0.3s ease';
   overlay.style.opacity = '0';
@@ -9565,6 +9643,10 @@ function editListingFromDetail() {
 
 function reopenLiveShowFromLobby() {
   if (!currentLiveTemplate) return;
+  const row = pinnedShopIndex >= 0 ? document.querySelectorAll('#shopProductList [data-listing-id]')[pinnedShopIndex] : null;
+  const rec = row ? findListing(parseInt(row.dataset.listingId, 10)) : null;
+  syncLiveAuctionChip(rec);
+
   const overlay = document.getElementById('liveShowOverlay');
   const selectionUI = document.getElementById('liveSelectionUI');
   selectionUI.style.display = '';
@@ -9988,6 +10070,7 @@ function skipToLobby() {
   if (shopSheet) { shopSheet.style.display = 'none'; }
 
   document.getElementById('lobbyPinnedProduct').style.display = 'none';
+  syncPinnedAuctionLine(null);
   document.getElementById('lobbyDefaultCta').style.display = 'block';
   document.getElementById('lobbySideMenu').style.bottom = '104px';
 
@@ -10094,6 +10177,7 @@ function resetNewSellerScene() {
   if (shopSheet) shopSheet.style.display = 'none';
 
   document.getElementById('lobbyPinnedProduct').style.display = 'none';
+  syncPinnedAuctionLine(null);
   document.getElementById('lobbyDefaultCta').style.display = 'block';
   document.getElementById('lobbySideMenu').style.bottom = '104px';
 
@@ -10559,7 +10643,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/21/26 @ 4:39pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/21/26 @ 4:58pm';
 document.getElementById('protoTimestamp').textContent = PROTO_TIMESTAMP;
 
   const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/templates-nux/v3.html';
