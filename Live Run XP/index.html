@@ -817,9 +817,9 @@
         padding-right: env(safe-area-inset-right, 0px);
         box-sizing: border-box;
       }
-      body:not(.proto-mobile) .phone-content * { max-width: 100%; }
-      body:not(.proto-mobile) .phone-content img,
-      body:not(.proto-mobile) .phone-content video { height: auto; }
+      body:not(.proto-mobile):not(.view-both) .phone-content * { max-width: 100%; }
+      body:not(.proto-mobile):not(.view-both) .phone-content img,
+      body:not(.proto-mobile):not(.view-both) .phone-content video { height: auto; }
     }
 
     /* Hide scrollbars */
@@ -1479,8 +1479,11 @@
                   transform 400ms cubic-bezier(0.05, 0.70, 0.10, 1.00);
     }
     .live-show__close-btn svg {
-      width: 13px;
-      height: 13px;
+      width: 14px;
+      height: 14px;
+      min-width: 14px;
+      min-height: 14px;
+      flex-shrink: 0;
       color: #fff;
     }
     /* Attribute Picker — Figma 16839:66098 */
@@ -1775,6 +1778,192 @@
     body.view-buyer .live-show__header-follow { display: flex; }
     body.view-buyer .live-show__header-verified { display: inline-flex; }
     body.view-buyer .live-show__header-name-row { display: flex; align-items: center; gap: 4px; }
+    /* Phone labels for split view */
+    .phone-label {
+      display: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: #666;
+      text-align: center;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    body.view-both .phone-label { display: block; }
+    /* Buyer phone mirror for split view */
+    .phone--buyer-mirror {
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      border-radius: inherit;
+      overflow: hidden;
+      background: #000;
+    }
+    #buyerPhoneWrapper .device-frame {
+      display: flex;
+      flex-direction: column;
+    }
+    /* Apply buyer view styles to mirrored phone */
+    .phone--buyer-mirror .live-show__header-sub { display: none; }
+    .phone--buyer-mirror .live-show__header-rating { display: flex; }
+    .phone--buyer-mirror .live-show__header-follow { display: flex; }
+    .phone--buyer-mirror .live-show__header-verified { display: inline-flex; }
+    .phone--buyer-mirror .live-show__header-name-row { display: flex; align-items: center; gap: 4px; }
+    .phone--buyer-mirror .live-show__side-tools--seller { display: none; }
+    .phone--buyer-mirror .live-show__side-tools--buyer { display: flex; }
+    .phone--buyer-mirror .live-show__cmd-wrap { display: none; }
+    .phone--buyer-mirror .live-show__chat-input { padding-left: 0; }
+    .phone--buyer-mirror .live-show__chat-filter-row { display: none; }
+    .phone--buyer-mirror .live-show__cta-btn--primary { display: none !important; }
+    .phone--buyer-mirror .live-show__bids-btn { display: none !important; }
+    .phone--buyer-mirror .live-show__dual-ctas { display: none !important; }
+    .phone--buyer-mirror .live-show__attr-picker { display: none !important; }
+    .phone--buyer-mirror .live-show__product-qty { display: none; }
+    .phone--buyer-mirror .live-show__shipping { display: block; }
+    .phone--buyer-mirror .live-show__cta-row--buyer:not(.live-show__cta-row--pre-auction):not(.live-show__cta-row--active-auction):not(.live-show__cta-row--post-sold) { display: flex; margin-top: 12px; }
+    .phone--buyer-mirror .live-show__cta-row--pre-auction:not(.is-hidden) { display: flex; width: 100%; margin-top: 12px; }
+    .phone--buyer-mirror .live-show__cta-row--active-auction.is-visible { display: flex; margin-top: 12px; }
+    .phone--buyer-mirror .live-show__cta-row--post-sold.is-visible {
+      display: flex !important;
+      width: 100%;
+      margin-top: 12px;
+      align-items: stretch;
+    }
+    .phone--buyer-mirror .live-show__template-label { display: none !important; }
+    .phone--buyer-mirror #pinned-bin .live-show__cta-row--buyer { display: flex !important; margin-top: 12px; }
+    .phone--buyer-mirror #pinned-flash .live-show__cta-row--buyer { display: flex !important; margin-top: 12px; }
+    .phone--buyer-mirror #pinned-bin-variant .live-show__cta-row--buyer { display: flex !important; margin-top: 12px; }
+    .phone--buyer-mirror #pinned-flash-variant .live-show__cta-row--buyer { display: flex !important; margin-top: 12px; }
+    /*
+      Both view: buyer mirror is NOT under body.view-buyer, so mirror needs the same
+      dock rules — hide preview until Pin Product; while seller selects, show only the
+      last officially pinned item (or empty if none).
+    */
+    .phone--buyer-mirror .live-show__dock:not(.is-officially-pinned) .live-show__commerce[data-pinned] { display: none !important; }
+    .phone--buyer-mirror .live-show__dock:not(.is-officially-pinned) #pinned-empty { display: block !important; }
+    .phone--buyer-mirror .live-show__dock.is-officially-pinned #pinned-empty { display: none !important; }
+    .phone--buyer-mirror .live-show__dock.is-officially-pinned:not(.is-selecting-options) .live-show__commerce[data-pinned] { display: none !important; }
+    .phone--buyer-mirror .live-show__dock.is-officially-pinned:not(.is-selecting-options)[data-pinned-type="auction"] #pinned-auction { display: block !important; }
+    .phone--buyer-mirror .live-show__dock.is-officially-pinned:not(.is-selecting-options)[data-pinned-type="template"] #pinned-template { display: block !important; }
+    .phone--buyer-mirror .live-show__dock.is-officially-pinned:not(.is-selecting-options)[data-pinned-type="variant"] #pinned-variant { display: block !important; }
+    .phone--buyer-mirror .live-show__dock.is-officially-pinned:not(.is-selecting-options)[data-pinned-type="bin"] #pinned-bin { display: block !important; }
+    .phone--buyer-mirror .live-show__dock.is-officially-pinned:not(.is-selecting-options)[data-pinned-type="bin-variant"] #pinned-bin-variant { display: block !important; }
+    .phone--buyer-mirror .live-show__dock.is-officially-pinned:not(.is-selecting-options)[data-pinned-type="flash"] #pinned-flash { display: block !important; }
+    .phone--buyer-mirror .live-show__dock.is-officially-pinned:not(.is-selecting-options)[data-pinned-type="flash-variant"] #pinned-flash-variant { display: block !important; }
+    .phone--buyer-mirror .live-show__dock.is-selecting-options .live-show__commerce[data-pinned] { display: none !important; }
+    .phone--buyer-mirror .live-show__dock.is-selecting-options[data-pinned-type="auction"] #pinned-auction { display: block !important; }
+    .phone--buyer-mirror .live-show__dock.is-selecting-options[data-pinned-type="template"] #pinned-template { display: block !important; }
+    .phone--buyer-mirror .live-show__dock.is-selecting-options[data-pinned-type="variant"] #pinned-variant { display: block !important; }
+    .phone--buyer-mirror .live-show__dock.is-selecting-options[data-pinned-type="bin"] #pinned-bin { display: block !important; }
+    .phone--buyer-mirror .live-show__dock.is-selecting-options[data-pinned-type="bin-variant"] #pinned-bin-variant { display: block !important; }
+    .phone--buyer-mirror .live-show__dock.is-selecting-options[data-pinned-type="flash"] #pinned-flash { display: block !important; }
+    .phone--buyer-mirror .live-show__dock.is-selecting-options[data-pinned-type="flash-variant"] #pinned-flash-variant { display: block !important; }
+    #buyerPhoneWrapper { 
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    /* Pass-through wrappers so seller-only / buyer-only keep a flat .proto-demo-row. */
+    .both-phones-stage,
+    .both-phones-slot {
+      display: contents;
+    }
+    body.view-both {
+      align-items: stretch;
+    }
+    body.view-both .proto-body {
+      align-self: stretch;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+    body.view-both .proto-demo-row {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      justify-content: center;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      flex: 1;
+      min-height: 0;
+      box-sizing: border-box;
+    }
+    /* One full-area box; centers the inner row of both devices on the viewport. */
+    body.view-both .both-phones-stage {
+      display: flex;
+      flex: 1;
+      width: 100%;
+      min-width: 0;
+      min-height: 0;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+    body.view-both .both-phones-slot {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+      gap: 40px;
+    }
+    body.view-both #phoneWrapper,
+    body.view-both #buyerPhoneWrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      flex-shrink: 0;
+      /* Scaled .phone-frame still lays out at full device size; min-width:0 keeps flex
+         from expanding the column under the neighbor phone (see z-index stack below). */
+      min-width: 0;
+      overflow: visible;
+    }
+    body.view-both #phoneWrapper {
+      z-index: 0;
+    }
+    body.view-both #buyerPhoneWrapper {
+      display: flex;
+      z-index: 1;
+    }
+    /* Undo global phone stack overflow so scaled bezel / shadows are not clipped in split view */
+    body.view-both .phone,
+    body.view-both .phone-content,
+    body.view-both .proto-flow-stack {
+      overflow: visible !important;
+    }
+    /* Buyer column: real cursor + interaction; seller keeps prototype finger cursor */
+    body.view-both #buyerPhoneWrapper .device-frame,
+    body.view-both #buyerPhoneWrapper .device-frame * {
+      cursor: auto !important;
+    }
+    /* Phone scale + wrapper size come from applyPhoneScale (both phones match) */
+    /* Both view: collapse and center control panel at top */
+    body.view-both #controlPanel {
+      position: fixed !important;
+      left: 50% !important;
+      top: 12px !important;
+      transform: translateX(-50%) !important;
+      right: auto !important;
+    }
+    body.view-both #controlPanelBody {
+      display: none !important;
+    }
+    body.view-both #controlPanel.is-expanded #controlPanelBody {
+      display: flex !important;
+      flex-direction: column;
+    }
+    body.view-both #collapseChevron {
+      transform: rotate(180deg);
+    }
+    body.view-both #controlPanel.is-expanded #collapseChevron {
+      transform: rotate(0deg);
+    }
     /* Disable all transitions during view switch for instant snap */
     body.view-switching,
     body.view-switching *,
@@ -1882,8 +2071,8 @@
       transform: rotate(90deg);
     }
     .live-show__icon-img--more {
-      width: 20px;
-      height: 4px;
+      width: 24px;
+      height: 24px;
     }
     .live-show__live-count {
       font-size: 12px;
@@ -2224,40 +2413,68 @@
     /* Shop listings for buyers - hide seller controls, show buyer CTAs */
     .live-shop-row__actions--seller { display: flex !important; }
     .live-shop-row__actions--buyer { display: none !important; }
-    body.view-buyer .live-shop-row__actions--seller { display: none !important; }
-    body.view-buyer .live-shop-row__actions--buyer { display: flex !important; }
-    body.view-buyer #live-shop-panel-giveaway .live-shop-row__actions--buyer { display: none !important; }
-    body.view-buyer .live-shop-row { cursor: pointer; }
+    body.view-buyer .live-shop-row__actions--seller,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-row__actions--seller { display: none !important; }
+    body.view-buyer .live-shop-row__actions--buyer,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-row__actions--buyer { display: flex !important; }
+    body.view-buyer #live-shop-panel-giveaway .live-shop-row__actions--buyer,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) #live-shop-panel-giveaway .live-shop-row__actions--buyer { display: none !important; }
+    body.view-buyer .live-shop-row,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-row { cursor: pointer; }
     /* Hide pinned/running sections in shop for buyers */
-    body.view-buyer .live-shop-section-head--pinned { display: none !important; }
-    body.view-buyer .live-shop-section-head--running { display: none !important; }
-    body.view-buyer .live-shop-section-divider { display: none !important; }
-    /* Buyer view: hide running and pinned auction items from shop entirely */
-    body.view-buyer .live-shop-row.is-auction-active { display: none !important; }
-    body.view-buyer .live-shop-row.is-pinned { display: none !important; }
-    /* Buyer view: restore original listing order using flexbox with data-original-order */
-    body.view-buyer #live-shop-panel-auction:not([hidden]) { display: flex; flex-direction: column; }
-    body.view-buyer #live-shop-panel-auction > * { order: 100; }
-    body.view-buyer #live-shop-panel-auction #running-now-section { order: -2 !important; }
-    body.view-buyer #live-shop-panel-auction #pinned-section { order: -1 !important; }
-    body.view-buyer #live-shop-panel-auction #auction-listings-section { order: 0 !important; }
-    body.view-buyer #live-shop-panel-auction .live-shop-row[data-original-order="1"] { order: 1 !important; }
-    body.view-buyer #live-shop-panel-auction .live-shop-row[data-original-order="2"] { order: 2 !important; }
-    body.view-buyer #live-shop-panel-auction .live-shop-row[data-original-order="3"] { order: 3 !important; }
-    body.view-buyer #live-shop-panel-auction .live-shop-row[data-original-order="4"] { order: 4 !important; }
-    body.view-buyer #live-shop-panel-auction .live-shop-row[data-original-order="5"] { order: 5 !important; }
-    body.view-buyer #live-shop-panel-auction .live-shop-row[data-original-order="6"] { order: 6 !important; }
-    body.view-buyer #live-shop-panel-buy-now:not([hidden]) { display: flex; flex-direction: column; }
-    body.view-buyer #live-shop-panel-buy-now > * { order: 100; }
-    body.view-buyer #live-shop-panel-buy-now .live-shop-section-head { order: 0 !important; }
-    body.view-buyer #live-shop-panel-buy-now .live-shop-row[data-original-order="1"] { order: 1 !important; }
-    body.view-buyer #live-shop-panel-buy-now .live-shop-row[data-original-order="2"] { order: 2 !important; }
-    body.view-buyer #live-shop-panel-buy-now .live-shop-row[data-original-order="3"] { order: 3 !important; }
-    body.view-buyer #live-shop-panel-buy-now .live-shop-row[data-original-order="4"] { order: 4 !important; }
-    body.view-buyer #live-shop-panel-buy-now .live-shop-row[data-original-order="5"] { order: 5 !important; }
+    body.view-buyer .live-shop-section-head--pinned,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-section-head--pinned { display: none !important; }
+    body.view-buyer .live-shop-section-head--running,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-section-head--running { display: none !important; }
+    body.view-buyer .live-shop-section-divider,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-section-divider { display: none !important; }
+    /* Pinned / running rows stay in the DOM under hidden section chrome; flex order + data-original-order
+       keeps them in stable Listings order (hiding them made variants “disappear” for buyers). */
+    /* Buyer view: restore original listing order using flexbox with data-original-order.
+       Use .live-shop-panel--* / --auction-listings classes (not ids): buyer split-clone strips ids. */
+    body.view-buyer .live-shop-panel--auction:not([hidden]),
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--auction:not([hidden]) { display: flex; flex-direction: column; }
+    body.view-buyer .live-shop-panel--auction > *,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--auction > * { order: 100; }
+    body.view-buyer .live-shop-panel--auction > .live-shop-section-head--running,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--auction > .live-shop-section-head--running { order: -2 !important; }
+    body.view-buyer .live-shop-panel--auction > .live-shop-section-head--pinned,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--auction > .live-shop-section-head--pinned { order: -1 !important; }
+    body.view-buyer .live-shop-panel--auction > .live-shop-section-head--auction-listings,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--auction > .live-shop-section-head--auction-listings { order: 0 !important; }
+    body.view-buyer .live-shop-panel--auction .live-shop-row[data-original-order="1"],
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--auction .live-shop-row[data-original-order="1"] { order: 1 !important; }
+    body.view-buyer .live-shop-panel--auction .live-shop-row[data-original-order="2"],
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--auction .live-shop-row[data-original-order="2"] { order: 2 !important; }
+    body.view-buyer .live-shop-panel--auction .live-shop-row[data-original-order="3"],
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--auction .live-shop-row[data-original-order="3"] { order: 3 !important; }
+    body.view-buyer .live-shop-panel--auction .live-shop-row[data-original-order="4"],
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--auction .live-shop-row[data-original-order="4"] { order: 4 !important; }
+    body.view-buyer .live-shop-panel--auction .live-shop-row[data-original-order="5"],
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--auction .live-shop-row[data-original-order="5"] { order: 5 !important; }
+    body.view-buyer .live-shop-panel--auction .live-shop-row[data-original-order="6"],
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--auction .live-shop-row[data-original-order="6"] { order: 6 !important; }
+    body.view-buyer .live-shop-panel--buy-now:not([hidden]),
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--buy-now:not([hidden]) { display: flex; flex-direction: column; }
+    body.view-buyer .live-shop-panel--buy-now > *,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--buy-now > * { order: 100; }
+    body.view-buyer .live-shop-panel--buy-now .live-shop-section-head,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--buy-now .live-shop-section-head { order: 0 !important; }
+    body.view-buyer .live-shop-panel--buy-now .live-shop-row[data-original-order="1"],
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--buy-now .live-shop-row[data-original-order="1"] { order: 1 !important; }
+    body.view-buyer .live-shop-panel--buy-now .live-shop-row[data-original-order="2"],
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--buy-now .live-shop-row[data-original-order="2"] { order: 2 !important; }
+    body.view-buyer .live-shop-panel--buy-now .live-shop-row[data-original-order="3"],
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--buy-now .live-shop-row[data-original-order="3"] { order: 3 !important; }
+    body.view-buyer .live-shop-panel--buy-now .live-shop-row[data-original-order="4"],
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--buy-now .live-shop-row[data-original-order="4"] { order: 4 !important; }
+    body.view-buyer .live-shop-panel--buy-now .live-shop-row[data-original-order="5"],
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-panel--buy-now .live-shop-row[data-original-order="5"] { order: 5 !important; }
     /* Buyer view: hide dynamic price/bids, show starting price from data attribute */
-    body.view-buyer .live-shop-row .live-shop-row__price.js-shop-price { font-size: 0; visibility: hidden; position: relative; }
-    body.view-buyer .live-shop-row .live-shop-row__price.js-shop-price::after { 
+    body.view-buyer .live-shop-row .live-shop-row__price.js-shop-price,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-row .live-shop-row__price.js-shop-price { font-size: 0; visibility: hidden; position: relative; }
+    body.view-buyer .live-shop-row .live-shop-row__price.js-shop-price::after,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-row .live-shop-row__price.js-shop-price::after {
       content: attr(data-start-price);
       visibility: visible;
       font-size: 13px; 
@@ -2267,15 +2484,49 @@
       left: 0;
       top: 0;
     }
+    /* Buyer shop: hide live countdown on rows (seller-only affordance) */
+    body.view-buyer .live-shop-row .live-shop-row__timer.js-shop-timer,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-row .live-shop-row__timer.js-shop-timer,
+    .phone--buyer-mirror .live-shop-row .live-shop-row__timer.js-shop-timer {
+      display: none !important;
+    }
+    /* Buyer shop: template rows show “Open Pull” instead of “Template” in meta line */
+    body.view-buyer .live-shop-row[data-pin-type="template"] .live-shop-row__meta,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-row[data-pin-type="template"] .live-shop-row__meta,
+    .phone--buyer-mirror .live-shop-row[data-pin-type="template"] .live-shop-row__meta {
+      font-size: 0;
+      visibility: hidden;
+      letter-spacing: 0;
+      line-height: 0;
+      position: relative;
+      min-height: 18px;
+    }
+    body.view-buyer .live-shop-row[data-pin-type="template"] .live-shop-row__meta::after,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-row[data-pin-type="template"] .live-shop-row__meta::after,
+    .phone--buyer-mirror .live-shop-row[data-pin-type="template"] .live-shop-row__meta::after {
+      content: "Open Pull";
+      visibility: visible;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: #7f7f7f;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     /* Hide Offers and Tips tabs for buyers */
-    body.view-buyer #live-shop-tab-offers { display: none !important; }
-    body.view-buyer #live-shop-tab-tips { display: none !important; }
-    /* Change "Template" to "Open Pull" for buyers */
-    body.view-buyer .live-shop-row[data-pin-type="template"] .live-shop-row__meta { font-size: 0; }
-    body.view-buyer .live-shop-row[data-pin-type="template"] .live-shop-row__meta::after { content: 'Open Pull'; font-size: 13px; }
-    /* Hide auction # labels for buyers (e.g., "#1", "#2") */
+    body.view-buyer #live-shop-tab-offers,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) #live-shop-tab-offers { display: none !important; }
+    body.view-buyer #live-shop-tab-tips,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) #live-shop-tab-tips { display: none !important; }
+    /* Buyer: show template-type rows with clear "Template" meta (chip #1 stays visible below) */
+    /* Hide auction # labels for buyers (e.g., "#1", "#2") — full buyer view only; mirror uses .phone--buyer-mirror */
     body.view-buyer .live-show__template-label { display: none !important; }
-    body.view-buyer .live-shop-row__template-chip { display: none !important; }
     /* Disable Shop Pinned State toggle for buyers */
     body.view-buyer #ctrlShowRunningPinned { pointer-events: none; opacity: 0.4; }
     body.view-buyer #ctrl-section-shop-pinned .ctrl-switch { opacity: 0.5; cursor: not-allowed; }
@@ -2295,14 +2546,21 @@
     .live-show__cta-row--buyer { display: none; }
     .live-show__cta-row--pre-auction { display: none; }
     .live-show__cta-row--active-auction { display: none; }
-    body.view-buyer .live-show__cta-row--buyer:not(.live-show__cta-row--pre-auction):not(.live-show__cta-row--active-auction) { display: flex; margin-top: 12px; }
+    body.view-buyer .live-show__cta-row--buyer:not(.live-show__cta-row--pre-auction):not(.live-show__cta-row--active-auction):not(.live-show__cta-row--post-sold) { display: flex; margin-top: 12px; }
     /* BIN and Flash Sale buyer swipe buttons */
-    body.view-buyer #pinned-bin .live-show__cta-row--buyer { display: flex !important; margin-top: 0; }
-    body.view-buyer #pinned-flash .live-show__cta-row--buyer { display: flex !important; margin-top: 0; }
-    body.view-buyer #pinned-bin-variant .live-show__cta-row--buyer { display: flex !important; margin-top: 0; }
-    body.view-buyer #pinned-flash-variant .live-show__cta-row--buyer { display: flex !important; margin-top: 0; }
+    body.view-buyer #pinned-bin .live-show__cta-row--buyer { display: flex !important; margin-top: 12px; }
+    body.view-buyer #pinned-flash .live-show__cta-row--buyer { display: flex !important; margin-top: 12px; }
+    body.view-buyer #pinned-bin-variant .live-show__cta-row--buyer { display: flex !important; margin-top: 12px; }
+    body.view-buyer #pinned-flash-variant .live-show__cta-row--buyer { display: flex !important; margin-top: 12px; }
     body.view-buyer .live-show__cta-row--pre-auction:not(.is-hidden) { display: flex; width: 100%; margin-top: 12px; }
     body.view-buyer .live-show__cta-row--active-auction.is-visible { display: flex; margin-top: 12px; }
+    .live-show__cta-row--post-sold { display: none; }
+    body.view-buyer .live-show__cta-row--post-sold.is-visible {
+      display: flex;
+      width: 100%;
+      margin-top: 12px;
+      align-items: stretch;
+    }
     body.view-buyer .live-show__cta-btn--primary { display: none !important; }
     body.view-buyer .live-show__bids-btn { display: none !important; }
     /* Buyer "Custom" button */
@@ -2431,18 +2689,20 @@
     body.view-buyer .live-show__dock.is-selecting-options[data-pinned-type="template"] #pinned-template { display: block !important; }
     body.view-buyer .live-show__dock.is-selecting-options[data-pinned-type="variant"] #pinned-variant { display: block !important; }
     body.view-buyer .live-show__dock.is-selecting-options[data-pinned-type="bin"] #pinned-bin { display: block !important; }
+    body.view-buyer .live-show__dock.is-selecting-options[data-pinned-type="bin-variant"] #pinned-bin-variant { display: block !important; }
     body.view-buyer .live-show__dock.is-selecting-options[data-pinned-type="flash"] #pinned-flash { display: block !important; }
-    /* Qty line visibility */
+    body.view-buyer .live-show__dock.is-selecting-options[data-pinned-type="flash-variant"] #pinned-flash-variant { display: block !important; }
+    /* Qty under pinned product (variant) — sellers see it; buyers/mirror stay hidden below */
     .live-show__product-qty {
-      display: none;
+      display: block;
       font-size: 13px;
       font-weight: 400;
       line-height: 18px;
       letter-spacing: -0.08px;
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(255, 255, 255, 0.6);
       margin: 0;
     }
-    body.view-buyer .live-show__product-qty { display: none; }
+    body.view-buyer .live-show__product-qty { display: none !important; }
     .live-show__shop {
       position: relative;
       width: 48px;
@@ -2483,15 +2743,35 @@
       position: relative;
       overflow: visible;
     }
-    .live-show__shop-icon img {
+    /* Shop entry — stacked product previews (Figma 18983:39043 → Shop Entry) */
+    .live-show__shop-icon-layer {
       position: absolute;
       left: 50%;
-      top: 50%;
+      pointer-events: none;
+      object-fit: cover;
+    }
+    .live-show__shop-icon-layer--back {
+      width: 24px;
+      height: 24px;
+      top: calc(50% - 16px);
       transform: translate(-50%, -50%);
+      opacity: 0.2;
+      border-radius: 3px;
+    }
+    .live-show__shop-icon-layer--mid {
+      width: 32px;
+      height: 32px;
+      top: calc(50% - 8px);
+      transform: translate(-50%, -50%);
+      opacity: 0.8;
+      border-radius: 4px;
+    }
+    .live-show__shop-icon-layer--front {
       width: 40px;
       height: 40px;
+      top: 50%;
+      transform: translate(-50%, -50%);
       border-radius: 5px;
-      object-fit: cover;
     }
     .live-show__shop-label {
       margin: 0;
@@ -2629,14 +2909,6 @@
       color: #fff;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-    .live-show__product-qty {
-      font-size: 13px;
-      font-weight: 400;
-      line-height: 18px;
-      letter-spacing: -0.08px;
-      color: #fff;
-      margin: 0;
     }
     .live-show__product-qty--low {
       color: #EF233C;
@@ -3055,51 +3327,110 @@
       .live-shop-sheet {
         transition-duration: 0.01ms;
       }
+      .flow-panel.push-from-right,
+      .flow-panel.push-to-left,
+      .flow-panel.push-from-left,
+      .flow-panel.push-to-right {
+        animation-duration: 0.01ms;
+      }
+      .prebid-overlay,
+      .prebid-sheet,
+      .checkout-overlay,
+      .checkout-sheet,
+      .options-sheet-overlay,
+      .options-sheet {
+        transition-duration: 0.01ms !important;
+      }
     }
-    /* Buyer view: Full page shop with push transition from right */
+    /* Buyer view: same bottom sheet as seller (slide up), higher z-index over chrome */
     body.view-buyer .live-shop-root {
       z-index: 500;
     }
     body.view-buyer .live-shop-backdrop {
-      display: none;
+      display: block;
     }
     body.view-buyer .live-shop-sheet {
-      top: 0;
-      bottom: 0;
-      height: 100%;
-      max-height: 100%;
-      border-radius: 0;
-      transform: translate3d(100%, 0, 0);
+      top: auto;
+      height: min(784px, 88dvh);
+      max-height: min(784px, 88dvh);
+      border-radius: 24px 24px 0 0;
+      transform: translate3d(0, 100%, 0);
+      transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+      padding-top: 0;
     }
     body.view-buyer .live-shop-root.is-open .live-shop-sheet {
       transform: translate3d(0, 0, 0);
     }
-    body.view-buyer .live-shop-notch {
-      display: none;
+    /* Both view: shop docked on buyer column (or split clone) — bottom sheet inside buyer phone-content */
+    body.view-both #buyerPhoneMirror #live-shop-root,
+    body.view-both #buyerPhoneWrapper .live-shop-root--buyer-split-clone {
+      z-index: 500;
     }
-    body.view-buyer .live-shop-sheet {
-      padding-top: max(44px, env(safe-area-inset-top, 44px));
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-backdrop {
+      display: block;
     }
-    body.view-buyer .live-shop-nav {
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-sheet {
+      top: auto;
+      height: min(784px, 88dvh);
+      max-height: min(784px, 88dvh);
+      border-radius: 24px 24px 0 0;
+      transform: translate3d(0, 100%, 0);
+      padding-top: 0;
+      transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone).is-open .live-shop-sheet {
+      transform: translate3d(0, 0, 0);
+    }
+    /* Split view: buyer opens shop while seller sheet is already open — overlay clone on buyer device-frame
+       so canonical #live-shop-root never leaves the seller phone (reparenting was “closing” seller shop). */
+    body.view-both #buyerPhoneWrapper .device-frame {
+      position: relative;
+    }
+    body.view-both .live-shop-root--buyer-split-clone {
+      position: absolute;
+      inset: 0;
+      z-index: 620;
+      border-radius: inherit;
+      isolation: isolate;
+      pointer-events: none;
+    }
+    body.view-both .live-shop-root--buyer-split-clone .live-shop-backdrop,
+    body.view-both .live-shop-root--buyer-split-clone .live-shop-back-btn,
+    body.view-both .live-shop-root--buyer-split-clone .live-shop-close {
+      pointer-events: auto;
+    }
+    body.view-both .live-shop-root--buyer-split-clone.is-open {
+      pointer-events: none;
+    }
+    body.view-buyer .live-shop-nav,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-nav {
       display: flex;
       align-items: center;
       justify-content: flex-end;
       padding: 0 16px;
     }
-    body.view-buyer .live-shop-title {
+    body.view-buyer .live-shop-title,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-title {
       position: absolute;
       left: 50%;
-      transform: translateX(-50%);
+      top: 50%;
+      transform: translate(-50%, -50%);
     }
-    body.view-buyer .live-shop-close {
-      position: relative;
-      right: auto;
-      top: auto;
-      transform: none;
+    body.view-buyer .live-shop-close,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-close {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
       background: rgba(0, 0, 0, 0.05);
     }
-    body.view-buyer .live-shop-close:active {
+    body.view-buyer .live-shop-close:active,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-close:active {
       background: rgba(0, 0, 0, 0.1);
+    }
+    body.view-buyer .live-shop-fab,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-fab {
+      display: none;
     }
     .live-shop-back-btn {
       display: none;
@@ -3480,10 +3811,14 @@
     .hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__actions--seller {
       display: flex !important;
     }
-    body.view-buyer.hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__actions--seller {
+    body.view-buyer #live-shop-root.hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__actions--seller,
+    body.view-both #buyerPhoneMirror #live-shop-root.hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__actions--seller,
+    body.view-both #buyerPhoneWrapper .live-shop-root--buyer-split-clone.hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__actions--seller {
       display: none !important;
     }
-    body.view-buyer.hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__actions--buyer {
+    body.view-buyer #live-shop-root.hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__actions--buyer,
+    body.view-both #buyerPhoneMirror #live-shop-root.hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__actions--buyer,
+    body.view-both #buyerPhoneWrapper .live-shop-root--buyer-split-clone.hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__actions--buyer {
       display: flex !important;
     }
     .hide-running-pinned .live-shop-row.is-auction-active .live-shop-row__template-chip {
@@ -3707,10 +4042,12 @@
       display: none;
     }
     /* Buyer view: hide seller CTAs, show buyer CTAs for active auction rows */
-    body.view-buyer .live-shop-row.is-auction-active .live-shop-row__actions--seller {
+    body.view-buyer .live-shop-row.is-auction-active .live-shop-row__actions--seller,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-row.is-auction-active .live-shop-row__actions--seller {
       display: none !important;
     }
-    body.view-buyer .live-shop-row.is-auction-active .live-shop-row__actions--buyer {
+    body.view-buyer .live-shop-row.is-auction-active .live-shop-row__actions--buyer,
+    body.view-both :is(#buyerPhoneMirror #live-shop-root, #buyerPhoneWrapper .live-shop-root--buyer-split-clone) .live-shop-row.is-auction-active .live-shop-row__actions--buyer {
       display: flex !important;
     }
     .live-shop-row__timer {
@@ -3722,6 +4059,23 @@
     }
     .live-shop-row.is-auction-active .live-shop-row__timer {
       display: block;
+      color: #EF233C;
+    }
+    /* Seller phone only: quantity under timer for variant listings while running */
+    .live-shop-row__qty-left {
+      display: none;
+      margin: 0;
+      margin-top: 2px;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: rgba(28, 28, 28, 0.6);
+    }
+    body:not(.view-buyer) #phoneWrapper .live-shop-row[data-pin-type="variant"].is-auction-active .live-shop-row__qty-left:not([hidden]) {
+      display: block;
+    }
+    body:not(.view-buyer) #phoneWrapper .live-shop-row[data-pin-type="variant"].is-auction-active .live-shop-row__qty-left.live-shop-row__qty-left--low {
       color: #EF233C;
     }
     /* Buy Now — tertiary pill with leading icon (Figma BIN) */
@@ -3774,17 +4128,15 @@
       display: block;
       box-sizing: border-box;
       color: #1c1c1c;
+      width: 16px;
+      height: 16px;
       max-width: 16px;
       max-height: 16px;
-      width: auto;
-      height: auto;
-      object-fit: contain !important;
+      object-fit: contain;
       object-position: center;
       flex: none;
       flex-shrink: 0;
       align-self: center;
-      min-width: 0;
-      min-height: 0;
     }
     .live-shop-row__icon-btn:active {
       opacity: 0.92;
@@ -4474,7 +4826,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/20/26 @ 1:43pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/21/26 @ 9:45am';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -4501,7 +4853,10 @@
   <div class="proto-body">
   <div class="proto-demo-row">
 
+  <div class="both-phones-stage">
+  <div class="both-phones-slot" id="bothPhonesSlot">
   <div id="phoneWrapper" style="display:flex;flex-direction:column;align-items:center;flex-shrink:0">
+  <div class="phone-label">Seller</div>
   <div class="phone-frame">
     <div class="phone-bezel"></div>
     <div class="device-frame">
@@ -4573,13 +4928,14 @@
                   </div>
                   <!-- Close button for Select Options mode -->
                   <button type="button" class="live-show__close-btn" id="select-options-close" onclick="closeSelectOptions()" aria-label="Close">
-                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-                      <path d="M1 1l11 11M12 1L1 12"/>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path d="M3.5 3.5l7 7" stroke="#ffffff" stroke-width="1.75" stroke-linecap="round"/>
+                      <path d="M10.5 3.5l-7 7" stroke="#ffffff" stroke-width="1.75" stroke-linecap="round"/>
                     </svg>
                   </button>
                   <header class="live-show__header">
                     <div class="live-show__header-avatar">
-                      <img alt="" width="32" height="32" src="assets/6th-avatar.png" />
+                      <img alt="" width="32" height="32" src="assets/figma/6th-official-logo.png" />
                     </div>
                     <div class="live-show__header-meta">
                       <div class="live-show__header-name-row">
@@ -4602,14 +4958,14 @@
                     </div>
                     <div class="live-show__header-controls">
                       <div class="live-show__rewards" aria-hidden="true">
-                        <img alt="" src="https://www.figma.com/api/mcp/asset/761fe5b6-b470-4dcb-83ad-e9f2cf653de6" />
+                        <img alt="" src="assets/figma/rewards-badge-sm.png" width="28" height="28" />
                       </div>
                       <div class="live-show__live-pill" aria-label="Viewers watching live">
                         <div class="live-show__live-wave" aria-hidden="true"><span class="live-show__live-bar"></span><span class="live-show__live-bar"></span><span class="live-show__live-bar"></span></div>
                         <span class="live-show__live-count" id="live-show-live-count">120</span>
                       </div>
                       <button type="button" class="live-show__nav-down" aria-label="Minimize">
-                        <img class="live-show__icon-img live-show__icon-img--nav-down" src="assets/icons/arrow-down.svg" width="10" height="10" alt="" />
+                        <img class="live-show__icon-img live-show__icon-img--nav-down" src="assets/icons/arrow-down.svg" width="20" height="20" alt="" />
                       </button>
                     </div>
                   </header>
@@ -4619,14 +4975,14 @@
                         <div class="live-show__chat-inner">
                           <div class="live-show__chat-filter-row">
                             <button type="button" class="live-show__icon-fab" aria-label="Scroll chat up">
-                              <img class="live-show__icon-img live-show__icon-img--chat-up" src="assets/icons/arrow-up.svg" width="8" height="8" alt="" />
+                              <img class="live-show__icon-img live-show__icon-img--chat-up" src="assets/icons/arrow-up.svg" width="16" height="16" alt="" />
                             </button>
                           </div>
                           <div class="live-show__thread" id="live-show-chat-thread">
                             <div class="live-show__msg">
                               <div class="live-show__msg-row">
                                 <div class="live-show__msg-avatar">
-                                  <img alt="" width="32" height="32" src="https://www.figma.com/api/mcp/asset/ac1abf5d-04d2-4263-84ee-fad13b72f012" />
+                                  <img alt="" width="32" height="32" src="assets/products/chat-avatar-male.svg" />
                                 </div>
                                 <div class="live-show__msg-body">
                                   <p class="live-show__msg-user">somedude</p>
@@ -4637,7 +4993,7 @@
                             <div class="live-show__msg">
                               <div class="live-show__msg-row">
                                 <div class="live-show__msg-avatar">
-                                  <img alt="" width="32" height="32" src="https://www.figma.com/api/mcp/asset/bb5f8f55-0328-48f4-829c-98cc7942810a" />
+                                  <img alt="" width="32" height="32" src="assets/products/chat-avatar-2.svg" />
                                 </div>
                                 <div class="live-show__msg-body">
                                   <p class="live-show__msg-user">lilbawler</p>
@@ -4648,7 +5004,7 @@
                             <div class="live-show__msg">
                               <div class="live-show__msg-row">
                                 <div class="live-show__msg-avatar">
-                                  <img alt="" width="32" height="32" src="https://www.figma.com/api/mcp/asset/ae69a14c-2f6f-4035-af69-df4690cbc685" />
+                                  <img alt="" width="32" height="32" src="assets/products/chat-avatar-3.svg" />
                                 </div>
                                 <div class="live-show__msg-body">
                                   <p class="live-show__msg-user">notstarr</p>
@@ -4659,7 +5015,7 @@
                             <div class="live-show__msg">
                               <div class="live-show__msg-row">
                                 <div class="live-show__msg-avatar">
-                                  <img alt="" width="32" height="32" src="https://www.figma.com/api/mcp/asset/a1b9e0dc-8237-4aa4-8093-657f8e0cb994" />
+                                  <img alt="" width="32" height="32" src="assets/products/chat-avatar-malk.svg" />
                                 </div>
                                 <div class="live-show__msg-body">
                                   <p class="live-show__msg-user">jmalkemus</p>
@@ -4672,7 +5028,7 @@
                             <div class="live-show__chat-input">
                               <div class="live-show__cmd-wrap">
                                 <button type="button" class="live-show__cmd-btn" aria-label="Commands">
-                                  <img alt="" src="https://www.figma.com/api/mcp/asset/0bc74220-e6b1-40f2-9fe3-c3131833c8a7" />
+                                  <img alt="" src="assets/figma/icon-slash-command.svg" width="20" height="20" />
                                 </button>
                               </div>
                               <div class="live-show__input-pill" role="textbox" aria-label="Chat placeholder">
@@ -4683,62 +5039,68 @@
                         </div>
                       </div>
                       <div class="live-show__side">
+                        <!--
+                          FROZEN: right rail icons — Figma exports under assets/figma/ only.
+                          Do not point these at assets/icons/ or MCP URLs; see .cursor/rules/live-run-rail-icons.mdc
+                        -->
                         <!-- Seller Side Menu -->
                         <div class="live-show__side-tools live-show__side-tools--seller">
                           <div class="live-show__side-item">
-                            <div class="live-show__side-icon"><img class="live-show__icon-img live-show__icon-img--more" src="assets/icons/more.svg" width="20" height="4" alt="" /></div>
+                            <div class="live-show__side-icon"><img class="live-show__icon-img live-show__icon-img--more" src="assets/figma/icon-more-dots-horizontal.svg" width="20" height="4" alt="" /></div>
                             <p class="live-show__side-label">More</p>
                           </div>
                           <div class="live-show__side-item">
-                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="https://www.figma.com/api/mcp/asset/42137d37-8c8b-4029-a41a-ecac3b379f0f" /></div>
+                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="assets/figma/icon-rail-promote.svg" width="24" height="24" /></div>
                             <p class="live-show__side-label">Promote</p>
                           </div>
                           <div class="live-show__side-item">
-                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="https://www.figma.com/api/mcp/asset/023c235f-f2cb-4752-89b4-7415540f858e" /></div>
+                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="assets/figma/icon-movie-clapper.svg" width="24" height="24" /></div>
                             <p class="live-show__side-label">Clip</p>
                           </div>
                           <div class="live-show__side-item">
-                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="https://www.figma.com/api/mcp/asset/992ce1b9-c3a0-4e44-8cdf-d14373b1930f" /></div>
+                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="assets/figma/icon-share.svg" width="24" height="24" /></div>
                             <p class="live-show__side-label">Share</p>
                           </div>
                           <div class="live-show__side-item">
-                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="https://www.figma.com/api/mcp/asset/5cde8a8a-27fb-42ed-a4b5-c10b13762a6e" /></div>
+                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="assets/figma/icon-camera-rotate.svg" width="24" height="24" /></div>
                             <p class="live-show__side-label">Switch</p>
                           </div>
                           <div class="live-show__side-item">
-                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="https://www.figma.com/api/mcp/asset/f70adfc8-741d-46e2-a4d5-7bece491d81d" /></div>
+                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="assets/figma/icon-plus-circle.svg" width="24" height="24" /></div>
                             <p class="live-show__side-label">Add</p>
                           </div>
                         </div>
                         <!-- Buyer Side Menu -->
                         <div class="live-show__side-tools live-show__side-tools--buyer">
                           <div class="live-show__side-item">
-                            <div class="live-show__side-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 14C5.10457 14 6 13.1046 6 12C6 10.8954 5.10457 10 4 10C2.89543 10 2 10.8954 2 12C2 13.1046 2.89543 14 4 14Z" fill="white"/><path d="M14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12Z" fill="white"/><path d="M22 12C22 13.1046 21.1046 14 20 14C18.8954 14 18 13.1046 18 12C18 10.8954 18.8954 10 20 10C21.1046 10 22 10.8954 22 12Z" fill="white"/></svg></div>
+                            <div class="live-show__side-icon"><img class="live-show__icon-img live-show__icon-img--more" src="assets/figma/icon-more-dots-horizontal.svg" width="20" height="4" alt="" /></div>
                             <p class="live-show__side-label">More</p>
                           </div>
                           <div class="live-show__side-item">
-                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="https://www.figma.com/api/mcp/asset/66e4e63e-d02c-4a41-98f2-9b6e2a0fb1cf" /></div>
+                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="assets/figma/icon-rail-boost.svg" width="24" height="24" /></div>
                             <p class="live-show__side-label">Boost</p>
                           </div>
                           <div class="live-show__side-item">
-                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="https://www.figma.com/api/mcp/asset/5148ef51-4ad8-4001-831d-9ef1712fae77" /></div>
+                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="assets/figma/icon-movie-clapper.svg" width="24" height="24" /></div>
                             <p class="live-show__side-label">Clip</p>
                           </div>
                           <div class="live-show__side-item">
-                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="https://www.figma.com/api/mcp/asset/bb35feaa-1e0b-4968-bacc-6298345e6c3f" /></div>
+                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="assets/figma/icon-share.svg" width="24" height="24" /></div>
                             <p class="live-show__side-label">Share</p>
                           </div>
                           <div class="live-show__side-item">
-                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="https://www.figma.com/api/mcp/asset/7a10612a-6d25-410a-be9e-755f74164bc7" /></div>
+                            <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="assets/figma/icon-rail-wallet.svg" width="24" height="24" /></div>
                             <p class="live-show__side-label">Wallet</p>
                           </div>
                         </div>
                         <div class="live-show__shop">
                           <div class="live-show__shop-badge" aria-label="56 listed"><span>56</span></div>
-                          <button type="button" class="live-show__shop-hit" id="live-show-shop-btn" aria-label="Open shop listings" onclick="openShop()"></button>
+                          <button type="button" class="live-show__shop-hit" id="live-show-shop-btn" aria-label="Open shop listings" onclick="openShop(event)"></button>
                           <div class="live-show__shop-inner" aria-hidden="true">
                             <div class="live-show__shop-icon">
-                              <img alt="" src="https://www.figma.com/api/mcp/asset/0dc5fa1c-4c26-4ba4-8c17-5e0d8b7f5ece" />
+                              <img class="live-show__shop-icon-layer live-show__shop-icon-layer--back" alt="" src="assets/products/figma-product-stack-a.png" />
+                              <img class="live-show__shop-icon-layer live-show__shop-icon-layer--mid" alt="" src="assets/products/figma-product-stack-b.png" />
+                              <img class="live-show__shop-icon-layer live-show__shop-icon-layer--front" alt="" src="assets/products/figma-shop-entry-sneaker.png" />
                             </div>
                             <p class="live-show__shop-label">Shop</p>
                           </div>
@@ -4747,7 +5109,7 @@
                     </div>
                     <!-- Empty State: Choose Product -->
                     <div class="live-show__commerce" id="pinned-empty" hidden>
-                      <button type="button" class="live-show__cta-btn live-show__cta-btn--primary" onclick="openShop()">Choose Product</button>
+                      <button type="button" class="live-show__cta-btn live-show__cta-btn--primary" onclick="openShop(event)">Choose Product</button>
                       <!-- Buyer: Awaiting Next Product -->
                       <div class="live-show__cta-awaiting">
                         <button type="button" class="live-show__cta-awaiting-btn" disabled>
@@ -4761,17 +5123,17 @@
                         <!-- Winning UI row - shows during active auction -->
                         <div class="live-show__winning-row" id="auction-winning-row" style="display:none">
                           <div class="live-show__winning-left">
-                            <img class="live-show__winning-avatar" id="auction-winner-avatar" alt="" width="16" height="16" src="https://www.figma.com/api/mcp/asset/6c290d17-415f-43ae-8abf-d4ae46d5f2d5" />
+                            <img class="live-show__winning-avatar" id="auction-winner-avatar" alt="" width="16" height="16" src="assets/icons/avatar-winner.svg" />
                             <p class="live-show__winning-text"><span id="auction-winner-name">—</span> is <span class="live-show__winning-highlight">winning!</span></p>
                           </div>
                           <div class="live-show__winning-right" id="auction-last-bid" style="display:none">
-                            <img class="live-show__winning-avatar" id="auction-bidder-avatar" alt="" width="16" height="16" src="https://www.figma.com/api/mcp/asset/72d17879-c0d5-4100-a5e5-79ebf1a40162" />
+                            <img class="live-show__winning-avatar" id="auction-bidder-avatar" alt="" width="16" height="16" src="assets/icons/avatar-bidder.svg" />
                             <p class="live-show__winning-bid-text">Bid <span id="auction-last-bid-amount">$0</span></p>
                           </div>
                         </div>
                         <div class="live-show__product-row">
                           <div class="live-show__product-thumb">
-                            <img alt="" src="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408" />
+                            <img alt="" src="assets/products/figma-nike-air-max-black.png" />
                           </div>
                           <div class="live-show__product-info">
                             <div class="live-show__product-line">
@@ -4819,6 +5181,12 @@
                           </div>
                         </div>
                       </div>
+                      <!-- Buyer: after auction ends (sold) -->
+                      <div class="live-show__cta-row live-show__cta-row--buyer live-show__cta-row--post-sold" id="auction-buyer-post-sold">
+                        <button type="button" class="live-show__cta-awaiting-btn" disabled>
+                          <span class="live-show__cta-awaiting-text">Awaiting Next Item</span>
+                        </button>
+                      </div>
                     </div>
 
                     <!-- Pinned Item: Buy It Now — Figma 275:32584 -->
@@ -4826,7 +5194,7 @@
                       <div class="live-show__commerce-inner">
                         <div class="live-show__product-row">
                           <div class="live-show__product-thumb">
-                            <img alt="" src="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408" />
+                            <img alt="" src="assets/products/figma-nike-air-max-black.png" />
                           </div>
                           <div class="live-show__product-info">
                             <div class="live-show__product-line">
@@ -4868,7 +5236,7 @@
                       <div class="live-show__commerce-inner">
                         <div class="live-show__product-row">
                           <div class="live-show__product-thumb">
-                            <img alt="" src="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408" />
+                            <img alt="" src="assets/products/figma-nike-air-max-black.png" />
                           </div>
                           <div class="live-show__product-info">
                             <div class="live-show__product-line">
@@ -4921,17 +5289,17 @@
                         <!-- Winning UI row - shows during active auction -->
                         <div class="live-show__winning-row" id="template-winning-row" style="display:none">
                           <div class="live-show__winning-left">
-                            <img class="live-show__winning-avatar" id="template-winner-avatar" alt="" width="16" height="16" src="https://www.figma.com/api/mcp/asset/6c290d17-415f-43ae-8abf-d4ae46d5f2d5" />
+                            <img class="live-show__winning-avatar" id="template-winner-avatar" alt="" width="16" height="16" src="assets/icons/avatar-winner.svg" />
                             <p class="live-show__winning-text"><span id="template-winner-name">—</span> is <span class="live-show__winning-highlight">winning!</span></p>
                           </div>
                           <div class="live-show__winning-right" id="template-last-bid" style="display:none">
-                            <img class="live-show__winning-avatar" id="template-bidder-avatar" alt="" width="16" height="16" src="https://www.figma.com/api/mcp/asset/72d17879-c0d5-4100-a5e5-79ebf1a40162" />
+                            <img class="live-show__winning-avatar" id="template-bidder-avatar" alt="" width="16" height="16" src="assets/icons/avatar-bidder.svg" />
                             <p class="live-show__winning-bid-text">Bid <span id="template-last-bid-amount">$0</span></p>
                           </div>
                         </div>
                         <div class="live-show__product-row">
                           <div class="live-show__product-thumb">
-                            <img alt="" src="assets/pile-of-sneakers.jpg" />
+                            <img alt="" src="assets/products/figma-product-stack-a.png" />
                           </div>
                           <div class="live-show__product-info">
                             <div class="live-show__product-line">
@@ -4968,6 +5336,7 @@
                             <button type="button" class="live-show__attr-chip" data-attr="brand" data-value="puma">Puma</button>
                             <button type="button" class="live-show__attr-chip" data-attr="brand" data-value="reebok">Reebok</button>
                             <button type="button" class="live-show__attr-chip" data-attr="brand" data-value="other">Other</button>
+                            <button type="button" class="live-show__attr-chip" data-attr="brand" data-value="more" aria-label="More brands">...</button>
                           </div>
                         </div>
                         <div class="live-show__attr-group">
@@ -5020,6 +5389,11 @@
                           </div>
                         </div>
                       </div>
+                      <div class="live-show__cta-row live-show__cta-row--buyer live-show__cta-row--post-sold" id="template-buyer-post-sold">
+                        <button type="button" class="live-show__cta-awaiting-btn" disabled>
+                          <span class="live-show__cta-awaiting-text">Awaiting Next Item</span>
+                        </button>
+                      </div>
                     </div>
 
                     <!-- Pinned Item: Auction Variant — Figma 14973:44700 -->
@@ -5028,17 +5402,17 @@
                         <!-- Winning UI row - shows during active auction -->
                         <div class="live-show__winning-row" id="variant-winning-row" style="display:none">
                           <div class="live-show__winning-left">
-                            <img class="live-show__winning-avatar" id="variant-winner-avatar" alt="" width="16" height="16" src="https://www.figma.com/api/mcp/asset/6c290d17-415f-43ae-8abf-d4ae46d5f2d5" />
+                            <img class="live-show__winning-avatar" id="variant-winner-avatar" alt="" width="16" height="16" src="assets/icons/avatar-winner.svg" />
                             <p class="live-show__winning-text"><span id="variant-winner-name">—</span> is <span class="live-show__winning-highlight">winning!</span></p>
                           </div>
                           <div class="live-show__winning-right" id="variant-last-bid" style="display:none">
-                            <img class="live-show__winning-avatar" id="variant-bidder-avatar" alt="" width="16" height="16" src="https://www.figma.com/api/mcp/asset/72d17879-c0d5-4100-a5e5-79ebf1a40162" />
+                            <img class="live-show__winning-avatar" id="variant-bidder-avatar" alt="" width="16" height="16" src="assets/icons/avatar-bidder.svg" />
                             <p class="live-show__winning-bid-text">Bid <span id="variant-last-bid-amount">$0</span></p>
                           </div>
                         </div>
                         <div class="live-show__product-row">
                           <div class="live-show__product-thumb">
-                            <img alt="" src="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408" />
+                            <img alt="" src="assets/products/figma-nike-air-max-black.png" />
                           </div>
                           <div class="live-show__product-info">
                             <div class="live-show__product-line">
@@ -5119,6 +5493,11 @@
                           </div>
                         </div>
                       </div>
+                      <div class="live-show__cta-row live-show__cta-row--buyer live-show__cta-row--post-sold" id="variant-buyer-post-sold">
+                        <button type="button" class="live-show__cta-awaiting-btn" disabled>
+                          <span class="live-show__cta-awaiting-text">Awaiting Next Item</span>
+                        </button>
+                      </div>
                     </div>
 
                     <!-- Pinned Item: BIN Variant -->
@@ -5126,7 +5505,7 @@
                       <div class="live-show__commerce-inner">
                         <div class="live-show__product-row">
                           <div class="live-show__product-thumb">
-                            <img alt="" src="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408" />
+                            <img alt="" src="assets/products/figma-product-stack-a.png" />
                           </div>
                           <div class="live-show__product-info">
                             <div class="live-show__product-line">
@@ -5167,7 +5546,7 @@
                       <div class="live-show__commerce-inner">
                         <div class="live-show__product-row">
                           <div class="live-show__product-thumb">
-                            <img alt="" src="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408" />
+                            <img alt="" src="assets/products/figma-nike-air-max-black.png" />
                           </div>
                           <div class="live-show__product-info">
                             <div class="live-show__product-line">
@@ -5222,10 +5601,10 @@
                 <div class="ldp__scroll">
                   <!-- Image Carousel -->
                   <div class="ldp__carousel" id="ldp-carousel">
-                    <div class="ldp__carousel-track" id="ldp-carousel-track">
-                      <div class="ldp__carousel-slide"><img alt="" id="ldp-img-1" src="assets/pile-of-sneakers.jpg" /></div>
-                      <div class="ldp__carousel-slide"><img alt="" id="ldp-img-2" src="assets/pile-of-sneakers.jpg" /></div>
-                      <div class="ldp__carousel-slide"><img alt="" id="ldp-img-3" src="assets/pile-of-sneakers.jpg" /></div>
+                      <div class="ldp__carousel-track" id="ldp-carousel-track">
+                      <div class="ldp__carousel-slide"><img alt="" id="ldp-img-1" src="assets/products/figma-product-stack-a.png" /></div>
+                      <div class="ldp__carousel-slide"><img alt="" id="ldp-img-2" src="assets/products/figma-product-stack-b.png" /></div>
+                      <div class="ldp__carousel-slide"><img alt="" id="ldp-img-3" src="assets/products/figma-shop-entry-sneaker.png" /></div>
                       <div class="ldp__carousel-slide"><img alt="" id="ldp-img-4" src="assets/pile-of-sneakers.jpg" /></div>
                     </div>
                     <div class="ldp__carousel-scrim-top"></div>
@@ -5314,7 +5693,7 @@
                     <div class="ldp__seller">
                       <div class="ldp__seller-top">
                         <div class="ldp__seller-info">
-                          <img class="ldp__seller-avatar" alt="" src="assets/6th-avatar.png" />
+                          <img class="ldp__seller-avatar" alt="" src="assets/figma/6th-official-logo.png" />
                           <span class="ldp__seller-name" id="ldp-seller-name">6th_official</span>
                         </div>
                         <button type="button" class="ldp__seller-msg-btn" aria-label="Message seller">
@@ -5380,13 +5759,13 @@
               </button>
               <h1 class="live-shop-title" id="live-shop-title">Live Listings</h1>
               <button type="button" class="live-shop-close" id="live-shop-close" aria-label="Close" onclick="closeShop()">
-                <img alt="" src="https://www.figma.com/api/mcp/asset/022f55cb-127c-4912-a046-9c494f13b2a7" width="20" height="20" />
+                <img alt="" src="assets/icons/shop-close.svg" width="20" height="20" />
               </button>
             </header>
             <div class="live-shop-search-row">
               <label class="live-shop-search">
                 <span class="live-shop-search__icon" aria-hidden="true">
-                  <img alt="" src="https://www.figma.com/api/mcp/asset/9735eda1-6a1d-46c7-8bfc-a12b908c4cf8" width="24" height="24" />
+                  <img alt="" src="assets/icons/search-mag.svg" width="24" height="24" />
                 </span>
                 <input type="search" placeholder="Search shop..." autocomplete="off" />
               </label>
@@ -5434,7 +5813,7 @@
               </div>
               <div class="live-shop-list">
                 <!-- Auctions — Figma node 20868:97532 -->
-                <div id="live-shop-panel-auction" class="live-shop-panel" role="tabpanel" aria-labelledby="live-shop-tab-auction">
+                <div id="live-shop-panel-auction" class="live-shop-panel live-shop-panel--auction" role="tabpanel" aria-labelledby="live-shop-tab-auction">
                   <div class="live-shop-section-head live-shop-section-head--running" id="running-now-section">
                     <p class="live-shop-section-title live-shop-section-title--running">Running Now</p>
                   </div>
@@ -5442,7 +5821,7 @@
                     <p class="live-shop-section-title">Pinned</p>
                   </div>
                   <div class="live-shop-section-divider" id="listings-divider"></div>
-                  <div class="live-shop-section-head" id="auction-listings-section">
+                  <div class="live-shop-section-head live-shop-section-head--auction-listings" id="auction-listings-section">
                     <p class="live-shop-section-title">Listings (6)</p>
                   </div>
                   <!-- Template Auction -->
@@ -5463,7 +5842,7 @@
                       <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn js-select-options-btn" data-select-type="template">Select Options</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" width="16" height="16" />
                         </button>
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--buyer">
@@ -5472,9 +5851,9 @@
                     </div>
                   </article>
                   <!-- Variant Auction -->
-                  <article class="live-shop-row" data-pin-type="variant" data-original-order="2" data-pin-title="Nike Air Max Black" data-pin-meta="Multiple Options" data-pin-price="$1 - $15" data-pin-img="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408">
+                  <article class="live-shop-row" data-pin-type="variant" data-original-order="2" data-pin-title="Nike Air Max Black" data-pin-meta="Multiple Options" data-pin-price="$1 - $15" data-pin-qty="12" data-pin-img="assets/products/figma-nike-air-max-black.png" data-default-live-pin>
                     <div class="live-shop-row__thumb-wrap">
-                      <img alt="" src="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408" />
+                      <img alt="" src="assets/products/figma-nike-air-max-black.png" />
                     </div>
                     <div class="live-shop-row__info">
                       <div class="live-shop-row__details">
@@ -5484,11 +5863,12 @@
                         </div>
                         <p class="live-shop-row__price js-shop-price">$1 - $15</p>
                         <p class="live-shop-row__timer js-shop-timer">00:10</p>
+                        <p class="live-shop-row__qty-left js-shop-variant-qty">12 Left</p>
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn js-select-options-btn" data-select-type="variant">Select Options</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" width="16" height="16" />
                         </button>
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--buyer">
@@ -5497,11 +5877,11 @@
                     </div>
                   </article>
                   <!-- Standard Auction -->
-                  <article class="live-shop-row" data-pin-type="auction" data-original-order="3" data-pin-title="Supreme Logo Patch Backpack" data-pin-meta="New w tag" data-pin-price="$1" data-pin-img="https://www.figma.com/api/mcp/asset/34cbbbdf-ef28-417c-b15b-8208a1919c19">
+                  <article class="live-shop-row" data-pin-type="auction" data-original-order="3" data-pin-title="Supreme Logo Patch Backpack" data-pin-meta="New w tag" data-pin-price="$1" data-pin-img="assets/products/figma-supreme-backpack.png">
                     <div class="live-shop-row__thumb-wrap">
-                      <img alt="" src="https://www.figma.com/api/mcp/asset/34cbbbdf-ef28-417c-b15b-8208a1919c19" />
+                      <img alt="" src="assets/products/figma-supreme-backpack.png" />
                       <div class="live-shop-prebid" aria-hidden="true">
-                        <img alt="" src="https://www.figma.com/api/mcp/asset/bb8b3381-552c-470d-96f4-7b135fcb05a4" width="16" height="16" />
+                        <img alt="" src="assets/icons/template-chip.svg" width="16" height="16" />
                         <span>1</span>
                       </div>
                     </div>
@@ -5517,10 +5897,10 @@
                       <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn js-start-btn">Start</button>
                         <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
-                          <img alt="" src="assets/icons/pin.svg" />
+                          <img alt="" src="assets/figma/shop/icon-pin-on-light.svg" width="16" height="16" />
                         </button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" width="16" height="16" />
                         </button>
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--buyer">
@@ -5529,11 +5909,11 @@
                     </div>
                   </article>
                   <!-- Standard Auction -->
-                  <article class="live-shop-row" data-pin-type="auction" data-original-order="4" data-pin-title="Bape Socks Black" data-pin-meta="OS • New w tag" data-pin-price="$12" data-pin-img="https://www.figma.com/api/mcp/asset/2ddeb315-a14a-406f-a444-9de25439d580">
+                  <article class="live-shop-row" data-pin-type="auction" data-original-order="4" data-pin-title="Bape Socks Black" data-pin-meta="OS • New w tag" data-pin-price="$12" data-pin-img="assets/products/figma-product-stack-b.png">
                     <div class="live-shop-row__thumb-wrap">
-                      <img alt="" src="https://www.figma.com/api/mcp/asset/2ddeb315-a14a-406f-a444-9de25439d580" />
+                      <img alt="" src="assets/products/figma-product-stack-b.png" />
                       <div class="live-shop-prebid" aria-hidden="true">
-                        <img alt="" src="https://www.figma.com/api/mcp/asset/bb8b3381-552c-470d-96f4-7b135fcb05a4" width="16" height="16" />
+                        <img alt="" src="assets/icons/template-chip.svg" width="16" height="16" />
                         <span>3</span>
                       </div>
                     </div>
@@ -5549,10 +5929,10 @@
                       <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn js-start-btn">Start</button>
                         <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
-                          <img alt="" src="assets/icons/pin.svg" />
+                          <img alt="" src="assets/figma/shop/icon-pin-on-light.svg" width="16" height="16" />
                         </button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" width="16" height="16" />
                         </button>
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--buyer">
@@ -5561,11 +5941,11 @@
                     </div>
                   </article>
                   <!-- Standard Auction -->
-                  <article class="live-shop-row" data-pin-type="auction" data-original-order="5" data-pin-title="Nike Air Max 90" data-pin-meta="Size 10 • New w box" data-pin-price="$45" data-pin-img="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408">
+                  <article class="live-shop-row" data-pin-type="auction" data-original-order="5" data-pin-title="Nike Air Max 90" data-pin-meta="Size 10 • New w box" data-pin-price="$45" data-pin-img="assets/products/figma-shop-entry-sneaker.png">
                     <div class="live-shop-row__thumb-wrap">
-                      <img alt="" src="https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408" />
+                      <img alt="" src="assets/products/figma-shop-entry-sneaker.png" />
                       <div class="live-shop-prebid" aria-hidden="true">
-                        <img alt="" src="https://www.figma.com/api/mcp/asset/bb8b3381-552c-470d-96f4-7b135fcb05a4" width="16" height="16" />
+                        <img alt="" src="assets/icons/template-chip.svg" width="16" height="16" />
                         <span>5</span>
                       </div>
                     </div>
@@ -5581,10 +5961,10 @@
                       <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn js-start-btn">Start</button>
                         <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
-                          <img alt="" src="assets/icons/pin.svg" />
+                          <img alt="" src="assets/figma/shop/icon-pin-on-light.svg" width="16" height="16" />
                         </button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" width="16" height="16" />
                         </button>
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--buyer">
@@ -5593,11 +5973,11 @@
                     </div>
                   </article>
                   <!-- Standard Auction -->
-                  <article class="live-shop-row" data-pin-type="auction" data-original-order="6" data-pin-title="Stussy Logo Hoodie" data-pin-meta="L • Pre-owned" data-pin-price="$25" data-pin-img="https://www.figma.com/api/mcp/asset/87553d74-ba47-429c-a9b7-3fb5e710947d">
+                  <article class="live-shop-row" data-pin-type="auction" data-original-order="6" data-pin-title="Stussy Logo Hoodie" data-pin-meta="L • Pre-owned" data-pin-price="$25" data-pin-img="assets/products/figma-product-stack-a.png">
                     <div class="live-shop-row__thumb-wrap">
-                      <img alt="" src="https://www.figma.com/api/mcp/asset/87553d74-ba47-429c-a9b7-3fb5e710947d" />
+                      <img alt="" src="assets/products/figma-product-stack-a.png" />
                       <div class="live-shop-prebid" aria-hidden="true">
-                        <img alt="" src="https://www.figma.com/api/mcp/asset/bb8b3381-552c-470d-96f4-7b135fcb05a4" width="16" height="16" />
+                        <img alt="" src="assets/icons/template-chip.svg" width="16" height="16" />
                         <span>4</span>
                       </div>
                     </div>
@@ -5613,10 +5993,10 @@
                       <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn js-start-btn">Start</button>
                         <button type="button" class="live-shop-row__icon-btn js-pin-btn" aria-label="Pin">
-                          <img alt="" src="assets/icons/pin.svg" />
+                          <img alt="" src="assets/figma/shop/icon-pin-on-light.svg" width="16" height="16" />
                         </button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" width="16" height="16" />
                         </button>
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--buyer">
@@ -5627,7 +6007,7 @@
                 </div>
 
                 <!-- Buy Now — Figma node 20868:97704 -->
-                <div id="live-shop-panel-buy-now" class="live-shop-panel" role="tabpanel" aria-labelledby="live-shop-tab-buy-now" hidden>
+                <div id="live-shop-panel-buy-now" class="live-shop-panel live-shop-panel--buy-now" role="tabpanel" aria-labelledby="live-shop-tab-buy-now" hidden>
                   <div class="live-shop-section-head live-shop-section-head--pinned" id="bin-pinned-section">
                     <p class="live-shop-section-title">Pinned</p>
                   </div>
@@ -5635,11 +6015,11 @@
                   <div class="live-shop-section-head" id="bin-listings-section">
                     <p class="live-shop-section-title">Listings (5)</p>
                   </div>
-                  <article class="live-shop-row" data-pin-type="bin" data-original-order="1" data-pin-title="Carhartt Denim Jacket" data-pin-meta="XL • New w tag" data-pin-price="$65" data-pin-qty="1" data-pin-img="https://www.figma.com/api/mcp/asset/87553d74-ba47-429c-a9b7-3fb5e710947d">
+                  <article class="live-shop-row" data-pin-type="bin" data-original-order="1" data-pin-title="Carhartt Denim Jacket" data-pin-meta="XL • New w tag" data-pin-price="$65" data-pin-qty="1" data-pin-img="assets/products/figma-carhartt-denim-jacket.png">
                     <div class="live-shop-row__thumb-wrap">
-                      <img alt="" src="https://www.figma.com/api/mcp/asset/87553d74-ba47-429c-a9b7-3fb5e710947d" />
+                      <img alt="" src="assets/products/figma-carhartt-denim-jacket.png" />
                       <div class="live-shop-prebid" aria-hidden="true">
-                        <img alt="" src="https://www.figma.com/api/mcp/asset/bb8b3381-552c-470d-96f4-7b135fcb05a4" width="16" height="16" />
+                        <img alt="" src="assets/icons/template-chip.svg" width="16" height="16" />
                         <span>1</span>
                       </div>
                     </div>
@@ -5653,11 +6033,11 @@
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading js-pin-btn">
-                          <img class="live-shop-row__btn-icon" alt="" src="assets/icons/pin.svg" />
+                          <img class="live-shop-row__btn-icon" alt="" src="assets/figma/shop/icon-pin-on-light.svg" width="16" height="16" />
                           <span>Pin</span>
                         </button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" width="16" height="16" />
                         </button>
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--buyer">
@@ -5665,11 +6045,11 @@
                       </div>
                     </div>
                   </article>
-                  <article class="live-shop-row" data-pin-type="bin" data-original-order="2" data-pin-title="Supreme Logo Patch Backpack" data-pin-meta="OS • New w tag" data-pin-price="$185" data-pin-qty="1" data-pin-img="https://www.figma.com/api/mcp/asset/34cbbbdf-ef28-417c-b15b-8208a1919c19">
+                  <article class="live-shop-row" data-pin-type="bin" data-original-order="2" data-pin-title="Supreme Logo Patch Backpack" data-pin-meta="OS • New w tag" data-pin-price="$185" data-pin-qty="1" data-pin-img="assets/products/figma-supreme-backpack.png">
                     <div class="live-shop-row__thumb-wrap">
-                      <img alt="" src="https://www.figma.com/api/mcp/asset/34cbbbdf-ef28-417c-b15b-8208a1919c19" />
+                      <img alt="" src="assets/products/figma-supreme-backpack.png" />
                       <div class="live-shop-prebid" aria-hidden="true">
-                        <img alt="" src="https://www.figma.com/api/mcp/asset/bb8b3381-552c-470d-96f4-7b135fcb05a4" width="16" height="16" />
+                        <img alt="" src="assets/icons/template-chip.svg" width="16" height="16" />
                         <span>4</span>
                       </div>
                     </div>
@@ -5683,11 +6063,11 @@
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading js-pin-btn">
-                          <img class="live-shop-row__btn-icon" alt="" src="assets/icons/pin.svg" />
+                          <img class="live-shop-row__btn-icon" alt="" src="assets/figma/shop/icon-pin-on-light.svg" width="16" height="16" />
                           <span>Pin</span>
                         </button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" width="16" height="16" />
                         </button>
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--buyer">
@@ -5695,11 +6075,11 @@
                       </div>
                     </div>
                   </article>
-                  <article class="live-shop-row" data-pin-type="bin" data-original-order="3" data-pin-title="Bape Socks Black" data-pin-meta="OS • New w tag" data-pin-price="$24" data-pin-qty="2" data-pin-img="https://www.figma.com/api/mcp/asset/2ddeb315-a14a-406f-a444-9de25439d580">
+                  <article class="live-shop-row" data-pin-type="bin" data-original-order="3" data-pin-title="Bape Socks Black" data-pin-meta="OS • New w tag" data-pin-price="$24" data-pin-qty="2" data-pin-img="assets/products/figma-giveaway-headband.png">
                     <div class="live-shop-row__thumb-wrap">
-                      <img alt="" src="https://www.figma.com/api/mcp/asset/2ddeb315-a14a-406f-a444-9de25439d580" />
+                      <img alt="" src="assets/products/figma-giveaway-headband.png" />
                       <div class="live-shop-prebid" aria-hidden="true">
-                        <img alt="" src="https://www.figma.com/api/mcp/asset/bb8b3381-552c-470d-96f4-7b135fcb05a4" width="16" height="16" />
+                        <img alt="" src="assets/icons/template-chip.svg" width="16" height="16" />
                         <span>1</span>
                       </div>
                     </div>
@@ -5713,11 +6093,11 @@
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading js-pin-btn">
-                          <img class="live-shop-row__btn-icon" alt="" src="assets/icons/pin.svg" />
+                          <img class="live-shop-row__btn-icon" alt="" src="assets/figma/shop/icon-pin-on-light.svg" width="16" height="16" />
                           <span>Pin</span>
                         </button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" width="16" height="16" />
                         </button>
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--buyer">
@@ -5725,11 +6105,11 @@
                       </div>
                     </div>
                   </article>
-                  <article class="live-shop-row" data-pin-type="bin" data-original-order="4" data-pin-title="Carhartt Denim Jeans" data-pin-meta="32 • New w tag" data-pin-price="$48" data-pin-qty="1" data-pin-img="https://www.figma.com/api/mcp/asset/c0dd143a-f30c-46af-a437-0b082298ba8c">
+                  <article class="live-shop-row" data-pin-type="bin" data-original-order="4" data-pin-title="Carhartt Denim Jeans" data-pin-meta="32 • New w tag" data-pin-price="$48" data-pin-qty="1" data-pin-img="assets/products/figma-product-stack-b.png">
                     <div class="live-shop-row__thumb-wrap">
-                      <img alt="" src="https://www.figma.com/api/mcp/asset/c0dd143a-f30c-46af-a437-0b082298ba8c" />
+                      <img alt="" src="assets/products/figma-product-stack-b.png" />
                       <div class="live-shop-prebid" aria-hidden="true">
-                        <img alt="" src="https://www.figma.com/api/mcp/asset/bb8b3381-552c-470d-96f4-7b135fcb05a4" width="16" height="16" />
+                        <img alt="" src="assets/icons/template-chip.svg" width="16" height="16" />
                         <span>2</span>
                       </div>
                     </div>
@@ -5743,11 +6123,11 @@
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn live-shop-row__btn--icon-leading js-pin-btn">
-                          <img class="live-shop-row__btn-icon" alt="" src="assets/icons/pin.svg" />
+                          <img class="live-shop-row__btn-icon" alt="" src="assets/figma/shop/icon-pin-on-light.svg" width="16" height="16" />
                           <span>Pin</span>
                         </button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" width="16" height="16" />
                         </button>
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--buyer">
@@ -5755,11 +6135,11 @@
                       </div>
                     </div>
                   </article>
-                  <article class="live-shop-row" data-pin-type="bin-variant" data-original-order="5" data-pin-title="Tops: Lulu Lemon, Commense, Alo, and more" data-pin-meta="Multiple Options" data-pin-price="$120" data-pin-qty="5" data-pin-img="https://www.figma.com/api/mcp/asset/ae1a2046-341e-4821-86d1-6d22a9b37885">
+                  <article class="live-shop-row" data-pin-type="bin-variant" data-original-order="5" data-pin-title="Tops: Lulu Lemon, Commense, Alo, and more" data-pin-meta="Multiple Options" data-pin-price="$120" data-pin-qty="5" data-pin-img="assets/products/figma-product-stack-a.png">
                     <div class="live-shop-row__thumb-wrap">
-                      <img alt="" src="https://www.figma.com/api/mcp/asset/ae1a2046-341e-4821-86d1-6d22a9b37885" />
+                      <img alt="" src="assets/products/figma-product-stack-a.png" />
                       <div class="live-shop-prebid" aria-hidden="true">
-                        <img alt="" src="https://www.figma.com/api/mcp/asset/bb8b3381-552c-470d-96f4-7b135fcb05a4" width="16" height="16" />
+                        <img alt="" src="assets/icons/template-chip.svg" width="16" height="16" />
                         <span>1</span>
                       </div>
                       <div class="live-shop-variant-badge" aria-label="Variants">
@@ -5777,7 +6157,7 @@
                       <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn js-pin-btn">Pin</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" width="16" height="16" />
                         </button>
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--buyer">
@@ -5794,7 +6174,7 @@
                   </div>
                   <article class="live-shop-row">
                     <div class="live-shop-row__thumb-wrap">
-                      <img alt="" src="https://www.figma.com/api/mcp/asset/e798cc58-6ebb-4c65-8fbf-984b5bfa3ec9" />
+                      <img alt="" src="assets/products/figma-giveaway-headband.png" />
                     </div>
                     <div class="live-shop-row__info">
                       <div class="live-shop-row__details">
@@ -5806,7 +6186,7 @@
                       <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn">Run Giveaway</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" width="16" height="16" />
                         </button>
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--buyer">
@@ -5816,7 +6196,7 @@
                   </article>
                   <article class="live-shop-row">
                     <div class="live-shop-row__thumb-wrap">
-                      <img alt="" src="https://www.figma.com/api/mcp/asset/ae1a2046-341e-4821-86d1-6d22a9b37885" />
+                      <img alt="" src="assets/products/figma-product-stack-a.png" />
                     </div>
                     <div class="live-shop-row__info">
                       <div class="live-shop-row__details">
@@ -5828,7 +6208,7 @@
                       <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn">Run Giveaway</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" width="16" height="16" />
                         </button>
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--buyer">
@@ -5838,7 +6218,7 @@
                   </article>
                   <article class="live-shop-row">
                     <div class="live-shop-row__thumb-wrap">
-                      <img alt="" src="https://www.figma.com/api/mcp/asset/2ddeb315-a14a-406f-a444-9de25439d580" />
+                      <img alt="" src="assets/products/figma-shop-entry-sneaker.png" />
                     </div>
                     <div class="live-shop-row__info">
                       <div class="live-shop-row__details">
@@ -5850,7 +6230,7 @@
                       <div class="live-shop-row__actions live-shop-row__actions--seller">
                         <button type="button" class="live-shop-row__btn">Run Giveaway</button>
                         <button type="button" class="live-shop-row__icon-btn js-more-btn" aria-label="More">
-                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" />
+                          <img alt="" src="assets/icons/menu-dots-horizontal.svg" width="16" height="16" />
                         </button>
                       </div>
                       <div class="live-shop-row__actions live-shop-row__actions--buyer">
@@ -5890,7 +6270,7 @@
               </div>
             </div>
             <button type="button" class="live-shop-fab" aria-label="Add listing">
-              <img alt="" src="https://www.figma.com/api/mcp/asset/ead16b85-adad-4768-abe2-5d889f04d6d3" width="24" height="24" />
+              <img alt="" src="assets/icons/plus-fab.svg" width="24" height="24" />
             </button>
           </div>
         </div>
@@ -5932,7 +6312,7 @@
             
             <!-- Header with product info -->
             <div class="options-sheet__header">
-              <img class="options-sheet__img" id="options-sheet-img" alt="" src="assets/pile-of-sneakers.jpg" />
+              <img class="options-sheet__img" id="options-sheet-img" alt="" src="assets/products/figma-nike-air-max-black.png" />
               <div class="options-sheet__info">
                 <p class="options-sheet__title" id="options-sheet-title">Assorted Sneakers: Nike, Adidas, and more</p>
                 <p class="options-sheet__price" id="options-sheet-price">$1</p>
@@ -5976,7 +6356,7 @@
             
             <!-- Product Info -->
             <div class="checkout-sheet__product">
-              <img class="checkout-sheet__product-img" id="checkout-product-img" alt="" src="assets/pile-of-sneakers.jpg" />
+              <img class="checkout-sheet__product-img" id="checkout-product-img" alt="" src="assets/products/figma-nike-air-max-black.png" />
               <div class="checkout-sheet__product-info">
                 <p class="checkout-sheet__product-title" id="checkout-product-title">2 cases= 24 boxes of SOUR PATCH KIDS Tropical Soft & Chewy Candy 3.5 Oz</p>
                 <p class="checkout-sheet__product-avail" id="checkout-product-avail">86 Available</p>
@@ -6053,6 +6433,21 @@
   </div><!-- /.phone-frame -->
   </div><!-- /#phoneWrapper -->
 
+  <!-- Buyer Phone for Split View (mirrors seller phone with buyer styles) -->
+  <div id="buyerPhoneWrapper">
+    <div class="phone-label">Buyer</div>
+    <div class="phone-frame">
+      <div class="phone-bezel"></div>
+      <div class="device-frame">
+        <div class="phone phone--buyer-mirror" id="buyerPhoneMirror">
+          <!-- Content will be mirrored from seller phone via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+  </div><!-- /.both-phones-slot -->
+  </div><!-- /.both-phones-stage -->
+
   </div><!-- /.proto-demo-row -->
   </div><!-- /.proto-body -->
 
@@ -6075,6 +6470,7 @@
           <div class="ctrl-segment" id="ctrlViewSegment">
             <button type="button" class="ctrl-segment-btn is-active" data-value="seller" onclick="onViewChange('seller')">Seller</button>
             <button type="button" class="ctrl-segment-btn" data-value="buyer" onclick="onViewChange('buyer')">Buyer</button>
+            <button type="button" class="ctrl-segment-btn" data-value="both" onclick="onViewChange('both')">Both</button>
           </div>
         </div>
       </div>
@@ -6260,14 +6656,24 @@
     }
     function applyPhoneScale(s) {
       var wrapper = document.getElementById('phoneWrapper');
-      var frame = document.querySelector('.phone-frame');
+      var buyerWrap = document.getElementById('buyerPhoneWrapper');
       var protoBody = document.querySelector('.proto-body');
+      var frameSeller = document.querySelector('#phoneWrapper .phone-frame');
+      var frameBuyer = document.querySelector('#buyerPhoneWrapper .phone-frame');
+      var frame = frameSeller || document.querySelector('.phone-frame');
+      var bothPhonesSlot = document.getElementById('bothPhonesSlot');
+      if (bothPhonesSlot) bothPhonesSlot.style.gap = '';
 
       if (isProtoMobileShell()) {
-        if (frame) frame.style.setProperty('--phone-scale', '1');
+        if (frameSeller) frameSeller.style.setProperty('--phone-scale', '1');
+        if (frameBuyer) frameBuyer.style.setProperty('--phone-scale', '1');
         if (wrapper) {
           wrapper.style.width = '';
           wrapper.style.height = '';
+        }
+        if (buyerWrap) {
+          buyerWrap.style.width = '';
+          buyerWrap.style.height = '';
         }
         document.body.style.overflowY = 'hidden';
         document.body.style.overflowX = 'hidden';
@@ -6284,7 +6690,49 @@
       var bezelH = 852 + 16;
       var bezelW = 393 + 16;
       var available = protoBody ? protoBody.clientHeight : 0;
-      if (frame) frame.style.setProperty('--phone-scale', s);
+      var availW = protoBody ? protoBody.clientWidth : window.innerWidth;
+
+      /* Seller + buyer side-by-side: one scale, identical wrapper boxes */
+      if (document.body.classList.contains('view-both') && buyerWrap) {
+        var gap = 40;
+        var sPass = (typeof s === 'number' && !isNaN(s)) ? s : getAutoScale();
+        var sDualW = Math.max(0.1, (availW - gap - 40) / (2 * bezelW));
+        var sDualH = Math.max(0.1, (available * 0.92) / bezelH);
+        var sEff = Math.min(sPass, sDualW, sDualH);
+        sEff = Math.max(0.26, Math.round(sEff * 1000) / 1000);
+        if (frameSeller) frameSeller.style.setProperty('--phone-scale', String(sEff));
+        if (frameBuyer) frameBuyer.style.setProperty('--phone-scale', String(sEff));
+        var wpx = (bezelW * sEff) + 'px';
+        var hpx = (bezelH * sEff) + 'px';
+        if (wrapper) {
+          wrapper.style.width = wpx;
+          wrapper.style.height = hpx;
+        }
+        buyerWrap.style.width = wpx;
+        buyerWrap.style.height = hpx;
+        if (bezelH * sEff > available) {
+          document.body.style.overflowY = 'auto';
+        } else {
+          document.body.style.overflowY = 'hidden';
+        }
+        document.body.style.overflowX = 'auto';
+        var zlBoth = document.getElementById('protoZoomLabel');
+        if (zlBoth) zlBoth.textContent = Math.round(sEff * 100) + '%';
+        requestAnimationFrame(function() {
+          if (typeof resetControlPanelPosition === 'function') resetControlPanelPosition();
+          if (typeof syncProtoTimestampCompact === 'function') syncProtoTimestampCompact();
+        });
+        return;
+      }
+
+      if (buyerWrap) {
+        buyerWrap.style.width = '';
+        buyerWrap.style.height = '';
+      }
+      if (frameBuyer) frameBuyer.style.removeProperty('--phone-scale');
+
+      if (frameSeller) frameSeller.style.setProperty('--phone-scale', String(s));
+      else if (frame) frame.style.setProperty('--phone-scale', String(s));
       if (wrapper) {
         wrapper.style.width = (bezelW * s) + 'px';
         wrapper.style.height = (bezelH * s) + 'px';
@@ -6380,22 +6828,63 @@
       document.addEventListener('click', function once() { tryPlay(); document.removeEventListener('click', once, true); }, true);
     })();
 
-    /* ── Finger cursor over device ── */
+    /* ── Finger cursor over device(s) ── */
     (function () {
       var cursor = document.getElementById('protoCursor');
-      var device = document.querySelector('.device-frame');
-      if (!cursor || !device) return;
+      if (!cursor) return;
+      function sellerDeviceFrame() {
+        return document.querySelector('#phoneWrapper .device-frame');
+      }
+      function anyProtoDeviceFrames() {
+        return document.querySelectorAll('#phoneWrapper .device-frame, #buyerPhoneWrapper .device-frame');
+      }
+      function rectContains(rect, x, y) {
+        return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+      }
+      function isHiddenEl(el) {
+        if (!el) return true;
+        if (el.closest('#buyerPhoneWrapper')) {
+          var w = document.getElementById('buyerPhoneWrapper');
+          if (w && (w.style.display === 'none' || window.getComputedStyle(w).display === 'none')) return true;
+        }
+        return false;
+      }
+      function pointOverFrame(el, x, y) {
+        if (!el || isHiddenEl(el)) return false;
+        return rectContains(el.getBoundingClientRect(), x, y);
+      }
+      /** In Both view, only the seller phone uses the fake finger; buyer uses the system cursor. */
+      function protoCursorShouldShowAt(x, y) {
+        if (document.body.classList.contains('view-both')) {
+          var sellerDf = sellerDeviceFrame();
+          return pointOverFrame(sellerDf, x, y);
+        }
+        var over = false;
+        anyProtoDeviceFrames().forEach(function (df) {
+          if (pointOverFrame(df, x, y)) over = true;
+        });
+        return over;
+      }
       function showCursor() { cursor.classList.add('visible'); }
       function hideCursor() { cursor.classList.remove('visible'); cursor.classList.remove('pressed'); }
-      function moveCursor(e) {
-        cursor.style.left = e.clientX + 'px';
-        cursor.style.top = e.clientY + 'px';
+      function onDocMouseMove(e) {
+        if (protoCursorShouldShowAt(e.clientX, e.clientY)) {
+          showCursor();
+          cursor.style.left = e.clientX + 'px';
+          cursor.style.top = e.clientY + 'px';
+        } else {
+          hideCursor();
+        }
       }
-      device.addEventListener('mouseenter', showCursor);
-      device.addEventListener('mouseleave', hideCursor);
-      device.addEventListener('mousemove', moveCursor);
-      device.addEventListener('mousedown', function () { cursor.classList.add('pressed'); });
-      device.addEventListener('mouseup', function () { cursor.classList.remove('pressed'); });
+      function onDocMouseDown(e) {
+        if (protoCursorShouldShowAt(e.clientX, e.clientY)) cursor.classList.add('pressed');
+      }
+      function onDocMouseUp() {
+        cursor.classList.remove('pressed');
+      }
+      document.addEventListener('mousemove', onDocMouseMove);
+      document.addEventListener('mousedown', onDocMouseDown);
+      document.addEventListener('mouseup', onDocMouseUp);
     })();
 
     /* ── Control Panel ── */
@@ -6420,9 +6909,17 @@
     }
 
     function toggleControlPanel() {
+      var panel = document.getElementById('controlPanel');
       var body = document.getElementById('controlPanelBody');
       var chevron = document.getElementById('collapseChevron');
-      if (!body || !chevron) return;
+      if (!panel || !body || !chevron) return;
+      /* Split view: body visibility is CSS !important — must toggle .is-expanded on #controlPanel */
+      if (document.body.classList.contains('view-both')) {
+        panel.classList.toggle('is-expanded');
+        body.style.display = '';
+        chevron.style.transform = '';
+        return;
+      }
       var collapsed = body.style.display === 'none';
       body.style.display = collapsed ? 'flex' : 'none';
       chevron.style.transform = collapsed ? '' : 'rotate(-90deg)';
@@ -6532,6 +7029,7 @@
 
       function startDrag(e) {
         if (document.body.classList.contains('proto-mobile')) return;
+        if (document.body.classList.contains('view-both')) return;
         if (document.body.classList.contains('proto-control-panel-stacked')) return;
         if (e.target.closest('#controlPanelCollapse')) return;
         isDragging = true;
@@ -6648,7 +7146,10 @@
       
       var showRunningPinnedCheckbox = document.getElementById('ctrlShowRunningPinned');
       
-      // Toggle buyer view class
+      // Remove all view classes first
+      document.body.classList.remove('view-buyer', 'view-both');
+      
+      // Toggle view classes
       if (view === 'buyer') {
         document.body.classList.add('view-buyer');
         // Save current state and force toggle off for buyers
@@ -6657,8 +7158,45 @@
           showRunningPinnedCheckbox.checked = false;
           onShowRunningPinnedChange();
         }
+      } else if (view === 'both') {
+        document.body.classList.add('view-both');
+        // Restore seller's toggle state for split view
+        if (showRunningPinnedCheckbox) {
+          showRunningPinnedCheckbox.checked = savedShowRunningPinnedState;
+          onShowRunningPinnedChange();
+        }
+        // Collapse control panel by default in both view (clear inline display so CSS !important applies)
+        var controlPanel = document.getElementById('controlPanel');
+        if (controlPanel) {
+          controlPanel.classList.remove('is-expanded');
+          var cpBody = document.getElementById('controlPanelBody');
+          if (cpBody) cpBody.style.display = '';
+          var cpChev = document.getElementById('collapseChevron');
+          if (cpChev) cpChev.style.transform = '';
+        }
+        // Sync buyer phone content
+        syncBuyerPhone();
+        requestAnimationFrame(function() {
+          scalePhone();
+        });
       } else {
-        document.body.classList.remove('view-buyer');
+        document.body.classList.remove('shop-open-on-buyer');
+        if (typeof removeLiveShopBuyerOverlay === 'function') {
+          removeLiveShopBuyerOverlay();
+        }
+        if (typeof moveLiveShopIntoSellerPhone === 'function') {
+          moveLiveShopIntoSellerPhone();
+        }
+        // Stop buyer phone sync when leaving both view
+        stopBuyerPhoneSync();
+        requestAnimationFrame(function() {
+          scalePhone();
+        });
+        // Expand control panel when leaving both view
+        var controlPanel = document.getElementById('controlPanel');
+        if (controlPanel) {
+          controlPanel.classList.add('is-expanded');
+        }
         // Restore seller's toggle state
         if (showRunningPinnedCheckbox) {
           showRunningPinnedCheckbox.checked = savedShowRunningPinnedState;
@@ -6672,6 +7210,399 @@
       requestAnimationFrame(function() {
         document.body.classList.remove('view-switching');
       });
+    }
+    
+    // Sync buyer phone content with seller phone for split view
+    var buyerMirrorSyncInterval = null;
+    
+    /** Buyer mirror must not duplicate id-heavy subtrees — breaks getElementById / images / shop. */
+    function sanitizeBuyerMirrorPhoneClone(phoneRoot) {
+      if (!phoneRoot) return;
+      [
+        'live-shop-root',
+        'flow-ldp',
+        'listingOptionsOverlay',
+        'prebidOverlay',
+        'optionsSheetOverlay',
+        'checkoutOverlay'
+      ].forEach(function(id) {
+        var el = phoneRoot.querySelector('#' + id);
+        if (el) el.remove();
+      });
+      var statusBar = phoneRoot.querySelector('phone-status-bar');
+      if (statusBar) statusBar.removeAttribute('id');
+      var homeInd = phoneRoot.querySelector('#phone-home-indicator');
+      if (homeInd) homeInd.removeAttribute('id');
+      var anno = phoneRoot.querySelector('#anno-overlay');
+      if (anno) anno.removeAttribute('id');
+    }
+
+    function syncBuyerPhone() {
+      var sellerPhone = document.querySelector('#phoneWrapper .phone');
+      var buyerMirror = document.getElementById('buyerPhoneMirror');
+      if (!sellerPhone || !buyerMirror) return;
+
+      var liveShopBeforeClone = document.getElementById('live-shop-root');
+      if (liveShopBeforeClone && liveShopBeforeClone.closest('#buyerPhoneMirror')) {
+        document.body.classList.remove('shop-open-on-buyer');
+        moveLiveShopIntoSellerPhone();
+      }
+
+      // Clone the seller phone content
+      var clonedContent = sellerPhone.cloneNode(true);
+      sanitizeBuyerMirrorPhoneClone(clonedContent);
+      
+      // Handle video element - create a new video with same source
+      var originalVideo = sellerPhone.querySelector('video');
+      var clonedVideo = clonedContent.querySelector('video');
+      if (originalVideo && clonedVideo) {
+        // Create fresh video element to ensure it plays
+        var newVideo = document.createElement('video');
+        newVideo.id = 'buyer-live-show-stream';
+        newVideo.src = originalVideo.src;
+        newVideo.muted = true;
+        newVideo.playsInline = true;
+        newVideo.loop = true;
+        newVideo.autoplay = true;
+        newVideo.style.cssText = originalVideo.style.cssText || '';
+        clonedVideo.parentNode.replaceChild(newVideo, clonedVideo);
+        newVideo.play().catch(function() {});
+      }
+      
+      // Replace buyer mirror content
+      buyerMirror.innerHTML = '';
+      while (clonedContent.firstChild) {
+        buyerMirror.appendChild(clonedContent.firstChild);
+      }
+      
+      // Apply buyer-specific class to trigger buyer CSS rules
+      buyerMirror.classList.add('is-buyer-view');
+      
+      // Start continuous sync if not already running
+      if (!buyerMirrorSyncInterval) {
+        buyerMirrorSyncInterval = setInterval(function() {
+          if (!document.body.classList.contains('view-both')) {
+            clearInterval(buyerMirrorSyncInterval);
+            buyerMirrorSyncInterval = null;
+            return;
+          }
+          
+          // Re-sync content (but preserve the video element)
+          var sellerPhone = document.querySelector('#phoneWrapper .phone');
+          var buyerMirror = document.getElementById('buyerPhoneMirror');
+          if (sellerPhone && buyerMirror) {
+            // Sync specific elements that change frequently, not full innerHTML
+            // This preserves the video element
+            syncMirrorElements(sellerPhone, buyerMirror);
+          }
+        }, 100); // Sync every 100ms
+      }
+    }
+    
+    function syncMirrorElements(source, target) {
+      var live = source.querySelector('.live-show');
+      var liveT = target.querySelector('.live-show');
+      if (!live || !liveT) return;
+
+      // Chat thread (seller DOM uses #live-show-chat-thread, not .live-show__chat-scroll)
+      var sourceChat = source.querySelector('#live-show-chat-thread') || source.querySelector('.live-show__thread');
+      var targetChat = target.querySelector('#live-show-chat-thread') || target.querySelector('.live-show__thread');
+      if (sourceChat && targetChat) {
+        var nextHtml = sourceChat.innerHTML;
+        if (targetChat.innerHTML !== nextHtml) {
+          var distFromBottom = sourceChat.scrollHeight - sourceChat.scrollTop - sourceChat.clientHeight;
+          var stickBottom = distFromBottom < 48;
+          targetChat.innerHTML = nextHtml;
+          if (stickBottom) {
+            targetChat.scrollTop = targetChat.scrollHeight - targetChat.clientHeight;
+          }
+        }
+      }
+
+      // Live viewer count
+      var sourceCount = source.querySelector('#live-show-live-count');
+      var targetCount = target.querySelector('#live-show-live-count');
+      if (sourceCount && targetCount) {
+        targetCount.textContent = sourceCount.textContent;
+      }
+
+      // Dock state (pinned / selecting / official)
+      var sourceDock = source.querySelector('.live-show__dock');
+      var targetDock = target.querySelector('.live-show__dock');
+      if (sourceDock && targetDock) {
+        targetDock.className = sourceDock.className;
+        var pt = sourceDock.getAttribute('data-pinned-type');
+        if (pt) targetDock.setAttribute('data-pinned-type', pt);
+        else targetDock.removeAttribute('data-pinned-type');
+      }
+
+      // Sync auction timer + bump
+      var sourceTimer = source.querySelector('#auction-timer');
+      var targetTimer = target.querySelector('#auction-timer');
+      if (sourceTimer && targetTimer) {
+        targetTimer.textContent = sourceTimer.textContent;
+        targetTimer.className = sourceTimer.className;
+        targetTimer.style.cssText = sourceTimer.style.cssText;
+      }
+      var sourceAuctionBump = source.querySelector('#auction-timer-bump');
+      var targetAuctionBump = target.querySelector('#auction-timer-bump');
+      if (sourceAuctionBump && targetAuctionBump) {
+        if (targetAuctionBump.className !== sourceAuctionBump.className) {
+          targetAuctionBump.className = sourceAuctionBump.className;
+        }
+        if (targetAuctionBump.style.cssText !== sourceAuctionBump.style.cssText) {
+          targetAuctionBump.style.cssText = sourceAuctionBump.style.cssText;
+        }
+      }
+
+      // Sync auction price
+      var sourcePrice = source.querySelector('#auction-price');
+      var targetPrice = target.querySelector('#auction-price');
+      if (sourcePrice && targetPrice) {
+        targetPrice.textContent = sourcePrice.textContent;
+      }
+
+      // Sync bids count in pinned auction if present
+      var sourceBids = source.querySelector('#auction-bids-count');
+      var targetBids = target.querySelector('#auction-bids-count');
+      if (sourceBids && targetBids) {
+        targetBids.textContent = sourceBids.textContent;
+      }
+
+      // Sync winning row
+      var sourceWinning = source.querySelector('#auction-winning-row');
+      var targetWinning = target.querySelector('#auction-winning-row');
+      if (sourceWinning && targetWinning) {
+        targetWinning.innerHTML = sourceWinning.innerHTML;
+        targetWinning.style.cssText = sourceWinning.style.cssText;
+      }
+
+      // Winner celebration overlay
+      var sourceCelebration = source.querySelector('#winnerCelebration') || source.querySelector('.live-show__winner-celebration');
+      var targetCelebration = target.querySelector('#winnerCelebration') || target.querySelector('.live-show__winner-celebration');
+      if (sourceCelebration && targetCelebration) {
+        targetCelebration.innerHTML = sourceCelebration.innerHTML;
+        targetCelebration.className = sourceCelebration.className;
+        targetCelebration.setAttribute('aria-hidden', sourceCelebration.getAttribute('aria-hidden') || 'true');
+      }
+
+      // Keep mirror video aligned with seller stream
+      var sv = source.querySelector('#live-show-stream') || source.querySelector('.live-show__media video');
+      var tv = target.querySelector('#buyer-live-show-stream') || target.querySelector('.live-show__media video');
+      if (sv && tv && !isNaN(sv.currentTime)) {
+        if (Math.abs(sv.currentTime - tv.currentTime) > 0.35) {
+          try {
+            tv.currentTime = sv.currentTime;
+          } catch (e) {}
+        }
+        if (sv.paused === false && tv.paused) {
+          tv.play().catch(function() {});
+        }
+      }
+
+      // Sync pinned product panels (visibility, classes, copy, meta, prices — seller is source of truth)
+      /** Buyer mirror: while seller configures template/variant, do not stream in-progress product copy */
+      function mirrorFreezeTypePreview(which) {
+        if (!document.body.classList.contains('view-both')) return false;
+        var sellerDock = source.querySelector('.live-show__dock');
+        if (!sellerDock || !sellerDock.classList.contains('is-selecting-options')) return false;
+        if (typeof PinnedState === 'undefined' || !PinnedState.preview) return false;
+        if (!PinnedState.preview.isSelecting || PinnedState.preview.type !== which) return false;
+        return true;
+      }
+      function mirrorFreezeTemplateVariantProductAttrs(panelId) {
+        if (panelId === 'pinned-template') return mirrorFreezeTypePreview('template');
+        if (panelId === 'pinned-variant') return mirrorFreezeTypePreview('variant');
+        return false;
+      }
+
+      var pinnedPanels = [
+        'pinned-auction',
+        'pinned-bin',
+        'pinned-flash',
+        'pinned-template',
+        'pinned-variant',
+        'pinned-bin-variant',
+        'pinned-flash-variant',
+        'pinned-empty'
+      ];
+      pinnedPanels.forEach(function(panelId) {
+        var sourcePanel = source.querySelector('#' + panelId);
+        var targetPanel = target.querySelector('#' + panelId);
+        if (!sourcePanel || !targetPanel) return;
+
+        targetPanel.hidden = sourcePanel.hidden;
+        if (targetPanel.className !== sourcePanel.className) {
+          targetPanel.className = sourcePanel.className;
+        }
+        if (targetPanel.style.cssText !== sourcePanel.style.cssText) {
+          targetPanel.style.cssText = sourcePanel.style.cssText;
+        }
+        targetPanel.style.display = sourcePanel.style.display;
+
+        if (!mirrorFreezeTemplateVariantProductAttrs(panelId)) {
+          var sourceImg = sourcePanel.querySelector('.live-show__product-thumb img');
+          var targetImg = targetPanel.querySelector('.live-show__product-thumb img');
+          if (sourceImg && targetImg && targetImg.src !== sourceImg.src) {
+            targetImg.src = sourceImg.src;
+          }
+
+          var sourceTitle = sourcePanel.querySelector('.live-show__product-title');
+          var targetTitle = targetPanel.querySelector('.live-show__product-title');
+          if (sourceTitle && targetTitle && targetTitle.textContent !== sourceTitle.textContent) {
+            targetTitle.textContent = sourceTitle.textContent;
+          }
+
+          var sourceMeta = sourcePanel.querySelector('.live-show__product-meta');
+          var targetMeta = targetPanel.querySelector('.live-show__product-meta');
+          if (sourceMeta && targetMeta && targetMeta.innerHTML !== sourceMeta.innerHTML) {
+            targetMeta.innerHTML = sourceMeta.innerHTML;
+          }
+
+          var sourceShip = sourcePanel.querySelector('.live-show__shipping');
+          var targetShip = targetPanel.querySelector('.live-show__shipping');
+          if (sourceShip && targetShip && targetShip.textContent !== sourceShip.textContent) {
+            targetShip.textContent = sourceShip.textContent;
+          }
+
+          var sourcePanelPrice = sourcePanel.querySelector('.live-show__product-price');
+          var targetPanelPrice = targetPanel.querySelector('.live-show__product-price');
+          if (sourcePanelPrice && targetPanelPrice) {
+            if (targetPanelPrice.textContent !== sourcePanelPrice.textContent) {
+              targetPanelPrice.textContent = sourcePanelPrice.textContent;
+            }
+            if (targetPanelPrice.className !== sourcePanelPrice.className) {
+              targetPanelPrice.className = sourcePanelPrice.className;
+            }
+          }
+
+          var sourceQty = sourcePanel.querySelector('.live-show__product-qty');
+          var targetQty = targetPanel.querySelector('.live-show__product-qty');
+          if (sourceQty && targetQty) {
+            if (targetQty.textContent !== sourceQty.textContent) {
+              targetQty.textContent = sourceQty.textContent;
+            }
+            if (targetQty.className !== sourceQty.className) {
+              targetQty.className = sourceQty.className;
+            }
+          }
+
+          var sourceTmplNum = sourcePanel.querySelector('.live-show__template-label');
+          var targetTmplNum = targetPanel.querySelector('.live-show__template-label');
+          if (sourceTmplNum && targetTmplNum && targetTmplNum.textContent !== sourceTmplNum.textContent) {
+            targetTmplNum.textContent = sourceTmplNum.textContent;
+          }
+        }
+      });
+
+      // Template / variant auction chrome (timers, bids row, pre/post CTAs)
+      function syncTwinById(id) {
+        var s = source.querySelector('#' + id);
+        var t = target.querySelector('#' + id);
+        if (!s || !t) return;
+        if (id.indexOf('timer') !== -1 && id.indexOf('bump') === -1) {
+          if (t.textContent !== s.textContent) t.textContent = s.textContent;
+          if (t.className !== s.className) t.className = s.className;
+          if (t.style.cssText !== s.style.cssText) t.style.cssText = s.style.cssText;
+        } else if (id.indexOf('bump') !== -1) {
+          if (t.className !== s.className) t.className = s.className;
+          if (t.style.cssText !== s.style.cssText) t.style.cssText = s.style.cssText;
+        } else if (id.indexOf('bids-btn') !== -1) {
+          t.style.display = s.style.display;
+          t.className = s.className;
+          t.disabled = s.disabled;
+        } else if (id.indexOf('bids-count') !== -1 || id.indexOf('post-bids') !== -1) {
+          if (t.textContent !== s.textContent) t.textContent = s.textContent;
+        } else if (id.indexOf('pre-auction') !== -1 || id.indexOf('post-auction') !== -1) {
+          t.style.display = s.style.display;
+        }
+      }
+      [
+        'template-timer',
+        'template-timer-bump',
+        'template-bids-btn',
+        'template-bids-count',
+        'template-post-auction',
+        'template-post-bids-count',
+        'template-pre-auction',
+        'variant-timer',
+        'variant-timer-bump',
+        'variant-bids-btn',
+        'variant-bids-count',
+        'variant-pre-auction'
+      ].forEach(syncTwinById);
+
+      if (!mirrorFreezeTypePreview('template')) {
+        var sTplSel = source.querySelector('#template-select-btn');
+        var tTplSel = target.querySelector('#template-select-btn');
+        if (sTplSel && tTplSel && tTplSel.textContent !== sTplSel.textContent) {
+          tTplSel.textContent = sTplSel.textContent;
+        }
+      }
+      if (!mirrorFreezeTypePreview('variant')) {
+        var sVarSel = source.querySelector('#variant-select-btn');
+        var tVarSel = target.querySelector('#variant-select-btn');
+        if (sVarSel && tVarSel && tVarSel.textContent !== sVarSel.textContent) {
+          tVarSel.textContent = sVarSel.textContent;
+        }
+      }
+
+      // Winning rows: template + variant (auction handled above)
+      ['template-winning-row', 'variant-winning-row'].forEach(function(rowId) {
+        var s = source.querySelector('#' + rowId);
+        var t = target.querySelector('#' + rowId);
+        if (s && t) {
+          if (t.innerHTML !== s.innerHTML) t.innerHTML = s.innerHTML;
+          if (t.style.cssText !== s.style.cssText) t.style.cssText = s.style.cssText;
+        }
+      });
+
+      // Sync buyer CTA states (auction, template, variant + post-sold rows)
+      function syncBuyerCtaTriplet(prefix) {
+        ['-buyer-pre', '-buyer-active', '-buyer-post-sold'].forEach(function(suffix) {
+          var sel = '#' + prefix + suffix;
+          var srcEl = source.querySelector(sel);
+          var tgtEl = target.querySelector(sel);
+          if (srcEl && tgtEl) tgtEl.className = srcEl.className;
+        });
+      }
+      syncBuyerCtaTriplet('auction');
+      syncBuyerCtaTriplet('template');
+      syncBuyerCtaTriplet('variant');
+
+      // Swipe CTA labels (duplicate IDs in mirror — update from seller node)
+      var swipeIds = ['auction-swipe-text', 'template-swipe-text', 'variant-swipe-text'];
+      swipeIds.forEach(function(id) {
+        var a = source.querySelector('#' + id);
+        var b = target.querySelector('#' + id);
+        if (a && b) b.textContent = a.textContent;
+      });
+    }
+    
+    function stopBuyerPhoneSync() {
+      if (buyerMirrorSyncInterval) {
+        clearInterval(buyerMirrorSyncInterval);
+        buyerMirrorSyncInterval = null;
+      }
+      document.body.classList.remove('shop-open-on-buyer');
+      restoreAllBuyerMirrorDomDock();
+      if (typeof removeLiveShopBuyerOverlay === 'function') {
+        removeLiveShopBuyerOverlay();
+      }
+      if (typeof moveLiveShopIntoSellerPhone === 'function') {
+        moveLiveShopIntoSellerPhone();
+      }
+      // Clean up buyer mirror video
+      var buyerVideo = document.getElementById('buyer-live-show-stream');
+      if (buyerVideo) {
+        buyerVideo.pause();
+        buyerVideo.src = '';
+      }
+      var buyerWrap = document.getElementById('buyerPhoneWrapper');
+      if (buyerWrap) {
+        buyerWrap.style.width = '';
+        buyerWrap.style.height = '';
+      }
     }
     
     function updateBuyerSwipeButtons() {
@@ -6695,6 +7626,39 @@
         var nextVariantBid = variantPrice + 1;
         variantSwipeText.textContent = 'Bid $' + nextVariantBid;
       }
+
+      if (document.body.classList.contains('view-both')) {
+        var mirror = document.getElementById('buyerPhoneMirror');
+        if (mirror) {
+          var mAuction = mirror.querySelector('#auction-swipe-text');
+          if (mAuction && typeof auctionPrice !== 'undefined') {
+            mAuction.textContent = 'Bid $' + (auctionPrice + 1);
+          }
+          var mTpl = mirror.querySelector('#template-swipe-text');
+          if (mTpl && typeof templatePrice !== 'undefined') {
+            mTpl.textContent = 'Bid $' + (templatePrice + 1);
+          }
+          var mVar = mirror.querySelector('#variant-swipe-text');
+          if (mVar && typeof variantPrice !== 'undefined') {
+            mVar.textContent = 'Bid $' + (variantPrice + 1);
+          }
+        }
+      }
+    }
+
+    /** Buyer view: replace swipe row with disabled "Awaiting Next Item" after auction sells */
+    function showBuyerAuctionPostSoldUI(prefix) {
+      var pre = document.getElementById(prefix + '-buyer-pre');
+      var active = document.getElementById(prefix + '-buyer-active');
+      var post = document.getElementById(prefix + '-buyer-post-sold');
+      if (pre) pre.classList.add('is-hidden');
+      if (active) active.classList.remove('is-visible');
+      if (post) post.classList.add('is-visible');
+    }
+
+    function hideBuyerAuctionPostSoldUI(prefix) {
+      var post = document.getElementById(prefix + '-buyer-post-sold');
+      if (post) post.classList.remove('is-visible');
     }
 
     function onShowRunningPinnedChange() {
@@ -7102,25 +8066,267 @@
     var currentlyPinnedType = 'auction';
     var currentlyPinnedRow = null;
 
-    function openShop() {
+    var shopDefaultParentEl = null;
+    var shopDefaultNextSibling = null;
+    /** Non-interactive deep clone over the buyer device when seller shop stays open (view-both only). */
+    var liveShopBuyerOverlayEl = null;
+
+    /** When the live shop is docked in #buyerPhoneMirror, buyer sheets must live in that subtree — not under #phoneWrapper. */
+    var buyerMirrorDomDockStack = [];
+
+    function isLiveShopDockedInBuyerMirror() {
+      var r = document.getElementById('live-shop-root');
+      return !!(r && r.closest('#buyerPhoneMirror'));
+    }
+
+    /** Reparents buyer UI into the mirror; returns true if a move happened (caller should defer is-open / animations). */
+    function dockBuyerMirrorUiIfShopInBuyerMirror(el) {
+      if (!el || !el.parentNode) return false;
+      if (el.closest('#buyerPhoneMirror')) return false;
+      if (!isLiveShopDockedInBuyerMirror()) return false;
+      var mirror = document.getElementById('buyerPhoneMirror');
+      var pc = mirror && mirror.querySelector('.phone-content');
+      if (!pc) return false;
+      for (var i = 0; i < buyerMirrorDomDockStack.length; i++) {
+        if (buyerMirrorDomDockStack[i].el === el) return false;
+      }
+      buyerMirrorDomDockStack.push({ el: el, parent: el.parentElement, next: el.nextSibling });
+      pc.appendChild(el);
+      return true;
+    }
+
+    function afterReflowForAnimation(fn) {
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          try {
+            fn();
+          } catch (e) {}
+        });
+      });
+    }
+
+    function restoreBuyerMirrorDomDockEl(el) {
+      if (!el) return;
+      var idx = -1;
+      for (var j = 0; j < buyerMirrorDomDockStack.length; j++) {
+        if (buyerMirrorDomDockStack[j].el === el) {
+          idx = j;
+          break;
+        }
+      }
+      if (idx === -1) return;
+      var item = buyerMirrorDomDockStack.splice(idx, 1)[0];
+      if (!item.parent) return;
+      try {
+        if (item.next && item.next.parentNode === item.parent) {
+          item.parent.insertBefore(item.el, item.next);
+        } else {
+          item.parent.appendChild(item.el);
+        }
+      } catch (err) {}
+    }
+
+    function restoreAllBuyerMirrorDomDock() {
+      while (buyerMirrorDomDockStack.length) {
+        var item = buyerMirrorDomDockStack.pop();
+        if (!item || !item.el || !item.parent) continue;
+        try {
+          if (item.next && item.next.parentNode === item.parent) {
+            item.parent.insertBefore(item.el, item.next);
+          } else {
+            item.parent.appendChild(item.el);
+          }
+        } catch (err) {}
+      }
+    }
+
+    function setLiveShopSheetWillChange(on, root) {
+      var sh = null;
+      if (root && root.querySelector) {
+        sh = root.querySelector('.live-shop-sheet');
+      }
+      if (!sh) {
+        sh = document.getElementById('live-shop-sheet');
+      }
+      if (sh && sh.style) sh.style.willChange = on ? 'transform' : '';
+    }
+
+    function stripLiveShopCloneIds(root) {
+      if (!root) return;
+      if (root.hasAttribute && root.hasAttribute('id')) root.removeAttribute('id');
+      var nodes = root.querySelectorAll('[id]');
+      for (var i = 0; i < nodes.length; i++) {
+        nodes[i].removeAttribute('id');
+      }
+    }
+
+    function wireLiveShopCloneDismissOnly(clone) {
+      if (!clone) return;
+      function dismiss(ev) {
+        if (ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+        }
+        closeBuyerShopOverlay();
+      }
+      ['.live-shop-backdrop', '.live-shop-close', '.live-shop-back-btn'].forEach(function (sel) {
+        var el = clone.querySelector(sel);
+        if (!el) return;
+        el.removeAttribute('onclick');
+        el.addEventListener('click', dismiss);
+      });
+    }
+
+    function removeLiveShopBuyerOverlay() {
+      if (!liveShopBuyerOverlayEl) return;
+      try {
+        setLiveShopSheetWillChange(false, liveShopBuyerOverlayEl);
+        liveShopBuyerOverlayEl.classList.remove('is-open');
+        liveShopBuyerOverlayEl.setAttribute('aria-hidden', 'true');
+        if (liveShopBuyerOverlayEl.parentNode) {
+          liveShopBuyerOverlayEl.parentNode.removeChild(liveShopBuyerOverlayEl);
+        }
+      } catch (err) {}
+      liveShopBuyerOverlayEl = null;
+    }
+
+    function closeBuyerShopOverlay() {
+      removeLiveShopBuyerOverlay();
+      document.body.classList.remove('shop-open-on-buyer');
+    }
+
+    function rememberLiveShopDockTarget() {
+      var root = document.getElementById('live-shop-root');
+      if (!root || shopDefaultParentEl) return;
+      shopDefaultParentEl = root.parentElement;
+      shopDefaultNextSibling = root.nextSibling;
+    }
+
+    function moveLiveShopIntoSellerPhone() {
+      var root = document.getElementById('live-shop-root');
+      if (!root || !shopDefaultParentEl) return;
+      if (root.parentElement === shopDefaultParentEl) return;
+      if (shopDefaultNextSibling && shopDefaultNextSibling.parentNode === shopDefaultParentEl) {
+        shopDefaultParentEl.insertBefore(root, shopDefaultNextSibling);
+      } else {
+        shopDefaultParentEl.appendChild(root);
+      }
+    }
+
+    function moveLiveShopIntoBuyerMirror() {
+      rememberLiveShopDockTarget();
+      var root = document.getElementById('live-shop-root');
+      var mirror = document.getElementById('buyerPhoneMirror');
+      var pc = mirror && mirror.querySelector('.phone-content');
+      if (root && pc) pc.appendChild(root);
+    }
+
+    function openShop(ev) {
+      rememberLiveShopDockTarget();
       var shopRoot = document.getElementById('live-shop-root');
-      if (shopRoot) {
-        shopRoot.classList.add('is-open');
-        shopRoot.setAttribute('aria-hidden', 'false');
-        
-        // Scroll to top when opening shop
-        var shopList = shopRoot.querySelector('.live-shop-list');
+      if (!shopRoot) return;
+
+      var fromBuyer = false;
+      var shopOpenTarget = shopRoot;
+      if (document.body.classList.contains('view-both')) {
+        var mirror = document.getElementById('buyerPhoneMirror');
+        var phoneWrapper = document.getElementById('phoneWrapper');
+        var clickEl = ev && (ev.currentTarget || ev.target);
+        /* Seller tap must win over stale body.shop-open-on-buyer / prior buyer dock heuristics */
+        if (clickEl && phoneWrapper && phoneWrapper.contains(clickEl)) {
+          fromBuyer = false;
+        } else if (clickEl && mirror && mirror.contains(clickEl)) {
+          fromBuyer = true;
+        } else if (mirror && shopRoot.closest('#buyerPhoneMirror')) {
+          /* Programmatic reopen (no target) or sheet left docked in buyer mirror */
+          fromBuyer = true;
+        }
+        if (fromBuyer) {
+          document.body.classList.add('shop-open-on-buyer');
+          var sellerShopOpen = !!(
+            shopRoot.classList.contains('is-open') &&
+            phoneWrapper &&
+            phoneWrapper.contains(shopRoot)
+          );
+          if (sellerShopOpen) {
+            removeLiveShopBuyerOverlay();
+            var splitClone = shopRoot.cloneNode(true);
+            splitClone.classList.add('live-shop-root--buyer-split-clone');
+            stripLiveShopCloneIds(splitClone);
+            wireLiveShopCloneDismissOnly(splitClone);
+            var buyerDf = document.querySelector('#buyerPhoneWrapper .device-frame');
+            if (buyerDf) {
+              buyerDf.appendChild(splitClone);
+              liveShopBuyerOverlayEl = splitClone;
+              shopOpenTarget = splitClone;
+            }
+          } else {
+            removeLiveShopBuyerOverlay();
+            moveLiveShopIntoBuyerMirror();
+            shopOpenTarget = shopRoot;
+          }
+        } else {
+          document.body.classList.remove('shop-open-on-buyer');
+          removeLiveShopBuyerOverlay();
+          moveLiveShopIntoSellerPhone();
+          shopOpenTarget = shopRoot;
+        }
+      } else {
+        document.body.classList.remove('shop-open-on-buyer');
+        removeLiveShopBuyerOverlay();
+        moveLiveShopIntoSellerPhone();
+        shopOpenTarget = shopRoot;
+      }
+
+      var deferShopOpen = document.body.classList.contains('view-both') && fromBuyer;
+
+      function finishOpenShop() {
+        setLiveShopSheetWillChange(true, shopOpenTarget);
+        shopOpenTarget.classList.add('is-open');
+        shopOpenTarget.setAttribute('aria-hidden', 'false');
+
+        var shopList = shopOpenTarget.querySelector('.live-shop-list');
         if (shopList) {
           shopList.scrollTop = 0;
         }
+
+        var shopSheet = shopOpenTarget.querySelector('.live-shop-sheet');
+        if (!shopSheet) {
+          shopSheet = document.getElementById('live-shop-sheet');
+        }
+        if (shopSheet) {
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              try {
+                shopSheet.focus({ preventScroll: true });
+              } catch (err) {
+                shopSheet.focus();
+              }
+            });
+          });
+        }
+      }
+
+      if (deferShopOpen) {
+        afterReflowForAnimation(finishOpenShop);
+      } else {
+        finishOpenShop();
       }
     }
-    
+
     function closeShop() {
       var shopRoot = document.getElementById('live-shop-root');
+      setLiveShopSheetWillChange(true, shopRoot);
+      restoreAllBuyerMirrorDomDock();
+      removeLiveShopBuyerOverlay();
       if (shopRoot) {
         shopRoot.classList.remove('is-open');
         shopRoot.setAttribute('aria-hidden', 'true');
+        setLiveShopSheetWillChange(false, shopRoot);
+      }
+      document.body.classList.remove('shop-open-on-buyer');
+      if (document.body.classList.contains('view-both')) {
+        moveLiveShopIntoSellerPhone();
       }
     }
 
@@ -7142,7 +8348,8 @@
         PinnedState.pin(targetPinned, currentlyPinnedRow);
       } else {
         // Preview only (selecting options) - buyer still sees previous pinned item
-        PinnedState.startPreview(targetPinned, currentlyPinnedRow);
+        var previewRow = (typeof selectOptionsShopRow !== 'undefined' && selectOptionsShopRow) ? selectOptionsShopRow : currentlyPinnedRow;
+        PinnedState.startPreview(targetPinned, previewRow);
       }
       
       // Reset auctions when switching away
@@ -7170,6 +8377,7 @@
       var price = row.dataset.pinPrice || '$0';
       var img = row.dataset.pinImg || '';
       var qty = row.dataset.pinQty || '1';
+      var isTemplateOrVariant = (type === 'template' || type === 'variant');
       
       // Get target panel ID based on type
       var panelId = 'pinned-' + type;
@@ -7181,11 +8389,21 @@
         unpinShopRow(currentlyPinnedRow, true);
       }
       
-      // Move the row to the appropriate Pinned section based on type (or keep in place if toggle is off)
-      var pinnedSectionId = (type === 'bin' || type === 'bin-variant') ? 'bin-pinned-section' : 'pinned-section';
-      row.classList.add('is-pinned');
-      currentlyPinnedRow = row;
-      positionRowForPinned(row, pinnedSectionId);
+      // Template / variant: seller configures options first — not officially pinned until "Pin Product"
+      if (!isTemplateOrVariant) {
+        var pinnedSectionId = (type === 'bin' || type === 'bin-variant') ? 'bin-pinned-section' : 'pinned-section';
+        row.classList.add('is-pinned');
+        currentlyPinnedRow = row;
+        positionRowForPinned(row, pinnedSectionId);
+      } else {
+        row.classList.add('is-pin-configuring');
+        currentlyPinnedRow = row;
+        selectOptionsShopRow = row;
+        var shopOpen = document.getElementById('live-shop-root');
+        if (shopOpen && shopOpen.classList.contains('is-open')) {
+          selectOptionsFromShop = true;
+        }
+      }
       
       // Update panel content
       var thumbImg = panel.querySelector('.live-show__product-thumb img');
@@ -7215,8 +8433,8 @@
         startBinPurchaseSimulation(title, parseInt(qty) || 10);
       }
       
-      // Show the correct panel and hide others
-      showPinnedPanel(type);
+      // Show the correct panel and hide others (template/variant = preview only until Pin Product)
+      showPinnedPanel(type, !isTemplateOrVariant);
       
       // Close the shop sheet
       var shopRoot = document.getElementById('live-shop-root');
@@ -7239,12 +8457,22 @@
     }
 
     function togglePinProduct(btn, row) {
-      // Check if the ROW is pinned (the source of truth)
-      var isCurrentlyPinned = row.classList.contains('is-pinned');
+      // Pinned or mid-configuration (template / variant before Pin Product)
+      var isCurrentlyPinned = row.classList.contains('is-pinned') || row.classList.contains('is-pin-configuring');
       
       if (isCurrentlyPinned) {
-        // Unpin - properly reset everything
-        unpinShopRow(row);
+        if (row.classList.contains('is-pin-configuring') && !row.classList.contains('is-pinned')) {
+          if (typeof selectOptionsActive !== 'undefined' && selectOptionsActive) {
+            closeSelectOptions();
+          }
+          if (typeof PinnedState !== 'undefined') PinnedState.cancelPreview();
+          row.classList.remove('is-pin-configuring');
+          if (selectOptionsShopRow === row) selectOptionsShopRow = null;
+          if (currentlyPinnedRow === row) currentlyPinnedRow = null;
+          unpinShopRow(row, true);
+        } else {
+          unpinShopRow(row);
+        }
         btn.classList.remove('is-pinned');
         var label = btn.querySelector('span');
         if (label) label.textContent = 'Pin';
@@ -7362,6 +8590,27 @@
       }
     }
 
+    function syncVariantShopRowQtyLeft(timeLeft) {
+      if (!activeShopAuctionRow || activeShopAuctionRow.dataset.pinType !== 'variant') return;
+      var qtyLine = activeShopAuctionRow.querySelector('.js-shop-variant-qty');
+      if (!qtyLine) return;
+      if (typeof timeLeft === 'number' && timeLeft <= 0) {
+        qtyLine.hidden = true;
+        return;
+      }
+      qtyLine.hidden = false;
+      var pinnedQtyEl = document.getElementById('variant-qty');
+      var text = pinnedQtyEl ? pinnedQtyEl.textContent.trim() : '';
+      if (!text) {
+        var dq = activeShopAuctionRow.dataset.pinQty;
+        text = dq ? String(parseInt(dq, 10) || dq) + ' Left' : '';
+      }
+      if (text) qtyLine.textContent = text;
+      var m = (qtyLine.textContent || '').match(/(\d+)/);
+      var n = m ? parseInt(m[1], 10) : NaN;
+      qtyLine.classList.toggle('live-shop-row__qty-left--low', !isNaN(n) && n < 5);
+    }
+
     function syncShopRowWithAuction(price, timeLeft, bids) {
       if (!activeShopAuctionRow) return;
       
@@ -7393,6 +8642,9 @@
           timerEl.textContent = (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
         }
       }
+      if (rowType === 'variant') {
+        syncVariantShopRowQtyLeft(timeLeft);
+      }
     }
 
     function resetShopAuctionRow() {
@@ -7421,6 +8673,16 @@
         if (rowType === 'template') {
           var chipEl = activeShopAuctionRow.querySelector('.js-template-chip');
           if (chipEl) chipEl.textContent = '#1';
+        }
+        if (rowType === 'variant') {
+          var shopVarQty = activeShopAuctionRow.querySelector('.js-shop-variant-qty');
+          if (shopVarQty) {
+            shopVarQty.hidden = false;
+            var pq = parseInt(activeShopAuctionRow.dataset.pinQty, 10);
+            if (isNaN(pq)) pq = 12;
+            shopVarQty.textContent = pq + ' Left';
+            shopVarQty.classList.toggle('live-shop-row__qty-left--low', pq < 5);
+          }
         }
         
         // Reset actions display (clear any inline styles)
@@ -7498,6 +8760,7 @@
       if (!row) return;
       
       row.classList.remove('is-pinned');
+      row.classList.remove('is-pin-configuring');
       
       // Stop BIN purchase simulation if unpinning a BIN
       var rowType = row.dataset.pinType;
@@ -7752,8 +9015,8 @@
       // Make entire shop row clickable for buyer view -> always opens LDP
       document.querySelectorAll('.live-shop-row').forEach(function(row) {
         row.addEventListener('click', function(e) {
-          // Only for buyer view
-          if (!document.body.classList.contains('view-buyer')) return;
+          // Buyer-only shop: full buyer mode or Both with shop docked on buyer mirror
+          if (!document.body.classList.contains('view-buyer') && !document.body.classList.contains('shop-open-on-buyer')) return;
           
           // Don't trigger if clicking on a button
           if (e.target.closest('button')) return;
@@ -7895,16 +9158,16 @@
     
     var bidderNames = ['sneakerhead99', 'kicksqueen', 'jordanfan23', 'hypebeast_mike', 'shoecollector', 'airmax_lover', 'dunkmaster', 'retro_kicks', 'sole_hunter', 'fresh_sneaks'];
     var bidderAvatars = [
-      'https://i.pravatar.cc/64?img=1',
-      'https://i.pravatar.cc/64?img=5',
-      'https://i.pravatar.cc/64?img=8',
-      'https://i.pravatar.cc/64?img=11',
-      'https://i.pravatar.cc/64?img=12',
-      'https://i.pravatar.cc/64?img=15',
-      'https://i.pravatar.cc/64?img=18',
-      'https://i.pravatar.cc/64?img=22',
-      'https://i.pravatar.cc/64?img=33',
-      'https://i.pravatar.cc/64?img=45'
+      'assets/products/chat-avatar-male.svg',
+      'assets/products/chat-avatar-2.svg',
+      'assets/products/chat-avatar-3.svg',
+      'assets/products/chat-avatar-malk.svg',
+      'assets/products/chat-avatar-male.svg',
+      'assets/products/chat-avatar-male.svg',
+      'assets/products/chat-avatar-2.svg',
+      'assets/products/chat-avatar-3.svg',
+      'assets/products/chat-avatar-malk.svg',
+      'assets/products/chat-avatar-male.svg'
     ];
 
     function showTimerBump(bumpElementId, seconds) {
@@ -8185,6 +9448,7 @@
       lastBidEl.style.display = 'none';
       
       // Switch buyer CTAs from pre-auction to active
+      hideBuyerAuctionPostSoldUI('auction');
       if (buyerPreCta) buyerPreCta.classList.add('is-hidden');
       if (buyerActiveCta) buyerActiveCta.classList.add('is-visible');
       
@@ -8284,6 +9548,7 @@
         bidsBtn.disabled = false;
       }
       
+      
       // Sync with shop row
       syncShopRowWithAuction(auctionPrice, auctionTimeLeft, auctionBids);
       
@@ -8329,6 +9594,8 @@
       
       updateListingsDivider();
       
+      showBuyerAuctionPostSoldUI('auction');
+      
       // Re-enable start buttons
       enableAllStartButtons();
     }
@@ -8360,6 +9627,8 @@
       auctionPrice = 1;
       currentWinner = null;
       lastBidder = null;
+      
+      hideBuyerAuctionPostSoldUI('auction');
       
       // Reset buyer CTAs to pre-auction state
       if (buyerPreCta) buyerPreCta.classList.remove('is-hidden');
@@ -8416,6 +9685,7 @@
       // Switch buyer CTAs from pre-auction to active
       var buyerPreCta = document.getElementById('template-buyer-pre');
       var buyerActiveCta = document.getElementById('template-buyer-active');
+      hideBuyerAuctionPostSoldUI('template');
       if (buyerPreCta) buyerPreCta.classList.add('is-hidden');
       if (buyerActiveCta) buyerActiveCta.classList.add('is-visible');
       
@@ -8600,7 +9870,7 @@
       var pinnedThumb = document.querySelector('#pinned-template .live-show__product-thumb img');
       
       var variantMeta = (metaBrand ? metaBrand.textContent : '') + ' • ' + (metaSize ? metaSize.textContent : '') + ' • New';
-      var variantImg = pinnedThumb ? pinnedThumb.src : 'assets/pile-of-sneakers.jpg';
+      var variantImg = pinnedThumb ? pinnedThumb.src : 'assets/products/figma-nike-air-max-black.png';
       var winner = templateWinner ? templateWinner.name : 'bidder';
       
       // Create a sold entry for this specific variant
@@ -8641,6 +9911,8 @@
         currentlyPinnedRow = null;
       }
       activeShopAuctionRow = null;
+      
+      showBuyerAuctionPostSoldUI('template');
       
       // Re-enable start buttons
       enableAllStartButtons();
@@ -8699,6 +9971,7 @@
       // Reset buyer CTAs to pre-auction state
       var buyerPreCta = document.getElementById('template-buyer-pre');
       var buyerActiveCta = document.getElementById('template-buyer-active');
+      hideBuyerAuctionPostSoldUI('template');
       if (buyerPreCta) buyerPreCta.classList.remove('is-hidden');
       if (buyerActiveCta) buyerActiveCta.classList.remove('is-visible');
       
@@ -8769,6 +10042,12 @@
       templateWinner = null;
       templateLastBidder = null;
       
+      hideBuyerAuctionPostSoldUI('template');
+      var tplPre = document.getElementById('template-buyer-pre');
+      var tplAct = document.getElementById('template-buyer-active');
+      if (tplPre) tplPre.classList.remove('is-hidden');
+      if (tplAct) tplAct.classList.remove('is-visible');
+      
       // Reset winning text to "is winning!" (in case it was changed to "won!")
       var winningText = winningRow.querySelector('.live-show__winning-text');
       if (winningText) {
@@ -8819,6 +10098,7 @@
       // Switch buyer CTAs from pre-auction to active
       var buyerPreCta = document.getElementById('variant-buyer-pre');
       var buyerActiveCta = document.getElementById('variant-buyer-active');
+      hideBuyerAuctionPostSoldUI('variant');
       if (buyerPreCta) buyerPreCta.classList.add('is-hidden');
       if (buyerActiveCta) buyerActiveCta.classList.add('is-visible');
       
@@ -9032,6 +10312,14 @@
           shopTimerEl.style.display = 'none';
           shopTimerEl.style.color = '';
         }
+        var shopVarQty = activeShopAuctionRow.querySelector('.js-shop-variant-qty');
+        if (shopVarQty) {
+          shopVarQty.hidden = false;
+          var pq = parseInt(activeShopAuctionRow.dataset.pinQty, 10);
+          if (isNaN(pq)) pq = 12;
+          shopVarQty.textContent = pq + ' Left';
+          shopVarQty.classList.toggle('live-shop-row__qty-left--low', pq < 5);
+        }
         var actionsEl = activeShopAuctionRow.querySelector('.live-shop-row__actions');
         if (actionsEl) actionsEl.style.display = 'flex';
         
@@ -9059,6 +10347,8 @@
         currentlyPinnedRow = null;
       }
       activeShopAuctionRow = null;
+      
+      showBuyerAuctionPostSoldUI('variant');
       
       // Re-enable start buttons
       enableAllStartButtons();
@@ -9089,6 +10379,12 @@
       variantPrice = 1;
       variantWinner = null;
       variantLastBidder = null;
+      
+      hideBuyerAuctionPostSoldUI('variant');
+      var vPre = document.getElementById('variant-buyer-pre');
+      var vAct = document.getElementById('variant-buyer-active');
+      if (vPre) vPre.classList.remove('is-hidden');
+      if (vAct) vAct.classList.remove('is-visible');
       
       // Reset winning text to "is winning!" (in case it was changed to "won!")
       var winningText = winningRow.querySelector('.live-show__winning-text');
@@ -9132,6 +10428,9 @@
         }
         currentSelectType = type;
         selectOptionsActive = true;
+        if (type === 'variant') {
+          updateProductMeta('variant');
+        }
         
         // Update state machine - seller is selecting options (buyer still sees previous item)
         PinnedState.startPreview(type, selectOptionsShopRow);
@@ -9173,6 +10472,7 @@
           // Pin the current row to the correct section based on type (or keep in place if toggle is off)
           var rowType = selectOptionsShopRow.dataset.pinType;
           var pinnedSectionId = (rowType === 'bin' || rowType === 'bin-variant') ? 'bin-pinned-section' : 'pinned-section';
+          selectOptionsShopRow.classList.remove('is-pin-configuring');
           selectOptionsShopRow.classList.add('is-pinned');
           currentlyPinnedRow = selectOptionsShopRow;
           positionRowForPinned(selectOptionsShopRow, pinnedSectionId);
@@ -9212,6 +10512,7 @@
         var colorChip = attrPicker.querySelector('[data-attr="color"].is-selected');
         var color = colorChip ? colorChip.textContent : '';
         var qty = sizeChip && sizeChip.dataset.qty ? sizeChip.dataset.qty : '';
+        if (qty) row.dataset.pinQty = String(parseInt(qty, 10) || qty);
         if (metaEl && color && size) {
           var metaText = color + ' · ' + size;
           if (qty) {
@@ -9224,6 +10525,15 @@
           priceEl.textContent = '$' + sizeChip.dataset.price;
           // Also update the data attribute for reset
           row.dataset.pinPrice = '$' + sizeChip.dataset.price;
+        }
+        var shopQty = row.querySelector('.js-shop-variant-qty');
+        if (shopQty && qty) {
+          var qn = parseInt(qty, 10) || 0;
+          shopQty.textContent = qn + ' Left';
+          shopQty.classList.toggle('live-shop-row__qty-left--low', qn < 5);
+        }
+        if (activeShopAuctionRow === row && row.classList.contains('is-auction-active')) {
+          syncVariantShopRowQtyLeft(typeof variantTimeLeft === 'number' ? variantTimeLeft : 1);
         }
       }
     }
@@ -9270,6 +10580,15 @@
               qtyEl.classList.remove('live-show__product-qty--low');
             }
           }
+          var vRow = document.querySelector('.live-shop-row[data-pin-type="variant"]');
+          if (vRow) vRow.dataset.pinQty = String(qty);
+          if (typeof syncVariantShopRowQtyLeft === 'function' &&
+              typeof activeShopAuctionRow !== 'undefined' &&
+              activeShopAuctionRow &&
+              activeShopAuctionRow.dataset.pinType === 'variant' &&
+              activeShopAuctionRow.classList.contains('is-auction-active')) {
+            syncVariantShopRowQtyLeft(typeof variantTimeLeft === 'number' ? variantTimeLeft : 1);
+          }
         }
       }
     }
@@ -9278,6 +10597,13 @@
       var header = document.querySelector('.live-show__header');
       var rowChat = document.querySelector('.live-show__row-chat');
       var closeBtn = document.getElementById('select-options-close');
+      
+      if (typeof selectOptionsActive !== 'undefined' && selectOptionsActive) {
+        if (typeof PinnedState !== 'undefined') PinnedState.cancelPreview();
+        if (selectOptionsShopRow) {
+          selectOptionsShopRow.classList.remove('is-pin-configuring');
+        }
+      }
       
       header.classList.remove('is-hidden');
       rowChat.classList.remove('is-hidden');
@@ -9306,15 +10632,7 @@
             var emptyPanel = document.getElementById('pinned-empty');
             if (emptyPanel) emptyPanel.hidden = false;
           }
-          // Reopen shop
-          var shopRoot = document.getElementById('live-shop-root');
-          if (shopRoot) {
-            shopRoot.classList.add('is-open');
-            shopRoot.setAttribute('aria-hidden', 'false');
-            // Scroll to top
-            var shopList = shopRoot.querySelector('.live-shop-list');
-            if (shopList) shopList.scrollTop = 0;
-          }
+          openShop();
           selectOptionsFromShop = false;
           selectOptionsShopRow = null;
         }
@@ -9351,7 +10669,11 @@
           openSizeSheet();
           return;
         }
-        
+        /* Brand overflow chip — same affordance as size; hook up full brand list when ready */
+        if (attr === 'brand' && value === 'more') {
+          return;
+        }
+
         var parent = chip.closest('.live-show__attr-chips');
         // Deselect other chips in the same group
         parent.querySelectorAll('.live-show__attr-chip').forEach(function(c) {
@@ -9380,7 +10702,8 @@
       // Check if shop is open (for buyer view flow)
       var shopRoot = document.getElementById('live-shop-root');
       var shopSheet = document.getElementById('live-shop-sheet');
-      var isBuyerView = document.body.classList.contains('view-buyer');
+      var isBuyerView = document.body.classList.contains('view-buyer') ||
+        document.body.classList.contains('shop-open-on-buyer');
       ldpOpenedFromShop = shopRoot && shopRoot.classList.contains('is-open');
       
       // Populate LDP with shop row data
@@ -9396,6 +10719,11 @@
       if (pinType === 'variant') {
         // Auction variant: show specific price, Pre-bid button
         document.getElementById('ldp-price').textContent = '$1';
+        ldpRequestBtn.textContent = 'Pre-bid';
+        ldpRequestBtn.onclick = function() { preBidLdp(); };
+      } else if (pinType === 'auction') {
+        // Standard auction listing: same buyer action as shop row
+        document.getElementById('ldp-price').textContent = price;
         ldpRequestBtn.textContent = 'Pre-bid';
         ldpRequestBtn.onclick = function() { preBidLdp(); };
       } else if (pinType === 'bin' || pinType === 'flash' || pinType === 'bin-variant' || pinType === 'flash-variant') {
@@ -9440,17 +10768,20 @@
       var flowLdp = document.getElementById('flow-ldp');
       
       // For buyer view: animate shop → LDP (shop pushes left with parallax, LDP enters from right)
-      if (ldpOpenedFromShop && isBuyerView && shopSheet) {
-        // Add transition to shop sheet for parallax push
-        shopSheet.style.transition = 'transform 0.35s cubic-bezier(0.32, 0.72, 0, 1)';
-        shopSheet.style.transform = 'translateX(-30%)';
-        
-        // Show LDP on top
-        flowLdp.classList.add('active', 'push-from-right');
-        
-        setTimeout(function() {
-          flowLdp.classList.remove('push-from-right');
-        }, 350);
+      if (ldpOpenedFromShop && isBuyerView && shopSheet && flowLdp) {
+        var movedLdp = !!(isLiveShopDockedInBuyerMirror() && dockBuyerMirrorUiIfShopInBuyerMirror(flowLdp));
+        function runBuyerLdpEnter() {
+          shopSheet.style.transition = 'transform 0.35s cubic-bezier(0.32, 0.72, 0, 1)';
+          shopSheet.style.transform = 'translateX(-30%)';
+          flowLdp.classList.add('active');
+          void flowLdp.offsetWidth;
+          flowLdp.classList.add('push-from-right');
+          setTimeout(function() {
+            flowLdp.classList.remove('push-from-right');
+          }, 350);
+        }
+        if (movedLdp) afterReflowForAnimation(runBuyerLdpEnter);
+        else runBuyerLdpEnter();
       } else {
         // For seller view: standard flow-1 → LDP transition
         flow1.classList.add('push-to-left');
@@ -9474,8 +10805,9 @@
       var flowLdp = document.getElementById('flow-ldp');
       var shopRoot = document.getElementById('live-shop-root');
       var shopSheet = document.getElementById('live-shop-sheet');
-      var isBuyerView = document.body.classList.contains('view-buyer');
-      
+      var isBuyerView = document.body.classList.contains('view-buyer') ||
+        document.body.classList.contains('shop-open-on-buyer');
+
       // For buyer view: animate LDP → shop (LDP exits right, shop returns from left)
       if (ldpOpenedFromShop && isBuyerView && shopSheet) {
         // Animate shop back to center
@@ -9486,6 +10818,7 @@
         
         setTimeout(function() {
           flowLdp.classList.remove('active', 'push-to-right');
+          restoreBuyerMirrorDomDockEl(flowLdp);
           // Clean up shop sheet styles
           shopSheet.style.transition = '';
           shopSheet.style.transform = '';
@@ -9498,6 +10831,7 @@
         setTimeout(function() {
           flowLdp.classList.remove('active', 'push-to-right');
           flow1.classList.remove('push-from-left');
+          restoreBuyerMirrorDomDockEl(flowLdp);
         }, 350);
       }
       
@@ -9630,8 +10964,13 @@
       
       // Show sheet
       var overlay = document.getElementById('prebidOverlay');
-      overlay.classList.add('is-open');
-      overlay.setAttribute('aria-hidden', 'false');
+      var moved = dockBuyerMirrorUiIfShopInBuyerMirror(overlay);
+      function revealPrebid() {
+        overlay.classList.add('is-open');
+        overlay.setAttribute('aria-hidden', 'false');
+      }
+      if (moved) afterReflowForAnimation(revealPrebid);
+      else revealPrebid();
     }
     
     function closePrebidSheet(event) {
@@ -9641,6 +10980,7 @@
       var overlay = document.getElementById('prebidOverlay');
       overlay.classList.remove('is-open');
       overlay.setAttribute('aria-hidden', 'true');
+      restoreBuyerMirrorDomDockEl(overlay);
       prebidProductRow = null;
     }
     
@@ -9651,6 +10991,7 @@
       var overlay = document.getElementById('prebidOverlay');
       overlay.classList.remove('is-open');
       overlay.setAttribute('aria-hidden', 'true');
+      restoreBuyerMirrorDomDockEl(overlay);
       
       // Show confirmation toast
       showLdpToast('Pre-bid placed at ' + bidValue + '!');
@@ -9678,7 +11019,7 @@
       
       // Update sheet content
       document.getElementById('checkout-product-title').textContent = title;
-      document.getElementById('checkout-product-img').src = img || 'assets/pile-of-sneakers.jpg';
+      document.getElementById('checkout-product-img').src = img || 'assets/products/figma-nike-air-max-black.png';
       document.getElementById('checkout-product-avail').textContent = qty + ' Available';
       document.getElementById('checkout-price').textContent = '$' + priceNum.toFixed(2);
       document.getElementById('checkout-subtotal').textContent = '$' + priceNum.toFixed(2);
@@ -9687,8 +11028,13 @@
       
       // Show sheet
       var overlay = document.getElementById('checkoutOverlay');
-      overlay.classList.add('is-open');
-      overlay.setAttribute('aria-hidden', 'false');
+      var movedC = dockBuyerMirrorUiIfShopInBuyerMirror(overlay);
+      function revealCheckout() {
+        overlay.classList.add('is-open');
+        overlay.setAttribute('aria-hidden', 'false');
+      }
+      if (movedC) afterReflowForAnimation(revealCheckout);
+      else revealCheckout();
     }
     
     function closeCheckoutSheet(event) {
@@ -9698,6 +11044,7 @@
       var overlay = document.getElementById('checkoutOverlay');
       overlay.classList.remove('is-open');
       overlay.setAttribute('aria-hidden', 'true');
+      restoreBuyerMirrorDomDockEl(overlay);
       checkoutProductRow = null;
     }
     
@@ -9708,6 +11055,7 @@
       var overlay = document.getElementById('checkoutOverlay');
       overlay.classList.remove('is-open');
       overlay.setAttribute('aria-hidden', 'true');
+      restoreBuyerMirrorDomDockEl(overlay);
       
       // Show confirmation toast
       showLdpToast('Purchase confirmed! ' + total);
@@ -9733,7 +11081,7 @@
       // Update sheet content
       document.getElementById('options-sheet-title').textContent = title;
       document.getElementById('options-sheet-price').textContent = price;
-      document.getElementById('options-sheet-img').src = img || 'assets/pile-of-sneakers.jpg';
+      document.getElementById('options-sheet-img').src = img || 'assets/products/figma-nike-air-max-black.png';
       
       // Set CTA button text based on type
       var btn = document.getElementById('options-sheet-btn');
@@ -9760,8 +11108,13 @@
       
       // Show sheet
       var overlay = document.getElementById('optionsSheetOverlay');
-      overlay.classList.add('is-open');
-      overlay.setAttribute('aria-hidden', 'false');
+      var movedO = dockBuyerMirrorUiIfShopInBuyerMirror(overlay);
+      function revealOptions() {
+        overlay.classList.add('is-open');
+        overlay.setAttribute('aria-hidden', 'false');
+      }
+      if (movedO) afterReflowForAnimation(revealOptions);
+      else revealOptions();
     }
     
     function closeOptionsSheet(event) {
@@ -9770,6 +11123,7 @@
       var overlay = document.getElementById('optionsSheetOverlay');
       overlay.classList.remove('is-open');
       overlay.setAttribute('aria-hidden', 'true');
+      restoreBuyerMirrorDomDockEl(overlay);
       optionsSheetProductRow = null;
       optionsSheetType = null;
     }
@@ -9798,6 +11152,7 @@
       var overlay = document.getElementById('optionsSheetOverlay');
       overlay.classList.remove('is-open');
       overlay.setAttribute('aria-hidden', 'true');
+      restoreBuyerMirrorDomDockEl(overlay);
       
       var price = document.getElementById('options-sheet-price').textContent;
       
@@ -10033,23 +11388,21 @@
       }, { passive: true });
     });
 
-    // Initialize: Pin the default product in the shop on page load
+    // Initialize: Pin the default product in the shop on page load (matches Live Show frame 18983:39043 — Nike variant row)
     (function initDefaultPinnedInShop() {
-      // Find the shop row matching the default pinned product by image URL
-      var defaultImg = 'https://www.figma.com/api/mcp/asset/c57638d0-ab7b-4313-8b2e-bb30e424f408';
-      var defaultRow = document.querySelector('.live-shop-row[data-pin-type="auction"][data-pin-img="' + defaultImg + '"]');
-      if (defaultRow) {
-        // Mark as pinned (auction not started yet)
-        defaultRow.classList.add('is-pinned');
-        currentlyPinnedRow = defaultRow;
-        currentlyPinnedType = 'auction';
-        
-        // Initialize state machine with default pinned product
-        PinnedState.pin('auction', defaultRow);
-        
-        // Position in pinned section (or keep in place if toggle is off)
-        positionRowForPinned(defaultRow, 'pinned-section');
-      }
+      var defaultRow = document.querySelector('.live-shop-row[data-default-live-pin]');
+      if (!defaultRow) return;
+      var defaultType = defaultRow.getAttribute('data-pin-type') || 'auction';
+      defaultRow.classList.add('is-pinned');
+      currentlyPinnedRow = defaultRow;
+      currentlyPinnedType = defaultType;
+      PinnedState.pin(defaultType, defaultRow);
+      document.querySelectorAll('.live-show__commerce[data-pinned]').forEach(function (p) {
+        p.hidden = p.getAttribute('data-pinned') !== defaultType;
+      });
+      var emptyPanel = document.getElementById('pinned-empty');
+      if (emptyPanel) emptyPanel.hidden = true;
+      positionRowForPinned(defaultRow, 'pinned-section');
     })();
 
     // Scroll-based collapse for search bar and filters
@@ -10085,7 +11438,7 @@
       }, { passive: true });
     })();
   </script>
-  <script src="assets/live-show.js?v=shop-tabs-by-format"></script>
+  <script src="assets/live-show.js?v=buyer-shop-isolation"></script>
   <script src="../../../design-prototypes/pages/shared/components/ios.js"></script>
   <script src="../../../design-prototypes/pages/shared/icons/icons-inline.js"></script>
 </body>

@@ -57,10 +57,10 @@
 
   /* ── Lively chat (no bid amounts) ─────────────────────────────────── */
   var avatars = [
-    'https://www.figma.com/api/mcp/asset/ac1abf5d-04d2-4263-84ee-fad13b72f012',
-    'https://www.figma.com/api/mcp/asset/bb5f8f55-0328-48f4-829c-98cc7942810a',
-    'https://www.figma.com/api/mcp/asset/ae69a14c-2f6f-4035-af69-df4690cbc685',
-    'https://www.figma.com/api/mcp/asset/a1b9e0dc-8237-4aa4-8093-657f8e0cb994',
+    'assets/products/chat-avatar-male.svg',
+    'assets/products/chat-avatar-2.svg',
+    'assets/products/chat-avatar-3.svg',
+    'assets/products/chat-avatar-malk.svg',
   ];
   var chatPool = [
     { u: 'solesearch', t: 'that colorway is clean 🔥' },
@@ -105,49 +105,51 @@
     }, 2600 + Math.random() * 2400);
   }
 
-  /* ── Shop bottom sheet ───────────────────────────────────────────── */
-  var lastShopFocus = null;
+  /* ── Shop bottom sheet (delegates to index.html openShop/closeShop when present) ── */
   function setSheetWillChange(on) {
-    if (!shopSheet || !shopSheet.style) return;
-    shopSheet.style.willChange = on ? 'transform' : '';
+    var sh = $('live-shop-sheet');
+    if (!sh || !sh.style) return;
+    sh.style.willChange = on ? 'transform' : '';
   }
   if (shopSheet) {
     shopSheet.addEventListener(
       'transitionend',
       function (e) {
-        if (e.target !== shopSheet || e.propertyName !== 'transform') return;
-        shopSheet.style.willChange = '';
+        var sh = $('live-shop-sheet');
+        if (!sh || e.target !== sh || e.propertyName !== 'transform') return;
+        sh.style.willChange = '';
       },
       false
     );
   }
-  function openShop() {
-    if (!shopRoot || !shopSheet) return;
+  var lastShopFocus = null;
+  function openShopLocal() {
+    var root = $('live-shop-root');
+    var sheet = $('live-shop-sheet');
+    if (!root || !sheet) return;
     lastShopFocus = document.activeElement;
     setSheetWillChange(true);
-    shopRoot.classList.add('is-open');
-    shopRoot.setAttribute('aria-hidden', 'false');
-    
-    // Scroll shop list to top
-    var shopList = shopRoot.querySelector('.live-shop-list');
+    root.classList.add('is-open');
+    root.setAttribute('aria-hidden', 'false');
+    var shopList = root.querySelector('.live-shop-list');
     if (shopList) shopList.scrollTop = 0;
-    
-    /* Defer focus so the first paint is transform-only (avoids scroll/viewport nudge over video). */
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
         try {
-          shopSheet.focus({ preventScroll: true });
+          sheet.focus({ preventScroll: true });
         } catch (err) {
-          shopSheet.focus();
+          sheet.focus();
         }
       });
     });
   }
-  function closeShop() {
-    if (!shopRoot) return;
-    if (shopSheet) setSheetWillChange(true);
-    shopRoot.classList.remove('is-open');
-    shopRoot.setAttribute('aria-hidden', 'true');
+  function closeShopLocal() {
+    var root = $('live-shop-root');
+    var sheet = $('live-shop-sheet');
+    if (!root) return;
+    if (sheet) setSheetWillChange(true);
+    root.classList.remove('is-open');
+    root.setAttribute('aria-hidden', 'true');
     if (lastShopFocus && typeof lastShopFocus.focus === 'function') {
       try {
         lastShopFocus.focus({ preventScroll: true });
@@ -156,38 +158,70 @@
       }
     }
   }
-  if (shopBtn) shopBtn.addEventListener('click', function (e) {
-    e.stopPropagation();
-    openShop();
-  });
-  if (shopBackdrop) shopBackdrop.addEventListener('click', closeShop);
-  if (shopClose) shopClose.addEventListener('click', closeShop);
+  if (shopBtn) {
+    shopBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (typeof window.openShop === 'function') {
+        window.openShop(e);
+      } else {
+        openShopLocal();
+      }
+    });
+  }
+  if (shopBackdrop) {
+    shopBackdrop.addEventListener('click', function () {
+      if (typeof window.closeShop === 'function') {
+        window.closeShop();
+      } else {
+        closeShopLocal();
+      }
+    });
+  }
+  if (shopClose) {
+    shopClose.addEventListener('click', function () {
+      if (typeof window.closeShop === 'function') {
+        window.closeShop();
+      } else {
+        closeShopLocal();
+      }
+    });
+  }
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && shopRoot && shopRoot.classList.contains('is-open')) {
+    var root = $('live-shop-root');
+    if (e.key === 'Escape' && root && root.classList.contains('is-open')) {
       e.preventDefault();
-      closeShop();
+      if (typeof window.closeShop === 'function') {
+        window.closeShop();
+      } else {
+        closeShopLocal();
+      }
     }
   });
 
-  var shopTabs = document.querySelectorAll('.live-shop-tab[data-shop-tab]');
-  var shopPanels = document.querySelectorAll('.live-shop-panel');
-  function activateShopTab(tabKey) {
-    shopTabs.forEach(function (t) {
+  function activateShopTabInRoot(root, tabKey) {
+    if (!root || !tabKey) return;
+    root.querySelectorAll('.live-shop-tab[data-shop-tab]').forEach(function (t) {
       var on = t.getAttribute('data-shop-tab') === tabKey;
       t.classList.toggle('is-active', on);
       t.setAttribute('aria-selected', on ? 'true' : 'false');
     });
-    shopPanels.forEach(function (p) {
+    root.querySelectorAll('.live-shop-panel').forEach(function (p) {
       var match = p.id === 'live-shop-panel-' + tabKey;
       p.hidden = !match;
       if (match) p.scrollTop = 0;
     });
   }
-  shopTabs.forEach(function (tab) {
-    tab.addEventListener('click', function () {
+  document.addEventListener(
+    'click',
+    function (e) {
+      var tab = e.target && e.target.closest && e.target.closest('.live-shop-tab[data-shop-tab]');
+      if (!tab) return;
+      var root = tab.closest('#live-shop-root');
+      if (!root) return;
       var key = tab.getAttribute('data-shop-tab');
       if (!key) return;
-      activateShopTab(key);
-    });
-  });
+      activateShopTabInRoot(root, key);
+    },
+    false
+  );
 })();
