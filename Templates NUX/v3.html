@@ -2014,6 +2014,13 @@
     #liveCreateSheet table td:first-child {
       overflow: visible;
     }
+    #createSheet table.create-option-table,
+    #liveCreateSheet table.create-option-table {
+      border-collapse: separate;
+      border-spacing: 0 16px;
+      /* border-spacing also pads outside first/last row; keep sheet edges flush */
+      margin: -16px 0;
+    }
     .bottom-sheet-handle {
       width: 36px;
       height: 5px;
@@ -4278,7 +4285,7 @@
 
       <!-- Default content (Templates = Inventory) — Variants Creation layout -->
       <div id="createSheetDefault" style="padding:0 16px">
-        <table style="width:100%;border-collapse:collapse">
+        <table class="create-option-table" style="width:100%">
           <tr onclick="closeCreateSheet();createNewListing()" style="cursor:pointer">
             <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
               <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
@@ -4304,7 +4311,7 @@
 
       <!-- Simple L1 content (Seller Hub — no tabs, no import) -->
       <div id="createSheetL1Simple" style="display:none;padding:0 16px">
-        <table style="width:100%;border-collapse:collapse">
+        <table class="create-option-table" style="width:100%">
           <tr onclick="closeCreateSheet();createNewListing()" style="cursor:pointer">
             <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
               <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
@@ -4335,7 +4342,7 @@
           <button id="createTabTemplates" onclick="switchCreateTab('templates')" style="flex:1;height:40px;border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.15px;color:#999;cursor:pointer;border-bottom:2px solid transparent;padding:0">Templates</button>
         </div>
         <div id="createPanelProducts">
-          <table style="width:100%;border-collapse:collapse">
+          <table class="create-option-table" style="width:100%">
             <tr onclick="closeCreateSheet();openImportSheet()" style="cursor:pointer">
               <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
                 <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
@@ -4359,7 +4366,7 @@
           </table>
         </div>
         <div id="createPanelTemplates" style="display:none">
-          <table style="width:100%;border-collapse:collapse">
+          <table class="create-option-table" style="width:100%">
             <tr onclick="closeCreateSheet();openImportSheet()" style="cursor:pointer">
               <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
                 <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
@@ -4738,7 +4745,7 @@
       </div>
       <!-- Default (Templates = Inventory) — Variants Creation layout -->
       <div id="liveCreateDefault" style="padding:0 16px;width:100%">
-        <table style="width:100%;border-collapse:collapse">
+        <table class="create-option-table" style="width:100%">
           <tr onclick="openImportSheet()" style="cursor:pointer">
             <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
               <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
@@ -4779,7 +4786,7 @@
           <button id="liveCreateTabTemplates" onclick="switchLiveCreateTab('templates')" style="flex:1;height:40px;border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.15px;color:#999;cursor:pointer;border-bottom:2px solid transparent;padding:0">Templates</button>
         </div>
         <div id="liveCreatePanelProducts">
-          <table style="width:100%;border-collapse:collapse">
+          <table class="create-option-table" style="width:100%">
             <tr onclick="openImportSheet()" style="cursor:pointer">
               <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
                 <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
@@ -4803,7 +4810,7 @@
           </table>
         </div>
         <div id="liveCreatePanelTemplates" style="display:none">
-          <table style="width:100%;border-collapse:collapse">
+          <table class="create-option-table" style="width:100%">
             <tr onclick="openImportSheet()" style="cursor:pointer">
               <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
                 <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
@@ -10539,7 +10546,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/21/26 @ 4:32pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/21/26 @ 4:36pm';
 document.getElementById('protoTimestamp').textContent = PROTO_TIMESTAMP;
 
   const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/templates-nux/v3.html';
