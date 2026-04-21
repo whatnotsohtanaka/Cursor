@@ -1819,6 +1819,10 @@
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
+    /* Template price step has no format row; keep top breathing room */
+    #pricePage > .edit-scroll.price-page-scroll--auction-only {
+      padding-top: 16px;
+    }
 
     .edit-section-title {
       font-size: 18px;
@@ -3766,7 +3770,7 @@
     </div>
   </div>
 
-  <!-- ═══ PRICE & FORMAT PAGE (Step 2) ═══ -->
+  <!-- ═══ PRICE PAGE (Step 2) — templates are auction-only; no format picker ═══ -->
   <div id="pricePage" style="position:absolute;inset:0;z-index:250;display:none;flex-direction:column;background:white;transform:translateX(100%);pointer-events:none">
     <div style="height:54px;flex-shrink:0"></div>
     <div class="edit-nav">
@@ -3774,16 +3778,15 @@
       <span class="edit-nav-title">Templates</span>
       <button id="priceCloseBtn" onclick="closePricePageToShop()" style="position:absolute;right:16px;width:32px;height:32px;border:none;background:none;cursor:pointer;display:none;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
     </div>
-    <div class="edit-scroll">
-      <!-- Buy Format Chips -->
-      <div style="padding:16px 16px 12px">
+    <div class="edit-scroll price-page-scroll--auction-only" id="pricePageScroll">
+      <!-- Listings only: format chips (templates are auction-only) -->
+      <div id="priceFormatChipsWrap" style="display:none;padding:16px 16px 12px">
         <div class="edit-chips">
           <span class="edit-chip edit-chip-on" onclick="selectChip(this,'format')">Auction</span>
           <span class="edit-chip edit-chip-off" onclick="selectChip(this,'format')">Buy Now</span>
           <span class="edit-chip edit-chip-off" onclick="selectChip(this,'format')">Giveaway</span>
         </div>
       </div>
-
       <!-- Starting Price -->
       <div class="edit-field">
         <div class="edit-field-label">Starting Price <span class="required">*</span></div>
@@ -6232,6 +6235,11 @@ function productNext() {
   document.getElementById('priceFeaturedIn').style.display = (productReturnTo === 'shop' || productReturnTo === 'edu') ? 'none' : '';
   document.getElementById('priceCloseBtn').style.display = (productReturnTo === 'edu') ? 'flex' : 'none';
 
+  const priceScroll = document.getElementById('pricePageScroll');
+  const formatWrap = document.getElementById('priceFormatChipsWrap');
+  if (priceScroll) priceScroll.classList.remove('price-page-scroll--auction-only');
+  if (formatWrap) formatWrap.style.display = '';
+
   pricePage.style.display = 'flex';
   pricePage.style.transition = 'none';
   pricePage.style.transform = 'translateX(100%)';
@@ -7142,7 +7150,7 @@ function selectCategory(cat) {
   closeCategorySheet();
 }
 
-// Step 2: Price & Format page
+// Step 2: Price page (auction-only for templates)
 function publishTemplate() {
   pricePageSource = 'edit';
   const pricePage = document.getElementById('pricePage');
@@ -7150,6 +7158,11 @@ function publishTemplate() {
 
   setPriceFooterMode(isUnpublished());
   document.getElementById('priceFeaturedIn').style.display = editReturnTo === 'shop' ? 'none' : '';
+
+  const priceScroll = document.getElementById('pricePageScroll');
+  const formatWrap = document.getElementById('priceFormatChipsWrap');
+  if (formatWrap) formatWrap.style.display = 'none';
+  if (priceScroll) priceScroll.classList.add('price-page-scroll--auction-only');
 
   pricePage.style.display = 'flex';
   pricePage.style.transition = 'none';
@@ -10546,7 +10559,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/21/26 @ 4:36pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/21/26 @ 4:39pm';
 document.getElementById('protoTimestamp').textContent = PROTO_TIMESTAMP;
 
   const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/templates-nux/v3.html';
