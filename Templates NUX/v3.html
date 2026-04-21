@@ -2009,6 +2009,11 @@
       z-index: 301;
     }
     .bottom-sheet-overlay.open .bottom-sheet { transform: translateY(0); }
+    /* Row art is wider than the 79px column; table cells default to clipping overflow */
+    #createSheet table td:first-child,
+    #liveCreateSheet table td:first-child {
+      overflow: visible;
+    }
     .bottom-sheet-handle {
       width: 36px;
       height: 5px;
@@ -4271,82 +4276,111 @@
         <span style="font-size:16px;font-weight:600;letter-spacing:-0.31px;color:#000">Create</span>
       </div>
 
-      <!-- Default content (Templates = Inventory) -->
-      <div id="createSheetDefault" style="display:flex;flex-direction:column;gap:8px;padding:0 16px 0">
-        <div onclick="closeCreateSheet();createNewListing()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
-          <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
-            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Each item is specific, but can have options like size or color</div>
-          </div>
-          <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
-        </div>
-        <div id="createTemplateCard" onclick="closeCreateSheet();createNewTemplate()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
-          <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
-            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Products are similar and you are moving through them quickly</div>
-          </div>
-          <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
-        </div>
+      <!-- Default content (Templates = Inventory) — Variants Creation layout -->
+      <div id="createSheetDefault" style="padding:0 16px">
+        <table style="width:100%;border-collapse:collapse">
+          <tr onclick="closeCreateSheet();createNewListing()" style="cursor:pointer">
+            <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
+              <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
+              <img src="icons/create-listing.png" style="position:absolute;bottom:2px;right:-11px;width:94px;height:94px;object-fit:cover" alt="">
+            </td>
+            <td style="padding:12px 0 12px 20px;vertical-align:middle">
+              <div style="font-size:16px;font-weight:590;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Create Listing</div>
+              <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454;margin-top:4px">For unique items with different size or color variants.</div>
+            </td>
+          </tr>
+          <tr id="createTemplateCard" onclick="closeCreateSheet();createNewTemplate()" style="cursor:pointer">
+            <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
+              <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
+              <img src="icons/create-template2.png" style="position:absolute;left:-4px;top:50%;transform:translateY(-50%);width:96px;height:74px;object-fit:contain;max-width:none;pointer-events:none" alt="">
+            </td>
+            <td style="padding:12px 0 12px 20px;vertical-align:middle">
+              <div style="font-size:16px;font-weight:590;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Create Template</div>
+              <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454;margin-top:4px">For similar items you want to list quickly.</div>
+            </td>
+          </tr>
+        </table>
       </div>
 
       <!-- Simple L1 content (Seller Hub — no tabs, no import) -->
-      <div id="createSheetL1Simple" style="display:none;flex-direction:column;gap:8px;padding:0 16px 0">
-        <div onclick="closeCreateSheet();createNewListing()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
-          <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
-            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Each item is specific, but can have options like size or color</div>
-          </div>
-          <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
-        </div>
-        <div onclick="closeCreateSheet();createNewTemplate()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
-          <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
-            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Products are similar and you are moving through them quickly</div>
-          </div>
-          <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
-        </div>
+      <div id="createSheetL1Simple" style="display:none;padding:0 16px">
+        <table style="width:100%;border-collapse:collapse">
+          <tr onclick="closeCreateSheet();createNewListing()" style="cursor:pointer">
+            <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
+              <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
+              <img src="icons/create-listing.png" style="position:absolute;bottom:2px;right:-11px;width:94px;height:94px;object-fit:cover" alt="">
+            </td>
+            <td style="padding:12px 0 12px 20px;vertical-align:middle">
+              <div style="font-size:16px;font-weight:590;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Create Listing</div>
+              <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454;margin-top:4px">For unique items with different size or color variants.</div>
+            </td>
+          </tr>
+          <tr onclick="closeCreateSheet();createNewTemplate()" style="cursor:pointer">
+            <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
+              <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
+              <img src="icons/create-template2.png" style="position:absolute;left:-4px;top:50%;transform:translateY(-50%);width:96px;height:74px;object-fit:contain;max-width:none;pointer-events:none" alt="">
+            </td>
+            <td style="padding:12px 0 12px 20px;vertical-align:middle">
+              <div style="font-size:16px;font-weight:590;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Create Template</div>
+              <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454;margin-top:4px">For similar items you want to list quickly.</div>
+            </td>
+          </tr>
+        </table>
       </div>
 
       <!-- Tabbed content (Templates = L1, inside a show) -->
       <div id="createSheetTabbed" style="display:none;flex-direction:column;gap:0;padding:0 16px 0">
-        <!-- Tabs -->
         <div style="display:flex;gap:0;margin-bottom:12px;border-bottom:1px solid #e5e5e5">
           <button id="createTabProducts" onclick="switchCreateTab('products')" style="flex:1;height:40px;border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.15px;color:#1c1c1c;cursor:pointer;border-bottom:2px solid #1c1c1c;padding:0">Listings</button>
           <button id="createTabTemplates" onclick="switchCreateTab('templates')" style="flex:1;height:40px;border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.15px;color:#999;cursor:pointer;border-bottom:2px solid transparent;padding:0">Templates</button>
         </div>
-        <!-- Products panel -->
-        <div id="createPanelProducts" style="display:flex;flex-direction:column;gap:8px">
-          <div onclick="closeCreateSheet();openImportSheet()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
-            <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
-              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Import Listings</div>
-              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Import existing listings to your show.</div>
-            </div>
-            <img src="icons/create-import.png" style="position:absolute;bottom:-13px;right:19px;width:98px;height:98px;object-fit:cover;z-index:1" alt="">
-          </div>
-          <div onclick="closeCreateSheet();createNewListing()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
-            <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
-              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
-              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Each item is specific, but can have options like size or color</div>
-            </div>
-            <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
-          </div>
+        <div id="createPanelProducts">
+          <table style="width:100%;border-collapse:collapse">
+            <tr onclick="closeCreateSheet();openImportSheet()" style="cursor:pointer">
+              <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
+                <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
+                <img src="icons/create-import.png" style="position:absolute;bottom:2px;right:-11px;width:94px;height:94px;object-fit:cover" alt="">
+              </td>
+              <td style="padding:12px 0 12px 20px;vertical-align:middle">
+                <div style="font-size:16px;font-weight:590;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Import Listings</div>
+                <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454;margin-top:4px">Import existing listings to your show.</div>
+              </td>
+            </tr>
+            <tr onclick="closeCreateSheet();createNewListing()" style="cursor:pointer">
+              <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
+                <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
+                <img src="icons/create-listing.png" style="position:absolute;bottom:2px;right:-11px;width:94px;height:94px;object-fit:cover" alt="">
+              </td>
+              <td style="padding:12px 0 12px 20px;vertical-align:middle">
+                <div style="font-size:16px;font-weight:590;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Create Listing</div>
+                <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454;margin-top:4px">For unique items with different size or color variants.</div>
+              </td>
+            </tr>
+          </table>
         </div>
-        <!-- Templates panel -->
-        <div id="createPanelTemplates" style="display:none;flex-direction:column;gap:8px">
-          <div onclick="closeCreateSheet();openImportSheet()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
-            <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
-              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Import Templates</div>
-              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Import existing templates to your inventory.</div>
-            </div>
-            <img src="icons/create-import.png" style="position:absolute;bottom:-13px;right:19px;width:98px;height:98px;object-fit:cover;z-index:1" alt="">
-          </div>
-          <div onclick="closeCreateSheet();createNewTemplate()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
-            <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
-              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
-              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Products are similar and you are moving through them quickly</div>
-            </div>
-            <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
-          </div>
+        <div id="createPanelTemplates" style="display:none">
+          <table style="width:100%;border-collapse:collapse">
+            <tr onclick="closeCreateSheet();openImportSheet()" style="cursor:pointer">
+              <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
+                <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
+                <img src="icons/create-import.png" style="position:absolute;bottom:2px;right:-11px;width:94px;height:94px;object-fit:cover" alt="">
+              </td>
+              <td style="padding:12px 0 12px 20px;vertical-align:middle">
+                <div style="font-size:16px;font-weight:590;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Import Templates</div>
+                <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454;margin-top:4px">Import existing templates to your inventory.</div>
+              </td>
+            </tr>
+            <tr onclick="closeCreateSheet();createNewTemplate()" style="cursor:pointer">
+              <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
+                <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
+                <img src="icons/create-template2.png" style="position:absolute;left:-4px;top:50%;transform:translateY(-50%);width:96px;height:74px;object-fit:contain;max-width:none;pointer-events:none" alt="">
+              </td>
+              <td style="padding:12px 0 12px 20px;vertical-align:middle">
+                <div style="font-size:16px;font-weight:590;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Create Template</div>
+                <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454;margin-top:4px">For similar items you want to list quickly.</div>
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
 
@@ -4702,71 +4736,95 @@
       <div style="height:48px;display:flex;align-items:center;justify-content:center;width:100%">
         <span style="font-size:16px;font-weight:600;line-height:21px;letter-spacing:-0.31px;color:black">Create</span>
       </div>
-      <!-- Default cards (Templates = Inventory) -->
-      <div id="liveCreateDefault" style="display:flex;flex-direction:column;gap:8px;padding:0 16px;width:100%">
-        <div onclick="openImportSheet()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
-          <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
-            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Import Templates and Listings</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Import existing templates or listings to your show.</div>
-          </div>
-          <img src="icons/create-import.png" style="position:absolute;bottom:-13px;right:19px;width:98px;height:98px;object-fit:cover;z-index:1" alt="">
-        </div>
-        <div onclick="createNewListingFromShop()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
-          <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
-            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Each item is specific, but can have options like size or color</div>
-          </div>
-          <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
-        </div>
-        <div onclick="createNewTemplateFromShop()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
-          <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
-            <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
-            <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Products are similar and you are moving through them quickly</div>
-          </div>
-          <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
-        </div>
+      <!-- Default (Templates = Inventory) — Variants Creation layout -->
+      <div id="liveCreateDefault" style="padding:0 16px;width:100%">
+        <table style="width:100%;border-collapse:collapse">
+          <tr onclick="openImportSheet()" style="cursor:pointer">
+            <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
+              <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
+              <img src="icons/create-import.png" style="position:absolute;bottom:2px;right:-11px;width:94px;height:94px;object-fit:cover" alt="">
+            </td>
+            <td style="padding:12px 0 12px 20px;vertical-align:middle">
+              <div style="font-size:16px;font-weight:590;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Import Templates and Listings</div>
+              <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454;margin-top:4px">Import existing templates or listings to your show.</div>
+            </td>
+          </tr>
+          <tr onclick="createNewListingFromShop()" style="cursor:pointer">
+            <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
+              <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
+              <img src="icons/create-listing.png" style="position:absolute;bottom:2px;right:-11px;width:94px;height:94px;object-fit:cover" alt="">
+            </td>
+            <td style="padding:12px 0 12px 20px;vertical-align:middle">
+              <div style="font-size:16px;font-weight:590;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Create Listing</div>
+              <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454;margin-top:4px">For unique items with different size or color variants.</div>
+            </td>
+          </tr>
+          <tr onclick="createNewTemplateFromShop()" style="cursor:pointer">
+            <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
+              <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
+              <img src="icons/create-template2.png" style="position:absolute;left:-4px;top:50%;transform:translateY(-50%);width:96px;height:74px;object-fit:contain;max-width:none;pointer-events:none" alt="">
+            </td>
+            <td style="padding:12px 0 12px 20px;vertical-align:middle">
+              <div style="font-size:16px;font-weight:590;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Create Template</div>
+              <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454;margin-top:4px">For similar items you want to list quickly.</div>
+            </td>
+          </tr>
+        </table>
       </div>
 
-      <!-- Tabbed cards (Templates = L1) -->
+      <!-- Tabbed (Templates = L1) -->
       <div id="liveCreateTabbed" style="display:none;flex-direction:column;gap:0;padding:0 16px;width:100%">
-        <!-- Tabs -->
         <div style="display:flex;gap:0;margin-bottom:12px;border-bottom:1px solid #e5e5e5">
           <button id="liveCreateTabProducts" onclick="switchLiveCreateTab('products')" style="flex:1;height:40px;border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.15px;color:#1c1c1c;cursor:pointer;border-bottom:2px solid #1c1c1c;padding:0">Listings</button>
           <button id="liveCreateTabTemplates" onclick="switchLiveCreateTab('templates')" style="flex:1;height:40px;border:none;background:none;font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:-0.15px;color:#999;cursor:pointer;border-bottom:2px solid transparent;padding:0">Templates</button>
         </div>
-        <!-- Products panel -->
-        <div id="liveCreatePanelProducts" style="display:flex;flex-direction:column;gap:8px">
-          <div onclick="openImportSheet()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
-            <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
-              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Import Listings</div>
-              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Import existing listings to your show.</div>
-            </div>
-            <img src="icons/create-import.png" style="position:absolute;bottom:-13px;right:19px;width:98px;height:98px;object-fit:cover;z-index:1" alt="">
-          </div>
-          <div onclick="createNewListingFromShop()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
-            <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
-              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Listing</div>
-              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Each item is specific, but can have options like size or color</div>
-            </div>
-            <img src="icons/create-shoe.png" style="position:absolute;bottom:-14px;right:7px;width:120px;height:120px;object-fit:cover;z-index:1" alt="">
-          </div>
+        <div id="liveCreatePanelProducts">
+          <table style="width:100%;border-collapse:collapse">
+            <tr onclick="openImportSheet()" style="cursor:pointer">
+              <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
+                <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
+                <img src="icons/create-import.png" style="position:absolute;bottom:2px;right:-11px;width:94px;height:94px;object-fit:cover" alt="">
+              </td>
+              <td style="padding:12px 0 12px 20px;vertical-align:middle">
+                <div style="font-size:16px;font-weight:590;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Import Listings</div>
+                <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454;margin-top:4px">Import existing listings to your show.</div>
+              </td>
+            </tr>
+            <tr onclick="createNewListingFromShop()" style="cursor:pointer">
+              <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
+                <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
+                <img src="icons/create-listing.png" style="position:absolute;bottom:2px;right:-11px;width:94px;height:94px;object-fit:cover" alt="">
+              </td>
+              <td style="padding:12px 0 12px 20px;vertical-align:middle">
+                <div style="font-size:16px;font-weight:590;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Create Listing</div>
+                <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454;margin-top:4px">For unique items with different size or color variants.</div>
+              </td>
+            </tr>
+          </table>
         </div>
-        <!-- Templates panel -->
-        <div id="liveCreatePanelTemplates" style="display:none;flex-direction:column;gap:8px">
-          <div onclick="openImportSheet()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
-            <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
-              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Import Templates</div>
-              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Import existing templates to your inventory.</div>
-            </div>
-            <img src="icons/create-import.png" style="position:absolute;bottom:-13px;right:19px;width:98px;height:98px;object-fit:cover;z-index:1" alt="">
-          </div>
-          <div onclick="createNewTemplateFromShop()" style="background:#f3f3f3;border-radius:12px;padding:16px;padding-right:112px;position:relative;overflow:hidden;min-height:87px;cursor:pointer;isolation:isolate">
-            <div style="position:relative;z-index:2;display:flex;flex-direction:column;gap:4px">
-              <div style="font-size:14px;font-weight:600;line-height:19px;letter-spacing:-0.15px;color:#1c1c1c">Create New Template</div>
-              <div style="font-size:12px;font-weight:400;line-height:16px;color:#545454">Products are similar and you are moving through them quickly</div>
-            </div>
-            <img src="icons/create-template.png" style="position:absolute;bottom:-4px;right:17px;width:100px;height:100px;object-fit:cover;z-index:1" alt="">
-          </div>
+        <div id="liveCreatePanelTemplates" style="display:none">
+          <table style="width:100%;border-collapse:collapse">
+            <tr onclick="openImportSheet()" style="cursor:pointer">
+              <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
+                <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
+                <img src="icons/create-import.png" style="position:absolute;bottom:2px;right:-11px;width:94px;height:94px;object-fit:cover" alt="">
+              </td>
+              <td style="padding:12px 0 12px 20px;vertical-align:middle">
+                <div style="font-size:16px;font-weight:590;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Import Templates</div>
+                <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454;margin-top:4px">Import existing templates to your inventory.</div>
+              </td>
+            </tr>
+            <tr onclick="createNewTemplateFromShop()" style="cursor:pointer">
+              <td style="width:79px;height:87px;padding:12px 0;vertical-align:middle;position:relative">
+                <svg style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:79px;height:79px" viewBox="0 0 79 79" fill="none"><path d="M79 39.5C79 70.0403 70.0403 79 39.5 79C8.95977 79 0 70.0403 0 39.5C0 8.95969 8.95977 0 39.5 0C70.0403 0 79 8.95969 79 39.5Z" fill="#E3E3E3"/></svg>
+                <img src="icons/create-template2.png" style="position:absolute;left:-4px;top:50%;transform:translateY(-50%);width:96px;height:74px;object-fit:contain;max-width:none;pointer-events:none" alt="">
+              </td>
+              <td style="padding:12px 0 12px 20px;vertical-align:middle">
+                <div style="font-size:16px;font-weight:590;line-height:21px;letter-spacing:-0.31px;color:#1c1c1c">Create Template</div>
+                <div style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:#545454;margin-top:4px">For similar items you want to list quickly.</div>
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
 
@@ -4890,8 +4948,8 @@ function cloneTemplate() {
 
 function openCreateSheet() {
   const isL1 = currentTemplateMode === 'l1';
-  document.getElementById('createSheetDefault').style.display = isL1 ? 'none' : 'flex';
-  document.getElementById('createSheetL1Simple').style.display = isL1 ? 'flex' : 'none';
+  document.getElementById('createSheetDefault').style.display = isL1 ? 'none' : 'block';
+  document.getElementById('createSheetL1Simple').style.display = isL1 ? 'block' : 'none';
   document.getElementById('createSheetTabbed').style.display = 'none';
 
   const sheet = document.getElementById('createSheet');
@@ -4914,8 +4972,8 @@ function switchCreateTab(tab) {
   prodTab.style.borderBottomColor = isProducts ? '#1c1c1c' : 'transparent';
   tmplTab.style.color = isProducts ? '#999' : '#1c1c1c';
   tmplTab.style.borderBottomColor = isProducts ? 'transparent' : '#1c1c1c';
-  prodPanel.style.display = isProducts ? 'flex' : 'none';
-  tmplPanel.style.display = isProducts ? 'none' : 'flex';
+  prodPanel.style.display = isProducts ? 'block' : 'none';
+  tmplPanel.style.display = isProducts ? 'none' : 'block';
 }
 
 function closeCreateSheet() {
@@ -4926,7 +4984,7 @@ function closeCreateSheet() {
 
 function openLiveCreateSheet() {
   const isL1 = currentTemplateMode === 'l1';
-  document.getElementById('liveCreateDefault').style.display = isL1 ? 'none' : 'flex';
+  document.getElementById('liveCreateDefault').style.display = isL1 ? 'none' : 'block';
   document.getElementById('liveCreateTabbed').style.display = isL1 ? 'flex' : 'none';
   if (isL1) switchLiveCreateTab('products');
 
@@ -4952,8 +5010,8 @@ function switchLiveCreateTab(tab) {
   prodTab.style.borderBottomColor = isProducts ? '#1c1c1c' : 'transparent';
   tmplTab.style.color = isProducts ? '#999' : '#1c1c1c';
   tmplTab.style.borderBottomColor = isProducts ? 'transparent' : '#1c1c1c';
-  prodPanel.style.display = isProducts ? 'flex' : 'none';
-  tmplPanel.style.display = isProducts ? 'none' : 'flex';
+  prodPanel.style.display = isProducts ? 'block' : 'none';
+  tmplPanel.style.display = isProducts ? 'none' : 'block';
 }
 
 function closeLiveCreateSheet() {
@@ -10481,7 +10539,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/21/26 @ 7:00pm';
+const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/21/26 @ 4:32pm';
 document.getElementById('protoTimestamp').textContent = PROTO_TIMESTAMP;
 
   const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/templates-nux/v3.html';
