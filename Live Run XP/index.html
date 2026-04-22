@@ -1785,7 +1785,8 @@
       font-weight: 600;
       color: #666;
       text-align: center;
-      margin-bottom: 12px;
+      margin-top: 12px;
+      margin-bottom: 0;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -4826,7 +4827,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-run-xp/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/21/26 @ 2:32pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/21/26 @ 4:15pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -4856,7 +4857,6 @@
   <div class="both-phones-stage">
   <div class="both-phones-slot" id="bothPhonesSlot">
   <div id="phoneWrapper" style="display:flex;flex-direction:column;align-items:center;flex-shrink:0">
-  <div class="phone-label">Seller</div>
   <div class="phone-frame">
     <div class="phone-bezel"></div>
     <div class="device-frame">
@@ -5417,6 +5417,7 @@
                           <div class="live-show__product-info">
                             <div class="live-show__product-line">
                               <div class="live-show__product-left">
+                                <span class="live-show__template-label" id="variant-number">#1</span>
                                 <p class="live-show__product-title">Nike Air Max Black</p>
                                 <div class="live-show__product-meta" id="variant-meta">
                                   <span id="variant-meta-color">Black/White</span><span>·</span><span id="variant-meta-size">9M</span><span>·</span><span>New</span>
@@ -5470,6 +5471,10 @@
                         <button type="button" class="live-show__cta-btn live-show__cta-btn--primary" onclick="startVariantAuction()">Start Auction</button>
                       </div>
                       <button type="button" class="live-show__bids-btn live-show__bids-btn--disabled" id="variant-bids-btn" style="display:none" disabled><span id="variant-bids-count">0 Bids</span></button>
+                      <div class="live-show__dual-ctas" id="variant-post-auction" style="display:none">
+                        <button type="button" class="live-show__cta-btn live-show__cta-btn--tertiary" id="variant-post-bids-btn" disabled><span id="variant-post-bids-count">0 Bids</span></button>
+                        <button type="button" class="live-show__cta-btn live-show__cta-btn--primary" onclick="runNextVariant()">Run Next</button>
+                      </div>
                       <!-- Buyer CTAs: Pre-auction (hasn't started) -->
                       <div class="live-show__cta-row live-show__cta-row--buyer live-show__cta-row--pre-auction" id="variant-buyer-pre">
                         <button type="button" class="live-show__cta-awaiting-btn" disabled>
@@ -5858,6 +5863,7 @@
                     <div class="live-shop-row__info">
                       <div class="live-shop-row__details">
                         <div class="live-shop-row__titleblock">
+                          <span class="live-shop-row__template-chip js-variant-chip">#1</span>
                           <p class="live-shop-row__title">Nike Air Max Black</p>
                           <p class="live-shop-row__meta">Multiple Options</p>
                         </div>
@@ -6431,11 +6437,11 @@
     </div>
     </div><!-- /.device-frame -->
   </div><!-- /.phone-frame -->
+  <div class="phone-label">Seller</div>
   </div><!-- /#phoneWrapper -->
 
   <!-- Buyer Phone for Split View (mirrors seller phone with buyer styles) -->
   <div id="buyerPhoneWrapper">
-    <div class="phone-label">Buyer</div>
     <div class="phone-frame">
       <div class="phone-bezel"></div>
       <div class="device-frame">
@@ -6444,6 +6450,7 @@
         </div>
       </div>
     </div>
+    <div class="phone-label">Buyer</div>
   </div>
   </div><!-- /.both-phones-slot -->
   </div><!-- /.both-phones-stage -->
@@ -7575,6 +7582,8 @@
         'variant-timer-bump',
         'variant-bids-btn',
         'variant-bids-count',
+        'variant-post-auction',
+        'variant-post-bids-count',
         'variant-pre-auction'
       ].forEach(syncTwinById);
 
@@ -8678,6 +8687,12 @@
           chipEl.textContent = '#' + templateRunCount;
         }
       }
+      if (rowType === 'variant') {
+        var vChip = activeShopAuctionRow.querySelector('.js-variant-chip');
+        if (vChip) {
+          vChip.textContent = '#' + variantRunCount;
+        }
+      }
       
       if (timerEl) {
         if (timeLeft <= 0) {
@@ -8721,6 +8736,8 @@
           if (chipEl) chipEl.textContent = '#1';
         }
         if (rowType === 'variant') {
+          var vChip = activeShopAuctionRow.querySelector('.js-variant-chip');
+          if (vChip) vChip.textContent = '#' + variantRunCount;
           var shopVarQty = activeShopAuctionRow.querySelector('.js-shop-variant-qty');
           if (shopVarQty) {
             shopVarQty.hidden = false;
@@ -10111,6 +10128,7 @@
     var variantPrice = 1;
     var variantWinner = null;
     var variantLastBidder = null;
+    var variantRunCount = 1;
 
     function startVariantAuction() {
       // Collapse picker state if open - but don't go back to shop
@@ -10128,11 +10146,13 @@
       
       var preAuction = document.getElementById('variant-pre-auction');
       var bidsBtn = document.getElementById('variant-bids-btn');
+      var postAuction = document.getElementById('variant-post-auction');
       var timerEl = document.getElementById('variant-timer');
       var winningRow = document.getElementById('variant-winning-row');
       var lastBidEl = document.getElementById('variant-last-bid');
       var attrPicker = document.getElementById('variant-attr-picker');
       
+      if (postAuction) postAuction.style.display = 'none';
       preAuction.style.display = 'none';
       bidsBtn.style.display = 'flex';
       timerEl.style.display = 'block';
@@ -10313,12 +10333,15 @@
       // Show celebration overlay
       showWinnerCelebration(variantWinner);
       
-      // Update bids button to show final bid count (keep it visible)
+      // Hide bids button, show post-auction CTAs with bid count (match template)
       var bidsBtn = document.getElementById('variant-bids-btn');
-      var bidsCount = document.getElementById('variant-bids-count');
+      var postAuction = document.getElementById('variant-post-auction');
+      var postBidsCount = document.getElementById('variant-post-bids-count');
       
-      if (bidsCount) {
-        bidsCount.textContent = variantBids + ' Bid' + (variantBids !== 1 ? 's' : '');
+      if (bidsBtn) bidsBtn.style.display = 'none';
+      if (postAuction) postAuction.style.display = 'flex';
+      if (postBidsCount) {
+        postBidsCount.textContent = variantBids + ' Bid' + (variantBids !== 1 ? 's' : '');
       }
       
       // For variants, create a sold entry clone instead of moving the variant row
@@ -10400,6 +10423,50 @@
       enableAllStartButtons();
     }
 
+    function runNextVariant() {
+      var postAuction = document.getElementById('variant-post-auction');
+      if (postAuction) postAuction.style.display = 'none';
+      
+      var buyerPreCta = document.getElementById('variant-buyer-pre');
+      var buyerActiveCta = document.getElementById('variant-buyer-active');
+      hideBuyerAuctionPostSoldUI('variant');
+      if (buyerPreCta) buyerPreCta.classList.remove('is-hidden');
+      if (buyerActiveCta) buyerActiveCta.classList.remove('is-visible');
+      
+      variantRunCount++;
+      var variantNumberEl = document.getElementById('variant-number');
+      if (variantNumberEl) {
+        variantNumberEl.textContent = '#' + variantRunCount;
+      }
+      
+      var timerEl = document.getElementById('variant-timer');
+      var priceEl = document.getElementById('variant-price');
+      var winningRow = document.getElementById('variant-winning-row');
+      var lastBidEl = document.getElementById('variant-last-bid');
+      
+      timerEl.textContent = '00:10';
+      timerEl.classList.remove('live-show__product-timer--sold');
+      timerEl.classList.add('live-show__product-timer--pre');
+      priceEl.textContent = '$1';
+      winningRow.style.display = 'none';
+      lastBidEl.style.display = 'none';
+      variantTimeLeft = 10;
+      variantBids = 0;
+      variantPrice = 1;
+      variantWinner = null;
+      variantLastBidder = null;
+      
+      var winningText = winningRow.querySelector('.live-show__winning-text');
+      if (winningText) {
+        winningText.innerHTML = '<span id="variant-winner-name">—</span> is <span class="live-show__winning-highlight">winning!</span>';
+      }
+      
+      var preAuction = document.getElementById('variant-pre-auction');
+      preAuction.style.display = 'flex';
+      
+      onSelectOptions('variant');
+    }
+
     function resetVariantAuction() {
       if (variantTimer) {
         clearInterval(variantTimer);
@@ -10407,6 +10474,7 @@
       }
       var preAuction = document.getElementById('variant-pre-auction');
       var bidsBtn = document.getElementById('variant-bids-btn');
+      var postAuction = document.getElementById('variant-post-auction');
       var timerEl = document.getElementById('variant-timer');
       var priceEl = document.getElementById('variant-price');
       var winningRow = document.getElementById('variant-winning-row');
@@ -10414,6 +10482,7 @@
       
       preAuction.style.display = 'flex';
       bidsBtn.style.display = 'none';
+      if (postAuction) postAuction.style.display = 'none';
       timerEl.textContent = '00:10';
       timerEl.classList.remove('live-show__product-timer--sold');
       timerEl.classList.add('live-show__product-timer--pre');
