@@ -1113,6 +1113,13 @@
     #phoneWrapper:has(#live-shop-root.live-shop-root--fullpage.is-open) .live-shop-sheet > .live-show-stack-dimmer {
       opacity: 0;
     }
+    /* When the shop is not open, dimmer must stay off. Otherwise when .live-shop-root--closing-slide ends, :has()
+       no longer matches and the dimmer animates from 0→1 (base opacity) over the sheet — reads as a flicker as
+       the stream settles into the live slot. */
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage:not(.is-open) .live-shop-sheet > .live-show-stack-dimmer {
+      opacity: 0;
+      transition: none;
+    }
     .live-show__bottom-scrim {
       position: absolute;
       left: 0;
@@ -1253,7 +1260,8 @@
       pointer-events: auto;
     }
 
-    /* Seller live: alpha fade overlay UI (chrome + scrims) when full-page shop opens / intro when it closes */
+    /* Seller live: alpha fade overlay UI (chrome + scrims) while full-page shop is open. When is-open clears at
+       close, UI fades back in immediately even if .live-shop-root--closing-slide is still on (sheet outro). */
     #phoneWrapper .proto-flow-stack > #flow-1 .live-show__chrome {
       opacity: 1;
       transition: opacity 0.38s cubic-bezier(0.32, 0.72, 0, 1);
@@ -1267,11 +1275,23 @@
       opacity: 0;
       pointer-events: none !important;
     }
-    #phoneWrapper:has(#live-shop-root.live-shop-root--fullpage.is-open) .proto-flow-stack > #flow-1 .live-show__chrome * {
+    #phoneWrapper:has(#live-shop-root.live-shop-root--fullpage.is-open)
+      .proto-flow-stack
+      > #flow-1
+      .live-show__chrome
+      * {
       pointer-events: none !important;
     }
-    #phoneWrapper:has(#live-shop-root.live-shop-root--fullpage.is-open) .proto-flow-stack > #flow-1 .live-show__media .live-show__bottom-scrim,
-    #phoneWrapper:has(#live-shop-root.live-shop-root--fullpage.is-open) .proto-flow-stack > #flow-1 .live-show__media .live-show__top-scrim {
+    #phoneWrapper:has(#live-shop-root.live-shop-root--fullpage.is-open)
+      .proto-flow-stack
+      > #flow-1
+      .live-show__media
+      .live-show__bottom-scrim,
+    #phoneWrapper:has(#live-shop-root.live-shop-root--fullpage.is-open)
+      .proto-flow-stack
+      > #flow-1
+      .live-show__media
+      .live-show__top-scrim {
       opacity: 0;
     }
 
@@ -4300,8 +4320,8 @@
       background: #222;
     }
 
-    /* Live Product Creation: shop + PiP above live flow only while open. When is-open drops for the slide-out,
-       keep the root under the live stack so the sheet does not paint over #flow-1 during the outro. */
+    /* Live Product Creation: shop + PiP above live only while .is-open. Any time the shop is not open (including
+       .live-shop-root--closing-slide sheet outro), keep the root under #proto-flow-stack (z-index 2). */
     #phoneWrapper .phone .proto-flow-stack {
       z-index: 2;
     }
@@ -4327,9 +4347,13 @@
       padding-top: calc(var(--shop-status-inset, 54px) + env(safe-area-inset-top, 0px));
       box-sizing: border-box;
     }
-    /* Avoid clipping full-page shop + FAB while sheet translates / PiP flies */
-    #phoneWrapper .phone:has(#live-shop-root.live-shop-root--fullpage.is-open) .phone-content,
-    #phoneWrapper .phone:has(#live-shop-root.live-shop-root--fullpage.is-open) .proto-flow-stack {
+    /* Avoid clipping full-page shop + FAB while sheet translates / PiP flies (include closing-slide outro). */
+    #phoneWrapper
+      .phone:has(#live-shop-root.live-shop-root--fullpage:is(.is-open, .live-shop-root--closing-slide))
+      .phone-content,
+    #phoneWrapper
+      .phone:has(#live-shop-root.live-shop-root--fullpage:is(.is-open, .live-shop-root--closing-slide))
+      .proto-flow-stack {
       overflow: visible !important;
     }
     #live-show-stream.live-show-stream--flight {
@@ -6591,6 +6615,9 @@
           function (e) {
             if (!shopSheet || e.target !== shopSheet || e.propertyName !== 'transform') return;
             shopSheet.style.willChange = '';
+            if (shopRoot && shopRoot.classList.contains('live-shop-root--closing-slide')) {
+              shopRoot.classList.remove('live-shop-root--closing-slide');
+            }
           },
           false
         );
@@ -6742,6 +6769,7 @@
 
       function openShopLocal() {
         if (!shopRoot || !shopSheet) return;
+        shopRoot.classList.remove('live-shop-root--closing-slide');
         if (pipMount) pipMount.classList.remove('live-shop-pip--minimized');
         lastShopFocus = document.activeElement;
         setSheetWillChange(true);
@@ -6832,6 +6860,7 @@
         /* Sheet/backdrop: instant dismiss (no slide). Stream: PiP→live flight first, then dismiss. */
         function instantDismissSheetAndVideo() {
           if (pipMount) pipMount.classList.remove('live-shop-pip--minimized');
+          shopRoot.classList.remove('live-shop-root--closing-slide');
           shopRoot.classList.add('live-shop-root--instant-close');
           void shopRoot.offsetWidth;
           shopRoot.classList.remove('is-open');
@@ -6856,21 +6885,26 @@
           return;
         }
 
-        /* Full-page close: one continuous stream flight (PiP/minimized → live). No separate “expand PiP then fly”
-           stagger — startRect is read while minimized, then lift + animate in one motion. Shop sheet removes is-open
-           late in that flight (~94%) so the stream is almost home and the sheet slide reads under the live layer. */
+        /* Full-page close: one continuous stream flight (PiP/minimized → live). .live-shop-root--closing-slide keeps
+           overflow: visible on .phone-content until the sheet transform ends (root stays z-index 1 under live). */
         shopRoot.classList.remove('live-shop-root--instant-close');
         var FLIGHT_DUR = PIP_FLIGHT_FROM_PIP_MS;
-        var SHOP_SHEET_DISMISS_AT_FLIGHT = 0.94;
+        /* Sheet removes is-open at 90% through the PiP→live flight (original timing before delay tweaks). */
+        var SHOP_SHEET_DISMISS_AT_FLIGHT = 0.9;
 
         function finishAfterFlight() {
           restoreVideoToMedia();
           restoreFocus();
           if (shopSheet) setSheetWillChange(false);
-          if (pipMount) pipMount.style.removeProperty('opacity');
+          /* Defer PiP shell reveal one frame so compositing does not beat the stream snap into .live-show__media. */
+          requestAnimationFrame(function () {
+            if (pipMount) pipMount.style.removeProperty('opacity');
+          });
         }
 
         function dismissShopSlideDown() {
+          shopRoot.classList.add('live-shop-root--closing-slide');
+          void shopRoot.offsetWidth;
           shopRoot.classList.remove('is-open');
           shopRoot.setAttribute('aria-hidden', 'true');
         }
