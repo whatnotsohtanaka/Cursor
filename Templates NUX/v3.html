@@ -253,9 +253,108 @@
     .proto-body {
       flex: 1;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       width: 100%;
+    }
+
+    .proto-device-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0;
+      flex: 1;
+      width: 100%;
+      min-height: 0;
+      padding: 8px 16px 24px;
+      box-sizing: border-box;
+    }
+
+    .proto-device-column #phoneWrapper {
+      flex-shrink: 0;
+    }
+
+    .proto-device-stage {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      align-self: center;
+    }
+
+    .proto-device-stage > #phoneWrapper {
+      position: relative;
+      z-index: 1;
+    }
+
+    #controlPanel {
+      position: relative;
+      flex-shrink: 0;
+      align-self: center;
+      z-index: 4;
+    }
+
+    #controlPanelBody {
+      position: relative;
+    }
+
+    /* Segment controller in control panel: 1.25× base chrome (0.25× larger) */
+    #controlPanel .scene-switcher {
+      margin-bottom: 0;
+      flex-shrink: 0;
+      white-space: nowrap;
+      padding: 5px;
+      gap: 3px;
+    }
+
+    #controlPanel .scene-tab {
+      padding: 8px 18px;
+      font-size: 15px;
+      line-height: 1.2;
+    }
+
+    /* Advanced block: out of flow so expanding it does not push the phone down */
+    #controlPanelAdvanced {
+      display: none;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 4px);
+      flex-direction: column;
+      gap: 12px;
+      padding: 12px 14px 14px;
+      box-sizing: border-box;
+      min-width: 100%;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 45%),
+        rgba(28, 28, 28, 0.96);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      z-index: 5;
+    }
+
+    #controlPanelExpandBtn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 8px;
+      margin: 0;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background 0.15s ease;
+    }
+
+    #controlPanelExpandBtn:hover {
+      background: rgba(255, 255, 255, 0.12);
     }
 
     .proto-zoom {
@@ -2261,23 +2360,22 @@
 </div>
 
 <div class="proto-body">
-<!-- ═══ DRAGGABLE CONTROL PANEL ═══ -->
-<div id="controlPanel" style="position:fixed;z-index:99999;width:fit-content;min-width:220px;background:linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 40%), rgba(30,30,30,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:14px;border:1px solid rgba(255,255,255,0.08);border-top:1px solid rgba(255,255,255,0.14);box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);font-family:var(--font);user-select:none;overflow:visible;transition:left 0.35s cubic-bezier(0.32, 0.72, 0, 1), top 0.35s cubic-bezier(0.32, 0.72, 0, 1)">
-  <!-- Drag handle -->
-  <div id="controlPanelHandle" style="padding:10px 14px 8px;cursor:grab;display:flex;align-items:center;justify-content:space-between">
-    <span style="font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:rgba(255,255,255,0.4)">Controls</span>
-    <div id="controlPanelCollapse" onclick="toggleControlPanel()" style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:4px;background:rgba(255,255,255,0.06)">
-      <svg id="collapseChevron" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.2s ease"><path d="M1 1l4 4 4-4"/></svg>
-    </div>
-  </div>
-  <div id="controlPanelBody" style="padding:0 14px 14px;display:flex;flex-direction:column;gap:12px">
-    <!-- Segment controller -->
-    <div class="scene-switcher" style="margin-bottom:0;flex-shrink:0;white-space:nowrap">
-      <button class="scene-tab active" onclick="switchScene('new-sellers')" style="padding:6px 14px;font-size:12px;white-space:nowrap">New Sellers</button>
-      <button class="scene-tab" onclick="switchScene('existing')" style="padding:6px 14px;font-size:12px;white-space:nowrap">Existing Sellers</button>
+<div id="protoDeviceColumn" class="proto-device-column">
+<div id="protoDeviceStage" class="proto-device-stage">
+
+<!-- ═══ Control panel (top of canvas, above phone) ═══ -->
+<div id="controlPanel" style="width:fit-content;min-width:220px;max-width:min(360px, calc(100vw - 32px));background:linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 40%), rgba(30,30,30,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:14px;border:1px solid rgba(255,255,255,0.08);border-top:1px solid rgba(255,255,255,0.14);box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);font-family:var(--font);user-select:none;overflow:visible">
+  <div id="controlPanelBody" style="padding:10px 14px 10px;display:flex;flex-direction:column;gap:10px">
+    <div class="scene-switcher">
+      <button class="scene-tab active" onclick="switchScene('new-sellers')" type="button">New Sellers</button>
+      <button class="scene-tab" onclick="switchScene('existing')" type="button">Existing Sellers</button>
     </div>
 
-    <!-- Consistent template generator toggle -->
+    <button type="button" id="controlPanelExpandBtn" onclick="toggleControlPanelAdvanced()" aria-expanded="false" aria-label="Show or hide prototype settings" title="More settings">
+      <svg id="advancedSettingsChevron" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.2s ease"><path d="M1 1l4 4 4-4"/></svg>
+    </button>
+
+    <div id="controlPanelAdvanced">
     <div style="display:flex;align-items:center;justify-content:space-between">
       <span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.55)">Consistent template gen</span>
       <label style="position:relative;width:40px;height:24px;cursor:pointer;flex-shrink:0">
@@ -2287,7 +2385,6 @@
       </label>
     </div>
 
-    <!-- New Sellers options -->
     <div id="ctrlNewSellers" style="display:flex;flex-direction:column;gap:8px">
       <div style="display:flex;align-items:center;justify-content:space-between">
         <span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.55)">Skip onboarding</span>
@@ -2299,9 +2396,7 @@
       </div>
     </div>
 
-    <!-- Existing Sellers options -->
     <div id="ctrlExistingSellers" style="display:none;flex-direction:column;gap:10px">
-      <!-- Template mode radio -->
       <div style="display:flex;flex-direction:column;gap:6px">
         <span style="font-size:10px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;color:rgba(255,255,255,0.3)">Template Mode</span>
         <label onclick="setTemplateMode('inventory')" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 0">
@@ -2313,9 +2408,7 @@
           <span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.55)">Templates = L1</span>
         </label>
       </div>
-      <!-- Divider -->
       <div style="height:1px;background:rgba(255,255,255,0.06)"></div>
-      <!-- Starting Page (radio) -->
       <div style="display:flex;flex-direction:column;gap:6px">
         <span style="font-size:10px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;color:rgba(255,255,255,0.3)">Starting Page</span>
         <label onclick="setStartingPage('sellerhub')" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 0">
@@ -2331,6 +2424,7 @@
           <span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.55)">Inventory</span>
         </label>
       </div>
+    </div>
     </div>
   </div>
 </div>
@@ -3413,7 +3507,7 @@
     </div>
     <!-- Draft List -->
     <!-- Inventory tooltip (overlays above first template item) -->
-    <div id="invTemplateTip" style="display:none;position:absolute;left:50%;transform:translateX(-50%);z-index:20;pointer-events:auto;white-space:nowrap">
+    <div id="invTemplateTip" style="display:none;position:absolute;left:0;top:0;z-index:20;pointer-events:auto;white-space:nowrap">
       <div style="background:#2d2d2d;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 16px rgba(0,0,0,0.1)">
         <span style="font-size:13px;font-weight:400;line-height:18px;letter-spacing:-0.08px;color:white">Just edit, assign to show, and publish</span>
         <div onclick="dismissInvTemplateTip()" style="width:16px;height:16px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center">
@@ -4929,6 +5023,9 @@
   </div>
 
 </div>
+</div>
+</div>
+
 </div>
 </div>
 </div>
@@ -8743,25 +8840,76 @@ function showInvTemplateTip() {
   if (skipAllTooltips || invTemplateTipShown) return;
   invTemplateTipShown = true;
   const tip = document.getElementById('invTemplateTip');
-  if (!tip) return;
-  const draftList = document.getElementById('invDraftList');
-  const firstRow = draftList ? draftList.querySelector('[data-type="template"]') : null;
-  if (firstRow && tip.parentElement) {
-    const parentRect = tip.parentElement.getBoundingClientRect();
-    const rowRect = firstRow.getBoundingClientRect();
-    tip.style.bottom = (parentRect.bottom - rowRect.top - 16) + 'px';
+  const inv = document.getElementById('inventoryPage');
+  if (!tip || !inv) return;
+
+  const visibleList = ['invActiveList', 'invDraftList', 'invInactiveList']
+    .map(id => document.getElementById(id))
+    .find(el => el && window.getComputedStyle(el).display !== 'none');
+  function firstVisibleTemplateRow(list) {
+    if (!list) return null;
+    const rows = list.querySelectorAll('[data-type="template"]');
+    for (let i = 0; i < rows.length; i++) {
+      const el = rows[i];
+      if (window.getComputedStyle(el).display === 'none') continue;
+      const r = el.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) return el;
+    }
+    return null;
   }
+  let firstRow = firstVisibleTemplateRow(visibleList);
+  if (!firstRow) {
+    firstRow = firstVisibleTemplateRow(document.getElementById('invDraftList'));
+  }
+
+  tip.style.bottom = 'auto';
+  tip.style.transform = 'none';
   tip.style.display = 'block';
   tip.style.opacity = '0';
   tip.style.transition = 'opacity 0.3s ease';
-  requestAnimationFrame(() => { tip.style.opacity = '1'; });
+
+  function layoutTip() {
+    if (!firstRow) {
+      tip.style.left = '50%';
+      tip.style.top = '120px';
+      tip.style.transform = 'translateX(-50%)';
+      return;
+    }
+    const parentRect = inv.getBoundingClientRect();
+    const rowRect = firstRow.getBoundingClientRect();
+    const tipH = tip.offsetHeight || tip.getBoundingClientRect().height;
+    const tipW = tip.offsetWidth || tip.getBoundingClientRect().width;
+    const caretGap = 2;
+    let topPx = rowRect.top - parentRect.top - tipH - caretGap;
+    topPx = Math.max(8, topPx);
+    tip.style.top = topPx + 'px';
+    const rowCenterX = rowRect.left + rowRect.width / 2;
+    let leftPx = rowCenterX - parentRect.left - tipW / 2;
+    const pad = 8;
+    leftPx = Math.min(Math.max(leftPx, pad), Math.max(pad, parentRect.width - tipW - pad));
+    tip.style.left = leftPx + 'px';
+  }
+
+  requestAnimationFrame(() => {
+    layoutTip();
+    requestAnimationFrame(() => {
+      layoutTip();
+      tip.style.opacity = '1';
+    });
+  });
 }
 
 function dismissInvTemplateTip() {
   const tip = document.getElementById('invTemplateTip');
   if (!tip || tip.style.display === 'none') return;
   tip.style.opacity = '0';
-  setTimeout(() => { tip.style.display = 'none'; }, 300);
+  setTimeout(() => {
+    tip.style.display = 'none';
+    tip.style.top = '';
+    tip.style.left = '';
+    tip.style.bottom = '';
+    tip.style.transform = '';
+  }, 300);
 }
 
 function showPinnedProductTip() {
@@ -9873,7 +10021,15 @@ function resetTooltipState() {
   dismissEduTip();
   ['shopMoreTip', 'shopSelectOptionTip', 'pinnedProductTip', 'invTemplateTip', 'reviewTemplatesTooltip'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) { el.style.display = 'none'; el.style.opacity = ''; }
+    if (!el) return;
+    el.style.display = 'none';
+    el.style.opacity = '';
+    if (id === 'invTemplateTip') {
+      el.style.top = '';
+      el.style.left = '';
+      el.style.bottom = '';
+      el.style.transform = '';
+    }
   });
 }
 
@@ -10117,6 +10273,7 @@ function openShowFromList(showTitle, showTime) {
   if (!lobbyScene) return;
 
   setLobbyState('active-seller');
+  persistProtoViewToUrlAndStorage();
 
   lobbyScene.style.display = 'flex';
   lobbyScene.style.zIndex = '20';
@@ -10148,6 +10305,7 @@ function closeLobbyToSellerHub() {
     lobbyScene.style.borderRadius = '';
     lobbyScene.style.overflow = '';
     setLobbyState('new-seller');
+    persistProtoViewToUrlAndStorage();
   }, 420);
 }
 
@@ -10268,7 +10426,77 @@ function resetAllData() {
   if (shopEmpty) shopEmpty.style.display = 'flex';
 }
 
-function switchScene(scene) {
+const PROTO_VIEW_SCENE_KEY = 'templatesNuxProtoScene';
+const PROTO_VIEW_LOBBY_KEY = 'templatesNuxProtoLobby';
+
+function getProtoSceneFromDom() {
+  const ctrlExisting = document.getElementById('ctrlExistingSellers');
+  if (ctrlExisting && ctrlExisting.style.display === 'flex') return 'existing';
+  return 'new-sellers';
+}
+
+function protoHashFor(scene, lobbySt) {
+  if (scene === 'existing') return 'existing';
+  if (lobbySt === 'active-seller') return 'new-sellers/active';
+  return 'new-sellers';
+}
+
+function parseProtoViewHash() {
+  const raw = (location.hash || '').replace(/^#/, '').trim().toLowerCase();
+  if (!raw) return null;
+  if (raw === 'existing') return { scene: 'existing', lobby: null };
+  if (raw === 'new-sellers/active' || raw === 'active-seller' || raw === 'active') return { scene: 'new-sellers', lobby: 'active-seller' };
+  if (raw === 'new-sellers' || raw === 'new' || raw === 'new-seller' || raw === 'new-sellers-new') return { scene: 'new-sellers', lobby: 'new-seller' };
+  return null;
+}
+
+function persistProtoViewToUrlAndStorage() {
+  try {
+    const scene = getProtoSceneFromDom();
+    localStorage.setItem(PROTO_VIEW_SCENE_KEY, scene);
+    if (scene === 'existing') {
+      localStorage.removeItem(PROTO_VIEW_LOBBY_KEY);
+    } else {
+      localStorage.setItem(PROTO_VIEW_LOBBY_KEY, lobbyState);
+    }
+    const frag = protoHashFor(scene, lobbyState);
+    const wantHash = '#' + frag;
+    if (location.hash !== wantHash) {
+      history.replaceState(null, '', location.pathname + location.search + wantHash);
+    }
+  } catch (e) {}
+}
+
+let __protoViewNavLock = false;
+
+function initProtoViewFromLocation() {
+  const fromHash = parseProtoViewHash();
+  let scene;
+  let lobbyOpt;
+  if (fromHash) {
+    scene = fromHash.scene;
+    lobbyOpt = fromHash.lobby != null ? fromHash.lobby : 'new-seller';
+  } else {
+    scene = localStorage.getItem(PROTO_VIEW_SCENE_KEY) || 'new-sellers';
+    const lob = localStorage.getItem(PROTO_VIEW_LOBBY_KEY);
+    lobbyOpt = (scene === 'new-sellers' && lob === 'active-seller') ? 'active-seller' : 'new-seller';
+  }
+  __protoViewNavLock = true;
+  switchScene(scene, { lobby: lobbyOpt });
+  __protoViewNavLock = false;
+}
+
+function onProtoViewHashChange() {
+  if (__protoViewNavLock) return;
+  const fromHash = parseProtoViewHash();
+  if (!fromHash) return;
+  __protoViewNavLock = true;
+  switchScene(fromHash.scene, { lobby: fromHash.lobby != null ? fromHash.lobby : 'new-seller' });
+  __protoViewNavLock = false;
+}
+
+function switchScene(scene, viewOpts) {
+  viewOpts = viewOpts || {};
   const tabs = document.querySelectorAll('#controlPanel .scene-tab');
   tabs.forEach(t => t.classList.remove('active'));
   if (event && event.target && event.target.classList.contains('scene-tab')) {
@@ -10280,7 +10508,6 @@ function switchScene(scene) {
 
   resetAllData();
   resetTooltipState();
-  setLobbyState('new-seller');
 
   const existingElements = [
     document.querySelector('.page'),
@@ -10306,10 +10533,17 @@ function switchScene(scene) {
     ctrlExisting.style.display = 'none';
 
     const skip = document.getElementById('skipOnboardingToggle').checked;
-    if (skip) {
+    const wantActiveLobby = viewOpts.lobby === 'active-seller';
+    if (wantActiveLobby) {
       skipToLobby();
+      setLobbyState('active-seller');
     } else {
-      resetNewSellerScene();
+      setLobbyState('new-seller');
+      if (skip) {
+        skipToLobby();
+      } else {
+        resetNewSellerScene();
+      }
     }
   } else {
     const shopSheet = document.getElementById('shopSheet');
@@ -10344,84 +10578,10 @@ function switchScene(scene) {
     switchStartingPage();
     applyTemplateMode();
   }
+
+  persistProtoViewToUrlAndStorage();
 }
 
-
-// ─── Draggable Control Panel ───
-function getSnapPosition() {
-  const phone = document.querySelector('.phone-frame');
-  const panel = document.getElementById('controlPanel');
-  const phoneRect = phone.getBoundingClientRect();
-  const gap = 56;
-  return {
-    x: phoneRect.right + gap,
-    y: phoneRect.top + 56
-  };
-}
-
-function snapPanelToPhone() {
-  const panel = document.getElementById('controlPanel');
-  const pos = getSnapPosition();
-  panel.style.left = pos.x + 'px';
-  panel.style.top = pos.y + 'px';
-}
-
-(function() {
-  const panel = document.getElementById('controlPanel');
-  const handle = document.getElementById('controlPanelHandle');
-  let isDragging = false, startX, startY, panelX, panelY;
-  const SNAP_DIST = 80;
-
-  snapPanelToPhone();
-  window.addEventListener('resize', () => { if (!isDragging) snapPanelToPhone(); });
-
-  handle.addEventListener('mousedown', startDrag);
-  handle.addEventListener('touchstart', startDrag, { passive: false });
-
-  function startDrag(e) {
-    if (e.target.closest('#controlPanelCollapse')) return;
-    isDragging = true;
-    handle.style.cursor = 'grabbing';
-    panel.style.transition = 'none';
-    const rect = panel.getBoundingClientRect();
-    panelX = rect.left; panelY = rect.top;
-    const pt = e.touches ? e.touches[0] : e;
-    startX = pt.clientX - panelX; startY = pt.clientY - panelY;
-    document.addEventListener('mousemove', onDrag);
-    document.addEventListener('mouseup', stopDrag);
-    document.addEventListener('touchmove', onDrag, { passive: false });
-    document.addEventListener('touchend', stopDrag);
-    e.preventDefault();
-  }
-
-  function onDrag(e) {
-    if (!isDragging) return;
-    const pt = e.touches ? e.touches[0] : e;
-    let x = pt.clientX - startX, y = pt.clientY - startY;
-    x = Math.max(0, Math.min(window.innerWidth - panel.offsetWidth, x));
-    y = Math.max(0, Math.min(window.innerHeight - panel.offsetHeight, y));
-    panel.style.left = x + 'px';
-    panel.style.top = y + 'px';
-    e.preventDefault();
-  }
-
-  function stopDrag() {
-    isDragging = false;
-    handle.style.cursor = 'grab';
-    document.removeEventListener('mousemove', onDrag);
-    document.removeEventListener('mouseup', stopDrag);
-    document.removeEventListener('touchmove', onDrag);
-    document.removeEventListener('touchend', stopDrag);
-
-    panel.style.transition = 'left 0.35s cubic-bezier(0.32, 0.72, 0, 1), top 0.35s cubic-bezier(0.32, 0.72, 0, 1)';
-    const snap = getSnapPosition();
-    const rect = panel.getBoundingClientRect();
-    const dx = rect.left - snap.x, dy = rect.top - snap.y;
-    if (Math.sqrt(dx * dx + dy * dy) < SNAP_DIST) {
-      snapPanelToPhone();
-    }
-  }
-})();
 
 let phoneScaleOverride = null;
 
@@ -10468,15 +10628,20 @@ function resetPhoneZoom() {
 scalePhone();
 window.addEventListener('resize', scalePhone);
 
-function toggleControlPanel() {
-  const body = document.getElementById('controlPanelBody');
-  const chevron = document.getElementById('collapseChevron');
-  if (body.style.display === 'none') {
-    body.style.display = 'flex';
-    chevron.style.transform = '';
+function toggleControlPanelAdvanced() {
+  const adv = document.getElementById('controlPanelAdvanced');
+  const chev = document.getElementById('advancedSettingsChevron');
+  const btn = document.getElementById('controlPanelExpandBtn');
+  if (!adv || !chev) return;
+  const open = adv.style.display === 'flex';
+  if (open) {
+    adv.style.display = 'none';
+    chev.style.transform = 'rotate(0deg)';
+    if (btn) btn.setAttribute('aria-expanded', 'false');
   } else {
-    body.style.display = 'none';
-    chevron.style.transform = 'rotate(-90deg)';
+    adv.style.display = 'flex';
+    chev.style.transform = 'rotate(180deg)';
+    if (btn) btn.setAttribute('aria-expanded', 'true');
   }
 }
 
@@ -10645,6 +10810,9 @@ function updateL1TemplateCount() {
 // Set timestamp
 const PROTO_TIMESTAMP = 'Updated by Soh Tanaka on 4/21/26 @ 4:58pm';
 document.getElementById('protoTimestamp').textContent = PROTO_TIMESTAMP;
+
+  initProtoViewFromLocation();
+  window.addEventListener('hashchange', onProtoViewHashChange);
 
   const LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/templates-nux/v3.html';
   let shareToastTimer = null;
