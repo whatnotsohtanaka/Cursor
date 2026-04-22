@@ -219,8 +219,8 @@
   </div>
 
   <!--
-    Paths in `href` are relative to this file (Cursor repo root). `updated` is YYYY-MM-DD for sorting.
-    Optional `team`; if omitted, name/id/href containing "variant" or "template" → "Inventory".
+    Paths in `href` go up to the repo root then into the project (this file lives in `prototype index/`).
+    `updated` is YYYY-MM-DD for sorting. Optional `team`; if omitted, name/id/href containing "variant" or "template" → "Inventory".
     One row per project: if a folder has multiple versions (v1, v2, hub), link only the latest HTML here.
   -->
   <script>
@@ -248,7 +248,7 @@
       {
         id: 'variants-creation-mobile',
         name: 'Variants Creation — Mobile',
-        href: 'Variants Creation/index.html',
+        href: '../Variants Creation/index.html',
         updated: '2026-04-21',
         prd: PRD_VARIANTS,
         figma: FIGMA_VARIANTS_MOBILE
@@ -256,7 +256,7 @@
       {
         id: 'variants-creation-desktop',
         name: 'Variants Creation — Desktop',
-        href: 'Variants Creation/desktop.html',
+        href: '../Variants Creation/desktop.html',
         updated: '2026-04-21',
         prd: PRD_VARIANTS,
         figma: FIGMA_VARIANTS_DESKTOP
@@ -264,7 +264,7 @@
       {
         id: 'live-run-xp',
         name: 'Live Run XP (Templates & Variants)',
-        href: 'Live Run XP/index.html',
+        href: '../Live Run XP/index.html',
         updated: '2026-04-21',
         prd: '',
         figma: FIGMA_LIVE_RUN
@@ -272,7 +272,7 @@
       {
         id: 'category-assets-guide',
         name: 'Category Assets Guide',
-        href: 'Category Assets Guide/index.html',
+        href: '../Category Assets Guide/index.html',
         updated: '2026-04-21',
         prd: PRD_TEMPLATES_CATEGORY_TAB,
         figma: FIGMA_CATEGORY_ASSETS,
@@ -281,7 +281,7 @@
       {
         id: 'templates-nux',
         name: 'Templates NUX',
-        href: 'Templates NUX/v3.html',
+        href: '../Templates NUX/v3.html',
         updated: '2026-04-21',
         prd: PRD_TEMPLATES,
         figma: FIGMA_TEMPLATES_NUX
@@ -289,7 +289,7 @@
       {
         id: 'variants-selection-logic',
         name: 'Variants Selection Logic',
-        href: 'Variants Selection Logic/v1.html',
+        href: '../Variants Selection Logic/v1.html',
         updated: '2026-04-21',
         prd: 'https://docs.google.com/document/d/1Hr9BI1rszc3mk-bpH511IIkmtbrsUhWMXqyGSzJ9DbY/edit?usp=sharing',
         figma: FIGMA_SELECTION_V1
@@ -297,7 +297,7 @@
       {
         id: 'variants-management',
         name: 'Variants Management',
-        href: 'Variants Management/Variants Management v3.html',
+        href: '../Variants Management/Variants Management v3.html',
         updated: '2026-04-21',
         prd: PRD_VARIANTS,
         figma: ''
