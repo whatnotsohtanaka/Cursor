@@ -644,7 +644,7 @@
     }
     /* LDP needs higher z-index than shop in buyer view */
     #flow-ldp.active {
-      z-index: 600;
+      z-index: 680;
     }
     
     /* Push transition between flow panels */
@@ -675,6 +675,391 @@
     @keyframes flowPushToRight {
       from { transform: translateX(0); }
       to { transform: translateX(100%); }
+    }
+
+    /* ── LDP (Listing Detail Page) ── */
+    .ldp {
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      font-family: -apple-system, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .ldp__scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ldp__scroll::-webkit-scrollbar { display: none; }
+
+    /* LDP Image Carousel */
+    .ldp__carousel {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .ldp__carousel-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .ldp__carousel-slide {
+      flex: 0 0 100%;
+      height: 100%;
+    }
+    .ldp__carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .ldp__carousel-scrim-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 85px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .ldp__carousel-scrim-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 85px;
+      opacity: 0.4;
+      background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.056) 11%, rgba(0,0,0,0.113) 21%, rgba(0,0,0,0.171) 30%, rgba(0,0,0,0.23) 38%, rgba(0,0,0,0.29) 45%, rgba(0,0,0,0.351) 52%, rgba(0,0,0,0.414) 58%, rgba(0,0,0,0.479) 64%, rgba(0,0,0,0.546) 69%, rgba(0,0,0,0.615) 74%, rgba(0,0,0,0.686) 79%, rgba(0,0,0,0.76) 84%, rgba(0,0,0,0.837) 89%, rgba(0,0,0,0.917) 95%, rgb(0,0,0) 100%);
+      pointer-events: none;
+    }
+    .ldp__carousel-dots {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      border-radius: 999px;
+    }
+    .ldp__carousel-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.4);
+      transition: width 0.2s ease, background 0.2s ease;
+    }
+    .ldp__carousel-dot.is-active {
+      width: 32px;
+      background: #fff;
+    }
+
+    /* LDP Header (floating over carousel) */
+    .ldp__header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 54px 16px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+    }
+    .ldp__header-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: #1c1c1c;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .ldp__header-btn:active {
+      background: #333;
+    }
+    .ldp__header-btn svg {
+      color: #fff;
+    }
+
+    /* LDP Content */
+    .ldp__content {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .ldp__title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .ldp__title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 590;
+      line-height: 23px;
+      letter-spacing: -0.44px;
+      color: #1c1c1c;
+    }
+    .ldp__price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .ldp__price {
+      font-size: 16px;
+      font-weight: 590;
+      line-height: 21px;
+      letter-spacing: -0.31px;
+      color: #161616;
+      opacity: 0.9;
+    }
+    .ldp__shipping {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      color: #6f6f6f;
+    }
+
+    /* LDP Selections (Option Chips) */
+    .ldp__selections {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .ldp__selection-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .ldp__selection-label {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 14px;
+      font-weight: 590;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #1c1c1c;
+    }
+    .ldp__selection-label .required {
+      color: #ce291a;
+      font-size: 12px;
+    }
+    .ldp__selection-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .ldp__chip {
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.05);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      border: none;
+      font-size: 14px;
+      font-weight: 590;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #1c1c1c;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .ldp__chip:active {
+      background: rgba(0,0,0,0.1);
+    }
+    .ldp__chip.is-selected {
+      background: #2d2d2d;
+      color: #fff;
+    }
+    .ldp__chip.is-sold-out {
+      text-decoration: line-through;
+      color: rgba(0,0,0,0.4);
+    }
+
+    /* LDP Social Proof */
+    .ldp__social {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(0,0,0,0.05);
+    }
+    .ldp__views {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      line-height: 16px;
+    }
+    .ldp__views-count {
+      font-weight: 590;
+      color: #1c1c1c;
+    }
+    .ldp__views-text {
+      font-weight: 400;
+      color: #7f7f7f;
+    }
+    .ldp__social-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .ldp__social-btn {
+      flex: 1;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.05);
+      border: none;
+      font-size: 14px;
+      font-weight: 590;
+      color: #1c1c1c;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .ldp__social-btn:active {
+      background: rgba(0,0,0,0.1);
+    }
+
+    /* LDP Seller Card */
+    .ldp__seller {
+      display: flex;
+      flex-direction: column;
+      background: #f3f3f3;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .ldp__seller-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: #f3f3f3;
+    }
+    .ldp__seller-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .ldp__seller-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #ddd;
+      object-fit: cover;
+    }
+    .ldp__seller-name {
+      font-size: 14px;
+      font-weight: 590;
+      line-height: 18px;
+      letter-spacing: -0.15px;
+      color: #161616;
+    }
+    .ldp__seller-msg-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: #1c1c1c;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .ldp__seller-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 8px;
+      background: #fafafa;
+    }
+    .ldp__seller-stat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .ldp__seller-stat-value {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 16px;
+      font-weight: 590;
+      line-height: 21px;
+      letter-spacing: -0.31px;
+      color: #161616;
+    }
+    .ldp__seller-stat-label {
+      font-size: 10px;
+      font-weight: 590;
+      line-height: 12px;
+      letter-spacing: 0.12px;
+      color: #393939;
+    }
+    .ldp__seller-divider {
+      width: 0;
+      height: 40px;
+      border-left: 1px solid rgba(0,0,0,0.1);
+    }
+
+    /* LDP Fixed Footer */
+    .ldp__footer {
+      position: relative;
+      padding: 16px;
+      padding-bottom: 32px;
+      background: #fff;
+      border-top: 1px solid #d2d2d2;
+      box-shadow: 0 -5px 16px rgba(0,0,0,0.1);
+    }
+    .ldp__footer-btn {
+      width: 100%;
+      height: 44px;
+      border-radius: 999px;
+      background: #F9DC00;
+      border: none;
+      font-size: 16px;
+      font-weight: 590;
+      line-height: 20px;
+      letter-spacing: -0.41px;
+      color: #1c1c1c;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .ldp__footer-btn:active {
+      background: #e5c800;
+    }
+    .ldp__home-indicator {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 135px;
+      height: 5px;
+      background: #000;
+      border-radius: 100px;
     }
 
     /* ── Live show (Figma 18983:39043) ── */
@@ -1830,6 +2215,18 @@
       flex-shrink: 0;
       filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
     }
+    button.live-show__side-item--action {
+      appearance: none;
+      -webkit-appearance: none;
+      border: none;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
     .live-show__side-icon {
       height: 32px;
       width: 100%;
@@ -2807,13 +3204,18 @@
       #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-sheet > .live-show-stack-dimmer {
         transition-duration: 0.01ms;
       }
-      #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip {
+      #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float),
+      #phoneWrapper #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float {
         transition-duration: 0.01ms;
       }
       #phoneWrapper .proto-flow-stack > #flow-1 .live-show__chrome,
       #phoneWrapper .proto-flow-stack > #flow-1 .live-show__media .live-show__bottom-scrim,
       #phoneWrapper .proto-flow-stack > #flow-1 .live-show__media .live-show__top-scrim {
         transition-duration: 0.01ms;
+      }
+      #lpc-add-listing-overlay,
+      #lpc-add-listing-overlay .lpc-add-show__sheet {
+        transition-duration: 0.01ms !important;
       }
       .flow-panel.push-from-right,
       .flow-panel.push-to-left,
@@ -3667,9 +4069,247 @@
       transform: scale(0.96);
     }
 
-    /* Live Product Creation: shop + PiP above live flow (required for visible/interactive PiP) */
-    #phoneWrapper .phone #live-shop-root {
+    /* ── Add to Show sheet — Figma Product-Creation—Management node 18983:39047 ── */
+    #lpc-add-listing-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 10000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+      pointer-events: none;
+    }
+    #lpc-add-listing-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__dim {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: rgba(0, 0, 0, 0.7);
+    }
+    #lpc-add-listing-overlay .lpc-add-show__sheet {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      overflow: hidden;
+      transform: translateY(100%);
+      transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    #lpc-add-listing-overlay.is-open .lpc-add-show__sheet {
+      transform: translateY(0);
+    }
+    #lpc-add-listing-overlay .lpc-add-show__sheet-header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+      padding-bottom: 8px;
+      flex-shrink: 0;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__notch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 24px;
+      padding: 8px 50px;
+      box-sizing: border-box;
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      flex-shrink: 0;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__notch-handle {
+      width: 40px;
+      height: 3px;
+      border-radius: 30px;
+      background: #e0e0e0;
+      flex-shrink: 0;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__nav {
+      position: relative;
+      width: 100%;
+      height: 48px;
+      min-height: 48px;
+      max-height: 48px;
+      background: #fff;
+      flex-shrink: 0;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__title {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      margin: 0;
+      font-family: -apple-system, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+      font-size: 16px;
+      font-weight: 590;
+      line-height: 21px;
+      letter-spacing: -0.31px;
+      font-variation-settings: 'wdth' 100;
+      color: #1c1c1c;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__content {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-start;
+      width: 100%;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__list {
+      width: 100%;
+      margin: 0;
+      padding: 0 16px;
+      box-sizing: border-box;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__card {
+      isolation: isolate;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      min-height: 87px;
+      padding: 12px 0;
+      border: none;
+      border-radius: 12px;
+      background: transparent;
+      margin: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+      box-sizing: border-box;
+      transition: background 0.15s ease;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__card:active {
+      background: rgba(0, 0, 0, 0.04);
+    }
+    #lpc-add-listing-overlay .lpc-add-show__thumb {
+      position: relative;
+      flex-shrink: 0;
+      width: 79px;
+      height: 79px;
+      z-index: 2;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__platter {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 79px;
+      height: 79px;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__platter img {
+      display: block;
+      width: 79px;
+      height: 79px;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__art {
+      position: absolute;
+      pointer-events: none;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__art img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    /* Figma: image position + size relative to 79×79 platter */
+    #lpc-add-listing-overlay .lpc-add-show__art--import {
+      right: -4px;
+      bottom: -5px;
+      width: 90px;
+      height: 90px;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__art--listing {
+      right: -11px;
+      bottom: -10px;
+      width: 94px;
+      height: 94px;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__art--template {
+      left: -4px;
+      top: 6px;
+      width: 87px;
+      height: 67px;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__body {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-start;
+      z-index: 1;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__headline {
+      margin: 0;
+      width: 100%;
+      font-family: -apple-system, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+      font-size: 16px;
+      font-weight: 590;
+      line-height: 21px;
+      letter-spacing: -0.31px;
+      font-variation-settings: 'wdth' 100;
+      color: #1c1c1c;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__desc {
+      margin: 0;
+      width: 100%;
+      font-family: -apple-system, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      font-variation-settings: 'wdth' 100;
+      color: #545454;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__footer {
+      position: relative;
+      width: 100%;
+      height: 32px;
+      flex-shrink: 0;
+    }
+    #lpc-add-listing-overlay .lpc-add-show__home {
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      transform: translateX(-50%);
+      width: 135px;
+      height: 5px;
+      border-radius: 100px;
+      background: #222;
+    }
+
+    /* Live Product Creation: shop + PiP above live flow only while open. When is-open drops for the slide-out,
+       keep the root under the live stack so the sheet does not paint over #flow-1 during the outro. */
+    #phoneWrapper .phone .proto-flow-stack {
+      z-index: 2;
+    }
+    #phoneWrapper .phone #live-shop-root.live-shop-root--fullpage.is-open {
       z-index: 600 !important;
+    }
+    #phoneWrapper .phone #live-shop-root.live-shop-root--fullpage:not(.is-open) {
+      z-index: 1 !important;
     }
     #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-backdrop {
       display: none;
@@ -3732,17 +4372,18 @@
     #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-close svg {
       display: block;
     }
-    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip {
+    /* PiP in sheet, or reparented into #lpc-add-listing-overlay (between dim + sheet) while Add-to-Show is open */
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float),
+    #phoneWrapper #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float {
       position: absolute;
       left: 12px;
-      bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      bottom: calc(var(--pip-bottom-inset, 12px) + env(safe-area-inset-bottom, 0px));
       width: 112px;
       aspect-ratio: 9 / 16;
       max-height: 30vh;
       border-radius: 12px;
       overflow: hidden;
       isolation: isolate;
-      z-index: 45;
       background: #000;
       border: none;
       box-shadow:
@@ -3752,25 +4393,90 @@
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
       opacity: 1;
-      transition: opacity 0.12s ease;
+      transform: scale(1);
+      transform-origin: left bottom;
+      /* Bottom: no CSS transition (rAF + sheet). Opacity/transform: press + minimize only. */
+      transition:
+        opacity 0.12s ease,
+        transform 0.34s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    /* PiP X: collapse to invisible; shop stays open. Shop close → stream flight starts from this shrunk rect. */
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float).live-shop-pip--minimized,
+    #phoneWrapper #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float.live-shop-pip--minimized {
+      transform: scale(0.06);
+      opacity: 0;
+      pointer-events: none !important;
+      box-shadow: none;
+    }
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip--minimized .live-shop-pip__close,
+    #phoneWrapper #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--minimized .live-shop-pip__close {
+      pointer-events: none !important;
+    }
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float) {
+      z-index: 45;
+    }
+    /* Overlay PiP: bottom is set from JS to match sheet; do not add safe-area here (viewport math + phone inset:0). */
+    #phoneWrapper #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float {
+      z-index: 2;
+      bottom: var(--pip-bottom-inset, 12px);
     }
     /* No transform scale here — scaling the PiP made the stream appear to pulse inside the frame */
-    #phoneWrapper #live-shop-root.live-shop-root--fullpage.is-open .live-shop-pip.live-shop-pip--pressed {
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage.is-open .live-shop-pip.live-shop-pip--pressed:not(.live-shop-pip--dfc-float):not(.live-shop-pip--minimized),
+    #phoneWrapper:has(#live-shop-root.live-shop-root--fullpage.is-open)
+      #lpc-add-listing-overlay
+      > .live-shop-pip.live-shop-pip--dfc-float.live-shop-pip--pressed:not(.live-shop-pip--minimized) {
       opacity: 0.9;
     }
     /* Clip + stack only */
-    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip__inner {
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float) .live-shop-pip__inner,
+    #phoneWrapper #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float .live-shop-pip__inner {
       position: absolute;
       inset: 0;
       border-radius: 12px;
       overflow: hidden;
+      z-index: 0;
     }
-    /* Tap-to-dismiss PiP (same close path as header X) */
-    #phoneWrapper #live-shop-root.live-shop-root--fullpage.is-open .live-shop-pip {
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float) .live-shop-pip__close,
+    #phoneWrapper #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float .live-shop-pip__close {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 2;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      margin: 0;
+      padding: 0;
+      border: none;
+      border-radius: 0 12px 0 12px;
+      background: transparent;
+      color: #fff;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      pointer-events: auto;
+    }
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float) .live-shop-pip__close svg,
+    #phoneWrapper #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float .live-shop-pip__close svg {
+      display: block;
+      flex-shrink: 0;
+    }
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float) .live-shop-pip__close:active,
+    #phoneWrapper #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float .live-shop-pip__close:active {
+      opacity: 0.88;
+    }
+    /* Tap-to-dismiss PiP (same close path as header X); minimized PiP ignores hits */
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage.is-open .live-shop-pip:not(.live-shop-pip--dfc-float):not(.live-shop-pip--minimized),
+    #phoneWrapper:has(#live-shop-root.live-shop-root--fullpage.is-open)
+      #lpc-add-listing-overlay
+      > .live-shop-pip.live-shop-pip--dfc-float:not(.live-shop-pip--minimized) {
       pointer-events: auto;
       cursor: pointer;
     }
-    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip .live-shop-pip__inner video {
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float) .live-shop-pip__inner video,
+    #phoneWrapper #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float .live-shop-pip__inner video {
       position: absolute;
       inset: 0;
       width: 100%;
@@ -4049,10 +4755,10 @@
                             <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="assets/figma/icon-camera-rotate.svg" width="24" height="24" /></div>
                             <p class="live-show__side-label">Switch</p>
                           </div>
-                          <div class="live-show__side-item">
+                          <button type="button" class="live-show__side-item live-show__side-item--action" id="live-show-add-rail" aria-label="Add listing">
                             <div class="live-show__side-icon"><img class="live-show__icon-img" alt="" src="assets/figma/icon-plus-circle.svg" width="24" height="24" /></div>
                             <p class="live-show__side-label">Add</p>
-                          </div>
+                          </button>
                         </div>
                         <!-- Buyer Side Menu -->
                         <div class="live-show__side-tools live-show__side-tools--buyer">
@@ -4584,6 +5290,150 @@
                 </div>
               </div>
             </div>
+            <!-- LDP (Listing Detail Page) for Templates -->
+            <div class="flow-panel" id="flow-ldp">
+              <div class="ldp" id="ldp-template">
+                <div class="ldp__scroll">
+                  <!-- Image Carousel -->
+                  <div class="ldp__carousel" id="ldp-carousel">
+                      <div class="ldp__carousel-track" id="ldp-carousel-track">
+                      <div class="ldp__carousel-slide"><img alt="" id="ldp-img-1" src="assets/products/figma-product-stack-a.png" /></div>
+                      <div class="ldp__carousel-slide"><img alt="" id="ldp-img-2" src="assets/products/figma-product-stack-b.png" /></div>
+                      <div class="ldp__carousel-slide"><img alt="" id="ldp-img-3" src="assets/products/figma-shop-entry-sneaker.png" /></div>
+                      <div class="ldp__carousel-slide"><img alt="" id="ldp-img-4" src="assets/pile-of-sneakers.jpg" /></div>
+                    </div>
+                    <div class="ldp__carousel-scrim-top"></div>
+                    <div class="ldp__carousel-scrim-bottom"></div>
+                    <div class="ldp__carousel-dots" id="ldp-carousel-dots">
+                      <div class="ldp__carousel-dot is-active" data-idx="0"></div>
+                      <div class="ldp__carousel-dot" data-idx="1"></div>
+                      <div class="ldp__carousel-dot" data-idx="2"></div>
+                      <div class="ldp__carousel-dot" data-idx="3"></div>
+                    </div>
+                    <!-- Floating Header -->
+                    <header class="ldp__header">
+                      <button type="button" class="ldp__header-btn" id="ldp-back-btn" aria-label="Back">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                          <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </button>
+                      <button type="button" class="ldp__header-btn" id="ldp-more-btn" aria-label="More">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                          <circle cx="3" cy="8" r="1.5" fill="currentColor"/>
+                          <circle cx="8" cy="8" r="1.5" fill="currentColor"/>
+                          <circle cx="13" cy="8" r="1.5" fill="currentColor"/>
+                        </svg>
+                      </button>
+                    </header>
+                  </div>
+
+                  <!-- Content -->
+                  <div class="ldp__content">
+                    <!-- Title + Price -->
+                    <div class="ldp__title-block">
+                      <h1 class="ldp__title" id="ldp-title">Assorted Sneakers: Nikes, Addidas, and more</h1>
+                      <div class="ldp__price-row">
+                        <span class="ldp__price" id="ldp-price">$1</span>
+                        <span class="ldp__shipping">+ $7.50 Shipping + Taxes</span>
+                      </div>
+                    </div>
+
+                    <!-- Option Selections -->
+                    <div class="ldp__selections" id="ldp-selections">
+                      <div class="ldp__selection-group" data-dim="0">
+                        <div class="ldp__selection-label">Brand <span class="required">*</span></div>
+                        <div class="ldp__selection-chips">
+                          <button type="button" class="ldp__chip is-selected" data-value="Nike">Nike</button>
+                          <button type="button" class="ldp__chip" data-value="Adidas">Adidas</button>
+                          <button type="button" class="ldp__chip" data-value="Pumas">Pumas</button>
+                        </div>
+                      </div>
+                      <div class="ldp__selection-group" data-dim="1">
+                        <div class="ldp__selection-label">Size <span class="required">*</span></div>
+                        <div class="ldp__selection-chips">
+                          <button type="button" class="ldp__chip" data-value="8M">8M</button>
+                          <button type="button" class="ldp__chip" data-value="8.5M">8.5M</button>
+                          <button type="button" class="ldp__chip is-selected" data-value="9M">9M</button>
+                          <button type="button" class="ldp__chip" data-value="9.5M">9.5M</button>
+                          <button type="button" class="ldp__chip" data-value="10M">10M</button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Social Proof -->
+                    <div class="ldp__social">
+                      <div class="ldp__views">
+                        <span class="ldp__views-count">1.3k views</span>
+                        <span class="ldp__views-text">on this item</span>
+                      </div>
+                      <div class="ldp__social-actions">
+                        <button type="button" class="ldp__social-btn">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M3 7V17H7V7H3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M7 7L9 3H11L10 7H16C16.5523 7 17 7.44772 17 8V10L15 17H7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                          <span id="ldp-saves">61</span>
+                        </button>
+                        <button type="button" class="ldp__social-btn">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M15 7C15 7 16 8.5 16 10C16 11.5 15 13 15 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M3 8V12H6L10 16V4L6 8H3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                          Share
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Seller Card -->
+                    <div class="ldp__seller">
+                      <div class="ldp__seller-top">
+                        <div class="ldp__seller-info">
+                          <img class="ldp__seller-avatar" alt="" src="assets/figma/6th-official-logo.png" />
+                          <span class="ldp__seller-name" id="ldp-seller-name">6th_official</span>
+                        </div>
+                        <button type="button" class="ldp__seller-msg-btn" aria-label="Message seller">
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M2 3H14V12H3.6L2 13.6V3Z" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </button>
+                      </div>
+                      <div class="ldp__seller-bottom">
+                        <div class="ldp__seller-stat">
+                          <div class="ldp__seller-stat-value">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" fill="#1c1c1c"/><path d="M10 5L11.5 8.5L15 9L12.5 11.5L13 15L10 13.5L7 15L7.5 11.5L5 9L8.5 8.5L10 5Z" fill="#FFD700"/></svg>
+                          </div>
+                          <span class="ldp__seller-stat-label" style="text-decoration: underline;">Premier Shop</span>
+                        </div>
+                        <div class="ldp__seller-divider"></div>
+                        <div class="ldp__seller-stat">
+                          <div class="ldp__seller-stat-value">
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1L7.5 4.1L11 4.6L8.5 7L9.1 10.5L6 8.9L2.9 10.5L3.5 7L1 4.6L4.5 4.1L6 1Z" fill="#FFD700"/></svg>
+                            4.8
+                          </div>
+                          <span class="ldp__seller-stat-label">Rating</span>
+                        </div>
+                        <div class="ldp__seller-divider"></div>
+                        <div class="ldp__seller-stat">
+                          <div class="ldp__seller-stat-value">50k</div>
+                          <span class="ldp__seller-stat-label">Reviews</span>
+                        </div>
+                        <div class="ldp__seller-divider"></div>
+                        <div class="ldp__seller-stat">
+                          <div class="ldp__seller-stat-value">169k</div>
+                          <span class="ldp__seller-stat-label">Sold</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Fixed Footer -->
+                <div class="ldp__footer">
+                  <button type="button" class="ldp__footer-btn" id="ldp-request-btn">Continue</button>
+                  <div class="ldp__home-indicator"></div>
+                </div>
+              </div>
+            </div>
           </div>
           <!-- Live Listings — Figma 18742:45839 Page /Live Shop -->
           <div class="live-shop-root live-shop-root--fullpage" id="live-shop-root" aria-hidden="true">
@@ -5105,16 +5955,85 @@
                   </div>
                 </div>
               </div>
-              <button type="button" class="live-shop-fab" aria-label="Add listing">
+              <button type="button" class="live-shop-fab" id="live-shop-add-fab" aria-label="Add listing">
                 <img alt="" src="assets/icons/plus-fab.svg" width="24" height="24" />
               </button>
               <!-- Dims sheet under PiP/FAB; fades out as shop opens (stack: shop → dimmer → live/PiP) -->
               <div class="live-show-stack-dimmer" id="live-show-stack-dimmer" aria-hidden="true"></div>
               <div class="live-shop-pip" id="live-shop-pip" aria-hidden="true">
                 <div class="live-shop-pip__inner"></div>
+                <button type="button" class="live-shop-pip__close" id="live-shop-pip-close" aria-label="Hide live preview">
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
+
+        <!-- Add to Show — Figma 18983:39047 (Product-Creation—Management) -->
+        <div id="lpc-add-listing-overlay" aria-hidden="true">
+          <div class="lpc-add-show__dim" aria-hidden="true"></div>
+          <div class="lpc-add-show__sheet" id="lpc-add-listing-sheet" role="dialog" aria-modal="true" aria-labelledby="lpc-add-listing-title">
+            <div class="lpc-add-show__sheet-header">
+              <div class="lpc-add-show__notch">
+                <div class="lpc-add-show__notch-handle"></div>
+              </div>
+              <div class="lpc-add-show__nav">
+                <h2 class="lpc-add-show__title" id="lpc-add-listing-title">Add to Show</h2>
+              </div>
+            </div>
+            <div class="lpc-add-show__content">
+              <div class="lpc-add-show__list" id="lpc-add-listing-list">
+                <button type="button" class="lpc-add-show__card" data-lpc-add-action="import">
+                  <div class="lpc-add-show__thumb" aria-hidden="true">
+                    <div class="lpc-add-show__platter">
+                      <img alt="" src="assets/figma/add-to-show/platter.svg" width="79" height="79" decoding="async" />
+                    </div>
+                    <div class="lpc-add-show__art lpc-add-show__art--import">
+                      <img alt="" src="assets/figma/add-to-show/thumb-import.png" width="90" height="90" decoding="async" />
+                    </div>
+                  </div>
+                  <div class="lpc-add-show__body">
+                    <p class="lpc-add-show__headline">Import from Inventory</p>
+                    <p class="lpc-add-show__desc">Import existing templates or listings.</p>
+                  </div>
+                </button>
+                <button type="button" class="lpc-add-show__card" data-lpc-add-action="product">
+                  <div class="lpc-add-show__thumb" aria-hidden="true">
+                    <div class="lpc-add-show__platter">
+                      <img alt="" src="assets/figma/add-to-show/platter.svg" width="79" height="79" decoding="async" />
+                    </div>
+                    <div class="lpc-add-show__art lpc-add-show__art--listing">
+                      <img alt="" src="assets/figma/add-to-show/thumb-listing.png" width="94" height="94" decoding="async" />
+                    </div>
+                  </div>
+                  <div class="lpc-add-show__body">
+                    <p class="lpc-add-show__headline">Create Listing</p>
+                    <p class="lpc-add-show__desc">For unique items with different size or color variants.</p>
+                  </div>
+                </button>
+                <button type="button" class="lpc-add-show__card" data-lpc-add-action="template">
+                  <div class="lpc-add-show__thumb" aria-hidden="true">
+                    <div class="lpc-add-show__platter">
+                      <img alt="" src="assets/figma/add-to-show/platter.svg" width="79" height="79" decoding="async" />
+                    </div>
+                    <div class="lpc-add-show__art lpc-add-show__art--template">
+                      <img alt="" src="assets/figma/add-to-show/thumb-template.png" width="87" height="67" decoding="async" />
+                    </div>
+                  </div>
+                  <div class="lpc-add-show__body">
+                    <p class="lpc-add-show__headline">Create Template</p>
+                    <p class="lpc-add-show__desc">For similar items you want to list quickly.</p>
+                  </div>
+                </button>
+              </div>
+              <div class="lpc-add-show__footer" aria-hidden="true">
+                <div class="lpc-add-show__home"></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         </div>
       </div>
@@ -5474,6 +6393,8 @@
       var streamVideo = shopEl('live-show-stream');
       var liveShowMedia = document.querySelector('#phoneWrapper .live-show__media');
       var deviceFrame = document.querySelector('#phoneWrapper .device-frame');
+      var phoneWrapperEl = shopEl('phoneWrapper');
+      var lpcAddOverlayEl = shopEl('lpc-add-listing-overlay');
       var lastShopFocus = null;
       var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var FLIGHT_MS = 380;
@@ -5689,8 +6610,139 @@
         });
       }
 
+      /* PiP bottom inset: stay 20px above Add-to-Show sheet top; inset is driven on rAF (no CSS bottom transition) */
+      var lpcAddListingSheet = document.getElementById('lpc-add-listing-sheet');
+      var pipSheetSyncRaf = 0;
+      var pipSheetSyncUntil = 0;
+
+      function clearPipBottomInset() {
+        if (phoneWrapperEl) phoneWrapperEl.style.removeProperty('--pip-bottom-inset');
+        if (shopRoot) shopRoot.style.removeProperty('--pip-bottom-inset');
+      }
+
+      /* .phone-frame uses transform: scale(--phone-scale); layout bottom is in CSS px, getBoundingClientRect is viewport px. */
+      function getSellerPhoneLayoutScale() {
+        var frame = document.querySelector('#phoneWrapper .phone-frame');
+        if (!frame) return 1;
+        var v = parseFloat(getComputedStyle(frame).getPropertyValue('--phone-scale')) || 1;
+        if (!isFinite(v) || v < 0.01) return 1;
+        return v;
+      }
+
+      function syncPipBottomInset() {
+        if (!shopRoot || !shopSheet || !pipMount || !deviceFrame) return;
+        if (pipMount.classList.contains('live-shop-pip--minimized')) return;
+        if (!shopRoot.classList.contains('is-open') || !shopRoot.classList.contains('live-shop-root--fullpage')) {
+          clearPipBottomInset();
+          return;
+        }
+        if (!lpcAddListingSheet) {
+          clearPipBottomInset();
+          return;
+        }
+        var inBurst = Date.now() < pipSheetSyncUntil;
+        var overlayOpen = lpcAddOverlayEl && lpcAddOverlayEl.classList.contains('is-open');
+        if (!overlayOpen && !inBurst) {
+          clearPipBottomInset();
+          return;
+        }
+        /* Optical gap = 20px from PiP outer bottom to Add-to-Show sheet top (viewport), converted to layout px for bottom:. */
+        var layoutScale = getSellerPhoneLayoutScale();
+        var refForBottom =
+          pipMount.classList.contains('live-shop-pip--dfc-float') &&
+          lpcAddOverlayEl &&
+          pipMount.parentNode === lpcAddOverlayEl
+            ? lpcAddOverlayEl
+            : pipMount.offsetParent;
+        if (!refForBottom) return;
+        var pr = refForBottom.getBoundingClientRect();
+        var sheetTopViewport = lpcAddListingSheet.getBoundingClientRect().top;
+        var PIP_SHEET_GAP_PX = 20;
+        var targetPipBottomViewport = sheetTopViewport - PIP_SHEET_GAP_PX;
+        var B_viewport = pr.bottom - targetPipBottomViewport;
+        var inset = Math.max(12, Math.round(B_viewport / layoutScale));
+        if (phoneWrapperEl) phoneWrapperEl.style.setProperty('--pip-bottom-inset', inset + 'px');
+
+        /* Overlay PiP: no env(safe-area) in CSS — remeasure after layout; meas is viewport px, adjust inset in layout px. */
+        if (
+          pipMount.classList.contains('live-shop-pip--dfc-float') &&
+          lpcAddOverlayEl &&
+          pipMount.parentNode === lpcAddOverlayEl &&
+          phoneWrapperEl
+        ) {
+          void pipMount.offsetHeight;
+          var meas = pipMount.getBoundingClientRect().bottom - targetPipBottomViewport;
+          if (Math.abs(meas) > 0.75) {
+            var inset2 = Math.max(12, Math.round(inset + meas / layoutScale));
+            phoneWrapperEl.style.setProperty('--pip-bottom-inset', inset2 + 'px');
+          }
+        }
+      }
+
+      /* Reparent PiP into Add-to-Show overlay between dim + sheet so it paints above the dim scrim. */
+      function floatPipForLpcAddSheet(enable) {
+        if (!pipMount || !lpcAddOverlayEl || !lpcAddListingSheet) return;
+        if (enable) {
+          if (!shopRoot || !shopRoot.classList.contains('is-open')) return;
+          pipMount.classList.add('live-shop-pip--dfc-float');
+          if (pipMount.parentNode === lpcAddOverlayEl) {
+            syncPipBottomInset();
+            return;
+          }
+          pipMount._lpcShopReinsert = {
+            parent: pipMount.parentNode,
+            beforeEl: pipMount.nextSibling
+          };
+          lpcAddOverlayEl.insertBefore(pipMount, lpcAddListingSheet);
+        } else {
+          var s = pipMount._lpcShopReinsert;
+          if (s && s.parent) {
+            if (s.beforeEl && s.beforeEl.parentNode === s.parent) {
+              s.parent.insertBefore(pipMount, s.beforeEl);
+            } else {
+              s.parent.appendChild(pipMount);
+            }
+            pipMount._lpcShopReinsert = null;
+          }
+          pipMount.classList.remove('live-shop-pip--dfc-float');
+        }
+        syncPipBottomInset();
+      }
+      window.lpcFloatPipForLpcAddSheet = floatPipForLpcAddSheet;
+
+      function tickPipBottomSheetSync() {
+        pipSheetSyncRaf = 0;
+        syncPipBottomInset();
+        if (Date.now() < pipSheetSyncUntil) {
+          pipSheetSyncRaf = requestAnimationFrame(tickPipBottomSheetSync);
+        }
+      }
+
+      function runPipBottomSheetSyncForMs(ms) {
+        pipSheetSyncUntil = Date.now() + (ms != null ? ms : 360);
+        if (!pipSheetSyncRaf) pipSheetSyncRaf = requestAnimationFrame(tickPipBottomSheetSync);
+      }
+
+      window.lpcSyncPipBottomSheets = function () {
+        syncPipBottomInset();
+        runPipBottomSheetSyncForMs(380);
+      };
+
+      if (lpcAddListingSheet) {
+        lpcAddListingSheet.addEventListener(
+          'transitionend',
+          function (e) {
+            if (e.propertyName !== 'transform') return;
+            syncPipBottomInset();
+          },
+          false
+        );
+      }
+      window.addEventListener('resize', syncPipBottomInset, false);
+
       function openShopLocal() {
         if (!shopRoot || !shopSheet) return;
+        if (pipMount) pipMount.classList.remove('live-shop-pip--minimized');
         lastShopFocus = document.activeElement;
         setSheetWillChange(true);
         syncShopStatusInset();
@@ -5743,10 +6795,28 @@
             }
           });
         });
+
+        requestAnimationFrame(function () {
+          if (lpcAddOverlayEl && lpcAddOverlayEl.classList.contains('is-open')) {
+            floatPipForLpcAddSheet(true);
+          }
+          syncPipBottomInset();
+          if (lpcAddOverlayEl && lpcAddOverlayEl.classList.contains('is-open')) {
+            runPipBottomSheetSyncForMs(380);
+          }
+        });
       }
 
       function closeShopLocal() {
         if (!shopRoot) return;
+        if (!shopRoot.classList.contains('is-open')) return;
+        floatPipForLpcAddSheet(false);
+        clearPipBottomInset();
+        pipSheetSyncUntil = 0;
+        if (pipSheetSyncRaf) {
+          cancelAnimationFrame(pipSheetSyncRaf);
+          pipSheetSyncRaf = 0;
+        }
         if (pipMount) pipMount.classList.remove('live-shop-pip--pressed');
 
         function restoreFocus() {
@@ -5761,6 +6831,7 @@
 
         /* Sheet/backdrop: instant dismiss (no slide). Stream: PiP→live flight first, then dismiss. */
         function instantDismissSheetAndVideo() {
+          if (pipMount) pipMount.classList.remove('live-shop-pip--minimized');
           shopRoot.classList.add('live-shop-root--instant-close');
           void shopRoot.offsetWidth;
           shopRoot.classList.remove('is-open');
@@ -5785,18 +6856,49 @@
           return;
         }
 
-        var startRect = streamVideo.getBoundingClientRect();
-        var endRect = liveShowMedia.getBoundingClientRect();
-        liftVideoToFlightFromRects(startRect, 12);
-        if (shopSheet) setSheetWillChange(true);
-        animateVideoToRect(
-          endRect,
-          function () {
-            instantDismissSheetAndVideo();
-          },
-          PIP_FLIGHT_FROM_PIP_MS,
-          PIP_FLIGHT_EASE
-        );
+        /* Full-page close: one continuous stream flight (PiP/minimized → live). No separate “expand PiP then fly”
+           stagger — startRect is read while minimized, then lift + animate in one motion. Shop sheet removes is-open
+           late in that flight (~94%) so the stream is almost home and the sheet slide reads under the live layer. */
+        shopRoot.classList.remove('live-shop-root--instant-close');
+        var FLIGHT_DUR = PIP_FLIGHT_FROM_PIP_MS;
+        var SHOP_SHEET_DISMISS_AT_FLIGHT = 0.94;
+
+        function finishAfterFlight() {
+          restoreVideoToMedia();
+          restoreFocus();
+          if (shopSheet) setSheetWillChange(false);
+          if (pipMount) pipMount.style.removeProperty('opacity');
+        }
+
+        function dismissShopSlideDown() {
+          shopRoot.classList.remove('is-open');
+          shopRoot.setAttribute('aria-hidden', 'true');
+        }
+
+        function runVideoBackToLive() {
+          if (shopSheet) setSheetWillChange(true);
+          var startRect = streamVideo.getBoundingClientRect();
+          var endRect = liveShowMedia.getBoundingClientRect();
+          liftVideoToFlightFromRects(startRect, 12);
+          /* Hide empty PiP after the stream lifts out (avoids a visible “empty PiP expands” between phases). */
+          if (pipMount) {
+            pipMount.style.opacity = '0';
+            pipMount.classList.remove('live-shop-pip--minimized');
+          }
+          animateVideoToRect(
+            endRect,
+            function () {
+              finishAfterFlight();
+            },
+            FLIGHT_DUR,
+            PIP_FLIGHT_EASE
+          );
+        }
+
+        runVideoBackToLive();
+        window.setTimeout(function () {
+          dismissShopSlideDown();
+        }, Math.round(FLIGHT_DUR * SHOP_SHEET_DISMISS_AT_FLIGHT));
       }
 
       window.openShop = function (e) {
@@ -5823,6 +6925,7 @@
         var pipPressPointerId = null;
         pipMount.addEventListener('pointerdown', function (e) {
           if (!shopRoot || !shopRoot.classList.contains('is-open')) return;
+          if (pipMount.classList.contains('live-shop-pip--minimized')) return;
           if (e.pointerType === 'mouse' && e.button !== 0) return;
           pipPressPointerId = e.pointerId;
           pipMount.classList.add('live-shop-pip--pressed');
@@ -5838,6 +6941,7 @@
             pipMount.releasePointerCapture(e.pointerId);
           } catch (err2) {}
           if (!shopRoot || !shopRoot.classList.contains('is-open')) return;
+          if (pipMount.classList.contains('live-shop-pip--minimized')) return;
           if (e.pointerType === 'mouse' && e.button !== 0) return;
           var r = pipMount.getBoundingClientRect();
           var cx = e.clientX;
@@ -5854,6 +6958,7 @@
         pipMount.addEventListener(
           'click',
           function (e) {
+            if (e.target && e.target.closest && e.target.closest('.live-shop-pip__close')) return;
             if (shopRoot && shopRoot.classList.contains('is-open')) {
               e.preventDefault();
               e.stopPropagation();
@@ -5861,6 +6966,22 @@
           },
           true
         );
+        var pipCloseBtn = shopEl('live-shop-pip-close');
+        if (pipCloseBtn) {
+          pipCloseBtn.addEventListener('pointerdown', function (e) {
+            e.stopPropagation();
+          });
+          pipCloseBtn.addEventListener('pointerup', function (e) {
+            e.stopPropagation();
+          });
+          pipCloseBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            if (shopRoot && shopRoot.classList.contains('is-open') && pipMount) {
+              pipMount.classList.add('live-shop-pip--minimized');
+            }
+          });
+        }
       }
 
       document.addEventListener(
@@ -5876,6 +6997,222 @@
         },
         false
       );
+    })();
+
+    /* Add sheet + creation form (flow-ldp) — Live Run XP listing-options + LDP */
+    (function () {
+      var overlay = document.getElementById('lpc-add-listing-overlay');
+      var list = document.getElementById('lpc-add-listing-list');
+      var addFab = document.getElementById('live-shop-add-fab');
+      var addRail = document.getElementById('live-show-add-rail');
+      var flow1 = document.getElementById('flow-1');
+      var flowLdp = document.getElementById('flow-ldp');
+      var ldpTemplate = document.getElementById('ldp-template');
+      var ldpTitle = document.getElementById('ldp-title');
+      var ldpPrice = document.getElementById('ldp-price');
+      var ldpShipping = document.querySelector('#flow-ldp .ldp__shipping');
+      var ldpSelections = document.getElementById('ldp-selections');
+      var ldpCarouselIdx = 0;
+
+      function showLpcToast(msg) {
+        var toast = document.createElement('div');
+        toast.textContent = msg;
+        toast.style.cssText =
+          'position:fixed;bottom:120px;left:50%;transform:translateX(-50%);padding:12px 24px;background:#1c1c1c;color:#fff;border-radius:12px;font-size:14px;font-weight:590;z-index:99999;opacity:0;transition:opacity 0.2s ease;';
+        document.body.appendChild(toast);
+        requestAnimationFrame(function () {
+          toast.style.opacity = '1';
+        });
+        setTimeout(function () {
+          toast.style.opacity = '0';
+          setTimeout(function () {
+            toast.remove();
+          }, 200);
+        }, 1500);
+      }
+
+      function openLpcAddSheet() {
+        if (!overlay) return;
+        overlay.classList.add('is-open');
+        overlay.setAttribute('aria-hidden', 'false');
+        if (typeof window.lpcFloatPipForLpcAddSheet === 'function') window.lpcFloatPipForLpcAddSheet(true);
+        if (typeof window.lpcSyncPipBottomSheets === 'function') window.lpcSyncPipBottomSheets();
+      }
+
+      function closeLpcAddSheet() {
+        if (!overlay) return;
+        if (typeof window.lpcFloatPipForLpcAddSheet === 'function') window.lpcFloatPipForLpcAddSheet(false);
+        overlay.classList.remove('is-open');
+        overlay.setAttribute('aria-hidden', 'true');
+        if (typeof window.lpcSyncPipBottomSheets === 'function') window.lpcSyncPipBottomSheets();
+      }
+
+      function updateLdpCarousel() {
+        var track = document.getElementById('ldp-carousel-track');
+        if (!track) return;
+        var dots = document.querySelectorAll('#flow-ldp .ldp__carousel-dot');
+        track.style.transform = 'translateX(' + (-ldpCarouselIdx * 100) + '%)';
+        dots.forEach(function (dot, idx) {
+          dot.classList.toggle('is-active', idx === ldpCarouselIdx);
+        });
+      }
+
+      window.lpcCloseCreation = function () {
+        if (!flow1 || !flowLdp) return;
+        flow1.classList.add('active', 'push-from-left');
+        flowLdp.classList.add('push-to-right');
+        window.setTimeout(function () {
+          flowLdp.classList.remove('active', 'push-to-right');
+          flow1.classList.remove('push-from-left');
+        }, 350);
+      };
+
+      window.lpcSubmitCreation = function () {
+        showLpcToast('Saved as draft');
+        window.setTimeout(function () {
+          if (window.lpcCloseCreation) window.lpcCloseCreation();
+        }, 600);
+      };
+
+      function openCreationForm(mode) {
+        if (!flow1 || !flowLdp || !ldpTemplate || !ldpTitle || !ldpPrice || !ldpSelections) return;
+        closeLpcAddSheet();
+        if (window.closeShop) window.closeShop();
+        ldpTemplate.dataset.pinType = mode;
+        if (mode === 'import') {
+          ldpTitle.textContent = 'Import from Inventory';
+          ldpPrice.textContent = 'Choose items to import';
+          if (ldpShipping) ldpShipping.textContent = 'Import existing templates or listings.';
+          ldpSelections.style.display = 'none';
+        } else if (mode === 'product') {
+          ldpTitle.textContent = 'Create Listing';
+          ldpPrice.textContent = '$1';
+          if (ldpShipping) ldpShipping.textContent = 'For unique items with different size or color variants.';
+          ldpSelections.style.display = '';
+        } else {
+          ldpTitle.textContent = 'Create Template';
+          ldpPrice.textContent = '$1';
+          if (ldpShipping) ldpShipping.textContent = 'For similar items you want to list quickly.';
+          ldpSelections.style.display = '';
+        }
+        ldpCarouselIdx = 0;
+        updateLdpCarousel();
+        flow1.classList.add('push-to-left');
+        flowLdp.classList.add('active', 'push-from-right');
+        window.setTimeout(function () {
+          flow1.classList.remove('active', 'push-to-left');
+          flowLdp.classList.remove('push-from-right');
+        }, 350);
+      }
+
+      if (overlay) {
+        overlay.addEventListener('click', function (e) {
+          var t = e.target;
+          if (t === overlay || (t && t.classList && t.classList.contains('lpc-add-show__dim'))) closeLpcAddSheet();
+        });
+      }
+      if (list) {
+        list.addEventListener('click', function (e) {
+          var row = e.target.closest('[data-lpc-add-action]');
+          if (!row) return;
+          var mode = row.getAttribute('data-lpc-add-action');
+          if (mode) openCreationForm(mode);
+        });
+        list.addEventListener('keydown', function (e) {
+          var row = e.target.closest('[data-lpc-add-action]');
+          if (!row) return;
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          e.preventDefault();
+          var mode = row.getAttribute('data-lpc-add-action');
+          if (mode) openCreationForm(mode);
+        });
+      }
+      if (addFab) {
+        addFab.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          openLpcAddSheet();
+        });
+      }
+      if (addRail) {
+        addRail.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          openLpcAddSheet();
+        });
+      }
+      var ldpBack = document.getElementById('ldp-back-btn');
+      if (ldpBack) {
+        ldpBack.addEventListener('click', function () {
+          if (window.lpcCloseCreation) window.lpcCloseCreation();
+        });
+      }
+      var ldpCta = document.getElementById('ldp-request-btn');
+      if (ldpCta) {
+        ldpCta.addEventListener('click', function () {
+          if (window.lpcSubmitCreation) window.lpcSubmitCreation();
+        });
+      }
+
+      (function initLdpCarousel() {
+        var carousel = document.getElementById('ldp-carousel');
+        if (!carousel) return;
+        var track = document.getElementById('ldp-carousel-track');
+        var startX = 0;
+        var deltaX = 0;
+        var maxIdx = 3;
+        carousel.addEventListener(
+          'touchstart',
+          function (e) {
+            startX = e.touches[0].clientX;
+            if (track) track.style.transition = 'none';
+          },
+          { passive: true }
+        );
+        carousel.addEventListener(
+          'touchmove',
+          function (e) {
+            if (!track) return;
+            deltaX = e.touches[0].clientX - startX;
+            var offset = -ldpCarouselIdx * 100 + (deltaX / carousel.clientWidth) * 100;
+            track.style.transform = 'translateX(' + offset + '%)';
+          },
+          { passive: true }
+        );
+        carousel.addEventListener(
+          'touchend',
+          function () {
+            if (!track) return;
+            track.style.transition = '';
+            if (Math.abs(deltaX) > 50) {
+              if (deltaX < 0 && ldpCarouselIdx < maxIdx) ldpCarouselIdx++;
+              if (deltaX > 0 && ldpCarouselIdx > 0) ldpCarouselIdx--;
+            }
+            deltaX = 0;
+            updateLdpCarousel();
+          },
+          { passive: true }
+        );
+        document.querySelectorAll('#flow-ldp .ldp__carousel-dot').forEach(function (dot) {
+          dot.addEventListener('click', function () {
+            ldpCarouselIdx = parseInt(dot.getAttribute('data-idx'), 10) || 0;
+            updateLdpCarousel();
+          });
+        });
+      })();
+
+      (function initLdpChips() {
+        document.querySelectorAll('#flow-ldp .ldp__selection-chips').forEach(function (container) {
+          container.addEventListener('click', function (e) {
+            var chip = e.target.closest('.ldp__chip');
+            if (!chip || chip.classList.contains('is-sold-out')) return;
+            container.querySelectorAll('.ldp__chip').forEach(function (c) {
+              c.classList.remove('is-selected');
+            });
+            chip.classList.add('is-selected');
+          });
+        });
+      })();
     })();
 
     /* Pinned CTAs are visible but not wired here — stubs avoid ReferenceError on click */
