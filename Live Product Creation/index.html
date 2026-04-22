@@ -639,7 +639,9 @@
       position: absolute;
       inset: 0;
     }
-    .flow-panel.active { display: block; }
+    .flow-panel.active {
+      display: block;
+    }
     /* LDP needs higher z-index than shop in buyer view */
     #flow-ldp.active {
       z-index: 600;
@@ -708,6 +710,23 @@
       -webkit-transform: translate3d(0, 0, 0);
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
+    }
+    /* Seller stream — rounded frame (matches flight / PiP radii in shop JS) */
+    #phoneWrapper .live-show__media #live-show-stream {
+      border-radius: 20px;
+    }
+    /* Full-page shop: dimmer sits on the sheet under PiP/FAB (live stream reads above this layer) */
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-sheet > .live-show-stack-dimmer {
+      position: absolute;
+      inset: 0;
+      z-index: 25;
+      pointer-events: none;
+      background: rgba(0, 0, 0, 0.4);
+      opacity: 1;
+      transition: opacity 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    #phoneWrapper:has(#live-shop-root.live-shop-root--fullpage.is-open) .live-shop-sheet > .live-show-stack-dimmer {
+      opacity: 0;
     }
     .live-show__bottom-scrim {
       position: absolute;
@@ -847,6 +866,28 @@
     .live-show__chrome input,
     .live-show__chrome [role='button'] {
       pointer-events: auto;
+    }
+
+    /* Seller live: alpha fade overlay UI (chrome + scrims) when full-page shop opens / intro when it closes */
+    #phoneWrapper .proto-flow-stack > #flow-1 .live-show__chrome {
+      opacity: 1;
+      transition: opacity 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    #phoneWrapper .proto-flow-stack > #flow-1 .live-show__media .live-show__bottom-scrim,
+    #phoneWrapper .proto-flow-stack > #flow-1 .live-show__media .live-show__top-scrim {
+      opacity: 1;
+      transition: opacity 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    #phoneWrapper:has(#live-shop-root.live-shop-root--fullpage.is-open) .proto-flow-stack > #flow-1 .live-show__chrome {
+      opacity: 0;
+      pointer-events: none !important;
+    }
+    #phoneWrapper:has(#live-shop-root.live-shop-root--fullpage.is-open) .proto-flow-stack > #flow-1 .live-show__chrome * {
+      pointer-events: none !important;
+    }
+    #phoneWrapper:has(#live-shop-root.live-shop-root--fullpage.is-open) .proto-flow-stack > #flow-1 .live-show__media .live-show__bottom-scrim,
+    #phoneWrapper:has(#live-shop-root.live-shop-root--fullpage.is-open) .proto-flow-stack > #flow-1 .live-show__media .live-show__top-scrim {
+      opacity: 0;
     }
 
     .live-show__header {
@@ -2743,6 +2784,12 @@
     .live-shop-root.is-open .live-shop-sheet {
       transform: translate3d(0, 0, 0);
     }
+    /* Instant close (seller): sheet/backdrop/dimmer only — no slide/fade outro (after PiP→live flight) */
+    #phoneWrapper #live-shop-root.live-shop-root--instant-close .live-shop-sheet,
+    #phoneWrapper #live-shop-root.live-shop-root--instant-close .live-shop-backdrop,
+    #phoneWrapper #live-shop-root.live-shop-root--instant-close .live-shop-sheet > .live-show-stack-dimmer {
+      transition: none !important;
+    }
     .live-shop-sheet:focus {
       outline: none;
     }
@@ -2755,6 +2802,17 @@
         transition-duration: 0.01ms;
       }
       .live-shop-sheet {
+        transition-duration: 0.01ms;
+      }
+      #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-sheet > .live-show-stack-dimmer {
+        transition-duration: 0.01ms;
+      }
+      #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip {
+        transition-duration: 0.01ms;
+      }
+      #phoneWrapper .proto-flow-stack > #flow-1 .live-show__chrome,
+      #phoneWrapper .proto-flow-stack > #flow-1 .live-show__media .live-show__bottom-scrim,
+      #phoneWrapper .proto-flow-stack > #flow-1 .live-show__media .live-show__top-scrim {
         transition-duration: 0.01ms;
       }
       .flow-panel.push-from-right,
@@ -3609,8 +3667,10 @@
       transform: scale(0.96);
     }
 
-    /* Live Product Creation: shop above home bar; full-page slide-up + stream PiP */
-    #phoneWrapper .phone #live-shop-root { z-index: 600 !important; }
+    /* Live Product Creation: shop + PiP above live flow (required for visible/interactive PiP) */
+    #phoneWrapper .phone #live-shop-root {
+      z-index: 600 !important;
+    }
     #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-backdrop {
       display: none;
     }
@@ -3635,12 +3695,24 @@
     #live-show-stream.live-show-stream--flight {
       max-width: none;
       max-height: none;
+      overflow: hidden;
+      /* Flight uses top/left/width/height; kill compositor transform from .live-show__media video */
+      transform: none !important;
+      -webkit-transform: none !important;
+      /* Inline style animates radius; this is a safe default if cleared mid-flight */
+      border-radius: 12px;
     }
     #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-nav {
       display: flex;
       align-items: center;
       justify-content: flex-end;
       padding: 0 8px 0 16px;
+      position: relative;
+      z-index: 30;
+    }
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-search-row {
+      position: relative;
+      z-index: 30;
     }
     #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-title {
       position: absolute;
@@ -3669,25 +3741,68 @@
       max-height: 30vh;
       border-radius: 12px;
       overflow: hidden;
+      isolation: isolate;
       z-index: 45;
       background: #000;
-      box-shadow: 0 6px 28px rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(0, 0, 0, 0.15);
+      border: none;
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.42),
+        0 2px 10px rgba(0, 0, 0, 0.28);
       pointer-events: none;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      opacity: 1;
+      transition: opacity 0.12s ease;
     }
-    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip video {
+    /* No transform scale here — scaling the PiP made the stream appear to pulse inside the frame */
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage.is-open .live-shop-pip.live-shop-pip--pressed {
+      opacity: 0.9;
+    }
+    /* Clip + stack only */
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip__inner {
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    /* Tap-to-dismiss PiP (same close path as header X) */
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage.is-open .live-shop-pip {
+      pointer-events: auto;
+      cursor: pointer;
+    }
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip .live-shop-pip__inner video {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center;
       display: block;
+      border-radius: 12px;
+      pointer-events: none;
+      animation: none !important;
     }
     #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-fab {
       z-index: 50;
     }
+    /* Full-page shop: listings column fills to the bottom of the sheet */
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-body {
+      flex: 1 1 0%;
+      min-height: 0;
+      position: relative;
+      z-index: 1;
+    }
     #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-list {
-      padding-bottom: calc(168px + env(safe-area-inset-bottom, 0px));
+      flex: 1 1 0%;
+      min-height: 0;
+      padding-bottom: 0;
+      background: #fff;
+    }
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-panel:not([hidden]) {
+      flex: 1 1 0%;
+      min-height: 0;
+      align-self: stretch;
+      padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
     }
   </style>
 </head>
@@ -4476,7 +4591,7 @@
             <div class="live-shop-sheet" id="live-shop-sheet" role="dialog" aria-modal="true" aria-labelledby="live-shop-title" tabindex="-1">
               <header class="live-shop-nav">
                 <h1 class="live-shop-title" id="live-shop-title">Live Listings</h1>
-                <button type="button" class="live-shop-close" id="live-shop-close" aria-label="Close" onclick="closeShop()">
+                <button type="button" class="live-shop-close" id="live-shop-close" aria-label="Close">
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                   </svg>
@@ -4993,7 +5108,11 @@
               <button type="button" class="live-shop-fab" aria-label="Add listing">
                 <img alt="" src="assets/icons/plus-fab.svg" width="24" height="24" />
               </button>
-              <div class="live-shop-pip" id="live-shop-pip" aria-hidden="true"></div>
+              <!-- Dims sheet under PiP/FAB; fades out as shop opens (stack: shop → dimmer → live/PiP) -->
+              <div class="live-show-stack-dimmer" id="live-show-stack-dimmer" aria-hidden="true"></div>
+              <div class="live-shop-pip" id="live-shop-pip" aria-hidden="true">
+                <div class="live-shop-pip__inner"></div>
+              </div>
             </div>
           </div>
 
@@ -5359,6 +5478,12 @@
       var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var FLIGHT_MS = 380;
       var SHEET_MS = 380;
+      /* PiP stream flight: emphasized ease; open duration matches sheet so motion feels one continuous shrink */
+      var PIP_FLIGHT_EASE = 'cubic-bezier(0.6, 0, 0, 1)';
+      var PIP_FLIGHT_FROM_PIP_MS = 400;
+      /* Stream corner radii — keep CSS #phoneWrapper .live-show__media #live-show-stream in sync */
+      var STREAM_RADIUS_LIVE_PX = 20;
+      var STREAM_RADIUS_PIP_PX = 12;
 
       function syncShopStatusInset() {
         if (!shopRoot) return;
@@ -5385,6 +5510,42 @@
         }
       }
 
+      /* Viewport rects → .device-frame local px (phone uses .phone-frame scale; fixed viewport coords jump otherwise) */
+      function rectViewportToDeviceFrameLocal(rv) {
+        if (!deviceFrame || !rv) return null;
+        var fr = deviceFrame.getBoundingClientRect();
+        var cw = Math.max(1, deviceFrame.clientWidth);
+        var ch = Math.max(1, deviceFrame.clientHeight);
+        var scaleX = fr.width / cw;
+        var scaleY = fr.height / ch;
+        return {
+          left: (rv.left - fr.left) / scaleX,
+          top: (rv.top - fr.top) / scaleY,
+          width: rv.width / scaleX,
+          height: rv.height / scaleY
+        };
+      }
+
+      /* Final PiP slot in device-frame space (offset chain ignores ancestor translate on the sheet) */
+      function pipFinalRectInDeviceFrameLocal() {
+        if (!pipMount || !deviceFrame) return null;
+        var left = 0;
+        var top = 0;
+        var el = pipMount;
+        while (el && el !== deviceFrame) {
+          left += el.offsetLeft;
+          top += el.offsetTop;
+          el = el.offsetParent;
+        }
+        if (el !== deviceFrame) return null;
+        return {
+          left: left,
+          top: top,
+          width: pipMount.offsetWidth,
+          height: pipMount.offsetHeight
+        };
+      }
+
       function restoreVideoToMedia() {
         if (!streamVideo || !liveShowMedia) return;
         clearFlightStyles(streamVideo);
@@ -5393,31 +5554,54 @@
         liveShowMedia.classList.remove('live-show__media--pip');
       }
 
+      function ensurePipInner() {
+        if (!pipMount) return null;
+        var inner = pipMount.querySelector('.live-shop-pip__inner');
+        if (!inner) {
+          inner = document.createElement('div');
+          inner.className = 'live-shop-pip__inner';
+          pipMount.appendChild(inner);
+        }
+        return inner;
+      }
+
       function pinVideoInPip() {
         if (!streamVideo || !pipMount) return;
         clearFlightStyles(streamVideo);
-        pipMount.appendChild(streamVideo);
+        ensurePipInner().appendChild(streamVideo);
       }
 
-      function liftVideoToFlightFromRects(start, cornerRadius) {
-        if (!streamVideo || !deviceFrame || !start) return;
+      function isVideoDockedInPip() {
+        var inner = pipMount && pipMount.querySelector('.live-shop-pip__inner');
+        return !!(inner && streamVideo && streamVideo.parentNode === inner);
+      }
+
+      function liftVideoToFlightFromRects(startViewport, cornerRadius) {
+        if (!streamVideo || !deviceFrame || !startViewport) return;
         moveVideoBeforeHomeIndicator();
+        var start = rectViewportToDeviceFrameLocal(startViewport);
+        if (!start) return;
         streamVideo.classList.add('live-show-stream--flight');
-        streamVideo.style.position = 'fixed';
+        streamVideo.style.position = 'absolute';
         streamVideo.style.left = start.left + 'px';
         streamVideo.style.top = start.top + 'px';
         streamVideo.style.width = start.width + 'px';
         streamVideo.style.height = start.height + 'px';
+        streamVideo.style.right = 'auto';
+        streamVideo.style.bottom = 'auto';
+        streamVideo.style.margin = '0';
         streamVideo.style.zIndex = '750';
         streamVideo.style.objectFit = 'cover';
-        streamVideo.style.margin = '0';
         streamVideo.style.pointerEvents = 'none';
         streamVideo.style.transition = 'none';
-        streamVideo.style.borderRadius = cornerRadius != null ? String(cornerRadius) + 'px' : '0';
+        streamVideo.style.transform = 'none';
+        streamVideo.style.borderRadius =
+          cornerRadius != null ? String(cornerRadius) + 'px' : String(STREAM_RADIUS_LIVE_PX) + 'px';
       }
 
-      function animateVideoToRect(end, onDone) {
-        if (!streamVideo || !end) {
+      /* end = viewport rect from getBoundingClientRect (e.g. live media) */
+      function animateVideoToRect(endViewport, onDone, durationMs, easeCss) {
+        if (!streamVideo || !endViewport) {
           if (onDone) onDone();
           return;
         }
@@ -5425,19 +5609,40 @@
           if (onDone) onDone();
           return;
         }
+        var end = rectViewportToDeviceFrameLocal(endViewport);
+        if (!end) {
+          if (onDone) onDone();
+          return;
+        }
+        animateVideoToDeviceFrameLocalRect(end, onDone, durationMs, easeCss);
+      }
+
+      /* end = rect already in .device-frame content coordinates */
+      function animateVideoToDeviceFrameLocalRect(endLocal, onDone, durationMs, easeCss) {
+        if (!streamVideo || !endLocal) {
+          if (onDone) onDone();
+          return;
+        }
+        if (reduceMotion) {
+          if (onDone) onDone();
+          return;
+        }
+        var dur = durationMs != null ? durationMs : FLIGHT_MS;
+        var ease = easeCss != null ? easeCss : 'cubic-bezier(0.32, 0.72, 0, 1)';
         streamVideo.getBoundingClientRect();
         requestAnimationFrame(function () {
           streamVideo.style.transition =
-            'left ' + FLIGHT_MS + 'ms cubic-bezier(0.32, 0.72, 0, 1), ' +
-            'top ' + FLIGHT_MS + 'ms cubic-bezier(0.32, 0.72, 0, 1), ' +
-            'width ' + FLIGHT_MS + 'ms cubic-bezier(0.32, 0.72, 0, 1), ' +
-            'height ' + FLIGHT_MS + 'ms cubic-bezier(0.32, 0.72, 0, 1), ' +
-            'border-radius ' + FLIGHT_MS + 'ms cubic-bezier(0.32, 0.72, 0, 1)';
-          streamVideo.style.left = end.left + 'px';
-          streamVideo.style.top = end.top + 'px';
-          streamVideo.style.width = end.width + 'px';
-          streamVideo.style.height = end.height + 'px';
-          streamVideo.style.borderRadius = end.width < 120 ? '12px' : '0';
+            'left ' + dur + 'ms ' + ease + ', ' +
+            'top ' + dur + 'ms ' + ease + ', ' +
+            'width ' + dur + 'ms ' + ease + ', ' +
+            'height ' + dur + 'ms ' + ease + ', ' +
+            'border-radius ' + dur + 'ms ' + ease;
+          streamVideo.style.left = endLocal.left + 'px';
+          streamVideo.style.top = endLocal.top + 'px';
+          streamVideo.style.width = endLocal.width + 'px';
+          streamVideo.style.height = endLocal.height + 'px';
+          streamVideo.style.borderRadius =
+            (endLocal.width < 120 ? STREAM_RADIUS_PIP_PX : STREAM_RADIUS_LIVE_PX) + 'px';
         });
         var doneOnce = false;
         function fireDone() {
@@ -5452,7 +5657,7 @@
           fireDone();
         }
         streamVideo.addEventListener('transitionend', onEnd);
-        window.setTimeout(fireDone, FLIGHT_MS + 90);
+        window.setTimeout(fireDone, dur + 90);
       }
 
       function setSheetWillChange(on) {
@@ -5502,31 +5707,31 @@
           pinVideoInPip();
         } else {
           var startRect = streamVideo.getBoundingClientRect();
-          liftVideoToFlightFromRects(startRect, 0);
+          var endLocalPip = pipFinalRectInDeviceFrameLocal();
+          liftVideoToFlightFromRects(startRect, STREAM_RADIUS_LIVE_PX);
           shopRoot.classList.add('is-open');
           shopRoot.setAttribute('aria-hidden', 'false');
           liveShowMedia.classList.add('live-show__media--pip');
-          var pipScheduled = false;
-          function onSheetOpen(e) {
-            if (e.target !== shopSheet || e.propertyName !== 'transform') return;
-            if (pipScheduled) return;
-            pipScheduled = true;
-            shopSheet.removeEventListener('transitionend', onSheetOpen);
-            var endRect = pipMount.getBoundingClientRect();
-            animateVideoToRect(endRect, function () {
-              pinVideoInPip();
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              var target = endLocalPip || pipFinalRectInDeviceFrameLocal();
+              if (!target) {
+                target = rectViewportToDeviceFrameLocal(pipMount.getBoundingClientRect());
+              }
+              if (!target) {
+                pinVideoInPip();
+                return;
+              }
+              animateVideoToDeviceFrameLocalRect(
+                target,
+                function () {
+                  pinVideoInPip();
+                },
+                SHEET_MS,
+                PIP_FLIGHT_EASE
+              );
             });
-          }
-          shopSheet.addEventListener('transitionend', onSheetOpen);
-          window.setTimeout(function () {
-            if (pipScheduled) return;
-            pipScheduled = true;
-            shopSheet.removeEventListener('transitionend', onSheetOpen);
-            var endRect = pipMount.getBoundingClientRect();
-            animateVideoToRect(endRect, function () {
-              pinVideoInPip();
-            });
-          }, SHEET_MS + 80);
+          });
         }
 
         requestAnimationFrame(function () {
@@ -5542,7 +5747,7 @@
 
       function closeShopLocal() {
         if (!shopRoot) return;
-        if (shopSheet) setSheetWillChange(true);
+        if (pipMount) pipMount.classList.remove('live-shop-pip--pressed');
 
         function restoreFocus() {
           if (lastShopFocus && typeof lastShopFocus.focus === 'function') {
@@ -5554,31 +5759,44 @@
           }
         }
 
-        if (!streamVideo || !liveShowMedia || !deviceFrame) {
+        /* Sheet/backdrop: instant dismiss (no slide). Stream: PiP→live flight first, then dismiss. */
+        function instantDismissSheetAndVideo() {
+          shopRoot.classList.add('live-shop-root--instant-close');
+          void shopRoot.offsetWidth;
           shopRoot.classList.remove('is-open');
           shopRoot.setAttribute('aria-hidden', 'true');
           restoreVideoToMedia();
           restoreFocus();
+          if (shopSheet) setSheetWillChange(false);
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              shopRoot.classList.remove('live-shop-root--instant-close');
+            });
+          });
+        }
+
+        if (!streamVideo || !liveShowMedia || !deviceFrame) {
+          instantDismissSheetAndVideo();
           return;
         }
 
-        if (reduceMotion || streamVideo.parentNode !== pipMount) {
-          shopRoot.classList.remove('is-open');
-          shopRoot.setAttribute('aria-hidden', 'true');
-          restoreVideoToMedia();
-          restoreFocus();
+        if (reduceMotion || !isVideoDockedInPip()) {
+          instantDismissSheetAndVideo();
           return;
         }
 
         var startRect = streamVideo.getBoundingClientRect();
         var endRect = liveShowMedia.getBoundingClientRect();
         liftVideoToFlightFromRects(startRect, 12);
-        shopRoot.classList.remove('is-open');
-        animateVideoToRect(endRect, function () {
-          restoreVideoToMedia();
-          shopRoot.setAttribute('aria-hidden', 'true');
-          restoreFocus();
-        });
+        if (shopSheet) setSheetWillChange(true);
+        animateVideoToRect(
+          endRect,
+          function () {
+            instantDismissSheetAndVideo();
+          },
+          PIP_FLIGHT_FROM_PIP_MS,
+          PIP_FLIGHT_EASE
+        );
       }
 
       window.openShop = function (e) {
@@ -5597,7 +5815,53 @@
         });
       }
       if (shopBackdrop) shopBackdrop.addEventListener('click', closeShopLocal);
+      /* Close icon: same entry point as PiP tap (direct closeShopLocal — no separate onclick / extra handlers) */
       if (shopClose) shopClose.addEventListener('click', closeShopLocal);
+
+      /* PiP tap-to-dismiss: same close path as header X (pointer + capture for reliable gesture end) */
+      if (pipMount) {
+        var pipPressPointerId = null;
+        pipMount.addEventListener('pointerdown', function (e) {
+          if (!shopRoot || !shopRoot.classList.contains('is-open')) return;
+          if (e.pointerType === 'mouse' && e.button !== 0) return;
+          pipPressPointerId = e.pointerId;
+          pipMount.classList.add('live-shop-pip--pressed');
+          try {
+            pipMount.setPointerCapture(e.pointerId);
+          } catch (err) {}
+        });
+        pipMount.addEventListener('pointerup', function (e) {
+          if (e.pointerId !== pipPressPointerId) return;
+          pipPressPointerId = null;
+          pipMount.classList.remove('live-shop-pip--pressed');
+          try {
+            pipMount.releasePointerCapture(e.pointerId);
+          } catch (err2) {}
+          if (!shopRoot || !shopRoot.classList.contains('is-open')) return;
+          if (e.pointerType === 'mouse' && e.button !== 0) return;
+          var r = pipMount.getBoundingClientRect();
+          var cx = e.clientX;
+          var cy = e.clientY;
+          if (cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom) {
+            closeShopLocal();
+          }
+        });
+        pipMount.addEventListener('pointercancel', function (e) {
+          if (e.pointerId !== pipPressPointerId) return;
+          pipPressPointerId = null;
+          pipMount.classList.remove('live-shop-pip--pressed');
+        });
+        pipMount.addEventListener(
+          'click',
+          function (e) {
+            if (shopRoot && shopRoot.classList.contains('is-open')) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          },
+          true
+        );
+      }
 
       document.addEventListener(
         'click',
