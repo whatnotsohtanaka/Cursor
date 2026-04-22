@@ -253,21 +253,23 @@
     .proto-body {
       flex: 1;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: center;
       width: 100%;
+      min-height: 0;
+      position: relative;
     }
 
     .proto-device-column {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       gap: 0;
       flex: 1;
       width: 100%;
       min-height: 0;
-      padding: 8px 16px 24px;
+      padding: 16px 16px 24px;
       box-sizing: border-box;
     }
 
@@ -276,25 +278,22 @@
     }
 
     .proto-device-stage {
-      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 0;
       flex-shrink: 0;
       align-self: center;
     }
 
-    .proto-device-stage > #phoneWrapper {
-      position: relative;
-      z-index: 1;
-    }
-
+    /* Panel is out of document flow: phone centers as if the panel were not there */
     #controlPanel {
-      position: relative;
-      flex-shrink: 0;
-      align-self: center;
-      z-index: 4;
+      position: absolute;
+      left: 50%;
+      top: 8px;
+      transform: translateX(-50%);
+      z-index: 50;
+      pointer-events: auto;
     }
 
     #controlPanelBody {
@@ -2317,7 +2316,7 @@
   <div class="proto-header-left">
     <div class="proto-breadcrumb">
       <svg class="proto-logo" width="20" height="20" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M80 40C80 70.9265 70.9265 80 40 80C9.07348 80 0 70.9265 0 40C0 9.07347 9.07348 0 40 0C70.9265 0 80 9.07347 80 40Z" fill="#2D2D2D"/><path transform="translate(12.12,22.94)" d="M18.7312 34.1275C21.6005 34.1275 23.703 31.9154 24.1473 29.3869C24.4668 27.6799 24.2751 24.838 23.5722 22.0569C23.2527 20.6664 24.3359 20.0335 25.3552 21.5518L27.4578 24.7741C32.8739 32.8647 35.1712 34.1275 37.2737 34.1275C39.3762 34.1275 41.7344 33.242 47.9811 24.269L49.5755 21.993C55.1194 14.094 55.7584 10.8687 55.7584 8.97307C55.7584 3.91602 51.9337 0 46.8371 0C43.0123 0 40.8459 2.08428 38.9989 5.81469L38.2991 7.20523C37.724 8.34322 36.8964 8.34322 36.2605 7.20523L35.4967 5.75079C33.522 1.95952 31.4803 0 27.8503 0C24.2203 0 22.1786 1.83173 20.3286 5.62604L19.5649 7.20523C18.9898 8.40712 18.0344 8.46797 17.4623 7.20523L16.7625 5.68993C14.9156 1.64611 12.7461 0.00302715 8.86049 0.00302715C3.88863 0.00302715 0 3.79431 0 8.97612C0 10.8717 0.447281 14.0332 5.86338 21.8682L7.39389 24.0803C14.021 33.6224 16.443 34.1275 18.7373 34.1275H18.7312Z" fill="#FFE414"/></svg>
-      <a href="https://sturdy-parakeet-o3wwv73.pages.github.io/">Index</a>
+      <a href="https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/prototype-index/index.html">Index</a>
       <span class="sep">›</span>
       <span>st</span>
       <span class="sep">›</span>
@@ -2360,10 +2359,7 @@
 </div>
 
 <div class="proto-body">
-<div id="protoDeviceColumn" class="proto-device-column">
-<div id="protoDeviceStage" class="proto-device-stage">
-
-<!-- ═══ Control panel (top of canvas, above phone) ═══ -->
+<!-- ═══ Control panel (floats over canvas; does not affect phone layout) ═══ -->
 <div id="controlPanel" style="width:fit-content;min-width:220px;max-width:min(360px, calc(100vw - 32px));background:linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 40%), rgba(30,30,30,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:14px;border:1px solid rgba(255,255,255,0.08);border-top:1px solid rgba(255,255,255,0.14);box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);font-family:var(--font);user-select:none;overflow:visible">
   <div id="controlPanelBody" style="padding:10px 14px 10px;display:flex;flex-direction:column;gap:10px">
     <div class="scene-switcher">
@@ -2429,6 +2425,8 @@
   </div>
 </div>
 
+<div id="protoDeviceColumn" class="proto-device-column">
+<div id="protoDeviceStage" class="proto-device-stage">
 <div id="phoneWrapper" style="display:flex;flex-direction:column;align-items:center">
 <div class="phone-frame">
   <div class="phone-bezel"></div>
