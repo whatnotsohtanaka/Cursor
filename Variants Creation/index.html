@@ -7842,6 +7842,15 @@
             <div class="vm-sheet-footer-actions">
               <button
                 type="button"
+                class="vm-footer-pill-destructive"
+                id="modernComicsOverflowDetailDiscard"
+                style="display: none; flex: 1; min-width: 0"
+                onclick="vmPromptDiscardMcPresetSlot()"
+              >
+                Discard
+              </button>
+              <button
+                type="button"
                 class="vm-footer-pill-primary"
                 id="modernComicsOverflowDetailSave"
                 style="flex: 1; min-width: 0"
@@ -8002,6 +8011,7 @@
       <div class="vm-sheet-body vm-condition-list" id="vmMcPresetList"></div>
       <div class="vm-sheet-footer vm-sheet-footer-with-keyboard">
         <div class="vm-sheet-footer-actions" id="vmMcPresetFooterRow">
+          <button type="button" class="vm-footer-pill-destructive" id="vmMcPresetDiscardBtn" style="display: none; flex: 1; min-width: 0" onclick="vmPromptDiscardMcPresetSlot()">Discard</button>
           <button type="button" class="vm-footer-pill-primary" id="vmMcPresetDoneBtn" style="flex: 1; min-width: 0" onclick="applyVmModernComicsPresetFromSheet()" disabled>Save</button>
         </div>
       </div>
@@ -14484,7 +14494,7 @@ function vmSyncColorsSheetFooter() {
   if (discard) discard.style.display = startedWith ? '' : 'none';
 }
 
-/** 'colors' | 'custom' — which whole-set delete vmDiscardOptionsConfirm should run */
+/** 'colors' | 'custom' | 'sizes' | 'conditions' | 'mc_preset' — which whole-set delete vmDiscardOptionsConfirm should run */
 let vmDiscardOptionsKind = null;
 
 function vmOpenDiscardOptionsDialog(title, message, kind) {
@@ -14545,6 +14555,7 @@ function vmDiscardOptionsConfirm() {
   else if (kind === 'custom') vmDeleteEntireCustomOption();
   else if (kind === 'sizes') vmDiscardAllSizes();
   else if (kind === 'conditions') vmDiscardAllConditions();
+  else if (kind === 'mc_preset') vmMcConfirmDiscardMcPresetSlot();
 }
 
 function vmDiscardOptionsCancel() {
@@ -20870,6 +20881,32 @@ function vmMcClonePendingToSlotPayload() {
   };
 }
 
+function vmMcPresetPayloadIsEmpty(slotLike) {
+  if (!slotLike) return true;
+  if ((slotLike.sizes || []).length) return false;
+  if ((slotLike.colors || []).length) return false;
+  if ((slotLike.conditionSelections || []).length) return false;
+  const cr = slotLike.customRows || [];
+  for (let i = 0; i < cr.length; i++) {
+    if ((cr[i].values || []).length) return false;
+  }
+  return true;
+}
+
+function vmMcUpdateProductTitleForMcSlots(slots) {
+  const ti = document.getElementById('productTitleInput');
+  if (!ti) return;
+  const arr = slots || variantMgr.modernComicsPresetSlots || [];
+  const s0 = arr[0];
+  const d0 = s0 && MODERN_COMICS_PRESET_DEFS.find((d) => d.id === s0.presetId);
+  if (d0) {
+    const t0 = d0.build().title;
+    if (t0) ti.value = arr.length > 1 ? `${t0} (+${arr.length - 1})` : t0;
+  } else if (!arr.length) {
+    ti.value = '';
+  }
+}
+
 /** After stress apply: one slot mirrors the applied variant axes. */
 function vmMcSyncSlotsSingleFromCurrentPreset(pid) {
   variantMgr.modernComicsPresetSlots = [
@@ -21068,18 +21105,16 @@ function vmMcInitPendingForPresetSheet(def, catalog) {
 }
 
 function vmMcPresetSheetIsValid() {
-  if (!vmMcPresetCatalog || !vmMcPresetPending) return false;
-  const c = vmMcPresetCatalog;
-  const p = vmMcPresetPending;
-  if (c.sizes.length && p.sizes.length === 0) return false;
-  if (c.colors.length && p.colors.length === 0) return false;
-  if (c.conditionSelections.length && p.conditionSelections.length === 0) return false;
-  for (let i = 0; i < c.customRows.length; i++) {
-    if (c.customRows[i].values.length && (!p.customRows[i] || p.customRows[i].values.length === 0)) {
-      return false;
-    }
-  }
-  return vmSkuCountFromAxes(p.sizes, p.colors, p.conditionSelections, p.customRows) > 0;
+  return !!(vmMcPresetCatalog && vmMcPresetPending);
+}
+
+function vmMcSyncMcPresetDiscardButtons() {
+  const had = vmMcPresetSheetDef && vmMcFindPresetSlotForId(vmMcPresetSheetDef.id);
+  const show = !!had;
+  ['vmMcPresetDiscardBtn', 'modernComicsOverflowDetailDiscard'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = show ? '' : 'none';
+  });
 }
 
 function vmMcSyncPresetSheetDoneBtn() {
@@ -21088,6 +21123,46 @@ function vmMcSyncPresetSheetDoneBtn() {
   const btnOv = document.getElementById('modernComicsOverflowDetailSave');
   if (btn) btn.disabled = !ok;
   if (btnOv) btnOv.disabled = !ok;
+  vmMcSyncMcPresetDiscardButtons();
+}
+
+function vmPromptDiscardMcPresetSlot() {
+  if (!vmMcPresetSheetDef) return;
+  const lab = vmMcPresetSheetDef.label || 'This preset';
+  vmOpenDiscardOptionsDialog(
+    'Discard this preset option?',
+    String(lab) + ' will be removed from your variant options. You can add it again later.',
+    'mc_preset'
+  );
+}
+
+function vmMcConfirmDiscardMcPresetSlot() {
+  if (!vmMcPresetSheetDef) return;
+  const defId = vmMcPresetSheetDef.id;
+  const slots = variantMgr.modernComicsPresetSlots || [];
+  const ix = slots.findIndex((s) => s.presetId === defId);
+  if (ix < 0) return;
+  slots.splice(ix, 1);
+  vmMcRecomputeVariantMgrFromSlots();
+  vmMcUpdateProductTitleForMcSlots(slots);
+  priceResolveVmGroupBy();
+  ensureVmQtyDefaults();
+  const src = vmMcPresetEditSource;
+  closeVmModernComicsPresetSheet();
+  if (src === 'overflow') {
+    const sh = document.getElementById('modernComicsOverflowSheet');
+    if (sh) sh.classList.remove('open');
+    vmMcOverflowResetLayoutHard();
+  }
+  refreshVariantsManagerUI();
+  refreshProductVariantsSummary();
+  syncProductFormFieldsFromSavedVariants();
+  vmSyncWdsWrapForFieldId('productTitleInput');
+  rebuildVmMorePopoverCustomSection();
+  syncVmMorePopoverCustomLabel();
+  vmSyncProductCategoryWrap();
+  applyProductListingSizeModeFromCategory(MODERN_COMICS_BASE.category);
+  showToastMessage('Preset removed');
 }
 
 function vmMcTogglePoolValue(arr, val, on) {
@@ -21193,7 +21268,45 @@ function applyVmModernComicsPresetFromSheet() {
   const defId = vmMcPresetSheetDef.id;
   const payload = vmMcClonePendingToSlotPayload();
   if (!payload) return;
+  const empty = vmMcPresetPayloadIsEmpty(payload);
   const ix = slots.findIndex((s) => s.presetId === defId);
+
+  if (empty) {
+    if (ix >= 0) {
+      slots.splice(ix, 1);
+      vmMcRecomputeVariantMgrFromSlots();
+      vmMcUpdateProductTitleForMcSlots(slots);
+      priceResolveVmGroupBy();
+      ensureVmQtyDefaults();
+      const src = vmMcPresetEditSource;
+      closeVmModernComicsPresetSheet();
+      if (src === 'overflow') {
+        const sh = document.getElementById('modernComicsOverflowSheet');
+        if (sh) sh.classList.remove('open');
+        vmMcOverflowResetLayoutHard();
+      }
+      refreshVariantsManagerUI();
+      refreshProductVariantsSummary();
+      syncProductFormFieldsFromSavedVariants();
+      vmSyncWdsWrapForFieldId('productTitleInput');
+      rebuildVmMorePopoverCustomSection();
+      syncVmMorePopoverCustomLabel();
+      vmSyncProductCategoryWrap();
+      applyProductListingSizeModeFromCategory(MODERN_COMICS_BASE.category);
+      showToastMessage('Preset removed');
+    } else {
+      const src = vmMcPresetEditSource;
+      closeVmModernComicsPresetSheet();
+      if (src === 'overflow') {
+        const sh = document.getElementById('modernComicsOverflowSheet');
+        if (sh) sh.classList.remove('open');
+        vmMcOverflowResetLayoutHard();
+      }
+      showToastMessage('Nothing saved');
+    }
+    return;
+  }
+
   if (ix >= 0) {
     slots[ix] = payload;
   } else if (slots.length < 3) {
@@ -21203,12 +21316,7 @@ function applyVmModernComicsPresetFromSheet() {
     return;
   }
   vmMcRecomputeVariantMgrFromSlots();
-  const ti = document.getElementById('productTitleInput');
-  const d0 = MODERN_COMICS_PRESET_DEFS.find((d) => d.id === slots[0].presetId);
-  if (ti && d0) {
-    const t0 = d0.build().title;
-    if (t0) ti.value = slots.length > 1 ? `${t0} (+${slots.length - 1})` : t0;
-  }
+  vmMcUpdateProductTitleForMcSlots(slots);
   priceResolveVmGroupBy();
   ensureVmQtyDefaults();
   if (vmMcPresetEditSource === 'overflow') {
