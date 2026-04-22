@@ -5703,7 +5703,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-product-creation/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/22/26 @ 3:18pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/22/26 @ 3:28pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -7580,11 +7580,17 @@
     function getSharePageUrl() {
       try {
         var loc = window.location;
-        if (loc.protocol === 'file:' || loc.hostname === 'localhost' || loc.hostname === '127.0.0.1') {
-          return loc.href;
-        }
+        var host = (loc.hostname || '').toLowerCase();
+        var proto = loc.protocol || '';
+        var isLocalDev =
+          proto === 'file:' ||
+          host === 'localhost' ||
+          host === '127.0.0.1' ||
+          host === '0.0.0.0' ||
+          host.endsWith('.local');
+        /* file:// and local servers cannot be shared — use the GitHub Pages URL (LIVE_URL). */
+        if (isLocalDev && window.LIVE_URL) return LIVE_URL;
       } catch (e) {}
-      if (window.LIVE_URL) return LIVE_URL;
       return window.location.href;
     }
     function copyShareLink() {
