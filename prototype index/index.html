@@ -29,18 +29,78 @@
     .top {
       background: var(--header);
       color: rgba(255,255,255,0.92);
-      padding: 18px 24px 20px;
+      /* Vertical only — horizontal inset lives on .top-inner so it matches .wrap + .card */
+      padding: 18px 0 20px;
       border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .top-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      width: 100%;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
     }
     .top h1 {
       font-size: 20px;
       font-weight: 600;
       letter-spacing: -0.3px;
     }
+    .settings-header-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+    .settings-header-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.92);
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .settings-header-btn:hover {
+      background: rgba(255,255,255,0.16);
+    }
+    .settings-header-btn:focus-visible {
+      outline: 2px solid rgba(255,255,255,0.6);
+      outline-offset: 2px;
+    }
+    .settings-header-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+    .settings-header-badge {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 2px var(--header);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .settings-header-badge.is-on {
+      opacity: 1;
+    }
     .wrap {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 24px 20px 48px;
+      /* Same horizontal inset as .top-inner (24px) so title + settings align with card edges */
+      padding: 24px 24px 48px;
+      width: 100%;
+      box-sizing: border-box;
     }
     .card {
       background: var(--surface);
@@ -60,7 +120,7 @@
     }
     thead th {
       text-align: left;
-      padding: 12px 16px;
+      padding: 16px 16px;
       font-size: 12px;
       font-weight: 600;
       text-transform: uppercase;
@@ -94,7 +154,7 @@
       opacity: 0.9;
     }
     tbody td {
-      padding: 14px 16px;
+      padding: 18px 16px;
       border-bottom: 1px solid var(--border);
       vertical-align: middle;
     }
@@ -104,10 +164,8 @@
     tbody tr:hover td {
       background: #fcfcfc;
     }
-    .date-cell {
-      font-variant-numeric: tabular-nums;
-      color: var(--muted);
-      white-space: nowrap;
+    tbody tr:focus-within td {
+      background: #fcfcfc;
     }
     .team-cell {
       white-space: nowrap;
@@ -134,46 +192,208 @@
       color: #b0b0b0;
       font-size: 13px;
     }
-    td.note-cell {
-      vertical-align: top;
-      min-width: 200px;
-      max-width: 320px;
-      padding-top: 10px;
-      padding-bottom: 10px;
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+      opacity: 1;
+      transition: opacity 0.2s ease;
     }
-    .row-note {
-      display: block;
+    .modal-backdrop[hidden] {
+      display: none;
+    }
+    .modal {
       width: 100%;
-      min-height: 44px;
-      margin: 0;
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid transparent;
-      font: inherit;
-      font-size: 13px;
-      line-height: 1.4;
-      color: var(--text);
-      background: rgba(0,0,0,0.02);
-      resize: vertical;
-      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
-    }
-    .row-note::placeholder {
-      color: #b0b0b0;
-    }
-    .row-note:hover {
-      background: rgba(0,0,0,0.04);
-    }
-    .row-note:focus {
-      outline: none;
-      border-color: #c4c4c4;
+      max-width: 420px;
       background: var(--surface);
-      box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+      border-radius: var(--radius);
+      box-shadow: 0 12px 48px rgba(0,0,0,0.18);
+      border: 1px solid var(--border);
+      padding: 20px 22px 18px;
+    }
+    .modal.modal-wide {
+      max-width: 480px;
+    }
+    .modal-lede {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
+      margin-top: 4px;
+    }
+    .settings-list {
+      margin: 14px 0 4px;
+      max-height: min(52vh, 380px);
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fafafa;
+    }
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .settings-row:last-child {
+      border-bottom: none;
+    }
+    .settings-row:hover {
+      background: rgba(0,0,0,0.03);
+    }
+    .settings-row-name {
+      font-weight: 500;
+      color: var(--link);
+      text-decoration: none;
+      min-width: 0;
+      flex: 1;
+      text-align: left;
+    }
+    .settings-row-name:hover {
+      text-decoration: underline;
+    }
+    .settings-row-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+    .settings-show-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+    }
+    .settings-show-label input {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .settings-edit-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .settings-edit-btn:hover {
+      background: rgba(0,0,0,0.06);
+      color: var(--text);
+    }
+    .settings-edit-btn:focus-visible {
+      outline: 2px solid var(--link);
+      outline-offset: 2px;
+    }
+    .settings-edit-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+    .empty-table-msg {
+      text-align: center;
+      padding: 36px 20px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .modal h2 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      letter-spacing: -0.2px;
+    }
+    .field {
+      margin-bottom: 14px;
+    }
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .field input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background: #fafafa;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .field input:focus {
+      outline: none;
+      border-color: #a8a8a8;
+      background: var(--surface);
+    }
+    .field-hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+      padding-top: 4px;
+    }
+    .btn {
+      padding: 9px 16px;
+      border-radius: 8px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn-secondary {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover {
+      background: #f5f5f5;
+    }
+    .btn-primary {
+      background: var(--header);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #333;
     }
   </style>
 </head>
 <body>
   <header class="top">
-    <h1>Soh's Prototypes</h1>
+    <div class="top-inner">
+      <h1>Soh's Prototypes</h1>
+      <div class="settings-header-wrap">
+        <span id="settings-badge" class="settings-header-badge" aria-hidden="true"></span>
+        <button type="button" class="settings-header-btn" id="settings-open" aria-label="Settings" title="Settings"></button>
+      </div>
+    </div>
   </header>
 
   <div class="wrap">
@@ -183,22 +403,13 @@
           <tr>
             <th
               scope="col"
-              id="th-updated"
+              id="th-name"
               class="sortable sort-active"
               tabindex="0"
-              data-sort-key="updated"
-              aria-sort="descending"
-              title="Sort by date — click to toggle newest ↔ oldest"
-            >Date updated<span class="sort-glyph" aria-hidden="true">↓</span></th>
-            <th
-              scope="col"
-              id="th-name"
-              class="sortable"
-              tabindex="0"
               data-sort-key="title"
-              aria-sort="none"
+              aria-sort="ascending"
               title="Sort by name — click to toggle A–Z ↔ Z–A"
-            >Name<span class="sort-glyph" aria-hidden="true"></span></th>
+            >Name<span class="sort-glyph" aria-hidden="true">↑</span></th>
             <th
               scope="col"
               id="th-team"
@@ -210,7 +421,6 @@
             >Team<span class="sort-glyph" aria-hidden="true"></span></th>
             <th scope="col">PRD</th>
             <th scope="col">Figma</th>
-            <th scope="col">Notes</th>
           </tr>
         </thead>
         <tbody id="rows"></tbody>
@@ -218,10 +428,80 @@
     </div>
   </div>
 
+  <div id="settings-backdrop" class="modal-backdrop" hidden>
+    <div
+      class="modal modal-wide"
+      id="settings-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="settings-dialog-title"
+    >
+      <h2 id="settings-dialog-title">Settings</h2>
+      <p class="modal-lede">Show or hide prototypes in the table, or edit title, team, PRD, and Figma links. Open the prototype from the name link.</p>
+      <div id="settings-list" class="settings-list"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-primary" id="settings-done">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="edit-backdrop" class="modal-backdrop" hidden>
+    <div
+      class="modal"
+      id="edit-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="edit-dialog-title"
+    >
+      <h2 id="edit-dialog-title">Edit prototype</h2>
+      <form id="edit-form">
+        <input type="hidden" id="edit-id" />
+        <div class="field">
+          <label for="edit-title">Title</label>
+          <input type="text" id="edit-title" name="title" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label for="edit-team">Team</label>
+          <input type="text" id="edit-team" name="team" autocomplete="organization" />
+          <p class="field-hint">Leave empty to use automatic team (from name and links).</p>
+        </div>
+        <div class="field">
+          <label for="edit-prd">PRD URL</label>
+          <input type="text" id="edit-prd" name="prd" autocomplete="off" placeholder="https://…" />
+        </div>
+        <div class="field">
+          <label for="edit-figma">Figma URL</label>
+          <input type="text" id="edit-figma" name="figma" autocomplete="off" placeholder="https://…" />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="edit-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="edit-save">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <style>
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+
   <!--
     Paths in `href` go up to the repo root then into the project (this file lives in `prototype index/`).
-    `updated` is YYYY-MM-DD for sorting. Optional `team`; if omitted, name/id/href containing "variant" or "template" → "Inventory".
+    `deployFolder` is the `pages/st/<name>` segment in design-prototypes (see push-it skill); used when deploying, not by this page UI.
+    Optional `team`; if omitted, name/id/href containing "variant" or "template" → "Inventory".
     One row per project: if a folder has multiple versions (v1, v2, hub), link only the latest HTML here.
+    Per-browser overrides (title, team, PRD, Figma) live in localStorage under OVERRIDES_KEY.
+    Hidden project ids use HIDDEN_IDS_KEY (see Settings in the header).
   -->
   <script>
     const PRD_VARIANTS =
@@ -243,13 +523,15 @@
       'https://www.figma.com/design/Efq06B5ZlyOhHXIKojFhFd/Product-Creation---Management?node-id=18983-39043&m=dev';
     const FIGMA_CATEGORY_ASSETS =
       'https://www.figma.com/design/Efq06B5ZlyOhHXIKojFhFd/Product-Creation---Management?node-id=20404-98854&m=dev';
+    const FIGMA_LIVE_PRODUCT_CREATION =
+      'https://www.figma.com/design/Efq06B5ZlyOhHXIKojFhFd/Product-Creation---Management';
 
     const PROTOTYPES = [
       {
         id: 'variants-creation-mobile',
         name: 'Variants Creation — Mobile',
         href: '../Variants Creation/index.html',
-        updated: '2026-04-21',
+        deployFolder: 'variants-creation',
         prd: PRD_VARIANTS,
         figma: FIGMA_VARIANTS_MOBILE
       },
@@ -257,15 +539,23 @@
         id: 'variants-creation-desktop',
         name: 'Variants Creation — Desktop',
         href: '../Variants Creation/desktop.html',
-        updated: '2026-04-21',
+        deployFolder: 'variants-creation',
         prd: PRD_VARIANTS,
         figma: FIGMA_VARIANTS_DESKTOP
+      },
+      {
+        id: 'live-product-creation',
+        name: 'Live Product Creation',
+        href: '../Live Product Creation/index.html',
+        deployFolder: 'live-product-creation',
+        prd: '',
+        figma: FIGMA_LIVE_PRODUCT_CREATION
       },
       {
         id: 'live-run-xp',
         name: 'Live Run XP (Templates & Variants)',
         href: '../Live Run XP/index.html',
-        updated: '2026-04-21',
+        deployFolder: 'live-run-xp',
         prd: '',
         figma: FIGMA_LIVE_RUN
       },
@@ -273,7 +563,7 @@
         id: 'category-assets-guide',
         name: 'Category Assets Guide',
         href: '../Category Assets Guide/index.html',
-        updated: '2026-04-21',
+        deployFolder: 'category-assets-guide',
         prd: PRD_TEMPLATES_CATEGORY_TAB,
         figma: FIGMA_CATEGORY_ASSETS,
         team: 'Inventory'
@@ -282,7 +572,7 @@
         id: 'templates-nux',
         name: 'Templates NUX',
         href: '../Templates NUX/v3.html',
-        updated: '2026-04-21',
+        deployFolder: 'templates-nux',
         prd: PRD_TEMPLATES,
         figma: FIGMA_TEMPLATES_NUX
       },
@@ -290,7 +580,7 @@
         id: 'variants-selection-logic',
         name: 'Variants Selection Logic',
         href: '../Variants Selection Logic/v1.html',
-        updated: '2026-04-21',
+        deployFolder: 'variants-selection-logic',
         prd: 'https://docs.google.com/document/d/1Hr9BI1rszc3mk-bpH511IIkmtbrsUhWMXqyGSzJ9DbY/edit?usp=sharing',
         figma: FIGMA_SELECTION_V1
       },
@@ -298,21 +588,48 @@
         id: 'variants-management',
         name: 'Variants Management',
         href: '../Variants Management/Variants Management v3.html',
-        updated: '2026-04-21',
+        deployFolder: 'variants-management',
         prd: PRD_VARIANTS,
         figma: ''
       }
     ];
 
-    const ROW_NOTES_KEY = 'prototype-index-row-notes-v3';
+    const OVERRIDES_KEY = 'prototype-index-field-overrides-v1';
     const rowsEl = document.getElementById('rows');
-    const thUpdated = document.getElementById('th-updated');
     const thName = document.getElementById('th-name');
     const thTeam = document.getElementById('th-team');
+    const editBackdrop = document.getElementById('edit-backdrop');
+    const editForm = document.getElementById('edit-form');
+    const editId = document.getElementById('edit-id');
+    const editTitle = document.getElementById('edit-title');
+    const editTeam = document.getElementById('edit-team');
+    const editPrd = document.getElementById('edit-prd');
+    const editFigma = document.getElementById('edit-figma');
+    const editCancel = document.getElementById('edit-cancel');
+    const editModal = document.getElementById('edit-modal');
+    if (editModal) {
+      editModal.addEventListener('click', (e) => e.stopPropagation());
+    }
 
-    function getRowNotesMap() {
+    const settingsBackdrop = document.getElementById('settings-backdrop');
+    const settingsModal = document.getElementById('settings-modal');
+    const settingsList = document.getElementById('settings-list');
+    const settingsOpen = document.getElementById('settings-open');
+    const settingsDone = document.getElementById('settings-done');
+    if (settingsModal) {
+      settingsModal.addEventListener('click', (e) => e.stopPropagation());
+    }
+
+    const GEAR_ICON_SVG =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>';
+    const EDIT_ICON_SVG =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>';
+
+    if (settingsOpen) settingsOpen.innerHTML = GEAR_ICON_SVG;
+
+    function getOverridesMap() {
       try {
-        const raw = localStorage.getItem(ROW_NOTES_KEY);
+        const raw = localStorage.getItem(OVERRIDES_KEY);
         const o = raw ? JSON.parse(raw) : {};
         return typeof o === 'object' && o !== null && !Array.isArray(o) ? o : {};
       } catch {
@@ -320,59 +637,106 @@
       }
     }
 
-    function saveRowNote(id, text) {
-      const map = getRowNotesMap();
-      map[id] = text;
+    function saveOverridesMap(map) {
       try {
-        localStorage.setItem(ROW_NOTES_KEY, JSON.stringify(map));
+        localStorage.setItem(OVERRIDES_KEY, JSON.stringify(map));
       } catch {
         /* ignore quota */
       }
     }
 
-    /** @type {'updated' | 'title' | 'team'} */
-    let sortKey = 'updated';
-    /** @type {'asc' | 'desc'} */
-    let sortDir = 'desc';
-
-    function parseDate(s) {
-      const t = Date.parse(s);
-      return Number.isNaN(t) ? 0 : t;
+    /** @param {typeof PROTOTYPES[0]} p */
+    function merged(p) {
+      const o = getOverridesMap()[p.id];
+      if (!o || typeof o !== 'object') {
+        return { ...p };
+      }
+      const out = { ...p };
+      if (o.name !== undefined) out.name = String(o.name);
+      if (o.prd !== undefined) out.prd = String(o.prd);
+      if (o.figma !== undefined) out.figma = String(o.figma);
+      if (o.team !== undefined) {
+        if (o.team === '') delete out.team;
+        else out.team = String(o.team);
+      }
+      return out;
     }
 
-    function teamLabel(p) {
-      if (p.team != null && String(p.team).trim() !== '') {
-        return String(p.team).trim();
+    /** Effective team label for sorting and display (uses merged name/team/href). */
+    function teamLabel(m) {
+      if (m.team != null && String(m.team).trim() !== '') {
+        return String(m.team).trim();
       }
-      const hay = `${p.name} ${p.id} ${p.href || ''}`.toLowerCase();
+      const hay = `${m.name} ${m.id} ${m.href || ''}`.toLowerCase();
       if (hay.includes('variant') || hay.includes('template')) {
         return 'Inventory';
       }
       return '—';
     }
 
+    /** Team input value when opening editor: show computed label when no explicit team on merged. */
+    function teamInputValue(m, baseP) {
+      const o = getOverridesMap()[baseP.id];
+      if (o && o.team !== undefined) {
+        return o.team === '' ? '' : String(o.team);
+      }
+      if (baseP.team != null && String(baseP.team).trim() !== '') {
+        return String(baseP.team).trim();
+      }
+      return '';
+    }
+
+    /** @type {'title' | 'team'} */
+    let sortKey = 'title';
+    /** @type {'asc' | 'desc'} */
+    let sortDir = 'asc';
+
+    const HIDDEN_IDS_KEY = 'prototype-index-hidden-ids-v1';
+
+    function getHiddenSet() {
+      try {
+        const raw = localStorage.getItem(HIDDEN_IDS_KEY);
+        const arr = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(arr)) return new Set();
+        return new Set(arr.filter((x) => typeof x === 'string'));
+      } catch {
+        return new Set();
+      }
+    }
+
+    function saveHiddenSet(set) {
+      try {
+        localStorage.setItem(HIDDEN_IDS_KEY, JSON.stringify([...set]));
+      } catch {
+        /* ignore quota */
+      }
+    }
+
+    function visiblePrototypes() {
+      const hid = getHiddenSet();
+      return PROTOTYPES.filter((p) => !hid.has(p.id));
+    }
+
     function sortedRows() {
       const dir = sortDir === 'asc' ? 1 : -1;
-      const copy = [...PROTOTYPES];
-      copy.sort((a, b) => {
+      const withMerged = visiblePrototypes().map((p) => ({ base: p, m: merged(p) }));
+      withMerged.sort((a, b) => {
         let cmp = 0;
-        if (sortKey === 'updated') {
-          cmp = parseDate(a.updated) - parseDate(b.updated);
-        } else if (sortKey === 'team') {
-          cmp = teamLabel(a).localeCompare(teamLabel(b), undefined, { sensitivity: 'base' });
+        if (sortKey === 'team') {
+          cmp = teamLabel(a.m).localeCompare(teamLabel(b.m), undefined, { sensitivity: 'base' });
           if (cmp === 0) {
-            cmp = String(a.name).localeCompare(String(b.name), undefined, { sensitivity: 'base' });
+            cmp = String(a.m.name).localeCompare(String(b.m.name), undefined, { sensitivity: 'base' });
           }
         } else {
-          cmp = String(a.name).localeCompare(String(b.name), undefined, { sensitivity: 'base' });
+          cmp = String(a.m.name).localeCompare(String(b.m.name), undefined, { sensitivity: 'base' });
         }
         return cmp * dir;
       });
-      return copy;
+      return withMerged.map((x) => x.base);
     }
 
     function updateSortHeaders() {
-      const sortables = [thUpdated, thName, thTeam];
+      const sortables = [thName, thTeam].filter(Boolean);
       for (const th of sortables) {
         const key = th.dataset.sortKey;
         const active = key === sortKey;
@@ -388,13 +752,13 @@
       }
     }
 
-    /** @param {'updated' | 'title' | 'team'} key */
+    /** @param {'title' | 'team'} key */
     function applySort(key) {
       if (sortKey === key) {
         sortDir = sortDir === 'asc' ? 'desc' : 'asc';
       } else {
         sortKey = key;
-        sortDir = key === 'updated' ? 'desc' : 'asc';
+        sortDir = 'asc';
       }
       updateSortHeaders();
       renderRows();
@@ -419,21 +783,65 @@
       return `<a class="cell-link" href="${safe}" target="_blank" rel="noopener noreferrer">${lab}</a>`;
     }
 
+    function updateSettingsButton() {
+      const n = getHiddenSet().size;
+      const badge = document.getElementById('settings-badge');
+      if (badge) badge.classList.toggle('is-on', n > 0);
+      if (settingsOpen) {
+        settingsOpen.title = n > 0 ? `Settings — ${n} hidden from table` : 'Settings';
+      }
+    }
+
+    function renderSettingsList() {
+      if (!settingsList) return;
+      const hidden = getHiddenSet();
+      const rows = [...PROTOTYPES]
+        .map((p) => ({ p, m: merged(p) }))
+        .sort((a, b) =>
+          String(a.m.name).localeCompare(String(b.m.name), undefined, { sensitivity: 'base' })
+        );
+      settingsList.innerHTML = rows
+        .map(({ p, m }) => {
+          const checked = !hidden.has(p.id);
+          const idEsc = escapeHtml(p.id);
+          const nm = escapeHtml(m.name);
+          const href = String(m.href).replace(/"/g, '&quot;');
+          return `<div class="settings-row">
+            <a class="settings-row-name" href="${href}" target="_blank" rel="noopener noreferrer">${nm}</a>
+            <div class="settings-row-actions">
+              <label class="settings-show-label"><input type="checkbox" data-show-id="${idEsc}" ${checked ? 'checked' : ''} /><span>Show</span></label>
+              <button type="button" class="settings-edit-btn" data-edit-id="${idEsc}" aria-label="Edit ${nm}">${EDIT_ICON_SVG}</button>
+            </div>
+          </div>`;
+        })
+        .join('');
+    }
+
+    function openSettings() {
+      renderSettingsList();
+      if (settingsBackdrop) settingsBackdrop.hidden = false;
+    }
+
+    function closeSettings() {
+      if (settingsBackdrop) settingsBackdrop.hidden = true;
+    }
+
     function renderRows() {
-      const rows = sortedRows();
-      const notesMap = getRowNotesMap();
-      rowsEl.innerHTML = rows
+      const order = sortedRows();
+      if (order.length === 0) {
+        rowsEl.innerHTML =
+          '<tr><td colspan="4" class="empty-table-msg">Every prototype is hidden. Open <strong>Settings</strong> (gear icon above) to show them again.</td></tr>';
+        return;
+      }
+      rowsEl.innerHTML = order
         .map((p) => {
-          const nameHref = String(p.href).replace(/"/g, '&quot;');
-          const noteVal = notesMap[p.id] != null ? String(notesMap[p.id]) : '';
-          const noteEscaped = escapeHtml(noteVal);
-          return `<tr data-id="${escapeHtml(p.id)}">
-            <td class="date-cell">${escapeHtml(p.updated || '—')}</td>
-            <td><a class="name-link" href="${nameHref}" target="_blank" rel="noopener noreferrer">${escapeHtml(p.name)}</a></td>
-            <td class="team-cell">${escapeHtml(teamLabel(p))}</td>
-            <td>${linkHtml(p.prd, 'PRD')}</td>
-            <td>${linkHtml(p.figma, 'Figma')}</td>
-            <td class="note-cell"><textarea class="row-note" data-id="${escapeHtml(p.id)}" rows="2" spellcheck="true" placeholder="Add note…" aria-label="Notes for ${escapeHtml(p.name)}">${noteEscaped}</textarea></td>
+          const m = merged(p);
+          const nameHref = String(m.href).replace(/"/g, '&quot;');
+          return `<tr>
+            <td><a class="name-link" href="${nameHref}" target="_blank" rel="noopener noreferrer">${escapeHtml(m.name)}</a></td>
+            <td class="team-cell">${escapeHtml(teamLabel(m))}</td>
+            <td>${linkHtml(m.prd, 'PRD')}</td>
+            <td>${linkHtml(m.figma, 'Figma')}</td>
           </tr>`;
         })
         .join('');
@@ -447,26 +855,124 @@
         .replace(/"/g, '&quot;');
     }
 
-    bindSortHeader(thUpdated);
+    function openEdit(baseId) {
+      const p = PROTOTYPES.find((x) => x.id === baseId);
+      if (!p) return;
+      const m = merged(p);
+      editId.value = p.id;
+      editTitle.value = m.name;
+      editTeam.value = teamInputValue(m, p);
+      editPrd.value = m.prd || '';
+      editFigma.value = m.figma || '';
+      editBackdrop.hidden = false;
+      editTitle.focus();
+      editTitle.select();
+    }
+
+    function closeEdit() {
+      editBackdrop.hidden = true;
+    }
+
+    editForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id = editId.value;
+      const p = PROTOTYPES.find((x) => x.id === id);
+      if (!p) {
+        closeEdit();
+        return;
+      }
+      const title = editTitle.value.trim();
+      const teamRaw = editTeam.value.trim();
+      const prd = editPrd.value.trim();
+      const figma = editFigma.value.trim();
+
+      const map = getOverridesMap();
+      const cur = typeof map[id] === 'object' && map[id] !== null ? { ...map[id] } : {};
+
+      if (title !== p.name) cur.name = title;
+      else delete cur.name;
+
+      const defaultTeamStr =
+        p.team != null && String(p.team).trim() !== '' ? String(p.team).trim() : '';
+      if (teamRaw !== defaultTeamStr) {
+        cur.team = teamRaw;
+      } else {
+        delete cur.team;
+      }
+
+      if (prd !== (p.prd || '')) cur.prd = prd;
+      else delete cur.prd;
+
+      if (figma !== (p.figma || '')) cur.figma = figma;
+      else delete cur.figma;
+
+      if (Object.keys(cur).length === 0) {
+        delete map[id];
+      } else {
+        map[id] = cur;
+      }
+      saveOverridesMap(map);
+      closeEdit();
+      renderRows();
+      updateSortHeaders();
+      if (settingsBackdrop && !settingsBackdrop.hidden) {
+        renderSettingsList();
+      }
+      updateSettingsButton();
+    });
+
+    editCancel.addEventListener('click', closeEdit);
+    editBackdrop.addEventListener('click', (e) => {
+      if (e.target === editBackdrop) closeEdit();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      if (!editBackdrop.hidden) {
+        closeEdit();
+        return;
+      }
+      if (settingsBackdrop && !settingsBackdrop.hidden) {
+        closeSettings();
+      }
+    });
+
+    if (settingsList) {
+      settingsList.addEventListener('change', (e) => {
+        const inp = e.target;
+        if (inp.type !== 'checkbox' || !inp.dataset.showId || !settingsList.contains(inp)) return;
+        const id = inp.dataset.showId;
+        const s = getHiddenSet();
+        if (inp.checked) s.delete(id);
+        else s.add(id);
+        saveHiddenSet(s);
+        renderRows();
+        updateSortHeaders();
+        updateSettingsButton();
+      });
+      settingsList.addEventListener('click', (e) => {
+        const btn = e.target.closest('.settings-edit-btn');
+        if (!btn || !settingsList.contains(btn)) return;
+        e.preventDefault();
+        const id = btn.dataset.editId;
+        if (!id) return;
+        closeSettings();
+        openEdit(id);
+      });
+    }
+    if (settingsOpen) settingsOpen.addEventListener('click', openSettings);
+    if (settingsDone) settingsDone.addEventListener('click', closeSettings);
+    if (settingsBackdrop) {
+      settingsBackdrop.addEventListener('click', (e) => {
+        if (e.target === settingsBackdrop) closeSettings();
+      });
+    }
+
     bindSortHeader(thName);
     bindSortHeader(thTeam);
 
-    rowsEl.addEventListener('input', (e) => {
-      const ta = e.target.closest('.row-note');
-      if (!ta || !rowsEl.contains(ta)) return;
-      const id = ta.dataset.id;
-      if (id) saveRowNote(id, ta.value);
-    });
-
-    rowsEl.addEventListener('pointerdown', (e) => {
-      const cell = e.target.closest('.note-cell');
-      if (!cell || !rowsEl.contains(cell) || e.target.closest('.row-note')) return;
-      const ta = cell.querySelector('.row-note');
-      if (ta) ta.focus();
-    });
-
     updateSortHeaders();
     renderRows();
+    updateSettingsButton();
   </script>
 </body>
 </html>
