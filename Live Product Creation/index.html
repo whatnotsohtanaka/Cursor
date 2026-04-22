@@ -534,6 +534,10 @@
       min-height: 0;
       align-self: stretch;
     }
+    /* iOS home-indicator stack height (see #phone-home-indicator) — keyboard bottom gutter + scroll inset */
+    #phoneWrapper {
+      --lpc-ios-kb-home-area: calc(34px + env(safe-area-inset-bottom, 0px) + 8px);
+    }
     body.proto-mobile .phone-bezel { display: none !important; }
     body.proto-mobile .phone-frame {
       width: 100%;
@@ -645,6 +649,7 @@
     /* LDP needs higher z-index than shop in buyer view */
     #flow-ldp.active {
       z-index: 680;
+      isolation: isolate;
     }
     
     /* Push transition between flow panels */
@@ -675,6 +680,30 @@
     @keyframes flowPushToRight {
       from { transform: translateX(0); }
       to { transform: translateX(100%); }
+    }
+
+    /* Listing / template / import LDP: enter from bottom (full-screen sheet over live + shop) */
+    #flow-ldp.ldp-enter-from-bottom {
+      animation: ldpEnterFromBottom 0.38s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+    }
+    #flow-ldp.ldp-exit-to-bottom {
+      animation: ldpExitToBottom 0.38s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+    }
+    @keyframes ldpEnterFromBottom {
+      from {
+        transform: translateY(100%);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+    @keyframes ldpExitToBottom {
+      from {
+        transform: translateY(0);
+      }
+      to {
+        transform: translateY(100%);
+      }
     }
 
     /* ── LDP (Listing Detail Page) ── */
@@ -1060,6 +1089,857 @@
       height: 5px;
       background: #000;
       border-radius: 100px;
+    }
+
+    /* ── LPC creation forms (Figma 18983:39052 listing, 18759:62238 template) ── */
+    .lpc-create-nav {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-height: 44px;
+      /* Clear global status bar + Dynamic Island (same token as full-page shop; set on #phoneWrapper in JS). */
+      padding: calc(var(--shop-status-inset, 54px) + env(safe-area-inset-top, 0px)) 16px 10px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: #fff;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s ease;
+    }
+    .lpc-create-nav.lpc-create-nav--scrolled {
+      border-bottom-color: rgba(0, 0, 0, 0.08);
+    }
+    .ldp--creation-flow .lpc-create-nav {
+      display: flex;
+    }
+    .lpc-create-nav__title {
+      margin: 0;
+      flex: 1;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 590;
+      line-height: 21px;
+      letter-spacing: -0.41px;
+      color: #1c1c1c;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .lpc-create-nav__btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      border: none;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #1c1c1c;
+      flex-shrink: 0;
+      padding: 0;
+    }
+    .lpc-create-nav__btn:active {
+      background: #f3f3f3;
+    }
+    .lpc-create-nav__btn[hidden] {
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .lpc-create-nav__side {
+      width: 32px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lpc-create-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 0 16px 32px;
+    }
+    .lpc-create-stack__section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .lpc-f__section-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 590;
+      line-height: 23px;
+      letter-spacing: -0.44px;
+      color: #1c1c1c;
+    }
+    .lpc-f__dropdown {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-height: 56px;
+      padding: 10px 16px;
+      border: 1px solid #d2d2d2;
+      border-radius: 8px;
+      background: #fff;
+      cursor: default;
+    }
+    .lpc-f__dropdown--ghost {
+      border-color: rgba(0, 0, 0, 0.2);
+    }
+    .lpc-f__stack {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .lpc-f__label-row {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      color: #545454;
+    }
+    .lpc-f__label-row--dark {
+      color: #343434;
+    }
+    .lpc-f__req {
+      color: #ce291a;
+      font-size: 12px;
+    }
+    .lpc-f__value {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #1c1c1c;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .lpc-f__chev {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      color: #1c1c1c;
+      opacity: 0.65;
+    }
+    .lpc-f__media {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 98px;
+      padding: 16px;
+      border: 1px solid #d2d2d2;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .lpc-f__media-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+    .lpc-f__media-text {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 590;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: #545454;
+    }
+    /* WDS Input / Text — Figma aPQYyUJDh3N5Wp5do2xbua node 45146:7471 (floating label + default / focus) */
+    .lpc-wds-float {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .lpc-wds-float__box {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      min-height: 56px;
+      padding: 16px;
+      border: 1px solid #d2d2d2;
+      border-radius: 8px;
+      background: #fff;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease, padding 0.2s ease;
+    }
+    .lpc-wds-float--textarea .lpc-wds-float__box {
+      min-height: 96px;
+      align-items: flex-start;
+    }
+    .lpc-wds-float.is-focus .lpc-wds-float__box,
+    .lpc-wds-float.has-value .lpc-wds-float__box {
+      border-color: #2d2d2d;
+      padding: 8px 16px;
+      /* WDS: trailing clear vertically centered with the field block (not top-pinned). */
+      align-items: center;
+    }
+    .lpc-wds-float--textarea:not(.has-value):not(.is-focus) .lpc-wds-float__box {
+      align-items: center;
+    }
+    .lpc-wds-float__main {
+      position: relative;
+      flex: 1 1 0%;
+      min-width: 0;
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+    }
+    .lpc-wds-float.is-focus .lpc-wds-float__main,
+    .lpc-wds-float.has-value .lpc-wds-float__main {
+      justify-content: flex-start;
+    }
+    .lpc-wds-float__label {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 2px;
+      margin: 0;
+      padding: 0;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #545454;
+      cursor: text;
+      transition: font-size 0.2s ease, line-height 0.2s ease, letter-spacing 0.2s ease;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .lpc-wds-float.is-focus .lpc-wds-float__label,
+    .lpc-wds-float.has-value .lpc-wds-float__label {
+      font-size: 12px;
+      line-height: 16px;
+      letter-spacing: 0;
+    }
+    .lpc-wds-float__field {
+      display: block;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #1c1c1c;
+      -webkit-appearance: none;
+      appearance: none;
+      border-radius: 0;
+      box-sizing: border-box;
+      resize: none;
+      min-height: 19px;
+      overflow: hidden;
+    }
+    .lpc-wds-float--textarea .lpc-wds-float__field {
+      min-height: 56px;
+      resize: vertical;
+      overflow: auto;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    .lpc-wds-float:not(.has-value):not(.is-focus) .lpc-wds-float__field {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      opacity: 0;
+      cursor: text;
+      resize: none;
+      overflow: hidden;
+    }
+    .lpc-wds-float__clear {
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* WDS clear control: 20×20 icon cell (Figma .clearInput / icon close-small), flush to 16px horizontal inset */
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      padding: 0;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      color: #1c1c1c;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease, background 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .lpc-wds-float.is-focus .lpc-wds-float__clear,
+    .lpc-wds-float.has-value .lpc-wds-float__clear {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .lpc-wds-float__clear:active {
+      background: rgba(0, 0, 0, 0.06);
+    }
+    .lpc-wds-float__clear svg {
+      display: block;
+      width: 20px;
+      height: 20px;
+    }
+    /* LPC iOS-style software keyboard — creation float fields (slides up inside .device-frame; home pill clears keys) */
+    .lpc-fake-kb {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 9990;
+      display: flex;
+      flex-direction: column;
+      max-height: 48%;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+      background: #d1d4db;
+      border-top: 0.33px solid rgba(0, 0, 0, 0.22);
+      border-radius: 10px 10px 0 0;
+      box-shadow:
+        0 -0.5px 0 rgba(255, 255, 255, 0.45) inset,
+        0 -8px 32px rgba(0, 0, 0, 0.12);
+      transform: translateY(102%);
+      transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+      pointer-events: none;
+      padding-bottom: 0;
+    }
+    .lpc-fake-kb.lpc-fake-kb--open {
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .lpc-fake-kb__acc {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      min-height: 44px;
+      padding: 4px 10px 4px 12px;
+      background: #e5e6ea;
+      border-bottom: 0.33px solid rgba(0, 0, 0, 0.12);
+      border-radius: 10px 10px 0 0;
+    }
+    .lpc-fake-kb__done {
+      padding: 8px 10px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      font-size: 17px;
+      font-weight: 400;
+      line-height: 22px;
+      letter-spacing: -0.41px;
+      color: #007aff;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .lpc-fake-kb__done:active {
+      opacity: 0.55;
+    }
+    /* QuickType strip (iOS letterpress row above keys) */
+    .lpc-fake-kb__predict {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      gap: 5px;
+      padding: 5px 6px 7px;
+      background: #e5e6ea;
+      border-bottom: 0.33px solid rgba(0, 0, 0, 0.1);
+      pointer-events: none;
+    }
+    .lpc-fake-kb__predict-chip {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 4px;
+      border-radius: 4px;
+      background: #fdfdfd;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 20px;
+      letter-spacing: -0.24px;
+      color: #000;
+      box-shadow:
+        0 0.5px 0 rgba(0, 0, 0, 0.12),
+        0 0 0 0.33px rgba(0, 0, 0, 0.06);
+    }
+    .lpc-fake-kb__rows {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      padding: 8px 3px 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: stretch;
+      background: #d1d4db;
+    }
+    .lpc-fake-kb__row {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      padding: 0 2px;
+    }
+    .lpc-fake-kb__row--indent {
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+    .lpc-fake-kb__key {
+      flex: 1 1 0;
+      min-width: 0;
+      max-width: 34px;
+      height: 42px;
+      margin: 0;
+      padding: 0 1px;
+      border: none;
+      border-radius: 4.5px;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfbfc 55%, #f4f4f6 100%);
+      box-shadow:
+        0 1px 0 rgba(0, 0, 0, 0.32),
+        0 1px 1px rgba(0, 0, 0, 0.06);
+      font-size: 22px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.3px;
+      color: #000;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .lpc-fake-kb__key--wide {
+      max-width: none;
+      flex: 2.55 1 0;
+      font-size: 15px;
+      font-weight: 400;
+      color: #3a3a3c;
+    }
+    .lpc-fake-kb__key-space {
+      display: block;
+      width: 100%;
+      height: 6px;
+    }
+    .lpc-fake-kb__key--dark {
+      background: linear-gradient(180deg, #cfd3dc 0%, #b8bec9 100%);
+      color: #000;
+      font-size: 15px;
+      font-weight: 400;
+      max-width: 42px;
+      box-shadow:
+        0 1px 0 rgba(0, 0, 0, 0.22),
+        0 1px 1px rgba(0, 0, 0, 0.06);
+    }
+    .lpc-fake-kb__key:active {
+      background: #dedfe3;
+    }
+    .lpc-fake-kb__key--dark:active {
+      background: #a8aeba;
+    }
+    /* Bottom inset: clears #phone-home-indicator pill (34px + safe area + 8px breathing room) */
+    .lpc-fake-kb__bottom-spacer {
+      flex-shrink: 0;
+      height: var(--lpc-ios-kb-home-area, 42px);
+      min-height: 34px;
+      background: #d1d4db;
+      pointer-events: none;
+    }
+    .ldp.ldp--fake-kb-open .ldp__scroll {
+      padding-bottom: calc(min(48vh, 380px) + var(--lpc-ios-kb-home-area, 42px));
+      transition: padding-bottom 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .lpc-fake-kb {
+        transition-duration: 0.01ms;
+      }
+      .ldp.ldp--fake-kb-open .ldp__scroll {
+        transition-duration: 0.01ms;
+      }
+    }
+    /* iOS: avoid viewport zoom on field focus */
+    @supports (-webkit-touch-callout: none) {
+      .lpc-wds-float__field {
+        font-size: 16px;
+        line-height: 21px;
+      }
+      .lpc-wds-float.is-focus .lpc-wds-float__label,
+      .lpc-wds-float.has-value .lpc-wds-float__label {
+        font-size: 12px;
+        line-height: 16px;
+      }
+    }
+    .lpc-f__chipbox {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 12px 16px 16px;
+      border: 1px solid #d2d2d2;
+      border-radius: 8px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .lpc-f__chip-label {
+      font-size: 14px;
+      font-weight: 590;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #1c1c1c;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .lpc-f__chip-row {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+    }
+    .lpc-f__chip {
+      flex-shrink: 0;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(0, 0, 0, 0.05);
+      font-size: 14px;
+      font-weight: 590;
+      line-height: 19px;
+      letter-spacing: -0.15px;
+      color: #1c1c1c;
+      cursor: pointer;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .lpc-f__chip.is-selected {
+      background: #2d2d2d;
+      color: #fff;
+    }
+    .lpc-f__chip--more {
+      width: 36px;
+      padding: 8px 0;
+      text-align: center;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    /* Control + helper: avoid lpc-create-stack__section gap between siblings */
+    .lpc-f__bundle {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      min-width: 0;
+    }
+    .lpc-f__dropdown.lpc-f__dropdown--bundle-top {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    .lpc-f__helper {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      padding: 8px 16px;
+      background: #f3f3f3;
+      border-radius: 0 0 8px 8px;
+      margin-top: -1px;
+      border: 1px solid #d2d2d2;
+      border-top: none;
+    }
+    .lpc-f__helper p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 16px;
+      color: #1c1c1c;
+    }
+    .lpc-f__helper a {
+      color: #005ae1;
+      text-decoration: none;
+    }
+    .lpc-f__helper-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      color: #1c1c1c;
+    }
+    .lpc-f__stepper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 12px 12px 16px;
+      border: 1px solid #d2d2d2;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .lpc-f__stepper-label {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 14px;
+      color: #545454;
+    }
+    .lpc-f__stepper-ctrl {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+    .lpc-f__stepper-btn {
+      width: 28px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 36px;
+      color: #1c1c1c;
+    }
+    .lpc-f__stepper-val {
+      min-width: 48px;
+      height: 32px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 48px;
+      font-size: 14px;
+      font-weight: 590;
+      color: #1c1c1c;
+    }
+    .lpc-f__config {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px 16px;
+      border: 1px solid #d2d2d2;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .lpc-f__config-body {
+      flex: 1;
+      min-width: 0;
+    }
+    .lpc-f__config-title {
+      margin: 0 0 2px;
+      font-size: 14px;
+      font-weight: 590;
+      line-height: 19px;
+      color: #1c1c1c;
+    }
+    .lpc-f__config-desc {
+      margin: 0;
+      font-size: 13px;
+      line-height: 18px;
+      letter-spacing: -0.08px;
+      color: #545454;
+    }
+    .lpc-f__divider {
+      height: 1px;
+      margin: 0 -16px;
+      background: rgba(0, 0, 0, 0.08);
+      border: none;
+    }
+    .lpc-f__dropdown[data-lpc-field] {
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .lpc-f__value--muted {
+      color: #545454;
+    }
+    /* LPC creation field picker — bottom sheet (inside #ldp-template) */
+    #lpc-field-sheet-root {
+      position: absolute;
+      inset: 0;
+      z-index: 60;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+      pointer-events: none;
+    }
+    #lpc-field-sheet-root.is-open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    #lpc-field-sheet-root .lpc-field-sheet__dim {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: rgba(0, 0, 0, 0.45);
+    }
+    #lpc-field-sheet-root .lpc-field-sheet {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      max-height: min(72vh, 520px);
+      background: #fff;
+      border-radius: 20px 20px 0 0;
+      overflow: hidden;
+      box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+      transform: translateY(100%);
+      transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    #lpc-field-sheet-root.is-open .lpc-field-sheet {
+      transform: translateY(0);
+    }
+    #lpc-field-sheet-root .lpc-field-sheet__notch {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 20px;
+      padding-top: 8px;
+      flex-shrink: 0;
+      background: #fff;
+    }
+    #lpc-field-sheet-root .lpc-field-sheet__notch-handle {
+      width: 36px;
+      height: 4px;
+      border-radius: 100px;
+      background: #e0e0e0;
+    }
+    #lpc-field-sheet-root .lpc-field-sheet__head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 8px 12px 16px;
+      flex-shrink: 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+    #lpc-field-sheet-root .lpc-field-sheet__close {
+      flex: none;
+      width: 40px;
+      height: 40px;
+      margin: 0;
+      padding: 0;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      font-size: 22px;
+      line-height: 1;
+      color: #1c1c1c;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #lpc-field-sheet-root .lpc-field-sheet__close:active {
+      opacity: 0.65;
+    }
+    #lpc-field-sheet-root .lpc-field-sheet__title {
+      flex: 1;
+      margin: 0;
+      min-width: 0;
+      font-size: 17px;
+      font-weight: 590;
+      line-height: 22px;
+      letter-spacing: -0.41px;
+      color: #1c1c1c;
+      text-align: center;
+      padding-right: 40px;
+      box-sizing: border-box;
+    }
+    #lpc-field-sheet-root .lpc-field-sheet__list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 4px 0 12px;
+    }
+    #lpc-field-sheet-root .lpc-field-sheet__row {
+      display: block;
+      width: 100%;
+      margin: 0;
+      padding: 14px 20px;
+      border: none;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      background: #fff;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 21px;
+      letter-spacing: -0.31px;
+      color: #1c1c1c;
+      text-align: left;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #lpc-field-sheet-root .lpc-field-sheet__row:last-child {
+      border-bottom: none;
+    }
+    #lpc-field-sheet-root .lpc-field-sheet__row:active {
+      background: rgba(0, 0, 0, 0.04);
+    }
+    #lpc-field-sheet-root .lpc-field-sheet__row.is-current {
+      font-weight: 590;
+      background: rgba(0, 0, 0, 0.03);
+    }
+    .ldp__footer-dual {
+      display: none;
+      gap: 12px;
+      align-items: stretch;
+    }
+    .ldp--creation-flow .ldp__footer-dual {
+      display: flex;
+    }
+    .ldp--creation-flow .ldp__footer-single {
+      display: none;
+    }
+    .ldp__footer-btn-secondary {
+      flex: 1;
+      height: 44px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(0, 0, 0, 0.05);
+      font-size: 16px;
+      font-weight: 590;
+      line-height: 20px;
+      letter-spacing: -0.41px;
+      color: #1c1c1c;
+      cursor: pointer;
+    }
+    .ldp__footer-btn-secondary:active {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    .ldp__footer-btn-primary {
+      flex: 1;
+      height: 44px;
+      border-radius: 999px;
+      border: none;
+      background: #f9dc00;
+      font-size: 16px;
+      font-weight: 590;
+      line-height: 20px;
+      letter-spacing: -0.41px;
+      color: #1c1c1c;
+      cursor: pointer;
+    }
+    .ldp__footer-btn-primary:active {
+      background: #e5c800;
     }
 
     /* ── Live show (Figma 18983:39043) ── */
@@ -3243,6 +4123,10 @@
       .flow-panel.push-to-right {
         animation-duration: 0.01ms;
       }
+      #flow-ldp.ldp-enter-from-bottom,
+      #flow-ldp.ldp-exit-to-bottom {
+        animation-duration: 0.01ms;
+      }
       .prebid-overlay,
       .prebid-sheet,
       .checkout-overlay,
@@ -4325,6 +5209,142 @@
     #phoneWrapper .phone .proto-flow-stack {
       z-index: 2;
     }
+    /* #flow-ldp.active uses z-index 680, but that only stacks inside this root (z-index 2). The shop is a sibling
+       at z-index 600 when open, so it would paint over the whole stack. Lift the stack while LDP is active. */
+    #phoneWrapper .phone .proto-flow-stack:has(#flow-ldp.active) {
+      z-index: 720;
+    }
+    /* PiP over LDP chrome + footer; child of .ldp so it stacks above scroll/footer inside the panel. */
+    #flow-ldp > .ldp > .lpc-creation-pip-host {
+      position: absolute;
+      inset: 0;
+      z-index: 50;
+      pointer-events: none;
+      visibility: hidden;
+      /* Fallback until JS measures #ldp-footer-root (+ 20px gap) */
+      --lpc-creation-pip-bottom: 120px;
+    }
+    #flow-ldp > .ldp > .lpc-creation-pip-host.is-active {
+      visibility: visible;
+    }
+    #phoneWrapper .live-shop-pip.live-shop-pip--lpc-creation-float {
+      position: absolute;
+      left: 16px;
+      /* 20px above LDP CTA footer (see --lpc-creation-pip-bottom on .lpc-creation-pip-host) */
+      bottom: var(--lpc-creation-pip-bottom, 120px);
+      width: 112px;
+      aspect-ratio: 9 / 16;
+      max-height: 30vh;
+      border-radius: 12px;
+      overflow: hidden;
+      isolation: isolate;
+      background: #000;
+      border: none;
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.42),
+        0 2px 10px rgba(0, 0, 0, 0.28);
+      pointer-events: auto;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      opacity: 0;
+      transform: none;
+      transform-origin: left bottom;
+      /* Enter/leave creation: opacity only (no scale — avoids pop when bottom inset settles). */
+      transition: opacity 0.42s cubic-bezier(0.05, 0.7, 0.1, 1);
+    }
+    #phoneWrapper[data-pip-anchor='tl'] .live-shop-pip.live-shop-pip--lpc-creation-float {
+      left: 16px;
+      right: auto;
+      top: calc(12px + env(safe-area-inset-top, 0px));
+      bottom: auto;
+      transform-origin: top left;
+    }
+    #phoneWrapper[data-pip-anchor='tr'] .live-shop-pip.live-shop-pip--lpc-creation-float {
+      left: auto;
+      right: 16px;
+      top: calc(12px + env(safe-area-inset-top, 0px));
+      bottom: auto;
+      transform-origin: top right;
+    }
+    #phoneWrapper[data-pip-anchor='ml'] .live-shop-pip.live-shop-pip--lpc-creation-float {
+      left: 16px;
+      right: auto;
+      top: calc(50% - 112px * 8 / 9);
+      bottom: auto;
+      transform-origin: left center;
+    }
+    #phoneWrapper[data-pip-anchor='mr'] .live-shop-pip.live-shop-pip--lpc-creation-float {
+      left: auto;
+      right: 16px;
+      top: calc(50% - 112px * 8 / 9);
+      bottom: auto;
+      transform-origin: right center;
+    }
+    #phoneWrapper[data-pip-anchor='br'] .live-shop-pip.live-shop-pip--lpc-creation-float {
+      left: auto;
+      right: 16px;
+      top: auto;
+      transform-origin: right bottom;
+    }
+    #phoneWrapper .live-shop-pip.live-shop-pip--lpc-creation-float.live-shop-pip--lpc-creation-float-visible {
+      opacity: 1;
+      transition:
+        opacity 0.42s cubic-bezier(0.05, 0.7, 0.1, 1),
+        top 0.22s ease,
+        right 0.22s ease,
+        bottom 0.22s ease,
+        left 0.22s ease;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #phoneWrapper .live-shop-pip.live-shop-pip--lpc-creation-float,
+      #phoneWrapper .live-shop-pip.live-shop-pip--lpc-creation-float.live-shop-pip--lpc-creation-float-visible {
+        transition-duration: 0.01ms;
+      }
+    }
+    #phoneWrapper .live-shop-pip--lpc-creation-float .live-shop-pip__inner {
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      z-index: 0;
+    }
+    #phoneWrapper .live-shop-pip--lpc-creation-float .live-shop-pip__close {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 2;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      margin: 0;
+      padding: 0;
+      border: none;
+      border-radius: 0 12px 0 12px;
+      background: transparent;
+      color: #fff;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      pointer-events: auto;
+    }
+    #phoneWrapper .live-shop-pip--lpc-creation-float .live-shop-pip__inner video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      border-radius: 12px;
+      pointer-events: none;
+      animation: none !important;
+    }
+    #phoneWrapper
+      .live-shop-pip--lpc-creation-float.live-shop-pip--lpc-creation-float-visible.live-shop-pip--pressed:not(.live-shop-pip--minimized) {
+      opacity: 0.9;
+    }
     #phoneWrapper .phone #live-shop-root.live-shop-root--fullpage.is-open {
       z-index: 600 !important;
     }
@@ -4419,10 +5439,57 @@
       opacity: 1;
       transform: scale(1);
       transform-origin: left bottom;
-      /* Bottom: no CSS transition (rAF + sheet). Opacity/transform: press + minimize only. */
+      /* Bottom inset may rAF-sync with sheet; other edges animate for anchor changes. */
       transition:
         opacity 0.12s ease,
-        transform 0.34s cubic-bezier(0.32, 0.72, 0, 1);
+        transform 0.34s cubic-bezier(0.32, 0.72, 0, 1),
+        top 0.22s ease,
+        right 0.22s ease,
+        bottom 0.22s ease,
+        left 0.22s ease;
+    }
+    /* ── PiP anchor presets (data-pip-anchor on #phoneWrapper): TL TR / ML MR / BL BR ── */
+    #phoneWrapper[data-pip-anchor='tl'] #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float),
+    #phoneWrapper[data-pip-anchor='tl'] #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float {
+      left: 12px;
+      right: auto;
+      top: calc(12px + env(safe-area-inset-top, 0px));
+      bottom: auto;
+      transform-origin: top left;
+    }
+    #phoneWrapper[data-pip-anchor='tr'] #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float),
+    #phoneWrapper[data-pip-anchor='tr'] #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float {
+      left: auto;
+      right: 12px;
+      top: calc(12px + env(safe-area-inset-top, 0px));
+      bottom: auto;
+      transform-origin: top right;
+    }
+    #phoneWrapper[data-pip-anchor='ml'] #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float),
+    #phoneWrapper[data-pip-anchor='ml'] #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float {
+      left: 12px;
+      right: auto;
+      top: calc(50% - 112px * 8 / 9);
+      bottom: auto;
+      transform-origin: left center;
+    }
+    #phoneWrapper[data-pip-anchor='mr'] #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float),
+    #phoneWrapper[data-pip-anchor='mr'] #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float {
+      left: auto;
+      right: 12px;
+      top: calc(50% - 112px * 8 / 9);
+      bottom: auto;
+      transform-origin: right center;
+    }
+    #phoneWrapper[data-pip-anchor='br'] #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float),
+    #phoneWrapper[data-pip-anchor='br'] #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float {
+      left: auto;
+      right: 12px;
+      top: auto;
+      transform-origin: right bottom;
+    }
+    #phoneWrapper[data-pip-anchor='br'] #lpc-add-listing-overlay.lpc-add-listing-overlay--pip-static-bottom > .live-shop-pip.live-shop-pip--dfc-float {
+      bottom: calc(12px + env(safe-area-inset-bottom, 0px));
     }
     /* PiP X: collapse to invisible; shop stays open. Shop close → stream flight starts from this shrunk rect. */
     #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float).live-shop-pip--minimized,
@@ -4436,13 +5503,39 @@
     #phoneWrapper #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--minimized .live-shop-pip__close {
       pointer-events: none !important;
     }
+    #phoneWrapper[data-pip-anchor='tl'] #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float).live-shop-pip--minimized,
+    #phoneWrapper[data-pip-anchor='tl'] #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float.live-shop-pip--minimized {
+      transform-origin: top left;
+    }
+    #phoneWrapper[data-pip-anchor='tr'] #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float).live-shop-pip--minimized,
+    #phoneWrapper[data-pip-anchor='tr'] #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float.live-shop-pip--minimized {
+      transform-origin: top right;
+    }
+    #phoneWrapper[data-pip-anchor='ml'] #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float).live-shop-pip--minimized,
+    #phoneWrapper[data-pip-anchor='ml'] #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float.live-shop-pip--minimized {
+      transform-origin: left center;
+    }
+    #phoneWrapper[data-pip-anchor='mr'] #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float).live-shop-pip--minimized,
+    #phoneWrapper[data-pip-anchor='mr'] #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float.live-shop-pip--minimized {
+      transform-origin: right center;
+    }
+    #phoneWrapper[data-pip-anchor='br'] #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float).live-shop-pip--minimized,
+    #phoneWrapper[data-pip-anchor='br'] #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float.live-shop-pip--minimized {
+      transform-origin: right bottom;
+    }
     #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-pip:not(.live-shop-pip--dfc-float) {
       z-index: 45;
     }
-    /* Overlay PiP: bottom is set from JS to match sheet; do not add safe-area here (viewport math + phone inset:0). */
+    /* Overlay PiP: JS sets --pip-bottom-inset to track sheet top (see LPC_PIP_FOLLOW_ADD_SHEET). */
     #phoneWrapper #lpc-add-listing-overlay > .live-shop-pip.live-shop-pip--dfc-float {
       z-index: 2;
       bottom: var(--pip-bottom-inset, 12px);
+    }
+    /* Sheet-follow off: fixed bottom-left like full-page PiP (does not move with sheet). */
+    #phoneWrapper
+      #lpc-add-listing-overlay.lpc-add-listing-overlay--pip-static-bottom
+      > .live-shop-pip.live-shop-pip--dfc-float {
+      bottom: calc(12px + env(safe-area-inset-bottom, 0px));
     }
     /* No transform scale here — scaling the PiP made the stream appear to pulse inside the frame */
     #phoneWrapper #live-shop-root.live-shop-root--fullpage.is-open .live-shop-pip.live-shop-pip--pressed:not(.live-shop-pip--dfc-float):not(.live-shop-pip--minimized),
@@ -4512,6 +5605,22 @@
       pointer-events: none;
       animation: none !important;
     }
+
+    /* PiP drag reposition (snap to TL/TR/ML/MR/BL/BR via data-pip-anchor) */
+    #phoneWrapper #live-shop-root.live-shop-root--fullpage.is-open .live-shop-pip:not(.live-shop-pip--dfc-float):not(.live-shop-pip--minimized),
+    #phoneWrapper:has(#live-shop-root.live-shop-root--fullpage.is-open)
+      #lpc-add-listing-overlay
+      > .live-shop-pip.live-shop-pip--dfc-float:not(.live-shop-pip--minimized),
+    #phoneWrapper .live-shop-pip.live-shop-pip--lpc-creation-float:not(.live-shop-pip--minimized) {
+      cursor: grab;
+    }
+    #phoneWrapper .live-shop-pip.live-shop-pip--dragging {
+      cursor: grabbing !important;
+      touch-action: none;
+      transition: none !important;
+      z-index: 20000 !important;
+    }
+
     #phoneWrapper #live-shop-root.live-shop-root--fullpage .live-shop-fab {
       z-index: 50;
     }
@@ -4594,7 +5703,7 @@
 
   <script>
     var LIVE_URL = 'https://sturdy-parakeet-o3wwv73.pages.github.io/pages/st/live-product-creation/index.html';
-    var PROTO_TIMESTAMP = 'Updated by Soh on 4/22/26 @ 12:00pm';
+    var PROTO_TIMESTAMP = 'Updated by Soh on 4/22/26 @ 3:18pm';
     var PROTO_TIMESTAMP_SHORT = (function() {
       var m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
       return m ? m[1].trim() : PROTO_TIMESTAMP;
@@ -4621,7 +5730,7 @@
   <div class="proto-body">
   <div class="proto-demo-row">
 
-  <div id="phoneWrapper" style="display:flex;flex-direction:column;align-items:center;flex-shrink:0">
+  <div id="phoneWrapper" data-pip-anchor="bl" style="display:flex;flex-direction:column;align-items:center;flex-shrink:0">
   <div class="phone-frame">
     <div class="phone-bezel"></div>
     <div class="device-frame">
@@ -5314,10 +6423,28 @@
                 </div>
               </div>
             </div>
-            <!-- LDP (Listing Detail Page) for Templates -->
+            <!-- LDP: buyer detail (default) + Figma listing/template creation flows -->
             <div class="flow-panel" id="flow-ldp">
               <div class="ldp" id="ldp-template">
                 <div class="ldp__scroll">
+                  <header class="lpc-create-nav" id="lpc-create-nav" aria-hidden="true">
+                    <div class="lpc-create-nav__side" aria-hidden="true"></div>
+                    <h1 class="lpc-create-nav__title" id="lpc-create-nav-title">Create Listing</h1>
+                    <div class="lpc-create-nav__side">
+                      <button type="button" class="lpc-create-nav__btn" id="lpc-create-nav-trail" aria-label="Close" title="Close">
+                        <svg id="lpc-create-nav-trail-icon-close" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                          <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <svg id="lpc-create-nav-trail-icon-more" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="display:none">
+                          <circle cx="3" cy="8" r="1.5" fill="currentColor"/>
+                          <circle cx="8" cy="8" r="1.5" fill="currentColor"/>
+                          <circle cx="13" cy="8" r="1.5" fill="currentColor"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </header>
+
+                  <div id="ldp-default-view">
                   <!-- Image Carousel -->
                   <div class="ldp__carousel" id="ldp-carousel">
                       <div class="ldp__carousel-track" id="ldp-carousel-track">
@@ -5449,13 +6576,325 @@
                       </div>
                     </div>
                   </div>
+                  </div><!-- /#ldp-default-view -->
+
+                  <!-- Figma 18983:39052 — Create Listing (product creation) -->
+                  <div id="lpc-create-listing" class="lpc-create-flow" hidden>
+                    <div class="lpc-create-stack">
+                      <div class="lpc-create-stack__section">
+                        <div class="lpc-f__dropdown" role="button" tabindex="0" data-lpc-field="listing-category">
+                          <div class="lpc-f__stack">
+                            <div class="lpc-f__label-row">Category<span class="lpc-f__req">*</span></div>
+                            <div class="lpc-f__value">Women’s Contemporary</div>
+                          </div>
+                          <svg class="lpc-f__chev" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div class="lpc-f__media">
+                          <div class="lpc-f__media-inner">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h4l2-2h8v12H4V7z" stroke="#545454" stroke-width="1.5" stroke-linejoin="round"/><circle cx="9" cy="11" r="1.5" fill="#545454"/></svg>
+                            <p class="lpc-f__media-text">Capture, Scan or Upload Media<span class="lpc-f__req">*</span></p>
+                          </div>
+                        </div>
+                        <div class="lpc-wds-float" data-lpc-float>
+                          <div class="lpc-wds-float__box">
+                            <div class="lpc-wds-float__main">
+                              <label class="lpc-wds-float__label" for="lpc-listing-title-input">Title<span class="lpc-f__req">*</span></label>
+                              <input
+                                type="text"
+                                class="lpc-wds-float__field"
+                                id="lpc-listing-title-input"
+                                name="lpc-listing-title"
+                                autocomplete="off"
+                                autocorrect="on"
+                                spellcheck="true"
+                                enterkeyhint="done"
+                                inputmode="text"
+                                value=""
+                              />
+                            </div>
+                            <button type="button" class="lpc-wds-float__clear" aria-label="Clear title" tabindex="-1">
+                              <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M6 6l8 8M14 6L6 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="lpc-wds-float lpc-wds-float--textarea" data-lpc-float>
+                          <div class="lpc-wds-float__box">
+                            <div class="lpc-wds-float__main">
+                              <label class="lpc-wds-float__label" for="lpc-listing-desc-input">Description<span class="lpc-f__req">*</span></label>
+                              <textarea
+                                class="lpc-wds-float__field"
+                                id="lpc-listing-desc-input"
+                                name="lpc-listing-description"
+                                autocomplete="off"
+                                autocorrect="on"
+                                spellcheck="true"
+                                enterkeyhint="done"
+                                inputmode="text"
+                                rows="3"
+                              ></textarea>
+                            </div>
+                            <button type="button" class="lpc-wds-float__clear" aria-label="Clear description" tabindex="-1">
+                              <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M6 6l8 8M14 6L6 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="lpc-f__chipbox">
+                          <div class="lpc-f__chip-label">Type</div>
+                          <div class="lpc-f__chip-row">
+                            <button type="button" class="lpc-f__chip is-selected">Tops</button>
+                            <button type="button" class="lpc-f__chip">Leggings</button>
+                            <button type="button" class="lpc-f__chip">Pants</button>
+                            <button type="button" class="lpc-f__chip">Shorts</button>
+                            <button type="button" class="lpc-f__chip">Skirts</button>
+                            <button type="button" class="lpc-f__chip">XL</button>
+                            <button type="button" class="lpc-f__chip">XXL</button>
+                            <button type="button" class="lpc-f__chip lpc-f__chip--more" aria-label="More types">···</button>
+                          </div>
+                        </div>
+                        <div class="lpc-f__dropdown lpc-f__dropdown--ghost" role="button" tabindex="0" data-lpc-field="listing-brand">
+                          <div class="lpc-f__stack">
+                            <div class="lpc-f__label-row" style="font-size:14px;line-height:19px;color:#545454">Brand</div>
+                            <div class="lpc-f__value lpc-f__value--muted" id="lpc-listing-brand-value">Select brand</div>
+                          </div>
+                          <svg class="lpc-f__chev" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div class="lpc-f__chipbox">
+                          <div class="lpc-f__chip-label">Size</div>
+                          <div class="lpc-f__chip-row">
+                            <button type="button" class="lpc-f__chip is-selected">OS</button>
+                            <button type="button" class="lpc-f__chip">XS</button>
+                            <button type="button" class="lpc-f__chip">S</button>
+                            <button type="button" class="lpc-f__chip">M</button>
+                            <button type="button" class="lpc-f__chip">L</button>
+                            <button type="button" class="lpc-f__chip">XL</button>
+                            <button type="button" class="lpc-f__chip">XXL</button>
+                            <button type="button" class="lpc-f__chip lpc-f__chip--more" aria-label="More sizes">···</button>
+                          </div>
+                        </div>
+                        <div class="lpc-f__bundle">
+                        <div class="lpc-f__chipbox" style="padding-bottom:0;border-bottom-left-radius:0;border-bottom-right-radius:0">
+                          <div class="lpc-f__chip-label">Condition</div>
+                          <div class="lpc-f__chip-row">
+                            <button type="button" class="lpc-f__chip is-selected">New w Tag</button>
+                            <button type="button" class="lpc-f__chip">New w/out Tag</button>
+                            <button type="button" class="lpc-f__chip">New w Defect</button>
+                            <button type="button" class="lpc-f__chip lpc-f__chip--more" aria-label="More conditions">···</button>
+                          </div>
+                        </div>
+                        <div class="lpc-f__helper">
+                          <svg class="lpc-f__helper-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2"/><path d="M8 11V8M8 5.2h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                          <p>Accurate condition reduces refunds and disputes.</p>
+                        </div>
+                        </div>
+                        <div class="lpc-f__stepper">
+                          <div class="lpc-f__stepper-label">Quantity Available<span class="lpc-f__req">*</span></div>
+                          <div class="lpc-f__stepper-ctrl">
+                            <button type="button" class="lpc-f__stepper-btn" id="lpc-listing-qty-minus" aria-label="Decrease quantity">−</button>
+                            <div class="lpc-f__stepper-val" id="lpc-listing-qty-val">1</div>
+                            <button type="button" class="lpc-f__stepper-btn" id="lpc-listing-qty-plus" aria-label="Increase quantity">+</button>
+                          </div>
+                        </div>
+                        <div class="lpc-f__config" role="button" tabindex="0">
+                          <div class="lpc-f__config-body">
+                            <p class="lpc-f__config-title">Add More Details</p>
+                            <p class="lpc-f__config-desc">Add more product attributes to this item.</p>
+                          </div>
+                          <svg class="lpc-f__chev" viewBox="0 0 20 20" fill="none" aria-hidden="true" style="transform:rotate(-90deg)"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                      </div>
+                      <hr class="lpc-f__divider" />
+                      <div class="lpc-create-stack__section">
+                        <h2 class="lpc-f__section-title">Product Variants</h2>
+                        <div class="lpc-f__config" role="button" tabindex="0">
+                          <div class="lpc-f__config-body">
+                            <p class="lpc-f__config-title">Manage Variants</p>
+                            <p class="lpc-f__config-desc">Include available colors, sizes, and quantities.</p>
+                          </div>
+                          <svg class="lpc-f__chev" viewBox="0 0 20 20" fill="none" aria-hidden="true" style="transform:rotate(-90deg)"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                      </div>
+                      <hr class="lpc-f__divider" />
+                      <div class="lpc-create-stack__section">
+                        <h2 class="lpc-f__section-title">Shipping</h2>
+                        <div class="lpc-f__dropdown" role="button" tabindex="0" data-lpc-field="listing-weight">
+                          <div class="lpc-f__stack">
+                            <div class="lpc-f__label-row" style="font-size:14px">Weight<span class="lpc-f__req">*</span></div>
+                            <div class="lpc-f__value" id="lpc-listing-weight-value">2 lb</div>
+                          </div>
+                          <svg class="lpc-f__chev" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div class="lpc-f__bundle">
+                        <div class="lpc-f__dropdown lpc-f__dropdown--ghost lpc-f__dropdown--bundle-top" role="button" tabindex="0" data-lpc-field="listing-restricted">
+                          <div class="lpc-f__stack">
+                            <div class="lpc-f__label-row" style="font-size:14px;color:#545454">Restricted Items</div>
+                            <div class="lpc-f__value lpc-f__value--muted" id="lpc-listing-restricted-value">None</div>
+                          </div>
+                          <svg class="lpc-f__chev" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div class="lpc-f__helper">
+                          <svg class="lpc-f__helper-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2"/><path d="M8 11V8M8 5.2h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                          <p>Carriers restrict the shipping of any items that may pose risks to <a href="#">health and safety</a>.</p>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Figma 18759:62238 — Create Template -->
+                  <div id="lpc-create-template" class="lpc-create-flow" hidden>
+                    <div class="lpc-create-stack">
+                      <div class="lpc-create-stack__section">
+                        <div class="lpc-f__dropdown" role="button" tabindex="0" data-lpc-field="template-category">
+                          <div class="lpc-f__stack">
+                            <div class="lpc-f__label-row">Category<span class="lpc-f__req">*</span></div>
+                            <div class="lpc-f__value">Women’s Contemporary</div>
+                          </div>
+                          <svg class="lpc-f__chev" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div class="lpc-f__chipbox">
+                          <div class="lpc-f__chip-label">Type<span class="lpc-f__req">*</span></div>
+                          <div class="lpc-f__chip-row">
+                            <button type="button" class="lpc-f__chip">Shoes</button>
+                            <button type="button" class="lpc-f__chip is-selected">Tops</button>
+                            <button type="button" class="lpc-f__chip">Sweaters</button>
+                            <button type="button" class="lpc-f__chip">Jumpsuits</button>
+                            <button type="button" class="lpc-f__chip lpc-f__chip--more" aria-label="More types">···</button>
+                          </div>
+                        </div>
+                        <div class="lpc-f__dropdown" role="button" tabindex="0" data-lpc-field="template-brands">
+                          <div class="lpc-f__stack">
+                            <div class="lpc-f__label-row">Brand(s)<span style="font-weight:400;color:#545454"> (5/10)</span></div>
+                            <div class="lpc-f__value">Lulu Lemon, Alo, Vuori, Commense</div>
+                          </div>
+                          <svg class="lpc-f__chev" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div class="lpc-f__chipbox">
+                          <div class="lpc-f__chip-label">Size(s)</div>
+                          <div class="lpc-f__chip-row" data-lpc-multi="1">
+                            <button type="button" class="lpc-f__chip">OS</button>
+                            <button type="button" class="lpc-f__chip is-selected">XS</button>
+                            <button type="button" class="lpc-f__chip is-selected">S</button>
+                            <button type="button" class="lpc-f__chip is-selected">M</button>
+                            <button type="button" class="lpc-f__chip is-selected">L</button>
+                            <button type="button" class="lpc-f__chip is-selected">XL</button>
+                            <button type="button" class="lpc-f__chip">XXL</button>
+                            <button type="button" class="lpc-f__chip lpc-f__chip--more" aria-label="More sizes">···</button>
+                          </div>
+                        </div>
+                        <div class="lpc-f__chipbox" style="padding-bottom:0;border-bottom-left-radius:0;border-bottom-right-radius:0">
+                          <div class="lpc-f__chip-label">Condition(s)</div>
+                          <div class="lpc-f__chip-row" data-lpc-multi="1">
+                            <button type="button" class="lpc-f__chip is-selected">New w Tag</button>
+                            <button type="button" class="lpc-f__chip">New w/out Tag</button>
+                            <button type="button" class="lpc-f__chip">New w Defect</button>
+                            <button type="button" class="lpc-f__chip lpc-f__chip--more" aria-label="More conditions">···</button>
+                          </div>
+                        </div>
+                        <div class="lpc-wds-float" data-lpc-float>
+                          <div class="lpc-wds-float__box">
+                            <div class="lpc-wds-float__main">
+                              <label class="lpc-wds-float__label" for="lpc-template-title-input">Title</label>
+                              <input
+                                type="text"
+                                class="lpc-wds-float__field"
+                                id="lpc-template-title-input"
+                                name="lpc-template-title"
+                                autocomplete="off"
+                                autocorrect="on"
+                                spellcheck="true"
+                                enterkeyhint="done"
+                                inputmode="text"
+                                value=""
+                              />
+                            </div>
+                            <button type="button" class="lpc-wds-float__clear" aria-label="Clear title" tabindex="-1">
+                              <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M6 6l8 8M14 6L6 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="lpc-f__media">
+                          <div class="lpc-f__media-inner">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h4l2-2h8v12H4V7z" stroke="#545454" stroke-width="1.5" stroke-linejoin="round"/><circle cx="9" cy="11" r="1.5" fill="#545454"/></svg>
+                            <p class="lpc-f__media-text">Capture, Scan or Upload Media</p>
+                          </div>
+                        </div>
+                      </div>
+                      <hr class="lpc-f__divider" />
+                      <div class="lpc-create-stack__section">
+                        <h2 class="lpc-f__section-title">Shipping</h2>
+                        <div class="lpc-f__bundle">
+                        <div class="lpc-f__dropdown lpc-f__dropdown--bundle-top" role="button" tabindex="0" data-lpc-field="template-weight">
+                          <div class="lpc-f__stack">
+                            <div class="lpc-f__label-row" style="font-size:14px">Weight<span class="lpc-f__req">*</span></div>
+                            <div class="lpc-f__value" id="lpc-template-weight-value">2 lb</div>
+                          </div>
+                          <svg class="lpc-f__chev" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div class="lpc-f__helper">
+                          <svg class="lpc-f__helper-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2"/><path d="M8 11V8M8 5.2h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                          <p>Sellers cover any shipping adjustments.</p>
+                        </div>
+                        </div>
+                        <div class="lpc-f__bundle">
+                        <div class="lpc-f__dropdown lpc-f__dropdown--ghost lpc-f__dropdown--bundle-top" role="button" tabindex="0" data-lpc-field="template-restricted">
+                          <div class="lpc-f__stack">
+                            <div class="lpc-f__label-row" style="font-size:14px;color:#545454">Restricted Items</div>
+                            <div class="lpc-f__value lpc-f__value--muted" id="lpc-template-restricted-value">None</div>
+                          </div>
+                          <svg class="lpc-f__chev" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <div class="lpc-f__helper">
+                          <svg class="lpc-f__helper-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2"/><path d="M8 11V8M8 5.2h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                          <p>Carriers restrict the shipping of any items that may pose risks to <a href="#">health and safety</a>.</p>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="lpc-field-sheet-root" aria-hidden="true">
+                  <div class="lpc-field-sheet__dim" id="lpc-field-sheet-dim"></div>
+                  <div
+                    class="lpc-field-sheet"
+                    id="lpc-field-sheet"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="lpc-field-sheet-title"
+                    tabindex="-1"
+                  >
+                    <div class="lpc-field-sheet__notch" aria-hidden="true">
+                      <div class="lpc-field-sheet__notch-handle"></div>
+                    </div>
+                    <div class="lpc-field-sheet__head">
+                      <button type="button" class="lpc-field-sheet__close" id="lpc-field-sheet-close" aria-label="Close">
+                        ×
+                      </button>
+                      <h2 class="lpc-field-sheet__title" id="lpc-field-sheet-title"></h2>
+                    </div>
+                    <div class="lpc-field-sheet__list" id="lpc-field-sheet-list"></div>
+                  </div>
                 </div>
 
                 <!-- Fixed Footer -->
-                <div class="ldp__footer">
-                  <button type="button" class="ldp__footer-btn" id="ldp-request-btn">Continue</button>
+                <div class="ldp__footer" id="ldp-footer-root">
+                  <div class="ldp__footer-single" id="ldp-footer-single">
+                    <button type="button" class="ldp__footer-btn" id="ldp-request-btn">Continue</button>
+                  </div>
+                  <div class="ldp__footer-dual" id="ldp-footer-dual">
+                    <button type="button" class="ldp__footer-btn-secondary" id="ldp-save-draft-btn">Save Draft</button>
+                    <button type="button" class="ldp__footer-btn-primary" id="ldp-next-step-btn">Next</button>
+                  </div>
                   <div class="ldp__home-indicator"></div>
                 </div>
+
+                <div id="lpc-creation-pip-host" class="lpc-creation-pip-host" aria-hidden="true"></div>
               </div>
             </div>
           </div>
@@ -6062,6 +7501,61 @@
         </div>
       </div>
 
+      <!-- iOS-style software keyboard — creation float fields (home-indicator gutter below keys) -->
+      <div id="lpc-fake-keyboard" class="lpc-fake-kb" aria-hidden="true">
+        <div class="lpc-fake-kb__acc">
+          <button type="button" class="lpc-fake-kb__done" id="lpc-fake-kb-done">Done</button>
+        </div>
+        <div class="lpc-fake-kb__predict" aria-hidden="true">
+          <div class="lpc-fake-kb__predict-chip">“The”</div>
+          <div class="lpc-fake-kb__predict-chip">the</div>
+          <div class="lpc-fake-kb__predict-chip">to</div>
+        </div>
+        <div class="lpc-fake-kb__rows" id="lpc-fake-kb-rows">
+          <div class="lpc-fake-kb__row">
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="q">q</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="w">w</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="e">e</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="r">r</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="t">t</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="y">y</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="u">u</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="i">i</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="o">o</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="p">p</button>
+          </div>
+          <div class="lpc-fake-kb__row lpc-fake-kb__row--indent">
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="a">a</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="s">s</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="d">d</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="f">f</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="g">g</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="h">h</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="j">j</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="k">k</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="l">l</button>
+          </div>
+          <div class="lpc-fake-kb__row">
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="z">z</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="x">x</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="c">c</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="v">v</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="b">b</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="n">n</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb="m">m</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb=",">,</button>
+            <button type="button" class="lpc-fake-kb__key" data-lpc-kb=".">.</button>
+          </div>
+          <div class="lpc-fake-kb__row">
+            <button type="button" class="lpc-fake-kb__key lpc-fake-kb__key--wide" data-lpc-kb=" " aria-label="Space">
+              <span class="lpc-fake-kb__key-space" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="lpc-fake-kb__key lpc-fake-kb__key--dark" data-lpc-kb="bk" aria-label="Delete">⌫</button>
+          </div>
+        </div>
+        <div class="lpc-fake-kb__bottom-spacer" aria-hidden="true"></div>
+      </div>
+
       <!-- iOS home indicator — device chrome; above .phone (app + live shop sheet) -->
       <div class="phone-home-indicator" id="phone-home-indicator" aria-hidden="true"></div>
     </div><!-- /.device-frame -->
@@ -6414,6 +7908,8 @@
       var shopClose = shopEl('live-shop-close');
       var shopSheet = shopEl('live-shop-sheet');
       var pipMount = shopEl('live-shop-pip');
+      var lpcCreationPipHost = shopEl('lpc-creation-pip-host');
+      var ldpFooterRoot = shopEl('ldp-footer-root');
       var streamVideo = shopEl('live-show-stream');
       var liveShowMedia = document.querySelector('#phoneWrapper .live-show__media');
       var deviceFrame = document.querySelector('#phoneWrapper .device-frame');
@@ -6429,12 +7925,15 @@
       /* Stream corner radii — keep CSS #phoneWrapper .live-show__media #live-show-stream in sync */
       var STREAM_RADIUS_LIVE_PX = 20;
       var STREAM_RADIUS_PIP_PX = 12;
+      var PIP_ANCHOR_LS_KEY = 'liveRun_pip_anchor';
+      var PIP_ANCHORS = { tl: 1, tr: 1, ml: 1, mr: 1, bl: 1, br: 1 };
 
       function syncShopStatusInset() {
-        if (!shopRoot) return;
         var bar = shopEl('global-status-bar');
         var h = bar && bar.offsetHeight ? bar.offsetHeight : 54;
-        shopRoot.style.setProperty('--shop-status-inset', h + 'px');
+        var phoneWrapperEl = document.getElementById('phoneWrapper');
+        if (phoneWrapperEl) phoneWrapperEl.style.setProperty('--shop-status-inset', h + 'px');
+        if (shopRoot) shopRoot.style.setProperty('--shop-status-inset', h + 'px');
       }
       syncShopStatusInset();
       window.addEventListener('resize', syncShopStatusInset);
@@ -6520,6 +8019,7 @@
         var inner = pipMount && pipMount.querySelector('.live-shop-pip__inner');
         return !!(inner && streamVideo && streamVideo.parentNode === inner);
       }
+      window.lpcIsVideoDockedInPip = isVideoDockedInPip;
 
       function liftVideoToFlightFromRects(startViewport, cornerRadius) {
         if (!streamVideo || !deviceFrame || !startViewport) return;
@@ -6637,6 +8137,9 @@
         });
       }
 
+      /* PiP bottom inset: when true, keep PiP ~20px above the Add-to-Show sheet top (rAF / transition sync).
+         When false, PiP stays at a fixed bottom (same token as full-page shop) and does not track the sheet. */
+      var LPC_PIP_FOLLOW_ADD_SHEET = false;
       /* PiP bottom inset: stay 20px above Add-to-Show sheet top; inset is driven on rAF (no CSS bottom transition) */
       var lpcAddListingSheet = document.getElementById('lpc-add-listing-sheet');
       var pipSheetSyncRaf = 0;
@@ -6670,6 +8173,20 @@
         var inBurst = Date.now() < pipSheetSyncUntil;
         var overlayOpen = lpcAddOverlayEl && lpcAddOverlayEl.classList.contains('is-open');
         if (!overlayOpen && !inBurst) {
+          clearPipBottomInset();
+          return;
+        }
+        var pipAnchor = phoneWrapperEl ? phoneWrapperEl.getAttribute('data-pip-anchor') : null;
+        var bottomAnchored = !pipAnchor || pipAnchor === 'bl' || pipAnchor === 'br';
+        if (overlayOpen && !bottomAnchored) {
+          clearPipBottomInset();
+          return;
+        }
+        var overlayPipDocked =
+          pipMount.classList.contains('live-shop-pip--dfc-float') &&
+          lpcAddOverlayEl &&
+          pipMount.parentNode === lpcAddOverlayEl;
+        if (overlayPipDocked && !LPC_PIP_FOLLOW_ADD_SHEET) {
           clearPipBottomInset();
           return;
         }
@@ -6710,8 +8227,13 @@
       function floatPipForLpcAddSheet(enable) {
         if (!pipMount || !lpcAddOverlayEl || !lpcAddListingSheet) return;
         if (enable) {
+          if (typeof window.lpcFloatPipForLpcCreationFlow === 'function') window.lpcFloatPipForLpcCreationFlow(false);
           if (!shopRoot || !shopRoot.classList.contains('is-open')) return;
           pipMount.classList.add('live-shop-pip--dfc-float');
+          lpcAddOverlayEl.classList.toggle(
+            'lpc-add-listing-overlay--pip-static-bottom',
+            !LPC_PIP_FOLLOW_ADD_SHEET
+          );
           if (pipMount.parentNode === lpcAddOverlayEl) {
             syncPipBottomInset();
             return;
@@ -6732,10 +8254,160 @@
             pipMount._lpcShopReinsert = null;
           }
           pipMount.classList.remove('live-shop-pip--dfc-float');
+          lpcAddOverlayEl.classList.remove('lpc-add-listing-overlay--pip-static-bottom');
         }
         syncPipBottomInset();
       }
       window.lpcFloatPipForLpcAddSheet = floatPipForLpcAddSheet;
+
+      var LPC_CREATION_PIP_FOOTER_GAP_PX = 20;
+
+      function syncLpcCreationPipBottom() {
+        if (!lpcCreationPipHost || !ldpFooterRoot || !phoneWrapperEl) return;
+        var pa = phoneWrapperEl.getAttribute('data-pip-anchor');
+        var useFooter = !pa || pa === 'bl' || pa === 'br';
+        if (!useFooter) {
+          lpcCreationPipHost.style.removeProperty('--lpc-creation-pip-bottom');
+          return;
+        }
+        var h = ldpFooterRoot.offsetHeight || 0;
+        lpcCreationPipHost.style.setProperty(
+          '--lpc-creation-pip-bottom',
+          h + LPC_CREATION_PIP_FOOTER_GAP_PX + 'px'
+        );
+      }
+
+      function cancelLpcCreationPipExit() {
+        if (!pipMount) return;
+        if (pipMount._lpcCreationExitTimer) {
+          window.clearTimeout(pipMount._lpcCreationExitTimer);
+          pipMount._lpcCreationExitTimer = null;
+        }
+        if (pipMount._lpcCreationExitEnd) {
+          pipMount.removeEventListener('transitionend', pipMount._lpcCreationExitEnd);
+          pipMount._lpcCreationExitEnd = null;
+        }
+      }
+
+      function floatPipForLpcCreationFlow(enable, onUndockComplete) {
+        var runWhenUndocked = !enable && typeof onUndockComplete === 'function' ? onUndockComplete : null;
+        function fireWhenUndocked() {
+          if (!runWhenUndocked) return;
+          var fn = runWhenUndocked;
+          runWhenUndocked = null;
+          fn();
+        }
+
+        function queueCreationPipFadeIn() {
+          if (!pipMount || pipMount.parentNode !== lpcCreationPipHost) return;
+          syncLpcCreationPipBottom();
+          if (ldpFooterRoot) void ldpFooterRoot.offsetHeight;
+          void pipMount.offsetHeight;
+          syncLpcCreationPipBottom();
+          if (reduceMotion) {
+            pipMount.classList.add('live-shop-pip--lpc-creation-float-visible');
+            return;
+          }
+          requestAnimationFrame(function () {
+            syncLpcCreationPipBottom();
+            void pipMount.offsetHeight;
+            requestAnimationFrame(function () {
+              if (pipMount.parentNode === lpcCreationPipHost) {
+                syncLpcCreationPipBottom();
+                pipMount.classList.add('live-shop-pip--lpc-creation-float-visible');
+              }
+            });
+          });
+        }
+
+        if (!pipMount || !lpcCreationPipHost || !liveShowMedia || !streamVideo) {
+          fireWhenUndocked();
+          return;
+        }
+        if (enable) {
+          cancelLpcCreationPipExit();
+          syncLpcCreationPipBottom();
+          if (pipMount.parentNode === lpcCreationPipHost) {
+            queueCreationPipFadeIn();
+            return;
+          }
+          pipMount.classList.remove('live-shop-pip--lpc-creation-float-visible');
+          pipMount._lpcCreationPipReinsert = {
+            parent: pipMount.parentNode,
+            beforeEl: pipMount.nextSibling
+          };
+          pipMount.classList.add('live-shop-pip--lpc-creation-float');
+          lpcCreationPipHost.classList.add('is-active');
+          lpcCreationPipHost.setAttribute('aria-hidden', 'false');
+          pipMount.style.removeProperty('opacity');
+          lpcCreationPipHost.appendChild(pipMount);
+          liveShowMedia.classList.add('live-show__media--pip');
+          pinVideoInPip();
+          pipMount.setAttribute('aria-hidden', 'false');
+          queueCreationPipFadeIn();
+        } else {
+          cancelLpcCreationPipExit();
+
+          function finishLpcCreationPipUndock() {
+            pipMount.classList.remove('live-shop-pip--lpc-creation-float-visible');
+            pipMount.classList.remove('live-shop-pip--lpc-creation-float');
+            var cre = pipMount._lpcCreationPipReinsert;
+            if (cre && cre.parent) {
+              if (cre.beforeEl && cre.beforeEl.parentNode === cre.parent) {
+                cre.parent.insertBefore(pipMount, cre.beforeEl);
+              } else {
+                cre.parent.appendChild(pipMount);
+              }
+            }
+            pipMount._lpcCreationPipReinsert = null;
+            lpcCreationPipHost.classList.remove('is-active');
+            lpcCreationPipHost.setAttribute('aria-hidden', 'true');
+            lpcCreationPipHost.style.removeProperty('--lpc-creation-pip-bottom');
+            if (shopRoot && shopRoot.classList.contains('is-open')) {
+              liveShowMedia.classList.add('live-show__media--pip');
+              pinVideoInPip();
+            } else {
+              liveShowMedia.classList.remove('live-show__media--pip');
+              restoreVideoToMedia();
+            }
+            fireWhenUndocked();
+          }
+
+          var inCreationFloat =
+            pipMount.parentNode === lpcCreationPipHost &&
+            pipMount.classList.contains('live-shop-pip--lpc-creation-float');
+          if (inCreationFloat && !reduceMotion) {
+            pipMount.classList.remove('live-shop-pip--lpc-creation-float-visible');
+            var onExitTransitionEnd = function (e) {
+              if (!e || e.target !== pipMount) return;
+              if (e.propertyName !== 'opacity') return;
+              pipMount.removeEventListener('transitionend', onExitTransitionEnd);
+              pipMount._lpcCreationExitEnd = null;
+              if (pipMount._lpcCreationExitTimer) {
+                window.clearTimeout(pipMount._lpcCreationExitTimer);
+                pipMount._lpcCreationExitTimer = null;
+              }
+              if (!pipMount.classList.contains('live-shop-pip--lpc-creation-float')) return;
+              finishLpcCreationPipUndock();
+            };
+            pipMount._lpcCreationExitEnd = onExitTransitionEnd;
+            pipMount.addEventListener('transitionend', onExitTransitionEnd, false);
+            pipMount._lpcCreationExitTimer = window.setTimeout(function () {
+              pipMount._lpcCreationExitTimer = null;
+              if (pipMount._lpcCreationExitEnd) {
+                pipMount.removeEventListener('transitionend', pipMount._lpcCreationExitEnd);
+                pipMount._lpcCreationExitEnd = null;
+              }
+              if (pipMount.classList.contains('live-shop-pip--lpc-creation-float')) {
+                finishLpcCreationPipUndock();
+              }
+            }, 460);
+          } else {
+            finishLpcCreationPipUndock();
+          }
+        }
+      }
+      window.lpcFloatPipForLpcCreationFlow = floatPipForLpcCreationFlow;
 
       function tickPipBottomSheetSync() {
         pipSheetSyncRaf = 0;
@@ -6755,6 +8427,24 @@
         runPipBottomSheetSyncForMs(380);
       };
 
+      function applyLiveShopPipAnchor(anchor, persist) {
+        if (!phoneWrapperEl) return;
+        var next = anchor && PIP_ANCHORS[anchor] ? anchor : 'bl';
+        phoneWrapperEl.setAttribute('data-pip-anchor', next);
+        if (persist !== false) {
+          try {
+            localStorage.setItem(PIP_ANCHOR_LS_KEY, next);
+          } catch (e) {}
+        }
+        syncLpcCreationPipBottom();
+        if (typeof window.lpcSyncPipBottomSheets === 'function') {
+          window.lpcSyncPipBottomSheets();
+        } else {
+          syncPipBottomInset();
+        }
+      }
+      window.applyLiveShopPipAnchor = applyLiveShopPipAnchor;
+
       if (lpcAddListingSheet) {
         lpcAddListingSheet.addEventListener(
           'transitionend',
@@ -6765,10 +8455,15 @@
           false
         );
       }
-      window.addEventListener('resize', syncPipBottomInset, false);
+      function onWindowResizePipLayout() {
+        syncPipBottomInset();
+        if (pipMount && pipMount.parentNode === lpcCreationPipHost) syncLpcCreationPipBottom();
+      }
+      window.addEventListener('resize', onWindowResizePipLayout, false);
 
       function openShopLocal() {
         if (!shopRoot || !shopSheet) return;
+        if (typeof window.lpcFloatPipForLpcCreationFlow === 'function') window.lpcFloatPipForLpcCreationFlow(false);
         shopRoot.classList.remove('live-shop-root--closing-slide');
         if (pipMount) pipMount.classList.remove('live-shop-pip--minimized');
         lastShopFocus = document.activeElement;
@@ -6835,7 +8530,9 @@
         });
       }
 
-      function closeShopLocal() {
+      function closeShopLocal(opts) {
+        opts = opts || {};
+        var keepVideoInPipForLpc = !!opts.keepVideoInPipForLpc;
         if (!shopRoot) return;
         if (!shopRoot.classList.contains('is-open')) return;
         floatPipForLpcAddSheet(false);
@@ -6855,6 +8552,24 @@
               lastShopFocus.focus();
             }
           }
+        }
+
+        /* Shop → LDP creation: dismiss the sheet without PiP→live flight; creation flow reparents PiP on top of the form. */
+        if (keepVideoInPipForLpc && streamVideo && liveShowMedia && isVideoDockedInPip()) {
+          if (pipMount) pipMount.classList.remove('live-shop-pip--minimized');
+          shopRoot.classList.remove('live-shop-root--closing-slide');
+          shopRoot.classList.add('live-shop-root--instant-close');
+          void shopRoot.offsetWidth;
+          shopRoot.classList.remove('is-open');
+          shopRoot.setAttribute('aria-hidden', 'true');
+          restoreFocus();
+          if (shopSheet) setSheetWillChange(false);
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              shopRoot.classList.remove('live-shop-root--instant-close');
+            });
+          });
+          return;
         }
 
         /* Sheet/backdrop: instant dismiss (no slide). Stream: PiP→live flight first, then dismiss. */
@@ -6940,8 +8655,8 @@
         if (e && e.stopPropagation) e.stopPropagation();
         openShopLocal();
       };
-      window.closeShop = function () {
-        closeShopLocal();
+      window.closeShop = function (opts) {
+        closeShopLocal(opts);
       };
 
       if (shopBtn) {
@@ -6954,18 +8669,96 @@
       /* Close icon: same entry point as PiP tap (direct closeShopLocal — no separate onclick / extra handlers) */
       if (shopClose) shopClose.addEventListener('click', closeShopLocal);
 
-      /* PiP tap-to-dismiss: same close path as header X (pointer + capture for reliable gesture end) */
+      function clearPipDragInlinePosition() {
+        if (!pipMount) return;
+        pipMount.style.removeProperty('left');
+        pipMount.style.removeProperty('top');
+        pipMount.style.removeProperty('right');
+        pipMount.style.removeProperty('bottom');
+      }
+
+      function snapPipToNearestAnchorFromDrag() {
+        if (!pipMount || !phoneWrapperEl) return;
+        var parent = pipMount.offsetParent;
+        if (!parent) return;
+        var pr = parent.getBoundingClientRect();
+        var br = pipMount.getBoundingClientRect();
+        var cx = br.left + br.width / 2 - pr.left;
+        var cy = br.top + br.height / 2 - pr.top;
+        var nx = cx / Math.max(1, pr.width);
+        var ny = cy / Math.max(1, pr.height);
+        var col = nx < 0.5 ? 'l' : 'r';
+        var row = ny < 1 / 3 ? 't' : ny < 2 / 3 ? 'm' : 'b';
+        var anchor =
+          row === 't' && col === 'l'
+            ? 'tl'
+            : row === 't'
+              ? 'tr'
+              : row === 'm' && col === 'l'
+                ? 'ml'
+                : row === 'm'
+                  ? 'mr'
+                  : col === 'l'
+                    ? 'bl'
+                    : 'br';
+        clearPipDragInlinePosition();
+        applyLiveShopPipAnchor(anchor, true);
+      }
+
+      /* PiP: drag to snap (TL/TR/ML/MR/BL/BR); tap body still dismisses full-page shop */
       if (pipMount) {
         var pipPressPointerId = null;
+        var pipDragMoved = false;
+        var pipDragStartX = 0;
+        var pipDragStartY = 0;
+        var pipGrabVX = 0;
+        var pipGrabVY = 0;
+        var PIP_DRAG_THRESHOLD = 10;
         pipMount.addEventListener('pointerdown', function (e) {
-          if (!shopRoot || !shopRoot.classList.contains('is-open')) return;
+          if (e.target && e.target.closest && e.target.closest('.live-shop-pip__close')) return;
+          var onCreationPip = pipMount.classList.contains('live-shop-pip--lpc-creation-float');
+          var onOverlayPip =
+            pipMount.classList.contains('live-shop-pip--dfc-float') &&
+            lpcAddOverlayEl &&
+            pipMount.parentNode === lpcAddOverlayEl;
+          var shopOpen = shopRoot && shopRoot.classList.contains('is-open');
+          if (!onCreationPip && !onOverlayPip && !shopOpen) return;
           if (pipMount.classList.contains('live-shop-pip--minimized')) return;
           if (e.pointerType === 'mouse' && e.button !== 0) return;
+          pipDragMoved = false;
+          pipDragStartX = e.clientX;
+          pipDragStartY = e.clientY;
+          var br = pipMount.getBoundingClientRect();
+          pipGrabVX = e.clientX - br.left;
+          pipGrabVY = e.clientY - br.top;
           pipPressPointerId = e.pointerId;
           pipMount.classList.add('live-shop-pip--pressed');
           try {
             pipMount.setPointerCapture(e.pointerId);
           } catch (err) {}
+        });
+        pipMount.addEventListener('pointermove', function (e) {
+          if (e.pointerId !== pipPressPointerId) return;
+          var dx = e.clientX - pipDragStartX;
+          var dy = e.clientY - pipDragStartY;
+          if (!pipDragMoved && dx * dx + dy * dy < PIP_DRAG_THRESHOLD * PIP_DRAG_THRESHOLD) return;
+          var parent = pipMount.offsetParent;
+          if (!parent) return;
+          if (!pipDragMoved) {
+            pipDragMoved = true;
+            pipMount.classList.add('live-shop-pip--dragging');
+          }
+          var pr = parent.getBoundingClientRect();
+          var pw = pipMount.getBoundingClientRect().width;
+          var ph = pipMount.getBoundingClientRect().height;
+          var nl = e.clientX - pr.left - pipGrabVX;
+          var nt = e.clientY - pr.top - pipGrabVY;
+          nl = Math.max(0, Math.min(nl, pr.width - pw));
+          nt = Math.max(0, Math.min(nt, pr.height - ph));
+          pipMount.style.left = Math.round(nl) + 'px';
+          pipMount.style.top = Math.round(nt) + 'px';
+          pipMount.style.right = 'auto';
+          pipMount.style.bottom = 'auto';
         });
         pipMount.addEventListener('pointerup', function (e) {
           if (e.pointerId !== pipPressPointerId) return;
@@ -6974,6 +8767,14 @@
           try {
             pipMount.releasePointerCapture(e.pointerId);
           } catch (err2) {}
+          if (pipDragMoved) {
+            pipMount.classList.remove('live-shop-pip--dragging');
+            snapPipToNearestAnchorFromDrag();
+            pipDragMoved = false;
+            return;
+          }
+          pipDragMoved = false;
+          if (pipMount.classList.contains('live-shop-pip--lpc-creation-float')) return;
           if (!shopRoot || !shopRoot.classList.contains('is-open')) return;
           if (pipMount.classList.contains('live-shop-pip--minimized')) return;
           if (e.pointerType === 'mouse' && e.button !== 0) return;
@@ -6988,6 +8789,11 @@
           if (e.pointerId !== pipPressPointerId) return;
           pipPressPointerId = null;
           pipMount.classList.remove('live-shop-pip--pressed');
+          if (pipDragMoved) {
+            pipMount.classList.remove('live-shop-pip--dragging');
+            snapPipToNearestAnchorFromDrag();
+          }
+          pipDragMoved = false;
         });
         pipMount.addEventListener(
           'click',
@@ -7011,6 +8817,12 @@
           pipCloseBtn.addEventListener('click', function (e) {
             e.stopPropagation();
             e.preventDefault();
+            if (pipMount && pipMount.classList.contains('live-shop-pip--lpc-creation-float')) {
+              if (typeof window.lpcFloatPipForLpcCreationFlow === 'function') {
+                window.lpcFloatPipForLpcCreationFlow(false);
+              }
+              return;
+            }
             if (shopRoot && shopRoot.classList.contains('is-open') && pipMount) {
               pipMount.classList.add('live-shop-pip--minimized');
             }
@@ -7031,6 +8843,13 @@
         },
         false
       );
+
+      try {
+        var _savedAnchor = localStorage.getItem(PIP_ANCHOR_LS_KEY);
+        if (_savedAnchor && PIP_ANCHORS[_savedAnchor] && phoneWrapperEl) {
+          phoneWrapperEl.setAttribute('data-pip-anchor', _savedAnchor);
+        }
+      } catch (e0) {}
     })();
 
     /* Add sheet + creation form (flow-ldp) — Live Run XP listing-options + LDP */
@@ -7046,7 +8865,28 @@
       var ldpPrice = document.getElementById('ldp-price');
       var ldpShipping = document.querySelector('#flow-ldp .ldp__shipping');
       var ldpSelections = document.getElementById('ldp-selections');
+      var ldpDefaultView = document.getElementById('ldp-default-view');
+      var createListing = document.getElementById('lpc-create-listing');
+      var createTemplate = document.getElementById('lpc-create-template');
+      var createNav = document.getElementById('lpc-create-nav');
+      var createNavTitle = document.getElementById('lpc-create-nav-title');
+      var createNavTrail = document.getElementById('lpc-create-nav-trail');
+      var trailIconClose = document.getElementById('lpc-create-nav-trail-icon-close');
+      var trailIconMore = document.getElementById('lpc-create-nav-trail-icon-more');
+      var saveDraftBtn = document.getElementById('ldp-save-draft-btn');
+      var nextStepBtn = document.getElementById('ldp-next-step-btn');
+      var ldpQtyVal = document.getElementById('lpc-listing-qty-val');
+      var ldpQtyMinus = document.getElementById('lpc-listing-qty-minus');
+      var ldpQtyPlus = document.getElementById('lpc-listing-qty-plus');
       var ldpCarouselIdx = 0;
+      var ldpScrollEl = ldpTemplate ? ldpTemplate.querySelector('.ldp__scroll') : null;
+      var fakeKbEl = document.getElementById('lpc-fake-keyboard');
+      var lpcFakeKbTarget = null;
+
+      function syncLpcCreateNavScrollBorder() {
+        if (!createNav || !ldpScrollEl) return;
+        createNav.classList.toggle('lpc-create-nav--scrolled', ldpScrollEl.scrollTop > 2);
+      }
 
       function showLpcToast(msg) {
         var toast = document.createElement('div');
@@ -7081,6 +8921,141 @@
         if (typeof window.lpcSyncPipBottomSheets === 'function') window.lpcSyncPipBottomSheets();
       }
 
+      var fieldSheetRoot = document.getElementById('lpc-field-sheet-root');
+      var fieldSheetDim = document.getElementById('lpc-field-sheet-dim');
+      var fieldSheetPanel = document.getElementById('lpc-field-sheet');
+      var fieldSheetTitle = document.getElementById('lpc-field-sheet-title');
+      var fieldSheetList = document.getElementById('lpc-field-sheet-list');
+      var fieldSheetClose = document.getElementById('lpc-field-sheet-close');
+      var lpcFieldSheetAnchor = null;
+      var WOM_CONTEMP = 'Women\u2019s Contemporary';
+      var LPC_OPT_CATEGORY = [
+        WOM_CONTEMP,
+        'Men\u2019s Casual',
+        'Activewear',
+        'Accessories',
+        'Beauty & wellness',
+        'Vintage & resale'
+      ];
+      var LPC_OPT_WEIGHT = ['Under 1 lb', '1 lb', '2 lb', '3\u20135 lb', '5\u201310 lb', 'Over 10 lb'];
+      var LPC_OPT_RESTRICTED = [
+        'None',
+        'Contains liquids',
+        'Aerosols',
+        'Batteries / electronics',
+        'Other restricted'
+      ];
+      var LPC_FIELD_SHEET = {
+        'listing-category': { title: 'Category', options: LPC_OPT_CATEGORY },
+        'template-category': { title: 'Category', options: LPC_OPT_CATEGORY },
+        'listing-brand': {
+          title: 'Brand',
+          options: ['Nike', 'Adidas', 'Lululemon', 'Zara', 'H&M', 'Free People', 'Other']
+        },
+        'listing-weight': { title: 'Weight', options: LPC_OPT_WEIGHT },
+        'template-weight': { title: 'Weight', options: LPC_OPT_WEIGHT },
+        'listing-restricted': { title: 'Restricted items', options: LPC_OPT_RESTRICTED },
+        'template-restricted': { title: 'Restricted items', options: LPC_OPT_RESTRICTED },
+        'template-brands': {
+          title: 'Brand(s)',
+          options: [
+            'Lulu Lemon, Alo, Vuori, Commense',
+            'Nike, Jordan, New Balance',
+            'Luxury & designer',
+            'Outdoor & technical',
+            'Basics & essentials'
+          ]
+        }
+      };
+
+      function closeLpcFakeKeyboard() {
+        lpcFakeKbTarget = null;
+        if (ldpTemplate) ldpTemplate.classList.remove('ldp--fake-kb-open');
+        if (fakeKbEl) {
+          fakeKbEl.classList.remove('lpc-fake-kb--open');
+          fakeKbEl.setAttribute('aria-hidden', 'true');
+        }
+      }
+
+      function openLpcFakeKeyboardForField(el) {
+        if (!fakeKbEl || !ldpTemplate || !el) return;
+        if (!ldpTemplate.classList.contains('ldp--creation-flow')) return;
+        lpcFakeKbTarget = el;
+        ldpTemplate.classList.add('ldp--fake-kb-open');
+        fakeKbEl.classList.add('lpc-fake-kb--open');
+        fakeKbEl.setAttribute('aria-hidden', 'false');
+        try {
+          el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        } catch (eKb0) {}
+      }
+
+      function closeLpcFieldSheet() {
+        if (!fieldSheetRoot) {
+          lpcFieldSheetAnchor = null;
+          return;
+        }
+        if (fieldSheetRoot.classList.contains('is-open')) {
+          fieldSheetRoot.classList.remove('is-open');
+          fieldSheetRoot.setAttribute('aria-hidden', 'true');
+          if (fieldSheetList) fieldSheetList.innerHTML = '';
+          if (typeof window.lpcSyncPipBottomSheets === 'function') window.lpcSyncPipBottomSheets();
+        }
+        lpcFieldSheetAnchor = null;
+      }
+
+      function getLpcDropdownValueEl(dd) {
+        return dd ? dd.querySelector('.lpc-f__stack .lpc-f__value') : null;
+      }
+
+      function openLpcFieldSheet(dd) {
+        if (!fieldSheetRoot || !fieldSheetTitle || !fieldSheetList || !dd) return;
+        closeLpcFakeKeyboard();
+        var key = dd.getAttribute('data-lpc-field');
+        if (!key) return;
+        var spec = LPC_FIELD_SHEET[key];
+        if (!spec) return;
+        lpcFieldSheetAnchor = dd;
+        var cur = '';
+        var vel = getLpcDropdownValueEl(dd);
+        if (vel) cur = (vel.textContent || '').trim();
+        fieldSheetTitle.textContent = spec.title;
+        fieldSheetList.innerHTML = '';
+        spec.options.forEach(function (opt) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'lpc-field-sheet__row';
+          b.textContent = opt;
+          if (opt === cur) b.classList.add('is-current');
+          fieldSheetList.appendChild(b);
+        });
+        fieldSheetRoot.classList.add('is-open');
+        fieldSheetRoot.setAttribute('aria-hidden', 'false');
+        fieldSheetList.scrollTop = 0;
+        if (typeof window.lpcSyncPipBottomSheets === 'function') window.lpcSyncPipBottomSheets();
+        if (fieldSheetPanel) {
+          try {
+            fieldSheetPanel.focus({ preventScroll: true });
+          } catch (eFs) {}
+        }
+      }
+
+      function applyLpcFieldSheetValue(text) {
+        var dd = lpcFieldSheetAnchor;
+        if (!dd) return;
+        var key = dd.getAttribute('data-lpc-field');
+        var vel = getLpcDropdownValueEl(dd);
+        if (vel) vel.textContent = text;
+        if (key === 'listing-brand' && vel) {
+          dd.classList.remove('lpc-f__dropdown--ghost');
+          vel.classList.remove('lpc-f__value--muted');
+        }
+        if ((key === 'listing-restricted' || key === 'template-restricted') && vel) {
+          if (text === 'None') vel.classList.add('lpc-f__value--muted');
+          else vel.classList.remove('lpc-f__value--muted');
+        }
+        closeLpcFieldSheet();
+      }
+
       function updateLdpCarousel() {
         var track = document.getElementById('ldp-carousel-track');
         if (!track) return;
@@ -7091,18 +9066,126 @@
         });
       }
 
+      function syncLpcFloatWrap(wrap) {
+        if (!wrap || wrap.nodeType !== 1 || !wrap.hasAttribute('data-lpc-float')) return;
+        var el = wrap.querySelector('.lpc-wds-float__field');
+        if (!el) return;
+        var raw = el.value != null ? String(el.value) : '';
+        wrap.classList.toggle('has-value', raw.trim().length > 0);
+      }
+
+      function syncAllLpcFloatFields() {
+        if (!ldpTemplate) return;
+        ldpTemplate.querySelectorAll('[data-lpc-float]').forEach(function (w) {
+          syncLpcFloatWrap(w);
+        });
+      }
+
+      function setCreateNavTrailMode(trailMode) {
+        if (!createNavTrail || !trailIconClose || !trailIconMore) return;
+        createNavTrail.dataset.lpcTrail = trailMode === 'more' ? 'more' : 'close';
+        if (trailMode === 'more') {
+          trailIconClose.style.display = 'none';
+          trailIconMore.style.display = '';
+          createNavTrail.setAttribute('aria-label', 'More');
+          createNavTrail.title = 'More';
+        } else {
+          trailIconClose.style.display = '';
+          trailIconMore.style.display = 'none';
+          createNavTrail.setAttribute('aria-label', 'Close');
+          createNavTrail.title = 'Close';
+        }
+      }
+
+      function exitCreationChrome() {
+        if (!ldpTemplate) return;
+        closeLpcFieldSheet();
+        closeLpcFakeKeyboard();
+        ['lpc-listing-title-input', 'lpc-listing-desc-input', 'lpc-template-title-input'].forEach(function (fid) {
+          var n = document.getElementById(fid);
+          if (n) n.value = '';
+        });
+        ldpTemplate.querySelectorAll('[data-lpc-float]').forEach(function (w) {
+          w.classList.remove('is-focus');
+          syncLpcFloatWrap(w);
+        });
+        ldpTemplate.classList.remove('ldp--creation-flow');
+        if (createNav) createNav.classList.remove('lpc-create-nav--scrolled');
+        if (ldpDefaultView) ldpDefaultView.removeAttribute('hidden');
+        if (createListing) createListing.setAttribute('hidden', '');
+        if (createTemplate) createTemplate.setAttribute('hidden', '');
+        if (createNav) createNav.setAttribute('aria-hidden', 'true');
+        setCreateNavTrailMode('close');
+        if (ldpTitle) ldpTitle.textContent = 'Assorted Sneakers: Nikes, Addidas, and more';
+        if (ldpPrice) ldpPrice.textContent = '$1';
+        if (ldpShipping) ldpShipping.textContent = '+ $7.50 Shipping + Taxes';
+        if (ldpSelections) ldpSelections.style.display = '';
+      }
+
+      function enterListingCreationChrome() {
+        if (!ldpTemplate) return;
+        exitCreationChrome();
+        ldpTemplate.classList.add('ldp--creation-flow');
+        if (ldpDefaultView) ldpDefaultView.setAttribute('hidden', '');
+        if (createListing) createListing.removeAttribute('hidden');
+        if (createTemplate) createTemplate.setAttribute('hidden', '');
+        if (createNav) createNav.setAttribute('aria-hidden', 'false');
+        if (createNavTitle) createNavTitle.textContent = 'Create Listing';
+        setCreateNavTrailMode('close');
+        requestAnimationFrame(syncLpcCreateNavScrollBorder);
+      }
+
+      function enterTemplateCreationChrome() {
+        if (!ldpTemplate) return;
+        exitCreationChrome();
+        ldpTemplate.classList.add('ldp--creation-flow');
+        if (ldpDefaultView) ldpDefaultView.setAttribute('hidden', '');
+        if (createListing) createListing.setAttribute('hidden', '');
+        if (createTemplate) createTemplate.removeAttribute('hidden');
+        if (createNav) createNav.setAttribute('aria-hidden', 'false');
+        if (createNavTitle) createNavTitle.textContent = 'Create Template';
+        setCreateNavTrailMode('close');
+        requestAnimationFrame(syncLpcCreateNavScrollBorder);
+      }
+
       window.lpcCloseCreation = function () {
-        if (!flow1 || !flowLdp) return;
-        flow1.classList.add('active', 'push-from-left');
-        flowLdp.classList.add('push-to-right');
-        window.setTimeout(function () {
-          flowLdp.classList.remove('active', 'push-to-right');
-          flow1.classList.remove('push-from-left');
-        }, 350);
+        function continueAfterCreationPipOut() {
+          exitCreationChrome();
+          closeLpcAddSheet();
+          if (typeof window.closeShop === 'function') window.closeShop();
+          if (typeof window.lpcSyncPipBottomSheets === 'function') window.lpcSyncPipBottomSheets();
+          if (!flow1 || !flowLdp) return;
+          var LDP_BOTTOM_MS = 380;
+          /* Show live flow under LDP before exit: .flow-panel is display:none without .active, so exiting
+             over a hidden #flow-1 reads as black until the timeout. Keep #flow-ldp.active (z-index 680) on top. */
+          flow1.classList.add('active');
+          void flowLdp.offsetWidth;
+          flowLdp.classList.add('ldp-exit-to-bottom');
+          window.setTimeout(function () {
+            flowLdp.classList.remove('active', 'ldp-exit-to-bottom', 'ldp-enter-from-bottom');
+            flow1.classList.add('active');
+          }, LDP_BOTTOM_MS);
+        }
+
+        var pipEl = document.getElementById('live-shop-pip');
+        var pipInCreationHost =
+          pipEl &&
+          pipEl.classList.contains('live-shop-pip--lpc-creation-float') &&
+          pipEl.parentNode &&
+          pipEl.parentNode.id === 'lpc-creation-pip-host';
+
+        if (pipInCreationHost && typeof window.lpcFloatPipForLpcCreationFlow === 'function') {
+          window.lpcFloatPipForLpcCreationFlow(false, continueAfterCreationPipOut);
+        } else {
+          if (typeof window.lpcFloatPipForLpcCreationFlow === 'function') {
+            window.lpcFloatPipForLpcCreationFlow(false);
+          }
+          continueAfterCreationPipOut();
+        }
       };
 
-      window.lpcSubmitCreation = function () {
-        showLpcToast('Saved as draft');
+      window.lpcSubmitCreation = function (toastMsg) {
+        showLpcToast(toastMsg || 'Saved as draft');
         window.setTimeout(function () {
           if (window.lpcCloseCreation) window.lpcCloseCreation();
         }, 600);
@@ -7110,33 +9193,63 @@
 
       function openCreationForm(mode) {
         if (!flow1 || !flowLdp || !ldpTemplate || !ldpTitle || !ldpPrice || !ldpSelections) return;
+        if (typeof window.lpcFloatPipForLpcCreationFlow === 'function') window.lpcFloatPipForLpcCreationFlow(false);
         closeLpcAddSheet();
-        if (window.closeShop) window.closeShop();
+        closeLpcFieldSheet();
+        closeLpcFakeKeyboard();
+        if (window.closeShop) {
+          if (mode === 'product' || mode === 'template') {
+            window.closeShop({ keepVideoInPipForLpc: true });
+          } else {
+            window.closeShop();
+          }
+        }
         ldpTemplate.dataset.pinType = mode;
         if (mode === 'import') {
+          exitCreationChrome();
           ldpTitle.textContent = 'Import from Inventory';
           ldpPrice.textContent = 'Choose items to import';
           if (ldpShipping) ldpShipping.textContent = 'Import existing templates or listings.';
           ldpSelections.style.display = 'none';
         } else if (mode === 'product') {
-          ldpTitle.textContent = 'Create Listing';
-          ldpPrice.textContent = '$1';
-          if (ldpShipping) ldpShipping.textContent = 'For unique items with different size or color variants.';
-          ldpSelections.style.display = '';
-        } else {
-          ldpTitle.textContent = 'Create Template';
-          ldpPrice.textContent = '$1';
-          if (ldpShipping) ldpShipping.textContent = 'For similar items you want to list quickly.';
-          ldpSelections.style.display = '';
+          enterListingCreationChrome();
+        } else if (mode === 'template') {
+          enterTemplateCreationChrome();
+        }
+        if (mode === 'product' || mode === 'template') {
+          syncAllLpcFloatFields();
         }
         ldpCarouselIdx = 0;
         updateLdpCarousel();
-        flow1.classList.add('push-to-left');
-        flowLdp.classList.add('active', 'push-from-right');
+        var LDP_BOTTOM_MS = 380;
+        var PIP_DOCK_AFTER_MS = 480;
+        flow1.classList.remove('active');
+        flowLdp.classList.remove('ldp-exit-to-bottom', 'push-from-right', 'push-to-left');
+        flowLdp.classList.add('active', 'ldp-enter-from-bottom');
         window.setTimeout(function () {
-          flow1.classList.remove('active', 'push-to-left');
-          flowLdp.classList.remove('push-from-right');
-        }, 350);
+          flowLdp.classList.remove('ldp-enter-from-bottom');
+        }, LDP_BOTTOM_MS);
+        if (mode === 'product' || mode === 'template') {
+          function dockLpcCreationPip() {
+            if (!flowLdp || !flowLdp.classList.contains('active')) return;
+            if (typeof window.lpcFloatPipForLpcCreationFlow === 'function') window.lpcFloatPipForLpcCreationFlow(true);
+          }
+          /* Shop → form: stream stays in PiP; only reparent + fade — no full-view detour. */
+          var videoInPip =
+            typeof window.lpcIsVideoDockedInPip === 'function' && window.lpcIsVideoDockedInPip();
+          if (videoInPip) {
+            requestAnimationFrame(function () {
+              requestAnimationFrame(dockLpcCreationPip);
+            });
+          } else {
+            window.setTimeout(dockLpcCreationPip, PIP_DOCK_AFTER_MS);
+          }
+        }
+        requestAnimationFrame(syncLpcCreateNavScrollBorder);
+      }
+
+      if (ldpScrollEl && createNav) {
+        ldpScrollEl.addEventListener('scroll', syncLpcCreateNavScrollBorder, { passive: true });
       }
 
       if (overlay) {
@@ -7145,6 +9258,173 @@
           if (t === overlay || (t && t.classList && t.classList.contains('lpc-add-show__dim'))) closeLpcAddSheet();
         });
       }
+      if (fieldSheetRoot && fieldSheetDim) {
+        fieldSheetRoot.addEventListener('click', function (e) {
+          var t = e.target;
+          if (t === fieldSheetRoot || t === fieldSheetDim) closeLpcFieldSheet();
+        });
+      }
+      if (fieldSheetClose) {
+        fieldSheetClose.addEventListener('click', function () {
+          closeLpcFieldSheet();
+        });
+      }
+      if (fieldSheetList) {
+        fieldSheetList.addEventListener('click', function (e) {
+          var row = e.target.closest('.lpc-field-sheet__row');
+          if (!row || !fieldSheetList.contains(row)) return;
+          applyLpcFieldSheetValue((row.textContent || '').trim());
+        });
+      }
+      if (ldpTemplate) {
+        ldpTemplate.addEventListener('click', function (e) {
+          var clrBtn = e.target.closest('.lpc-wds-float__clear');
+          if (clrBtn && ldpTemplate.contains(clrBtn)) {
+            var wrapCl = clrBtn.closest('[data-lpc-float]');
+            var fel = wrapCl && wrapCl.querySelector('.lpc-wds-float__field');
+            if (fel) {
+              e.preventDefault();
+              fel.value = '';
+              syncLpcFloatWrap(wrapCl);
+              fel.focus();
+            }
+            return;
+          }
+          var dd = e.target.closest('[data-lpc-field].lpc-f__dropdown');
+          if (!dd || !ldpTemplate.contains(dd)) return;
+          e.preventDefault();
+          openLpcFieldSheet(dd);
+        });
+        ldpTemplate.addEventListener('keydown', function (e) {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          var dd = e.target.closest('[data-lpc-field].lpc-f__dropdown');
+          if (!dd || !ldpTemplate.contains(dd)) return;
+          e.preventDefault();
+          openLpcFieldSheet(dd);
+        });
+        ldpTemplate.addEventListener(
+          'pointerdown',
+          function (e) {
+            if (e.target.closest && e.target.closest('.lpc-wds-float__clear')) return;
+            var wrap = e.target.closest('[data-lpc-float]');
+            if (!wrap || !ldpTemplate.contains(wrap)) return;
+            if (e.target.closest && e.target.closest('input, textarea')) return;
+            var f = wrap.querySelector('.lpc-wds-float__field');
+            if (f && typeof f.focus === 'function') {
+              e.preventDefault();
+              f.focus({ preventScroll: false });
+            }
+          },
+          true
+        );
+        ldpTemplate.addEventListener('input', function (e) {
+          var t = e.target;
+          if (!t || !t.classList || !t.classList.contains('lpc-wds-float__field')) return;
+          var wrap = t.closest('[data-lpc-float]');
+          if (!wrap || !ldpTemplate.contains(wrap)) return;
+          syncLpcFloatWrap(wrap);
+        });
+        ldpTemplate.addEventListener(
+          'focusin',
+          function (e) {
+            var t = e.target;
+            var wrap = t && t.closest && t.closest('[data-lpc-float]');
+            if (!wrap || !ldpTemplate.contains(wrap)) return;
+            wrap.classList.add('is-focus');
+            if (t && t.classList && t.classList.contains('lpc-wds-float__field')) {
+              if (ldpTemplate.classList.contains('ldp--creation-flow')) {
+                openLpcFakeKeyboardForField(t);
+              }
+            }
+          },
+          true
+        );
+        ldpTemplate.addEventListener(
+          'focusout',
+          function (e) {
+            var wrap = e.target && e.target.closest && e.target.closest('[data-lpc-float]');
+            if (!wrap || !ldpTemplate.contains(wrap)) return;
+            window.setTimeout(function () {
+              var act = document.activeElement;
+              if (!wrap.contains(act)) {
+                wrap.classList.remove('is-focus');
+              }
+              var onKb = fakeKbEl && act && fakeKbEl.contains(act);
+              var onField =
+                act &&
+                act.classList &&
+                act.classList.contains('lpc-wds-float__field') &&
+                ldpTemplate.contains(act);
+              if (!onField && !onKb) {
+                closeLpcFakeKeyboard();
+              }
+            }, 0);
+          },
+          true
+        );
+      }
+
+      function lpcFakeKbInsert(ch) {
+        var el = lpcFakeKbTarget;
+        if (!el || !fakeKbEl || !fakeKbEl.classList.contains('lpc-fake-kb--open')) return;
+        if (!el.classList || !el.classList.contains('lpc-wds-float__field')) return;
+        var wrap = el.closest('[data-lpc-float]');
+        if (ch === 'bk') {
+          var s = el.value != null ? String(el.value) : '';
+          el.value = s.slice(0, Math.max(0, s.length - 1));
+        } else {
+          el.value = (el.value != null ? String(el.value) : '') + ch;
+        }
+        if (wrap) syncLpcFloatWrap(wrap);
+      }
+
+      if (fakeKbEl) {
+        fakeKbEl.addEventListener(
+          'pointerdown',
+          function (e) {
+            var k = e.target.closest('[data-lpc-kb]');
+            if (!k || !fakeKbEl.contains(k)) return;
+            var code = k.getAttribute('data-lpc-kb');
+            if (code === null) return;
+            e.preventDefault();
+            lpcFakeKbInsert(code);
+            var tEl = lpcFakeKbTarget;
+            if (tEl && typeof tEl.focus === 'function') {
+              try {
+                tEl.focus({ preventScroll: true });
+              } catch (eKb1) {
+                tEl.focus();
+              }
+            }
+          },
+          true
+        );
+      }
+      var fakeKbDone = document.getElementById('lpc-fake-kb-done');
+      if (fakeKbDone) {
+        fakeKbDone.addEventListener('click', function () {
+          var el = lpcFakeKbTarget;
+          closeLpcFakeKeyboard();
+          if (el && typeof el.blur === 'function') el.blur();
+        });
+      }
+
+      document.addEventListener(
+        'keydown',
+        function (e) {
+          if (e.key !== 'Escape') return;
+          if (fieldSheetRoot && fieldSheetRoot.classList.contains('is-open')) {
+            closeLpcFieldSheet();
+            return;
+          }
+          if (fakeKbEl && fakeKbEl.classList.contains('lpc-fake-kb--open')) {
+            var elEsc = lpcFakeKbTarget;
+            closeLpcFakeKeyboard();
+            if (elEsc && typeof elEsc.blur === 'function') elEsc.blur();
+          }
+        },
+        true
+      );
       if (list) {
         list.addEventListener('click', function (e) {
           var row = e.target.closest('[data-lpc-add-action]');
@@ -7185,6 +9465,52 @@
       if (ldpCta) {
         ldpCta.addEventListener('click', function () {
           if (window.lpcSubmitCreation) window.lpcSubmitCreation();
+        });
+      }
+      if (createNavTrail) {
+        createNavTrail.addEventListener('click', function () {
+          if (createNavTrail.dataset.lpcTrail === 'close' && window.lpcCloseCreation) window.lpcCloseCreation();
+        });
+      }
+      if (saveDraftBtn) {
+        saveDraftBtn.addEventListener('click', function () {
+          showLpcToast('Saved as draft');
+        });
+      }
+      if (nextStepBtn) {
+        nextStepBtn.addEventListener('click', function () {
+          if (window.lpcSubmitCreation) window.lpcSubmitCreation('Next step');
+        });
+      }
+      if (flowLdp) {
+        flowLdp.addEventListener('click', function (e) {
+          var chip = e.target.closest && e.target.closest('.lpc-f__chip-row .lpc-f__chip');
+          if (!chip || chip.classList.contains('lpc-f__chip--more')) return;
+          var row = chip.closest('.lpc-f__chip-row');
+          if (!row) return;
+          var multi = row.getAttribute('data-lpc-multi') === '1';
+          if (!multi) {
+            if (chip.classList.contains('is-selected')) return;
+            row.querySelectorAll('.lpc-f__chip').forEach(function (c) {
+              if (!c.classList.contains('lpc-f__chip--more')) c.classList.remove('is-selected');
+            });
+            chip.classList.add('is-selected');
+          } else {
+            chip.classList.toggle('is-selected');
+          }
+        });
+      }
+      if (ldpQtyVal && ldpQtyMinus && ldpQtyPlus) {
+        function ldpReadQty() {
+          var n = parseInt(ldpQtyVal.textContent, 10);
+          return isNaN(n) || n < 1 ? 1 : n;
+        }
+        ldpQtyMinus.addEventListener('click', function () {
+          var q = ldpReadQty();
+          if (q > 1) ldpQtyVal.textContent = String(q - 1);
+        });
+        ldpQtyPlus.addEventListener('click', function () {
+          ldpQtyVal.textContent = String(ldpReadQty() + 1);
         });
       }
 
@@ -7247,6 +9573,143 @@
           });
         });
       })();
+
+      /* Deeplink into listing / template / import creation (same as Add to Show), not the static LDP chrome.
+         Supports query, hyphenated query keys, and hash (including #create=listing style). */
+      function normalizeLpcCreateToken(tok) {
+        tok = (tok || '')
+          .trim()
+          .toLowerCase()
+          .replace(/\+/g, ' ')
+          .replace(/^['"]|['"]$/g, '');
+        if (!tok) return null;
+        if (tok === 'import' || tok === 'inventory') return 'import';
+        if (tok === 'template' || tok === 'templates') return 'template';
+        if (tok === 'listing' || tok === 'listings' || tok === 'product') return 'product';
+        if (tok === 'createlisting' || tok === 'newlisting' || tok === 'new-listing') return 'product';
+        if (tok === 'createtemplate' || tok === 'newtemplate' || tok === 'new-template') return 'template';
+        if (tok === 'createimport' || tok === 'newimport' || tok === 'frominventory') return 'import';
+        return null;
+      }
+
+      function parseLpcCreateIntentFromLocation() {
+        try {
+          var q = new URLSearchParams(window.location.search);
+          var c = (q.get('create') || '').trim().toLowerCase();
+          if (c) {
+            var m0 = normalizeLpcCreateToken(c);
+            if (m0) return m0;
+          }
+          var lpc = (q.get('lpc') || '').trim().toLowerCase();
+          if (lpc) {
+            var m1 = normalizeLpcCreateToken(lpc);
+            if (m1) return m1;
+          }
+          /* e.g. ?create-listing=1 or ?create-template (Tools / Figma often emit hyphenated flags) */
+          if (q.has('create-listing') || q.has('create-product')) return 'product';
+          if (q.has('create-template')) return 'template';
+          if (q.has('create-import')) return 'import';
+          var flow = (q.get('flow') || '').trim().toLowerCase();
+          if (flow) {
+            if (flow === 'create-listing' || flow === 'create-product' || flow === 'listing' || flow === 'product')
+              return 'product';
+            if (flow === 'create-template' || flow === 'template') return 'template';
+            if (flow === 'create-import' || flow === 'import' || flow === 'inventory') return 'import';
+          }
+
+          var hEnc = (window.location.hash || '').replace(/^#/, '').trim();
+          var raw = decodeURIComponent(hEnc.replace(/\+/g, ' ')).trim().toLowerCase();
+          if (!raw) return null;
+          var head = raw.split(/[&?]/)[0];
+
+          if (head.indexOf('create-') === 0) {
+            return normalizeLpcCreateToken(head.slice(7));
+          }
+          if (head.indexOf('ldp-create-') === 0) {
+            return normalizeLpcCreateToken(head.slice(11));
+          }
+          if (head.indexOf('create=') === 0) {
+            return normalizeLpcCreateToken(head.slice(7));
+          }
+          if (head.indexOf('lpc=') === 0) {
+            return normalizeLpcCreateToken(head.slice(4));
+          }
+          if (head === 'listing' || head === 'listings' || head === 'product') return 'product';
+          if (head === 'template' || head === 'templates') return 'template';
+          if (head === 'import' || head === 'inventory') return 'import';
+          if (head === 'createlisting' || head === 'createtemplate' || head === 'createimport') {
+            return normalizeLpcCreateToken(head);
+          }
+        } catch (e) {}
+        return null;
+      }
+
+      function stripLpcCreateIntentFromUrl() {
+        try {
+          var u = new URL(window.location.href);
+          var changed = false;
+          ['create', 'lpc', 'create-listing', 'create-product', 'create-template', 'create-import', 'flow'].forEach(function (k) {
+            if (u.searchParams.has(k)) {
+              u.searchParams.delete(k);
+              changed = true;
+            }
+          });
+          var h = decodeURIComponent((u.hash || '').replace(/^#/, '').trim())
+            .trim()
+            .toLowerCase();
+          if (
+            h.indexOf('create-') === 0 ||
+            h.indexOf('ldp-create-') === 0 ||
+            h.indexOf('create=') === 0 ||
+            h.indexOf('lpc=') === 0 ||
+            h === 'listing' ||
+            h === 'listings' ||
+            h === 'product' ||
+            h === 'template' ||
+            h === 'templates' ||
+            h === 'import' ||
+            h === 'inventory' ||
+            h === 'createlisting' ||
+            h === 'createtemplate' ||
+            h === 'createimport'
+          ) {
+            u.hash = '';
+            changed = true;
+          }
+          if (!changed) return;
+          var next = u.pathname + u.search + (u.hash || '');
+          history.replaceState(null, '', next);
+        } catch (e2) {}
+      }
+
+      function applyLpcCreateFromLocation() {
+        var mode = parseLpcCreateIntentFromLocation();
+        if (!mode) return;
+        openCreationForm(mode);
+        stripLpcCreateIntentFromUrl();
+      }
+
+      var __lpcCreateBootScheduled = false;
+      function scheduleApplyLpcCreateFromLocation() {
+        if (__lpcCreateBootScheduled) return;
+        __lpcCreateBootScheduled = true;
+        applyLpcCreateFromLocation();
+        requestAnimationFrame(function () {
+          applyLpcCreateFromLocation();
+        });
+        window.setTimeout(function () {
+          applyLpcCreateFromLocation();
+        }, 0);
+      }
+
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        scheduleApplyLpcCreateFromLocation();
+      } else {
+        document.addEventListener('DOMContentLoaded', scheduleApplyLpcCreateFromLocation);
+      }
+      window.addEventListener('load', scheduleApplyLpcCreateFromLocation);
+      window.addEventListener('hashchange', applyLpcCreateFromLocation);
+      window.addEventListener('popstate', applyLpcCreateFromLocation);
     })();
 
     /* Pinned CTAs are visible but not wired here — stubs avoid ReferenceError on click */
