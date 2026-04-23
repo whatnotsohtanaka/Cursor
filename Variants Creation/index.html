@@ -10695,6 +10695,10 @@ let vmSoftKbTarget = null;
 let vmSoftKbParkTimer = null;
 /** Index in variantMgr.customRows when editing from ⋯ menu; null = create new */
 let vmEditingCustomIndex = null;
+/** Modern Comics: editing a `__uc_*` user-custom slot from its toolbar chip (not merged-row index) */
+let vmMcEditingUserSlotId = null;
+/** Row snapshot for MC edits so we can sync the owning preset slot in `applyVmCustom` */
+let vmMcEditingRowSnapshot = null;
 
 const VM_CONDITIONS = ['New w Tag', 'New with defects', 'Used', 'Not Specified'];
 let vmConditionPending = [];
@@ -15342,7 +15346,12 @@ function vmSyncCustomSheetHeader() {
   const h1 = document.querySelector('#vmCustomOverlay .vm-sheet-h1');
   const sub = document.querySelector('#vmCustomOverlay .vm-sheet-sub');
   if (!h1) return;
-  if (vmEditingCustomIndex != null && variantMgr.customRows[vmEditingCustomIndex]) {
+  if (vmMcEditingUserSlotId) {
+    const s = vmMcFindPresetSlotForId(vmMcEditingUserSlotId);
+    const r0 = s && s.customRows && s.customRows[0];
+    h1.textContent = (r0 && r0.title) || 'Custom';
+    if (sub) sub.style.display = 'none';
+  } else if (vmEditingCustomIndex != null && variantMgr.customRows[vmEditingCustomIndex]) {
     h1.textContent = variantMgr.customRows[vmEditingCustomIndex].title || 'Custom';
     if (sub) sub.style.display = 'none';
   } else {
@@ -15356,21 +15365,45 @@ function vmSyncCustomSheetHeader() {
 
 function vmSyncCustomSheetFooter() {
   const discard = document.getElementById('vmCustomDiscardBtn');
-  const editing = vmEditingCustomIndex != null;
+  const editing = vmEditingCustomIndex != null || vmMcEditingUserSlotId != null;
   if (discard) discard.style.display = editing ? '' : 'none';
 }
 
 function vmDeleteEntireCustomOption() {
+  if (vmMcEditingUserSlotId) {
+    const slots = variantMgr.modernComicsPresetSlots || [];
+    const ix = slots.findIndex((s) => s.presetId === vmMcEditingUserSlotId);
+    if (ix >= 0) slots.splice(ix, 1);
+    vmMcEditingUserSlotId = null;
+    vmMcRecomputeVariantMgrFromSlots();
+    vmMcUpdateProductTitleForMcSlots(slots);
+    priceResolveVmGroupBy();
+    closeVmCustomSheet();
+    ensureVmQtyDefaults();
+    refreshVariantsManagerUI();
+    refreshProductVariantsSummary();
+    rebuildVmMorePopoverCustomSection();
+    showToastMessage('Option removed');
+    return;
+  }
   if (vmEditingCustomIndex == null) return;
   const idx = vmEditingCustomIndex;
-  const gb = variantMgr.groupBy;
-  variantMgr.customRows.splice(idx, 1);
-  if (typeof gb === 'string' && gb.startsWith('custom:')) {
-    const cri = parseInt(gb.slice('custom:'.length), 10);
-    if (cri === idx) {
-      variantMgr.groupBy = 'sizes';
-    } else if (!Number.isNaN(cri) && cri > idx) {
-      variantMgr.groupBy = 'custom:' + (cri - 1);
+  const mc = vmIsModernComicsPresetsContext();
+  if (mc) {
+    const target = variantMgr.customRows[idx];
+    if (target) vmMcRemoveMergedCustomRowFromSlots(target);
+    vmMcRecomputeVariantMgrFromSlots();
+    vmMcUpdateProductTitleForMcSlots();
+  } else {
+    const gb = variantMgr.groupBy;
+    variantMgr.customRows.splice(idx, 1);
+    if (typeof gb === 'string' && gb.startsWith('custom:')) {
+      const cri = parseInt(gb.slice('custom:'.length), 10);
+      if (cri === idx) {
+        variantMgr.groupBy = 'sizes';
+      } else if (!Number.isNaN(cri) && cri > idx) {
+        variantMgr.groupBy = 'custom:' + (cri - 1);
+      }
     }
   }
   priceResolveVmGroupBy();
@@ -15441,8 +15474,14 @@ function applyVmConditions() {
 }
 
 function openVmCustomSheetFromMenu() {
+  if (vmIsModernComicsPresetsContext() && vmMcMaxPresetSlotsReached()) {
+    vmMcToastMaxOptionsReached();
+    return;
+  }
   closeVmMoreMenu();
   vmEditingCustomIndex = null;
+  vmMcEditingUserSlotId = null;
+  vmMcEditingRowSnapshot = null;
   const name = document.getElementById('vmCustomName');
   if (name) name.value = '';
   variantMgr.pendingCustomValuesDraft = [''];
@@ -15459,6 +15498,10 @@ function openVmCustomSheetEdit(idx) {
   const row = variantMgr.customRows[idx];
   if (!row) return;
   vmEditingCustomIndex = idx;
+  vmMcEditingUserSlotId = null;
+  vmMcEditingRowSnapshot = vmIsModernComicsPresetsContext()
+    ? { title: row.title, values: (row.values || []).slice() }
+    : null;
   const name = document.getElementById('vmCustomName');
   if (name) name.value = row.title;
   variantMgr.pendingCustomValuesDraft =
@@ -15475,6 +15518,8 @@ function openVmCustomSheetEdit(idx) {
 function closeVmCustomSheet() {
   hideVmSoftKeyboard();
   vmEditingCustomIndex = null;
+  vmMcEditingUserSlotId = null;
+  vmMcEditingRowSnapshot = null;
   document.getElementById('vmCustomOverlay')?.classList.remove('open');
 }
 
@@ -15589,14 +15634,43 @@ function applyVmCustom() {
   const vals = variantMgr.pendingCustomValuesDraft.map((s) => String(s).trim()).filter(Boolean);
   if (!name || !vals.length) return;
   const entry = { title: name, values: vals };
-  if (
-    vmEditingCustomIndex != null &&
-    variantMgr.customRows[vmEditingCustomIndex]
-  ) {
-    variantMgr.customRows[vmEditingCustomIndex] = entry;
-    vmEditingCustomIndex = null;
+  const mc = vmIsModernComicsPresetsContext();
+  if (mc) {
+    if (vmMcEditingUserSlotId) {
+      const s = (variantMgr.modernComicsPresetSlots || []).find(
+        (x) => x.presetId === vmMcEditingUserSlotId
+      );
+      if (s) s.customRows = [entry];
+      vmMcEditingUserSlotId = null;
+    } else if (vmEditingCustomIndex != null) {
+      const oldR = vmMcEditingRowSnapshot;
+      if (oldR) vmMcApplyCustomRowEditToSlots(oldR, entry);
+      vmEditingCustomIndex = null;
+      vmMcEditingRowSnapshot = null;
+    } else {
+      if (vmMcMaxPresetSlotsReached()) {
+        vmMcToastMaxOptionsReached();
+        return;
+      }
+      const newId = vmMcNextUserCustomPresetId();
+      (variantMgr.modernComicsPresetSlots = variantMgr.modernComicsPresetSlots || []).push({
+        presetId: newId,
+        sizes: [],
+        colors: [],
+        conditionSelections: [],
+        customRows: [entry],
+      });
+    }
+    vmMcRecomputeVariantMgrFromSlots();
+    vmMcUpdateProductTitleForMcSlots();
+    priceResolveVmGroupBy();
   } else {
-    variantMgr.customRows.push(entry);
+    if (vmEditingCustomIndex != null && variantMgr.customRows[vmEditingCustomIndex]) {
+      variantMgr.customRows[vmEditingCustomIndex] = entry;
+      vmEditingCustomIndex = null;
+    } else {
+      variantMgr.customRows.push(entry);
+    }
   }
   ensureVmQtyDefaults();
   closeVmCustomSheet();
@@ -20529,7 +20603,7 @@ const VARIANT_STRESS_PRESETS = [
 /** When set, `openProductPage(..., true)` applies this builder instead of VARIANT_STRESS_PRESETS. */
 let pendingComicsPresetBuilder = null;
 
-const MODERN_COMICS_CHIP_VISIBLE = 7;
+const MODERN_COMICS_CHIP_VISIBLE = 8;
 
 const MODERN_COMICS_BASE = {
   key: 'modern_comics',
@@ -20883,6 +20957,86 @@ let vmMcPresetPending = null;
 /** `'overlay'` = full-screen VM preset sheet; `'overflow'` = drill-in inside More presets bottom sheet */
 let vmMcPresetEditSource = 'overlay';
 
+function vmIsModernComicsPresetsContext() {
+  const p = vmStressPresetIndexFromProductCategory();
+  return p >= 0 && VARIANT_STRESS_PRESETS[p] && VARIANT_STRESS_PRESETS[p].key === 'modern_comics';
+}
+
+function vmMcIsUserCustomPresetId(id) {
+  return String(id || '').startsWith('__uc_');
+}
+
+function vmMcNextUserCustomPresetId() {
+  const slots = variantMgr.modernComicsPresetSlots || [];
+  let max = 0;
+  for (const s of slots) {
+    if (!vmMcIsUserCustomPresetId(s.presetId)) continue;
+    const m = /^__uc_(\d+)$/.exec(String(s.presetId));
+    if (m) max = Math.max(max, parseInt(m[1], 10));
+  }
+  return '__uc_' + (max + 1);
+}
+
+function vmMcApplyCustomRowEditToSlots(oldR, newR) {
+  if (!oldR) return;
+  for (const s of variantMgr.modernComicsPresetSlots || []) {
+    for (let j = 0; j < (s.customRows || []).length; j++) {
+      const r = s.customRows[j];
+      if (
+        r &&
+        r.title === oldR.title &&
+        JSON.stringify(r.values) === JSON.stringify(oldR.values)
+      ) {
+        s.customRows[j] = { title: newR.title, values: (newR.values || []).slice() };
+        return;
+      }
+    }
+  }
+}
+
+function vmMcRemoveMergedCustomRowFromSlots(target) {
+  if (!target) return;
+  for (const s of variantMgr.modernComicsPresetSlots || []) {
+    for (let j = 0; j < (s.customRows || []).length; j++) {
+      const r = s.customRows[j];
+      if (r && r.title === target.title && JSON.stringify(r.values) === JSON.stringify(target.values)) {
+        s.customRows.splice(j, 1);
+        if (vmMcIsUserCustomPresetId(s.presetId) && (s.customRows || []).length === 0) {
+          const slots = variantMgr.modernComicsPresetSlots;
+          const ix = slots.indexOf(s);
+          if (ix >= 0) slots.splice(ix, 1);
+        }
+        return;
+      }
+    }
+  }
+}
+
+function openVmCustomSheetForMcUserSlot(presetId) {
+  if (controlProductListingNullEnabled) {
+    showToastMessage('Turn off Product Listing Null to edit custom options');
+    return;
+  }
+  const slot = vmMcFindPresetSlotForId(presetId);
+  if (!slot) return;
+  const row = (slot.customRows && slot.customRows[0]) || { title: '', values: [''] };
+  closeVmMoreMenu();
+  closeAllVariantManagerSheets();
+  vmMcEditingUserSlotId = presetId;
+  vmEditingCustomIndex = null;
+  vmMcEditingRowSnapshot = null;
+  const name = document.getElementById('vmCustomName');
+  if (name) name.value = row.title || '';
+  variantMgr.pendingCustomValuesDraft = row.values && row.values.length ? row.values.slice() : [''];
+  renderVmCustomValueRows();
+  vmSyncCustomDone();
+  vmSyncCustomSheetHeader();
+  vmSyncCustomSheetFooter();
+  vmSyncWdsWrapForFieldId('vmCustomName');
+  vmOpenOverlay('vmCustomOverlay');
+  vmRafFocusSheetInput(document.getElementById('vmCustomName'));
+}
+
 function vmMcFindPresetSlotForId(defId) {
   const slots = variantMgr.modernComicsPresetSlots || [];
   return slots.find((s) => s.presetId === defId) || null;
@@ -20923,6 +21077,9 @@ function vmMcUpdateProductTitleForMcSlots(slots) {
   if (d0) {
     const t0 = d0.build().title;
     if (t0) ti.value = arr.length > 1 ? `${t0} (+${arr.length - 1})` : t0;
+  } else if (s0 && vmMcIsUserCustomPresetId(s0.presetId)) {
+    const t0 = (s0.customRows && s0.customRows[0] && s0.customRows[0].title) || 'Custom';
+    ti.value = arr.length > 1 ? `${t0} (+${arr.length - 1})` : t0;
   } else if (!arr.length) {
     ti.value = '';
   }
@@ -21045,74 +21202,101 @@ function vmMcRecomputeVariantMgrFromSlots() {
 
   const slot0 = slots[0];
   const def0 = MODERN_COMICS_PRESET_DEFS.find((d) => d.id === slot0.presetId);
-  if (!def0) return;
-  const built0 = def0.build();
+  const user0 = vmMcIsUserCustomPresetId(slot0.presetId);
+  if (!def0 && !user0) return;
   const olDef = {
     sizes: 'Sizes',
     colors: 'Colors',
     groupBySize: 'Size',
     groupByColor: 'Color',
   };
-  variantMgr.sizes = (slot0.sizes || []).slice();
-  variantMgr.colors = (slot0.colors || []).slice();
-  variantMgr.conditionSelections = (slot0.conditionSelections || []).slice();
-  variantMgr.customRows = (slot0.customRows || []).map((r) => ({
-    title: r.title,
-    values: (r.values || []).slice(),
-  }));
-  variantMgr.groupBy = built0.groupBy || 'sizes';
-  variantMgr.optionLabels = { ...olDef, ...(built0.optionLabels || {}) };
+  if (def0) {
+    const built0 = def0.build();
+    variantMgr.sizes = (slot0.sizes || []).slice();
+    variantMgr.colors = (slot0.colors || []).slice();
+    variantMgr.conditionSelections = (slot0.conditionSelections || []).slice();
+    variantMgr.customRows = (slot0.customRows || []).map((r) => ({
+      title: r.title,
+      values: (r.values || []).slice(),
+    }));
+    variantMgr.groupBy = built0.groupBy || 'sizes';
+    variantMgr.optionLabels = { ...olDef, ...(built0.optionLabels || {}) };
+  } else {
+    variantMgr.sizes = [];
+    variantMgr.colors = [];
+    variantMgr.conditionSelections = [];
+    variantMgr.customRows = (slot0.customRows || []).map((r) => ({
+      title: r.title,
+      values: (r.values || []).slice(),
+    }));
+    const hasC =
+      (slot0.customRows || []).length &&
+      (slot0.customRows[0] && (slot0.customRows[0].values || []).length);
+    variantMgr.groupBy = hasC ? 'custom:0' : 'sizes';
+    variantMgr.optionLabels = { ...olDef };
+  }
   variantMgr.modernComicsPresetId = slot0.presetId;
 
   for (let i = 1; i < slots.length; i++) {
     const si = slots[i];
     const def = MODERN_COMICS_PRESET_DEFS.find((d) => d.id === si.presetId);
-    if (!def) continue;
-    const built = def.build();
-    const ol = built.optionLabels || {};
-    const pushAxis = (arr, kind) => {
-      if (!arr || !arr.length) return;
-      const label =
-        kind === 'sizes'
-          ? ol.sizes || ol.groupBySize || 'Size'
-          : kind === 'colors'
-            ? ol.colors || ol.groupByColor || 'Color'
-            : 'Condition';
-      if (kind === 'sizes' && !variantMgr.sizes.length) {
-        variantMgr.sizes = arr.slice();
-        if (ol.sizes) variantMgr.optionLabels.sizes = ol.sizes;
-        if (ol.groupBySize) variantMgr.optionLabels.groupBySize = ol.groupBySize;
-        return;
-      }
-      if (kind === 'colors' && !variantMgr.colors.length) {
-        variantMgr.colors = arr.slice();
-        if (ol.colors) variantMgr.optionLabels.colors = ol.colors;
-        if (ol.groupByColor) variantMgr.optionLabels.groupByColor = ol.groupByColor;
-        return;
-      }
-      if (kind === 'condition' && !variantMgr.conditionSelections.length) {
-        variantMgr.conditionSelections = arr.slice();
-        return;
-      }
-      variantMgr.customRows.push({ title: `${def.label} (${label})`, values: arr.slice() });
-    };
-    pushAxis(si.sizes, 'sizes');
-    pushAxis(si.colors, 'colors');
-    pushAxis(si.conditionSelections, 'condition');
-    (si.customRows || []).forEach((r) => {
-      if (r.values && r.values.length) {
-        const sub = String(r.title || 'Option').trim();
-        const pref = String(def.label || '').trim() || 'Option';
-        const title =
-          sub && pref && sub.toLowerCase() === pref.toLowerCase()
-            ? pref
-            : `${pref}: ${sub}`;
-        variantMgr.customRows.push({
-          title: vmShortGroupByCustomLabel(title),
-          values: r.values.slice(),
-        });
-      }
-    });
+    if (def) {
+      const built = def.build();
+      const ol = built.optionLabels || {};
+      const pushAxis = (arr, kind) => {
+        if (!arr || !arr.length) return;
+        const label =
+          kind === 'sizes'
+            ? ol.sizes || ol.groupBySize || 'Size'
+            : kind === 'colors'
+              ? ol.colors || ol.groupByColor || 'Color'
+              : 'Condition';
+        if (kind === 'sizes' && !variantMgr.sizes.length) {
+          variantMgr.sizes = arr.slice();
+          if (ol.sizes) variantMgr.optionLabels.sizes = ol.sizes;
+          if (ol.groupBySize) variantMgr.optionLabels.groupBySize = ol.groupBySize;
+          return;
+        }
+        if (kind === 'colors' && !variantMgr.colors.length) {
+          variantMgr.colors = arr.slice();
+          if (ol.colors) variantMgr.optionLabels.colors = ol.colors;
+          if (ol.groupByColor) variantMgr.optionLabels.groupByColor = ol.groupByColor;
+          return;
+        }
+        if (kind === 'condition' && !variantMgr.conditionSelections.length) {
+          variantMgr.conditionSelections = arr.slice();
+          return;
+        }
+        variantMgr.customRows.push({ title: `${def.label} (${label})`, values: arr.slice() });
+      };
+      pushAxis(si.sizes, 'sizes');
+      pushAxis(si.colors, 'colors');
+      pushAxis(si.conditionSelections, 'condition');
+      (si.customRows || []).forEach((r) => {
+        if (r.values && r.values.length) {
+          const sub = String(r.title || 'Option').trim();
+          const pref = String(def.label || '').trim() || 'Option';
+          const title =
+            sub && pref && sub.toLowerCase() === pref.toLowerCase()
+              ? pref
+              : `${pref}: ${sub}`;
+          variantMgr.customRows.push({
+            title: vmShortGroupByCustomLabel(title),
+            values: r.values.slice(),
+          });
+        }
+      });
+    } else if (vmMcIsUserCustomPresetId(si.presetId)) {
+      (si.customRows || []).forEach((r) => {
+        if (r.values && r.values.length) {
+          const title = String(r.title || 'Option').trim();
+          variantMgr.customRows.push({
+            title: vmShortGroupByCustomLabel(title),
+            values: (r.values || []).slice(),
+          });
+        }
+      });
+    }
   }
 
   vmNormalizeAllLegacyTopsSizesInVariantMgr();
@@ -21309,6 +21493,10 @@ function closeVmModernComicsPresetSheet() {
 function openVmModernComicsPresetSheet(defId) {
   if (controlProductListingNullEnabled) {
     showToastMessage('Turn off Product Listing Null to edit presets');
+    return;
+  }
+  if (vmMcIsUserCustomPresetId(defId)) {
+    openVmCustomSheetForMcUserSlot(defId);
     return;
   }
   const def = MODERN_COMICS_PRESET_DEFS.find((d) => d.id === defId);
@@ -21596,7 +21784,7 @@ function onModernComicsAddOptionClick() {
  * chosen from “More” stays editable from the strip; remaining slots follow catalog order.
  */
 function vmMcVisiblePresetDefsForToolbar() {
-  const cap = Math.min(MODERN_COMICS_CHIP_VISIBLE, MODERN_COMICS_PRESET_DEFS.length);
+  const cap = MODERN_COMICS_CHIP_VISIBLE;
   const seen = new Set();
   const out = [];
   const slots = variantMgr.modernComicsPresetSlots || [];
@@ -21604,6 +21792,17 @@ function vmMcVisiblePresetDefsForToolbar() {
     if (out.length >= cap) break;
     const id = slots[i] && slots[i].presetId;
     if (!id) continue;
+    if (vmMcIsUserCustomPresetId(id)) {
+      if (!seen.has(id)) {
+        const uLab =
+          (slots[i].customRows &&
+            slots[i].customRows[0] &&
+            (slots[i].customRows[0].title || '').trim()) || 'Custom';
+        seen.add(id);
+        out.push({ id, label: uLab, _vmMcUser: true });
+      }
+      continue;
+    }
     const d = MODERN_COMICS_PRESET_DEFS.find((x) => x.id === id);
     if (d && !seen.has(d.id)) {
       seen.add(d.id);
@@ -21642,12 +21841,15 @@ function renderVmModernComicsPresetChips() {
       const inChain = slotIds.has(d.id);
       const rowDisabled = slotsFull && !inChain;
       const selN = slot ? vmMcSelectedValueCountForSlot(slot) : 0;
+      const isUser = !!d._vmMcUser;
       const labelText = slot ? `${d.label} (${selN})` : d.label;
       const hint = rowDisabled
         ? 'Maximum 3 preset options. Remove one above to add another.'
         : slot
           ? `${selN} value${selN === 1 ? '' : 's'} selected`
-          : `Not added. Tap to choose values (max 3 presets). Full catalog: ${vmModernComicsLeafCountForDef(d)} SKUs.`;
+          : isUser
+            ? 'Not added (custom). Tap to edit values.'
+            : `Not added. Tap to choose values (max 3 presets). Full catalog: ${vmModernComicsLeafCountForDef(d)} SKUs.`;
       const lockCls = rowDisabled ? ' vm-mc-max-locked' : '';
       const ari = rowDisabled ? ' aria-disabled="true"' : '';
       return `<button type="button" class="vm-mc-preset-chip${lockCls}"${ari} data-mc-id="${esc(d.id)}" title="${esc(hint)}" aria-label="${esc(
@@ -22357,7 +22559,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh on 4/23/26 @ 5:00pm';
+const PROTO_TIMESTAMP = 'Updated by Soh on 4/23/26 @ 10:13am';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
