@@ -7835,7 +7835,7 @@
             class="vm-sheet-sub"
             style="padding: 0 20px 10px; margin: 0; text-align: center; color: #6f6f6f; font-size: 13px; line-height: 18px"
           >
-            Select which values to include for this variant option.
+            Select the values for this option.
           </div>
           <div id="modernComicsOverflowDetailBody" class="vm-sheet-body vm-condition-list"></div>
           <div class="vm-sheet-footer vm-sheet-footer-with-keyboard" style="padding-bottom: max(20px, calc(12px + env(safe-area-inset-bottom, 0px)))">
@@ -8000,7 +8000,7 @@
         <span class="vm-sheet-nav-spacer"></span>
         <div class="vm-sheet-nav-mid">
           <div class="vm-sheet-h1" id="vmMcPresetH1">Manage preset</div>
-          <div class="vm-sheet-sub" id="vmMcPresetSub">Select which values to include for this variant option.</div>
+          <div class="vm-sheet-sub" id="vmMcPresetSub">Select the values for this option.</div>
         </div>
         <button type="button" class="vm-icon-btn" aria-label="Close" onclick="closeVmModernComicsPresetSheet()">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1c1c1c" stroke-width="2">
@@ -9232,7 +9232,7 @@
         </div>
       </div>
       <div id="ctrlStressCategoryWrap" class="ctrl-stress-category-wrap">
-        <label for="ctrlStressCategorySelect" class="ctrl-stress-category-label">Demo category</label>
+        <label for="ctrlStressCategorySelect" class="ctrl-stress-category-label" title="Deeplink: ?demo=&lt;key&gt; (alias ?category=). ?view=listing|variants (alias ?page=). &amp;nulled=1. Example: ?demo=modern_comics&amp;view=variants">Demo category</label>
         <select id="ctrlStressCategorySelect" class="ctrl-stress-select" autocomplete="off" onchange="onStressCategorySelectChange()"></select>
       </div>
     </div>
@@ -10422,6 +10422,7 @@ function openProductPage(title, attrs, isNew) {
     const scrollEl = page.querySelector('.edit-scroll');
     if (scrollEl) scrollEl.scrollTop = 0;
   });
+  syncProtoDeeplinkToUrl();
 }
 
 let variantsManagerSnapshot = null;
@@ -10571,6 +10572,7 @@ function openVariantsManagerPage() {
   vmEnsureOptionsToolbarResizeObserver();
   refreshVariantsManagerUI();
   renderVmNavPresetChips();
+  syncProtoDeeplinkToUrl();
 }
 
 function seedVariantsFromProductForm() {
@@ -10621,6 +10623,7 @@ function closeVariantsManagerPage(didSave) {
   syncProductFormFieldsFromSavedVariants();
   refreshProductVariantsSummary();
   renderVmNavPresetChips();
+  syncProtoDeeplinkToUrl();
 }
 
 function variantsManagerSave() {
@@ -11590,10 +11593,23 @@ function vmPruneStaleCustomFlatL1Qty() {
   });
 }
 
+/** "Features: Features" -> "Features"; "Publisher: Name" unchanged. */
+function vmShortGroupByCustomLabel(title) {
+  const s = String(title || '').trim();
+  const m = /^([^\s:]+?)\s*:\s*([\s\S]+)$/.exec(s);
+  if (!m) return s;
+  const a = m[1].trim();
+  const b = m[2].trim();
+  if (a && b && a.toLowerCase() === b.toLowerCase()) return a;
+  return s;
+}
+
 function vmGroupByDisplayLabel() {
   if (vmIsCustomGroupBy()) {
     const cri = vmCustomGroupCri();
-    return cri != null ? variantMgr.customRows[cri].title : 'Custom';
+    return cri != null
+      ? vmShortGroupByCustomLabel(variantMgr.customRows[cri].title)
+      : 'Custom';
   }
   if (variantMgr.groupBy === 'colors') return variantMgr.optionLabels.groupByColor;
   if (variantMgr.groupBy === 'condition') return 'Condition';
@@ -11753,7 +11769,7 @@ function refreshVariantsManagerUI() {
       renderVmModernComicsPresetChips();
       if (vmToolbarCreateBtn) {
         vmToolbarCreateBtn.style.display =
-          MODERN_COMICS_PRESET_DEFS.length > MODERN_COMICS_CHIP_VISIBLE ? 'none' : '';
+          vmMcOverflowPresetDefsNotOnToolbar().length > 0 ? 'none' : '';
       }
     } else {
       chipsStandard.style.display = '';
@@ -11797,19 +11813,21 @@ function refreshVariantsManagerUI() {
     if (variantMgr.customRows.length > 0) {
       chipCustomQ.style.display = '';
       const row0 = variantMgr.customRows[0];
-      chipCustomQ.textContent = `${row0.title} (${row0.values.length})`;
-      chipCustomQ.setAttribute('title', `${row0.title} (${row0.values.length})`);
-      chipCustomQ.setAttribute('aria-label', `Edit ${row0.title}`);
+      const t0 = vmShortGroupByCustomLabel(row0.title);
+      chipCustomQ.textContent = `${t0} (${row0.values.length})`;
+      chipCustomQ.setAttribute('title', `${t0} (${row0.values.length})`);
+      chipCustomQ.setAttribute('aria-label', `Edit ${t0}`);
       chipCustomQ.setAttribute('data-custom-row-index', '0');
       chipCustomQ.onclick = () => openVmCustomSheetEdit(0);
       for (let i = 1; i < variantMgr.customRows.length; i++) {
         const row = variantMgr.customRows[i];
+        const t = vmShortGroupByCustomLabel(row.title);
         const b = document.createElement('button');
         b.type = 'button';
         b.className = 'vm-option-chip vm-option-chip-custom-extra';
-        b.textContent = `${row.title} (${row.values.length})`;
-        b.setAttribute('title', `${row.title} (${row.values.length})`);
-        b.setAttribute('aria-label', `Edit ${row.title}`);
+        b.textContent = `${t} (${row.values.length})`;
+        b.setAttribute('title', `${t} (${row.values.length})`);
+        b.setAttribute('aria-label', `Edit ${t}`);
         b.setAttribute('data-custom-row-index', String(i));
         b.addEventListener('click', () => openVmCustomSheetEdit(i));
         chipsInner?.appendChild(b);
@@ -11881,7 +11899,7 @@ function refreshVariantsManagerUI() {
   if (createBtn) {
     createBtn.disabled = maxOptionsReached;
     createBtn.classList.toggle('vm-chip-disabled', maxOptionsReached);
-    if (showMcPresets && MODERN_COMICS_PRESET_DEFS.length > MODERN_COMICS_CHIP_VISIBLE) {
+    if (showMcPresets && vmMcOverflowPresetDefsNotOnToolbar().length > 0) {
       createBtn.style.display = 'none';
     }
   }
@@ -15832,9 +15850,10 @@ function openVmGroupBySheet(e) {
       const cri = parseInt(key.slice(7), 10);
       const row = variantMgr.customRows[cri];
       if (row) {
+        const shortTitle = vmShortGroupByCustomLabel(row.title);
         opts.push({
           key,
-          label: `${row.title} (${row.values.length})`,
+          label: `${shortTitle} (${row.values.length})`,
         });
       }
     }
@@ -15921,6 +15940,7 @@ function closeProductPageDirect() {
       setTimeout(() => { invPage.style.transition = ''; }, 400);
     }
   }
+  syncProtoDeeplinkToUrl();
 }
 
 function adjustQty(delta) {
@@ -20596,7 +20616,8 @@ function vmModernComicsLeafCountForDef(def) {
 
 /**
  * Presets map to the same patterns as Size / Color / Condition / Custom in Manage Variants.
- * First {@link MODERN_COMICS_CHIP_VISIBLE} show as chips; the rest open from the “…” sheet (+ add when no overflow).
+ * Toolbar shows up to {@link MODERN_COMICS_CHIP_VISIBLE} defs: active saved slots first (see
+ * {@link vmMcVisiblePresetDefsForToolbar}), then the rest in catalog order. Remaining defs use the “…” sheet (+ when nothing is left).
  */
 const MODERN_COMICS_PRESET_DEFS = [
   {
@@ -20928,9 +20949,46 @@ function vmMcSkuCountForSlot(slot) {
   return vmSkuCountFromAxes(slot.sizes, slot.colors, slot.conditionSelections, slot.customRows);
 }
 
-/** How many discrete option values the seller checked in this preset (per-axis sum), not Cartesian SKU count. */
+/**
+ * The Manage [preset] sheet should list only values for that preset’s option axis
+ * (`groupBy`), not every axis present in the stress-test catalog. See MODERN_COMICS_PRESET_DEFS.
+ */
+function vmMcPresetSheetListMode(built) {
+  const gb = built && built.groupBy;
+  if (gb === 'condition') return { mode: 'axis', axis: 'condition' };
+  if (gb === 'sizes') return { mode: 'axis', axis: 'sizes' };
+  if (gb === 'colors') return { mode: 'axis', axis: 'colors' };
+  if (typeof gb === 'string' && gb.startsWith('custom:')) {
+    const n = parseInt(gb.slice('custom:'.length), 10);
+    return { mode: 'custom', index: Number.isFinite(n) ? n : 0 };
+  }
+  return { mode: 'all' };
+}
+
+/**
+ * How many discrete option values the seller checked in this preset (not Cartesian SKU count).
+ * Counts only the values on this preset’s primary axis (same as Manage preset + Group by L1), so
+ * e.g. Condition (print type + 1 grade) does not show “Condition (2)” while the tree has one grade row.
+ */
 function vmMcSelectedValueCountForSlot(slot) {
   if (!slot) return 0;
+  const def = MODERN_COMICS_PRESET_DEFS.find((d) => d.id === slot.presetId);
+  if (def && typeof def.build === 'function') {
+    const listMode = vmMcPresetSheetListMode(def.build());
+    if (listMode.mode === 'axis' && listMode.axis === 'condition') {
+      return (slot.conditionSelections || []).length;
+    }
+    if (listMode.mode === 'axis' && listMode.axis === 'sizes') {
+      return (slot.sizes || []).length;
+    }
+    if (listMode.mode === 'axis' && listMode.axis === 'colors') {
+      return (slot.colors || []).length;
+    }
+    if (listMode.mode === 'custom' && listMode.index != null) {
+      const r = (slot.customRows || [])[listMode.index];
+      return r && r.values ? r.values.length : 0;
+    }
+  }
   let n = (slot.sizes || []).length + (slot.colors || []).length + (slot.conditionSelections || []).length;
   (slot.customRows || []).forEach((r) => {
     n += (r.values || []).length;
@@ -21043,8 +21101,14 @@ function vmMcRecomputeVariantMgrFromSlots() {
     pushAxis(si.conditionSelections, 'condition');
     (si.customRows || []).forEach((r) => {
       if (r.values && r.values.length) {
+        const sub = String(r.title || 'Option').trim();
+        const pref = String(def.label || '').trim() || 'Option';
+        const title =
+          sub && pref && sub.toLowerCase() === pref.toLowerCase()
+            ? pref
+            : `${pref}: ${sub}`;
         variantMgr.customRows.push({
-          title: `${def.label}: ${r.title || 'Option'}`,
+          title: vmShortGroupByCustomLabel(title),
           values: r.values.slice(),
         });
       }
@@ -21180,7 +21244,7 @@ function vmMcMountPresetSheetList(mountEl) {
   const cat = vmMcPresetCatalog;
   const pend = vmMcPresetPending;
   const built = def.build();
-  const ol = built.optionLabels || {};
+  const listMode = vmMcPresetSheetListMode(built);
   let firstCheckRow = true;
   const appendCheckRow = (val, getSelectedArr) => {
     if (!firstCheckRow) {
@@ -21207,23 +21271,31 @@ function vmMcMountPresetSheetList(mountEl) {
     });
     list.appendChild(b);
   };
-  const pushSection = (title, pool, getSelectedArr) => {
+  const pushPool = (pool, getSelectedArr) => {
     if (!pool || !pool.length) return;
-    const lab = document.createElement('div');
-    lab.className = 'vm-section-label';
-    lab.style.marginTop = list.childNodes.length ? '14px' : '0';
-    lab.textContent = title;
-    list.appendChild(lab);
     pool.forEach((val) => appendCheckRow(val, getSelectedArr));
   };
-  pushSection(ol.sizes || 'Sizes', cat.sizes, () => pend.sizes);
-  pushSection(ol.colors || 'Colors', cat.colors, () => pend.colors);
-  pushSection('Conditions', cat.conditionSelections, () => pend.conditionSelections);
-  cat.customRows.forEach((cr, cri) => {
-    if (!cr.values.length) return;
-    const rowTitle = cr.title || 'Custom';
-    pushSection(rowTitle, cr.values, () => pend.customRows[cri].values);
-  });
+  if (listMode.mode === 'axis' && listMode.axis === 'sizes') {
+    pushPool(cat.sizes, () => pend.sizes);
+  } else if (listMode.mode === 'axis' && listMode.axis === 'colors') {
+    pushPool(cat.colors, () => pend.colors);
+  } else if (listMode.mode === 'axis' && listMode.axis === 'condition') {
+    pushPool(cat.conditionSelections, () => pend.conditionSelections);
+  } else if (listMode.mode === 'custom') {
+    const cri = listMode.index;
+    const cr = cat.customRows[cri];
+    if (cr && cr.values && cr.values.length) {
+      pushPool(cr.values, () => pend.customRows[cri].values);
+    }
+  } else {
+    pushPool(cat.sizes, () => pend.sizes);
+    pushPool(cat.colors, () => pend.colors);
+    pushPool(cat.conditionSelections, () => pend.conditionSelections);
+    cat.customRows.forEach((cr, cri) => {
+      if (!cr.values.length) return;
+      pushPool(cr.values, () => pend.customRows[cri].values);
+    });
+  }
 }
 
 function closeVmModernComicsPresetSheet() {
@@ -21255,7 +21327,7 @@ function openVmModernComicsPresetSheet(defId) {
   const h1 = document.getElementById('vmMcPresetH1');
   const sub = document.getElementById('vmMcPresetSub');
   if (h1) h1.textContent = `Manage ${def.label}`;
-  if (sub) sub.textContent = 'Select which values to include for this variant option.';
+  if (sub) sub.textContent = `Select the values for the ${def.label}.`;
   vmMcMountPresetSheetList();
   vmMcSyncPresetSheetDoneBtn();
   vmOpenOverlay('vmModernComicsPresetOverlay');
@@ -21411,8 +21483,7 @@ function openModernComicsOverflowSheet() {
   const list = document.getElementById('modernComicsOverflowList');
   const sheet = document.getElementById('modernComicsOverflowSheet');
   if (!list || !sheet) return;
-  const vis = MODERN_COMICS_CHIP_VISIBLE;
-  const defs = MODERN_COMICS_PRESET_DEFS.slice(vis);
+  const defs = vmMcOverflowPresetDefsNotOnToolbar();
   const slotsFull = (variantMgr.modernComicsPresetSlots || []).length >= 3;
   const esc = (t) =>
     String(t)
@@ -21473,7 +21544,7 @@ function vmMcOverflowOpenPresetDetail(defId) {
   vmMcPresetPending = vmMcInitPendingForPresetSheet(def, vmMcPresetCatalog);
   titleEl.textContent = `Manage ${def.label}`;
   const sub = document.getElementById('modernComicsOverflowDetailSub');
-  if (sub) sub.textContent = 'Select which values to include for this variant option.';
+  if (sub) sub.textContent = `Select the values for the ${def.label}.`;
   vmMcMountPresetSheetList(body);
   vmMcSyncPresetSheetDoneBtn();
   listPage.style.display = 'none';
@@ -21520,11 +21591,44 @@ function onModernComicsAddOptionClick() {
   }
 }
 
+/**
+ * Toolbar chip row (max {@link MODERN_COMICS_CHIP_VISIBLE}): saved preset slots first so a 3rd option
+ * chosen from “More” stays editable from the strip; remaining slots follow catalog order.
+ */
+function vmMcVisiblePresetDefsForToolbar() {
+  const cap = Math.min(MODERN_COMICS_CHIP_VISIBLE, MODERN_COMICS_PRESET_DEFS.length);
+  const seen = new Set();
+  const out = [];
+  const slots = variantMgr.modernComicsPresetSlots || [];
+  for (let i = 0; i < slots.length; i++) {
+    if (out.length >= cap) break;
+    const id = slots[i] && slots[i].presetId;
+    if (!id) continue;
+    const d = MODERN_COMICS_PRESET_DEFS.find((x) => x.id === id);
+    if (d && !seen.has(d.id)) {
+      seen.add(d.id);
+      out.push(d);
+    }
+  }
+  for (let i = 0; i < MODERN_COMICS_PRESET_DEFS.length && out.length < cap; i++) {
+    const d = MODERN_COMICS_PRESET_DEFS[i];
+    if (!seen.has(d.id)) {
+      seen.add(d.id);
+      out.push(d);
+    }
+  }
+  return out;
+}
+
+function vmMcOverflowPresetDefsNotOnToolbar() {
+  const shown = new Set(vmMcVisiblePresetDefsForToolbar().map((d) => d.id));
+  return MODERN_COMICS_PRESET_DEFS.filter((d) => !shown.has(d.id));
+}
+
 function renderVmModernComicsPresetChips() {
   const wrap = document.getElementById('vmModernComicsChips');
   if (!wrap) return;
-  const vis = Math.min(MODERN_COMICS_CHIP_VISIBLE, MODERN_COMICS_PRESET_DEFS.length);
-  const visible = MODERN_COMICS_PRESET_DEFS.slice(0, vis);
+  const visible = vmMcVisiblePresetDefsForToolbar();
   const slotIds = new Set((variantMgr.modernComicsPresetSlots || []).map((s) => s.presetId));
   const slotsFull = (variantMgr.modernComicsPresetSlots || []).length >= 3;
   const esc = (t) =>
@@ -21551,7 +21655,8 @@ function renderVmModernComicsPresetChips() {
       )}">${esc(labelText)}</button>`;
     })
     .join('');
-  if (MODERN_COMICS_PRESET_DEFS.length > MODERN_COMICS_CHIP_VISIBLE) {
+  const overflowDefs = vmMcOverflowPresetDefsNotOnToolbar();
+  if (overflowDefs.length > 0) {
     const moreLock = slotsFull ? ' vm-mc-max-locked' : '';
     const moreAri = slotsFull ? ' aria-disabled="true"' : '';
     const moreHint = slotsFull ? ' title="Maximum 3 preset options"' : '';
@@ -21611,6 +21716,129 @@ function stressPresetIndexForWhatnotCategory(whatnotCat) {
 let controlProductListingNullEnabled = true;
 let stressPresetIndex = 0;
 
+/**
+ * Read URL params: `?demo=`, `?view=` / `?page=`, `?nulled=` (alias `?category=`).
+ * Hash fragment also supported, e.g. `#demo=modern_comics&view=variants`.
+ */
+function getDemoDeeplinkParams() {
+  const merged = new URLSearchParams(typeof location !== 'undefined' ? location.search : '');
+  if (typeof location === 'undefined' || !location.hash || location.hash.length < 2) {
+    return merged;
+  }
+  const inner = location.hash.charAt(0) === '#' ? location.hash.slice(1) : location.hash;
+  let hashParams;
+  if (inner.startsWith('?')) {
+    hashParams = new URLSearchParams(inner);
+  } else if (inner.includes('=')) {
+    hashParams = new URLSearchParams(inner);
+  } else {
+    return merged;
+  }
+  hashParams.forEach((v, k) => {
+    merged.set(k, v);
+  });
+  return merged;
+}
+
+function findStressPresetIndexByDeeplinkKey(keyRaw) {
+  if (!keyRaw) return -1;
+  const key = String(keyRaw).trim().toLowerCase();
+  return VARIANT_STRESS_PRESETS.findIndex((p) => p.key && p.key.toLowerCase() === key);
+}
+
+/**
+ * Apply `?demo=…` / `?nulled=…` before stress seed. Call on load and on history popstate.
+ * Does nothing when the URL has no `demo` / `category` / `nulled` param.
+ */
+function applyDemoCategoryDeeplinkFromUrl() {
+  const params = getDemoDeeplinkParams();
+  if (!params.has('demo') && !params.has('category') && !params.has('nulled')) {
+    return;
+  }
+  const demo = (params.get('demo') || params.get('category') || '').trim();
+  const nRaw = (params.get('nulled') || '').toLowerCase();
+  if (nRaw === '1' || nRaw === 'true' || nRaw === 'on') {
+    controlProductListingNullEnabled = true;
+  } else if (nRaw === '0' || nRaw === 'false' || nRaw === 'off' || demo) {
+    controlProductListingNullEnabled = false;
+  }
+  if (demo) {
+    const ix = findStressPresetIndexByDeeplinkKey(demo);
+    if (ix >= 0) stressPresetIndex = ix;
+  }
+}
+
+/**
+ * Write canonical `?demo=` / `?nulled=` / `?view=` to the URL (no full page reload).
+ * `view=listing` = product form; `view=variants` = Manage Variants (requires listing open under).
+ */
+function syncProtoDeeplinkToUrl() {
+  if (typeof history === 'undefined' || !history.replaceState) return;
+  try {
+    const u = new URL(window.location.href);
+    u.searchParams.delete('category');
+    u.searchParams.delete('page');
+    if (controlProductListingNullEnabled) {
+      u.searchParams.delete('demo');
+      u.searchParams.set('nulled', '1');
+    } else {
+      u.searchParams.delete('nulled');
+      const p = VARIANT_STRESS_PRESETS[stressPresetIndex];
+      if (p) u.searchParams.set('demo', p.key);
+    }
+    const productEl = document.getElementById('productPage');
+    const vmEl = document.getElementById('variantsManagerPage');
+    if (vmEl && vmEl.classList.contains('active') && productEl && productEl.classList.contains('active')) {
+      u.searchParams.set('view', 'variants');
+    } else if (productEl && productEl.classList.contains('active')) {
+      u.searchParams.set('view', 'listing');
+    } else {
+      u.searchParams.delete('view');
+    }
+    if (/demo=|category=|nulled=|view=|page=/.test(u.hash)) u.hash = '';
+    const next = u.pathname + u.search;
+    if (next !== window.location.pathname + window.location.search) {
+      history.replaceState(null, '', next + (u.hash || ''));
+    }
+  } catch (e) {
+    /* file:// or old browsers */
+  }
+}
+
+/**
+ * `?view=listing` (aliases: product, create) — Listing Details. `?view=variants` (vm, manage-variants) — product + Manage Variants.
+ * Runs after stress seed. Uses `?page=` as an alias of `?view=`.
+ */
+function applyViewDeeplinkFromUrl() {
+  const params = getDemoDeeplinkParams();
+  const v = (params.get('view') || params.get('page') || '').trim().toLowerCase();
+  if (!v) return;
+  if (v === 'listing' || v === 'product' || v === 'create') {
+    productReturnTo = 'sellerhub';
+    setStartingPage('inventory');
+    setTimeout(() => {
+      openProductPage('', '', true);
+    }, 0);
+  } else if (
+    v === 'variants' ||
+    v === 'vm' ||
+    v === 'variant-manager' ||
+    v === 'manage-variants' ||
+    v === 'manage_variants'
+  ) {
+    productReturnTo = 'sellerhub';
+    setStartingPage('inventory');
+    setTimeout(() => {
+      openProductPage('', '', true);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          openVariantsManagerPage();
+        });
+      });
+    }, 0);
+  }
+}
+
 function initStressCategorySelectOptions() {
   const sel = document.getElementById('ctrlStressCategorySelect');
   if (!sel) return;
@@ -21641,6 +21869,7 @@ function onStressCategorySelectChange() {
   if (idx < 0) return;
   stressPresetIndex = idx;
   scheduleVariantsStressDeepLink();
+  syncProtoDeeplinkToUrl();
 }
 
 function syncProductListingNullControlUI() {
@@ -21681,12 +21910,14 @@ function toggleProductListingNullControl() {
     }
     clearStressVariantData();
     syncProductListingNullControlUI();
+    syncProtoDeeplinkToUrl();
     restoreProtoViewportScroll(sx, sy);
     return;
   }
   stressPresetIndex = 0;
   syncProductListingNullControlUI();
   scheduleVariantsStressDeepLink();
+  syncProtoDeeplinkToUrl();
   restoreProtoViewportScroll(sx, sy);
 }
 
@@ -21917,6 +22148,17 @@ function scheduleVariantsStressDeepLink() {
 }
 
 requestAnimationFrame(() => {
+  const hadUrlDeeplink = (() => {
+    const p = getDemoDeeplinkParams();
+    return (
+      p.has('demo') ||
+      p.has('category') ||
+      p.has('nulled') ||
+      p.has('view') ||
+      p.has('page')
+    );
+  })();
+  applyDemoCategoryDeeplinkFromUrl();
   resetControlPanelPosition();
   initPrototypeScene();
   initVmSoftKeyboard();
@@ -21927,12 +22169,45 @@ requestAnimationFrame(() => {
   } else {
     scheduleVariantsStressDeepLink();
   }
+  applyViewDeeplinkFromUrl();
+  if (hadUrlDeeplink) {
+    setTimeout(() => {
+      syncProtoDeeplinkToUrl();
+    }, 0);
+  }
   const cnw = document.getElementById('vmCustomNameWrap');
   if (cnw) vmBindWdsTextWrap(cnw);
   const ptw = document.getElementById('productTitleWrap');
   if (ptw) vmBindWdsTextWrap(ptw);
   vmBindProductCategoryField();
   vmBindProductBrandField();
+});
+
+window.addEventListener('popstate', () => {
+  const had = (() => {
+    const p = getDemoDeeplinkParams();
+    return (
+      p.has('demo') ||
+      p.has('category') ||
+      p.has('nulled') ||
+      p.has('view') ||
+      p.has('page')
+    );
+  })();
+  applyDemoCategoryDeeplinkFromUrl();
+  initStressCategorySelectOptions();
+  syncProductListingNullControlUI();
+  if (controlProductListingNullEnabled) {
+    clearStressVariantData();
+  } else {
+    scheduleVariantsStressDeepLink();
+  }
+  applyViewDeeplinkFromUrl();
+  if (had) {
+    setTimeout(() => {
+      syncProtoDeeplinkToUrl();
+    }, 0);
+  }
 });
 
 function toggleControlPanel() {
@@ -22082,7 +22357,7 @@ function updateL1TemplateCount() {
 }
 
 // Set timestamp
-const PROTO_TIMESTAMP = 'Updated by Soh on 4/22/26 @ 4:26pm';
+const PROTO_TIMESTAMP = 'Updated by Soh on 4/23/26 @ 5:00pm';
 const PROTO_TIMESTAMP_SHORT = (() => {
   const m = PROTO_TIMESTAMP.match(/\bon\s+(.+?)\s+@/i);
   return m ? m[1].trim() : PROTO_TIMESTAMP;
